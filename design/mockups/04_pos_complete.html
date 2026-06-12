@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1024">
+<title>04 · 결제 완료 — salon-pos-v2</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino Sans',sans-serif;background:#1C2833;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;}
+
+.ipad{width:1024px;height:768px;background:#F4F4F0;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.5);}
+
+/* topbar */
+.topbar{background:#1C2833;height:44px;display:flex;align-items:center;padding:0 16px;gap:10px;flex-shrink:0;}
+.tb-logo{font-size:13px;color:white;font-weight:400;letter-spacing:.08em;}
+.tb-sep{width:.5px;height:14px;background:rgba(255,255,255,.2);}
+.tb-nav{display:flex;gap:2px;}
+.tb-nav-item{font-size:11px;color:rgba(255,255,255,.4);padding:4px 10px;border-radius:5px;}
+.tb-nav-item.on{background:rgba(255,255,255,.13);color:white;font-weight:500;}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.tb-avatar{width:24px;height:24px;border-radius:50%;background:#8E44AD;display:flex;align-items:center;justify-content:center;font-size:9px;color:white;font-weight:500;}
+.tb-time{font-size:11px;color:rgba(255,255,255,.3);}
+
+/* step bar */
+.step-bar{height:36px;background:white;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 16px;gap:0;flex-shrink:0;}
+.step{display:flex;align-items:center;gap:6px;font-size:11px;color:#bbb;}
+.step.done{color:#1E8449;}
+.step-num{width:18px;height:18px;border-radius:50%;border:1.5px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;flex-shrink:0;}
+.step.done .step-num{background:#1E8449;border-color:#1E8449;color:white;}
+.step-arr{margin:0 10px;color:#D0D0CC;font-size:11px;}
+
+/* main */
+.main{flex:1;display:flex;overflow:hidden;padding:16px;gap:14px;}
+
+/* ── 왼쪽: 영수증 ── */
+.receipt-col{width:280px;flex-shrink:0;display:flex;flex-direction:column;}
+.receipt{background:white;border:.5px solid #E5E5E0;border-radius:12px;flex:1;overflow:hidden;display:flex;flex-direction:column;}
+.receipt-top{background:#1C2833;padding:16px;text-align:center;}
+.receipt-logo{font-size:14px;color:rgba(255,255,255,.7);letter-spacing:.1em;margin-bottom:2px;}
+.receipt-salon{font-size:11px;color:rgba(255,255,255,.4);}
+.receipt-body{padding:12px 16px;flex:1;overflow-y:auto;}
+.r-row{display:flex;justify-content:space-between;font-size:11px;padding:3px 0;border-bottom:.5px dashed #F0F0EC;}
+.r-row:last-child{border-bottom:none;}
+.r-label{color:#888;}
+.r-val{color:#1a1a1a;font-weight:500;}
+.r-divider{height:.5px;background:#E5E5E0;margin:8px 0;}
+.r-section-title{font-size:10px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:.06em;margin:8px 0 4px;}
+.r-total{display:flex;justify-content:space-between;padding:6px 0;margin-top:4px;}
+.r-total-label{font-size:13px;font-weight:500;}
+.r-total-val{font-size:18px;font-weight:700;color:#1a1a1a;}
+.r-pts-row{background:#EBF5FB;border-radius:6px;padding:6px 10px;display:flex;justify-content:space-between;align-items:center;margin-top:8px;}
+.r-pts-label{font-size:11px;color:#2E86C1;}
+.r-pts-val{font-size:14px;font-weight:600;color:#2E86C1;}
+.r-change{background:#EAFAF1;border-radius:6px;padding:6px 10px;display:flex;justify-content:space-between;align-items:center;margin-top:6px;}
+.r-change-label{font-size:11px;color:#1E8449;}
+.r-change-val{font-size:14px;font-weight:600;color:#1E8449;}
+
+/* print buttons */
+.receipt-btns{padding:10px 14px;border-top:.5px solid #E5E5E0;display:flex;gap:6px;}
+.r-btn{flex:1;padding:8px 4px;border-radius:8px;font-size:11px;font-weight:500;text-align:center;cursor:pointer;border:.5px solid #D0D0CC;background:white;font-family:inherit;color:#555;}
+.r-btn:hover{background:#F4F4F0;}
+.r-btn-primary{background:#1C2833;color:white;border-color:#1C2833;}
+.r-btn-primary:hover{background:#2C3E50;}
+
+/* ── 가운데: 완료 & 고객 ── */
+.center-col{flex:1;display:flex;flex-direction:column;gap:10px;}
+
+/* success banner */
+.success-banner{background:linear-gradient(135deg,#1E8449 0%,#27AE60 100%);border-radius:14px;padding:20px 24px;display:flex;align-items:center;gap:16px;flex-shrink:0;}
+.success-icon{width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+.success-text{flex:1;}
+.success-title{font-size:18px;font-weight:600;color:white;margin-bottom:3px;}
+.success-sub{font-size:12px;color:rgba(255,255,255,.75);}
+.success-amt{text-align:right;}
+.success-amt-label{font-size:11px;color:rgba(255,255,255,.65);}
+.success-amt-val{font-size:28px;font-weight:700;color:white;}
+
+/* customer summary */
+.cust-summary{background:white;border:.5px solid #E5E5E0;border-radius:12px;padding:14px 16px;display:flex;gap:14px;align-items:center;}
+.cust-avatar{width:44px;height:44px;border-radius:50%;background:#2E86C1;display:flex;align-items:center;justify-content:center;font-size:16px;color:white;font-weight:500;flex-shrink:0;}
+.cust-details{flex:1;}
+.cust-name{font-size:15px;font-weight:500;margin-bottom:4px;}
+.cust-tags{display:flex;gap:5px;}
+.tag{font-size:10px;font-weight:500;padding:2px 8px;border-radius:12px;}
+.tag-vip{background:#FEF9E7;color:#D4AC0D;}
+.tag-visit{background:#EBF5FB;color:#2E86C1;}
+.cust-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.cust-stat{background:#F4F4F0;border-radius:8px;padding:8px 12px;}
+.cs-label{font-size:10px;color:#888;margin-bottom:3px;}
+.cs-val{font-size:15px;font-weight:500;color:#1a1a1a;}
+
+/* next appointment hint */
+.next-booking{background:#F5EEF8;border:.5px solid #C39BD3;border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:10px;}
+.nb-icon{font-size:18px;}
+.nb-text{flex:1;font-size:12px;color:#8E44AD;line-height:1.5;}
+.nb-btn{font-size:12px;font-weight:500;color:white;background:#8E44AD;padding:7px 14px;border-radius:7px;cursor:pointer;border:none;font-family:inherit;}
+.nb-btn:hover{background:#7D3C98;}
+
+/* commission -->
+.commission-row{background:white;border:.5px solid #E5E5E0;border-radius:10px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;}
+.comm-label{font-size:12px;color:#888;}
+.comm-staves{display:flex;gap:12px;}
+.comm-item{text-align:center;}
+.comm-name{font-size:10px;color:#888;margin-bottom:2px;}
+.comm-amt{font-size:13px;font-weight:500;color:#1a1a1a;}
+
+/* ── 오른쪽: 다음 액션 ── */
+.action-col{width:220px;flex-shrink:0;display:flex;flex-direction:column;gap:8px;}
+.action-title{font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;}
+.action-btn{padding:13px 14px;border-radius:10px;background:white;border:.5px solid #E5E5E0;cursor:pointer;display:flex;align-items:center;gap:10px;font-family:inherit;}
+.action-btn:hover{border-color:#D0D0CC;background:#FAFAFA;}
+.action-btn:active{transform:scale(.98);}
+.ab-icon{font-size:20px;width:32px;text-align:center;flex-shrink:0;}
+.ab-text{flex:1;}
+.ab-label{font-size:12px;font-weight:500;color:#1a1a1a;}
+.ab-sub{font-size:10px;color:#999;margin-top:1px;}
+
+.new-order-btn{padding:14px;border-radius:12px;background:#2E86C1;color:white;font-size:14px;font-weight:600;text-align:center;cursor:pointer;border:none;font-family:inherit;margin-top:auto;}
+.new-order-btn:hover{background:#2471A3;}
+.new-order-btn:active{transform:scale(.98);}
+</style>
+</head>
+<body>
+
+<div class="ipad">
+
+  <!-- topbar -->
+  <div class="topbar">
+    <span class="tb-logo">✂ salon pos</span>
+    <div class="tb-sep"></div>
+    <div class="tb-nav">
+      <span class="tb-nav-item on">결제</span>
+      <span class="tb-nav-item">예약</span>
+      <span class="tb-nav-item">고객</span>
+      <span class="tb-nav-item">직원</span>
+      <span class="tb-nav-item">재고</span>
+      <span class="tb-nav-item">매출</span>
+      <span class="tb-nav-item">⚙</span>
+    </div>
+    <div class="tb-right">
+      <div class="tb-avatar">由</div>
+      <span style="font-size:12px;color:rgba(255,255,255,.55);">Yuki</span>
+      <div class="tb-sep"></div>
+      <span class="tb-time">06.12 木　10:35</span>
+    </div>
+  </div>
+
+  <!-- step bar -->
+  <div class="step-bar">
+    <div class="step done"><div class="step-num">✓</div>주문</div>
+    <div class="step-arr">›</div>
+    <div class="step done"><div class="step-num">✓</div>계산</div>
+    <div class="step-arr">›</div>
+    <div class="step done"><div class="step-num">✓</div>완료</div>
+    <div style="margin-left:auto;font-size:11px;color:#888;">거래번호: <b style="color:#1a1a1a;">#2024-0612-047</b></div>
+  </div>
+
+  <div class="main">
+
+    <!-- ── 영수증 ── -->
+    <div class="receipt-col">
+      <div class="receipt">
+        <div class="receipt-top">
+          <div class="receipt-logo">✂ salon pos</div>
+          <div class="receipt-salon">Hair Salon Yuki · 渋谷区道玄坂</div>
+        </div>
+        <div class="receipt-body">
+          <div class="r-section-title">시술 내역</div>
+          <div class="r-row"><span class="r-label">カット</span><span class="r-val">¥4,400</span></div>
+          <div class="r-row"><span class="r-label">ワンカラー</span><span class="r-val">¥8,800</span></div>
+          <div class="r-row"><span class="r-label">トリートメント M</span><span class="r-val">¥4,400</span></div>
+          <div class="r-divider"></div>
+          <div class="r-row"><span class="r-label">소계</span><span class="r-val">¥17,600</span></div>
+          <div class="r-row"><span class="r-label">소비세 (10%)</span><span class="r-val">¥1,600</span></div>
+          <div class="r-total">
+            <span class="r-total-label">합계</span>
+            <span class="r-total-val">¥17,600</span>
+          </div>
+          <div class="r-divider"></div>
+          <div class="r-section-title">결제 정보</div>
+          <div class="r-row"><span class="r-label">결제수단</span><span class="r-val">현금</span></div>
+          <div class="r-row"><span class="r-label">받은 금액</span><span class="r-val">¥20,000</span></div>
+          <div class="r-change">
+            <span class="r-change-label">거스름돈</span>
+            <span class="r-change-val">¥2,400</span>
+          </div>
+          <div class="r-pts-row">
+            <span class="r-pts-label">포인트 적립</span>
+            <span class="r-pts-val">＋176pt → 총 496pt</span>
+          </div>
+          <div class="r-divider"></div>
+          <div class="r-row"><span class="r-label">담당</span><span class="r-val">Yuki</span></div>
+          <div class="r-row"><span class="r-label">날짜</span><span class="r-val">2026.06.12 10:35</span></div>
+          <div class="r-row"><span class="r-label">거래번호</span><span class="r-val">#2024-0612-047</span></div>
+        </div>
+        <div class="receipt-btns">
+          <button class="r-btn r-btn-primary" onclick="alert('프린터로 인쇄')">🖨 인쇄</button>
+          <button class="r-btn" onclick="alert('PDF 저장')">📄 PDF</button>
+          <button class="r-btn" onclick="alert('LINE으로 전송')">💬 LINE</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 가운데 ── -->
+    <div class="center-col">
+
+      <!-- success banner -->
+      <div class="success-banner">
+        <div class="success-icon">✓</div>
+        <div class="success-text">
+          <div class="success-title">결제 완료</div>
+          <div class="success-sub">2026년 6월 12일 10:35 · 현금 · 담당 Yuki</div>
+        </div>
+        <div class="success-amt">
+          <div class="success-amt-label">결제금액</div>
+          <div class="success-amt-val">¥17,600</div>
+        </div>
+      </div>
+
+      <!-- customer summary -->
+      <div class="cust-summary">
+        <div class="cust-avatar">田</div>
+        <div class="cust-details">
+          <div class="cust-name">田中 美咲</div>
+          <div class="cust-tags">
+            <span class="tag tag-vip">VIP</span>
+            <span class="tag tag-visit">47회 방문</span>
+          </div>
+        </div>
+        <div class="cust-stats">
+          <div class="cust-stat">
+            <div class="cs-label">보유 포인트</div>
+            <div class="cs-val" style="color:#2E86C1;">496pt</div>
+          </div>
+          <div class="cust-stat">
+            <div class="cs-label">오늘 이용금액</div>
+            <div class="cs-val">¥17,600</div>
+          </div>
+          <div class="cust-stat">
+            <div class="cs-label">누적 이용금액</div>
+            <div class="cs-val">¥384,200</div>
+          </div>
+          <div class="cust-stat">
+            <div class="cs-label">최근 방문</div>
+            <div class="cs-val" style="font-size:12px;">2026.05.15</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- next booking suggestion -->
+      <div class="next-booking">
+        <div class="nb-icon">📅</div>
+        <div class="nb-text">
+          田中さんの次回予約はまだです。<br>
+          リタッチのベストタイミングは約 <b>6週間後</b> (7月 24日頃)。
+        </div>
+        <button class="nb-btn" onclick="alert('→ 예약 화면 (06_booking_calendar)')">다음 예약 잡기</button>
+      </div>
+
+      <!-- commission row -->
+      <div class="commission-row">
+        <span class="comm-label">커미션 내역</span>
+        <div class="comm-staves">
+          <div class="comm-item">
+            <div class="comm-name">Yuki</div>
+            <div class="comm-amt">¥2,640</div>
+          </div>
+          <div class="comm-item">
+            <div class="comm-name">Mika</div>
+            <div class="comm-amt">¥880</div>
+          </div>
+        </div>
+        <span style="font-size:11px;color:#999;">(합계 ¥3,520 · 20%)</span>
+      </div>
+
+    </div>
+
+    <!-- ── 오른쪽 액션 ── -->
+    <div class="action-col">
+      <div class="action-title">다음 액션</div>
+
+      <div class="action-btn" onclick="alert('→ 06_booking_calendar')">
+        <div class="ab-icon">📅</div>
+        <div class="ab-text">
+          <div class="ab-label">다음 예약 추가</div>
+          <div class="ab-sub">예약 화면으로 이동</div>
+        </div>
+      </div>
+
+      <div class="action-btn" onclick="alert('→ 10_customer_detail')">
+        <div class="ab-icon">👤</div>
+        <div class="ab-text">
+          <div class="ab-label">고객 상세 보기</div>
+          <div class="ab-sub">카르테 · 이력 확인</div>
+        </div>
+      </div>
+
+      <div class="action-btn" onclick="alert('메시지 발송')">
+        <div class="ab-icon">💬</div>
+        <div class="ab-text">
+          <div class="ab-label">LINE 메시지 전송</div>
+          <div class="ab-sub">감사 메시지 발송</div>
+        </div>
+      </div>
+
+      <div class="action-btn" onclick="alert('→ 05_pos_history')">
+        <div class="ab-icon">📋</div>
+        <div class="ab-text">
+          <div class="ab-label">거래 이력 보기</div>
+          <div class="ab-sub">오늘 거래 내역</div>
+        </div>
+      </div>
+
+      <div class="action-btn" onclick="alert('거래 취소')">
+        <div class="ab-icon">↩</div>
+        <div class="ab-text">
+          <div class="ab-label" style="color:#E74C3C;">거래 취소 / 환불</div>
+          <div class="ab-sub">이 거래 전체 취소</div>
+        </div>
+      </div>
+
+      <button class="new-order-btn" onclick="alert('→ 02_pos_order — 새 주문')">
+        ＋ 새 주문 시작
+      </button>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
