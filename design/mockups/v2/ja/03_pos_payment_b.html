@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1024">
+<title>03B · 会計 — salon-pos-v2 JA (Concept B)</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino Sans',sans-serif;background:#1C2833;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;}
+
+.ipad{width:1024px;height:768px;background:#F4F4F0;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.5);}
+
+/* topbar */
+.topbar{background:white;height:44px;display:flex;align-items:center;padding:0 16px;gap:10px;flex-shrink:0;border-bottom:.5px solid #E5E5E0;}
+.tb-menu{font-size:18px;color:#1C2833;cursor:pointer;padding:4px 6px;border-radius:6px;line-height:1;flex-shrink:0;user-select:none;}
+.tb-menu:hover{background:#F4F4F0;}
+.tb-logo{font-size:13px;color:#1C2833;font-weight:500;letter-spacing:.08em;}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.tb-sep{width:.5px;height:14px;background:#D0D0CC;}
+.tb-avatar{width:24px;height:24px;border-radius:50%;background:#8E44AD;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:500;color:white;}
+.tb-staff-name{font-size:12px;color:#333;}
+.tb-time{font-size:11px;color:#888;}
+.tb-lock{font-size:13px;color:#aaa;cursor:pointer;}
+
+/* sidebar */
+.sidebar-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:100;opacity:0;pointer-events:none;transition:opacity .2s;}
+.sidebar-overlay.open{opacity:1;pointer-events:all;}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:220px;background:#1C2833;z-index:101;transform:translateX(-100%);transition:transform .22s cubic-bezier(.25,.46,.45,.94);display:flex;flex-direction:column;box-shadow:4px 0 24px rgba(0,0,0,.3);}
+.sidebar.open{transform:translateX(0);}
+.sidebar-header{padding:20px 16px 14px;border-bottom:.5px solid rgba(255,255,255,.1);}
+.sidebar-logo{font-size:14px;color:white;font-weight:500;letter-spacing:.08em;}
+.sidebar-sub{font-size:10px;color:rgba(255,255,255,.3);margin-top:4px;}
+.sidebar-menu{flex:1;padding:8px 0;overflow-y:auto;}
+.sidebar-item{display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;transition:background .12s;user-select:none;}
+.sidebar-item:hover{background:rgba(255,255,255,.07);}
+.sidebar-item.on{background:rgba(255,255,255,.12);}
+.sidebar-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.sidebar-label{font-size:13px;color:rgba(255,255,255,.7);font-weight:400;}
+.sidebar-item.on .sidebar-label{color:white;font-weight:500;}
+.sidebar-footer{padding:14px 16px;border-top:.5px solid rgba(255,255,255,.1);}
+.sidebar-footer-text{font-size:10px;color:rgba(255,255,255,.22);}
+
+/* step bar */
+.step-bar{height:36px;background:white;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 16px;flex-shrink:0;}
+.step{display:flex;align-items:center;gap:6px;font-size:11px;color:#bbb;}
+.step.done{color:#1E8449;}
+.step.active{color:#2E86C1;font-weight:500;}
+.step-num{width:18px;height:18px;border-radius:50%;border:1.5px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;flex-shrink:0;}
+.step.done .step-num{background:#1E8449;border-color:#1E8449;color:white;}
+.step.active .step-num{background:#2E86C1;border-color:#2E86C1;color:white;}
+.step-arr{margin:0 10px;color:#D0D0CC;font-size:11px;}
+
+/* ── CONCEPT B: 2-column layout ── */
+.main{flex:1;display:flex;overflow:hidden;}
+
+/* LEFT: payment area (flex:1, dark bg for "payment zone" feel) */
+.pay-zone{flex:1;display:flex;flex-direction:column;background:#1C2833;overflow:hidden;}
+
+/* method tabs */
+.method-tabs{display:flex;padding:14px 16px 0;gap:8px;flex-shrink:0;}
+.mtab{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;padding:12px 6px 10px;border-radius:12px 12px 0 0;border:1.5px solid rgba(255,255,255,.1);border-bottom:none;background:rgba(255,255,255,.05);cursor:pointer;transition:all .15s;color:rgba(255,255,255,.5);}
+.mtab:hover{background:rgba(255,255,255,.1);color:rgba(255,255,255,.8);}
+.mtab.active{background:white;color:#1a1a1a;border-color:transparent;}
+.mtab-icon{font-size:20px;line-height:1;}
+.mtab-name{font-size:11px;font-weight:500;}
+
+/* method panel */
+.method-panel{flex:1;background:white;border-radius:0 0 0 0;margin:0 16px;display:flex;flex-direction:column;overflow:hidden;}
+
+/* ── CASH panel ── */
+.cash-panel{flex:1;display:flex;flex-direction:column;padding:16px;}
+.recv-label{font-size:11px;color:#999;margin-bottom:6px;font-weight:500;letter-spacing:.04em;text-transform:uppercase;}
+.recv-display{background:#F9F9F7;border:.5px solid #E5E5E0;border-radius:10px;padding:10px 16px;display:flex;align-items:baseline;justify-content:flex-end;gap:6px;margin-bottom:10px;}
+.recv-yen{font-size:16px;color:#888;font-weight:500;}
+.recv-amount{font-size:36px;font-weight:700;color:#1a1a1a;letter-spacing:-.02em;}
+
+.quick-btns{display:flex;gap:6px;margin-bottom:12px;}
+.quick-btn{flex:1;padding:8px 4px;border-radius:8px;border:.5px solid #E5E5E0;background:white;font-size:12px;font-weight:500;color:#1a1a1a;cursor:pointer;font-family:inherit;text-align:center;}
+.quick-btn:hover{background:#F4F4F0;}
+
+.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;flex:1;}
+.kp{display:flex;align-items:center;justify-content:center;border-radius:10px;border:.5px solid #E5E5E0;background:white;font-size:20px;font-weight:500;color:#1a1a1a;cursor:pointer;font-family:inherit;}
+.kp:hover{background:#F4F4F0;}
+.kp:active{background:#E8E8E4;transform:scale(.96);}
+.kp.kp-action{background:#F4F4F0;color:#555;font-size:14px;}
+
+.change-bar{margin-top:10px;display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#EAFAF1;border-radius:10px;flex-shrink:0;}
+.change-bar.short{background:#FDEDEC;}
+.cb-label{font-size:12px;color:#1E8449;font-weight:500;}
+.cb-val{font-size:18px;font-weight:700;color:#1E8449;}
+.change-bar.short .cb-label,.change-bar.short .cb-val{color:#E74C3C;}
+
+/* ── CARD panel ── */
+.card-panel{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;}
+.terminal-icon{width:72px;height:72px;border-radius:16px;background:#EBF5FB;display:flex;align-items:center;justify-content:center;font-size:36px;}
+.terminal-label{font-size:15px;font-weight:500;color:#1a1a1a;}
+.terminal-sub{font-size:12px;color:#888;text-align:center;line-height:1.6;}
+.terminal-ready{display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:20px;background:#EAFAF1;font-size:12px;color:#1E8449;font-weight:500;}
+.terminal-dot{width:6px;height:6px;border-radius:50%;background:#1E8449;animation:pulse 1.5s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+
+/* ── QR panel ── */
+.qr-panel{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:20px;}
+.qr-box{width:140px;height:140px;border:2px solid #1a1a1a;border-radius:12px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;padding:10px;}
+.qr-cell{background:#1a1a1a;border-radius:2px;}
+.qr-cell.w{background:white;}
+.qr-label{font-size:13px;font-weight:500;color:#1a1a1a;}
+.qr-sub{font-size:11px;color:#888;}
+
+/* ── SPLIT panel ── */
+.split-panel{flex:1;display:flex;flex-direction:column;padding:16px;gap:8px;overflow-y:auto;}
+.sp-row{display:flex;gap:8px;align-items:center;background:#F9F9F7;border:.5px solid #E5E5E0;border-radius:10px;padding:10px 12px;}
+.sp-method{flex:1;font-size:13px;font-weight:500;}
+.sp-method select{border:none;background:transparent;font-size:13px;font-weight:500;font-family:inherit;color:#1a1a1a;outline:none;}
+.sp-divider{width:.5px;height:20px;background:#E5E5E0;flex-shrink:0;}
+.sp-amt-wrap{display:flex;align-items:center;gap:4px;}
+.sp-yen{font-size:12px;color:#888;}
+.sp-amt{border:none;background:transparent;font-size:15px;font-weight:600;font-family:inherit;color:#1a1a1a;outline:none;text-align:right;width:90px;}
+.sp-del{font-size:18px;color:#D0D0CC;cursor:pointer;padding:2px 4px;}
+.sp-del:hover{color:#E74C3C;}
+.sp-add-btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;border-radius:10px;border:1.5px dashed #AED6F1;color:#2E86C1;font-size:13px;font-weight:500;cursor:pointer;}
+.sp-add-btn:hover{background:#EBF5FB;}
+
+/* ── CREDIT panel ── */
+.credit-panel{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;}
+
+/* RIGHT: summary panel */
+.summary-panel{width:300px;display:flex;flex-direction:column;border-left:.5px solid #E5E5E0;background:white;overflow:hidden;}
+
+/* order items section */
+.sp-header{padding:10px 14px;border-bottom:.5px solid #F0F0EC;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.sp-title{font-size:10px;font-weight:600;color:#999;letter-spacing:.07em;text-transform:uppercase;}
+.sp-edit{font-size:11px;color:#2E86C1;cursor:pointer;}
+
+.order-scroll{flex:1;overflow-y:auto;padding:6px 14px 8px;}
+.order-scroll::-webkit-scrollbar{width:3px;}
+.order-scroll::-webkit-scrollbar-thumb{background:#E0E0DC;border-radius:2px;}
+.oi{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:.5px solid #F8F8F6;font-size:12px;}
+.oi:last-child{border-bottom:none;}
+.oi-left{flex:1;}
+.oi-name{color:#1a1a1a;}
+.oi-badge{display:inline-block;font-size:9px;color:#E74C3C;background:#FDEDEC;border-radius:3px;padding:1px 4px;margin-left:4px;}
+.oi-qty{font-size:10px;color:#999;margin-top:1px;}
+.oi-right{text-align:right;}
+.oi-orig{font-size:10px;color:#bbb;text-decoration:line-through;}
+.oi-price-final{font-size:12px;font-weight:500;color:#1a1a1a;}
+.oi-price-disc{font-size:12px;font-weight:500;color:#E74C3C;}
+
+/* customer section */
+.cust-section{flex-shrink:0;border-top:.5px solid #F0F0EC;padding:8px 14px;}
+.cust-row{display:flex;align-items:center;gap:8px;}
+.cust-av{width:30px;height:30px;border-radius:50%;background:#2E86C1;display:flex;align-items:center;justify-content:center;font-size:11px;color:white;font-weight:500;flex-shrink:0;}
+.cust-info{flex:1;}
+.cust-name{font-size:12px;font-weight:500;}
+.cust-sub{font-size:10px;color:#888;}
+.cust-pts{font-size:13px;font-weight:600;color:#2E86C1;}
+
+/* points + memo */
+.opts-section{flex-shrink:0;border-top:.5px solid #F0F0EC;padding:8px 14px;display:flex;flex-direction:column;gap:7px;}
+.opt-row{display:flex;align-items:center;justify-content:space-between;}
+.opt-label{font-size:11px;color:#666;}
+.pts-inp-wrap{display:flex;align-items:center;gap:5px;}
+.pts-inp{width:70px;padding:4px 8px;border:.5px solid #E0E0DC;border-radius:6px;font-size:12px;font-family:inherit;outline:none;text-align:right;}
+.pts-unit{font-size:11px;color:#888;}
+.pts-all{font-size:10px;color:#2E86C1;border:.5px solid #AED6F1;border-radius:5px;padding:3px 8px;cursor:pointer;background:#EBF5FB;font-family:inherit;}
+.tip-inp{width:70px;padding:4px 8px;border:.5px solid #E0E0DC;border-radius:6px;font-size:12px;font-family:inherit;outline:none;text-align:right;}
+.toggle-switch{width:34px;height:19px;border-radius:10px;background:#E0E0DC;position:relative;cursor:pointer;transition:.2s;flex-shrink:0;}
+.toggle-switch.on{background:#2E86C1;}
+.toggle-knob{position:absolute;width:15px;height:15px;border-radius:50%;background:white;top:2px;left:2px;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2);}
+.toggle-switch.on .toggle-knob{left:17px;}
+.memo-ta{width:100%;height:40px;border:.5px solid #E0E0DC;border-radius:7px;font-size:11px;font-family:inherit;padding:5px 8px;resize:none;outline:none;color:#555;line-height:1.5;}
+
+/* total footer */
+.total-footer{flex-shrink:0;border-top:.5px solid #E5E5E0;background:white;}
+.tot-rows{padding:10px 14px 0;display:flex;flex-direction:column;gap:5px;}
+.tr{display:flex;justify-content:space-between;font-size:12px;}
+.tr-label{color:#888;}
+.tr-val{font-weight:500;color:#1a1a1a;}
+.tr-disc{color:#E74C3C;}
+.tr-pts{color:#2E86C1;}
+.tr-divider{height:.5px;background:#E5E5E0;margin:8px 14px 0;}
+.final-row{display:flex;justify-content:space-between;align-items:baseline;padding:6px 14px 0;}
+.final-label{font-size:13px;font-weight:500;}
+.final-val{font-size:28px;font-weight:700;color:#1a1a1a;letter-spacing:-.02em;}
+.tax-line{font-size:10px;color:#bbb;text-align:right;padding:0 14px 8px;}
+
+.action-area{padding:8px 14px 12px;display:flex;flex-direction:column;gap:6px;}
+.btn-execute{width:100%;padding:14px;border-radius:12px;background:#2E86C1;color:white;font-size:15px;font-weight:600;border:none;cursor:pointer;font-family:inherit;}
+.btn-execute:hover{background:#2471A3;}
+.btn-execute:active{transform:scale(.98);}
+.btn-back{width:100%;padding:9px;border-radius:10px;background:#F4F4F0;border:.5px solid #D0D0CC;color:#555;font-size:12px;cursor:pointer;font-family:inherit;}
+.btn-back:hover{background:#EAEAE6;}
+
+/* toast */
+.toast{position:fixed;top:18px;left:50%;transform:translateX(-50%) translateY(-16px);background:white;color:#1A1A1A;font-size:12px;font-weight:500;padding:10px 20px 10px 16px;border-radius:12px;z-index:9999;white-space:nowrap;opacity:0;pointer-events:none;transition:transform .22s,opacity .22s;box-shadow:0 6px 28px rgba(0,0,0,.18);border:.5px solid rgba(0,0,0,.08);display:flex;align-items:center;gap:8px;}
+.toast::before{content:'';width:3px;height:100%;background:#2E86C1;border-radius:2px;align-self:stretch;flex-shrink:0;}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+</style>
+</head>
+<body>
+
+<!-- toast -->
+<div class="toast" id="toast"></div>
+
+<!-- sidebar overlay -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+<!-- sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">✂ salon pos</div>
+    <div class="sidebar-sub">Hair Salon Yuki · 渋谷区</div>
+  </div>
+  <div class="sidebar-menu">
+    <div class="sidebar-item on" onclick="closeSidebar()"><div class="sidebar-dot" style="background:#2E86C1"></div><span class="sidebar-label">会計</span></div>
+    <div class="sidebar-item" onclick="closeSidebar()"><div class="sidebar-dot" style="background:#8E44AD"></div><span class="sidebar-label">予約</span></div>
+    <div class="sidebar-item" onclick="closeSidebar()"><div class="sidebar-dot" style="background:#1E8449"></div><span class="sidebar-label">顧客</span></div>
+    <div class="sidebar-item" onclick="closeSidebar()"><div class="sidebar-dot" style="background:#C0392B"></div><span class="sidebar-label">スタッフ</span></div>
+    <div class="sidebar-item" onclick="closeSidebar()"><div class="sidebar-dot" style="background:#7D3C98"></div><span class="sidebar-label">在庫</span></div>
+    <div class="sidebar-item" onclick="closeSidebar()"><div class="sidebar-dot" style="background:#D4AC0D"></div><span class="sidebar-label">売上</span></div>
+    <div class="sidebar-item" onclick="closeSidebar()"><div class="sidebar-dot" style="background:#D35400"></div><span class="sidebar-label">マーケティング</span></div>
+    <div class="sidebar-item" onclick="closeSidebar()"><div class="sidebar-dot" style="background:#117A65"></div><span class="sidebar-label">店舗設定</span></div>
+    <div class="sidebar-item" onclick="closeSidebar()"><div class="sidebar-dot" style="background:#1A5276"></div><span class="sidebar-label">システム設定</span></div>
+  </div>
+  <div class="sidebar-footer"><div class="sidebar-footer-text">v2.0.0 · iPad Air 2</div></div>
+</div>
+
+<div class="ipad">
+
+  <!-- topbar -->
+  <div class="topbar">
+    <span class="tb-menu" onclick="toggleSidebar()">☰</span>
+    <span class="tb-logo">✂ salon pos</span>
+    <div class="tb-right">
+      <div class="tb-avatar">由</div>
+      <span class="tb-staff-name">Yuki</span>
+      <div class="tb-sep"></div>
+      <span class="tb-time">06.16 月　10:24</span>
+      <span class="tb-lock">🔒</span>
+    </div>
+  </div>
+
+  <!-- step bar -->
+  <div class="step-bar">
+    <div class="step done"><div class="step-num">✓</div>注文</div>
+    <div class="step-arr">›</div>
+    <div class="step active"><div class="step-num">2</div>会計</div>
+    <div class="step-arr">›</div>
+    <div class="step"><div class="step-num">3</div>完了</div>
+    <div style="margin-left:auto;display:flex;gap:8px;align-items:center;">
+      <span style="font-size:11px;color:#888;">担当: Yuki</span>
+      <span style="font-size:11px;color:#2E86C1;font-weight:500;">田中 美咲</span>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <!-- ── 左: 결제 조작 영역 (다크 배경) ── -->
+    <div class="pay-zone">
+
+      <!-- method tabs -->
+      <div class="method-tabs">
+        <div class="mtab active" id="tab-cash" onclick="switchTab('cash')">
+          <div class="mtab-icon">💴</div>
+          <div class="mtab-name">現金</div>
+        </div>
+        <div class="mtab" id="tab-card" onclick="switchTab('card')">
+          <div class="mtab-icon">💳</div>
+          <div class="mtab-name">カード</div>
+        </div>
+        <div class="mtab" id="tab-paypay" onclick="switchTab('paypay')">
+          <div class="mtab-icon">📱</div>
+          <div class="mtab-name">PayPay</div>
+        </div>
+        <div class="mtab" id="tab-linepay" onclick="switchTab('linepay')">
+          <div class="mtab-icon">💬</div>
+          <div class="mtab-name">LINE Pay</div>
+        </div>
+        <div class="mtab" id="tab-split" onclick="switchTab('split')">
+          <div class="mtab-icon">🔀</div>
+          <div class="mtab-name">分割払い</div>
+        </div>
+        <div class="mtab" id="tab-credit" onclick="switchTab('credit')">
+          <div class="mtab-icon">📋</div>
+          <div class="mtab-name">後払い</div>
+        </div>
+      </div>
+
+      <!-- method panel (white content area) -->
+      <div class="method-panel">
+
+        <!-- CASH -->
+        <div class="cash-panel" id="panel-cash">
+          <div class="recv-label">受取金額</div>
+          <div class="recv-display">
+            <span class="recv-yen">¥</span>
+            <span class="recv-amount" id="recvDisplay">20,000</span>
+          </div>
+          <div class="quick-btns">
+            <button class="quick-btn" onclick="setCash('exact')">ちょうど</button>
+            <button class="quick-btn" onclick="setCash(10000)">¥10,000</button>
+            <button class="quick-btn" onclick="setCash(20000)">¥20,000</button>
+            <button class="quick-btn" onclick="setCash(50000)">¥50,000</button>
+          </div>
+          <div class="keypad">
+            <button class="kp" onclick="kpPress('1')">1</button>
+            <button class="kp" onclick="kpPress('2')">2</button>
+            <button class="kp" onclick="kpPress('3')">3</button>
+            <button class="kp" onclick="kpPress('4')">4</button>
+            <button class="kp" onclick="kpPress('5')">5</button>
+            <button class="kp" onclick="kpPress('6')">6</button>
+            <button class="kp" onclick="kpPress('7')">7</button>
+            <button class="kp" onclick="kpPress('8')">8</button>
+            <button class="kp" onclick="kpPress('9')">9</button>
+            <button class="kp kp-action" onclick="kpPress('000')">000</button>
+            <button class="kp" onclick="kpPress('0')">0</button>
+            <button class="kp kp-action" onclick="kpDel()">⌫</button>
+          </div>
+          <div class="change-bar" id="changeBar">
+            <span class="cb-label">お釣り</span>
+            <span class="cb-val" id="changeVal">¥2,840</span>
+          </div>
+        </div>
+
+        <!-- CARD -->
+        <div class="card-panel" id="panel-card" style="display:none;">
+          <div class="terminal-icon">💳</div>
+          <div class="terminal-label">カード端末</div>
+          <div class="terminal-sub">お客様のカードを端末に<br>タッチまたは挿入してください</div>
+          <div class="terminal-ready"><span class="terminal-dot"></span>端末スタンバイ中</div>
+        </div>
+
+        <!-- PAYPAY -->
+        <div class="qr-panel" id="panel-paypay" style="display:none;">
+          <div class="qr-box">
+            <div class="qr-cell"></div><div class="qr-cell w"></div><div class="qr-cell"></div>
+            <div class="qr-cell w"></div><div class="qr-cell"></div><div class="qr-cell w"></div>
+            <div class="qr-cell"></div><div class="qr-cell w"></div><div class="qr-cell"></div>
+          </div>
+          <div class="qr-label">PayPay QRコード</div>
+          <div class="qr-sub">お客様にQRコードを読み取ってもらってください</div>
+        </div>
+
+        <!-- LINEPAY -->
+        <div class="qr-panel" id="panel-linepay" style="display:none;">
+          <div class="qr-box" style="border-color:#06B25D;">
+            <div class="qr-cell" style="background:#06B25D;"></div><div class="qr-cell w"></div><div class="qr-cell" style="background:#06B25D;"></div>
+            <div class="qr-cell w"></div><div class="qr-cell" style="background:#06B25D;"></div><div class="qr-cell w"></div>
+            <div class="qr-cell" style="background:#06B25D;"></div><div class="qr-cell w"></div><div class="qr-cell" style="background:#06B25D;"></div>
+          </div>
+          <div class="qr-label" style="color:#06B25D;">LINE Pay QRコード</div>
+          <div class="qr-sub">お客様にQRコードを読み取ってもらってください</div>
+        </div>
+
+        <!-- SPLIT -->
+        <div class="split-panel" id="panel-split" style="display:none;">
+          <div id="splitRows">
+            <div class="sp-row">
+              <div class="sp-method"><select class="sp-method"><option>💳 カード</option><option>💴 現金</option><option>📱 PayPay</option></select></div>
+              <div class="sp-divider"></div>
+              <div class="sp-amt-wrap"><span class="sp-yen">¥</span><input class="sp-amt" value="10,000"></div>
+              <span class="sp-del" onclick="this.closest('.sp-row').remove()">✕</span>
+            </div>
+            <div class="sp-row">
+              <div class="sp-method"><select class="sp-method"><option>💴 現金</option><option>💳 カード</option><option>📱 PayPay</option></select></div>
+              <div class="sp-divider"></div>
+              <div class="sp-amt-wrap"><span class="sp-yen">¥</span><input class="sp-amt" value="7,160"></div>
+              <span class="sp-del" onclick="this.closest('.sp-row').remove()">✕</span>
+            </div>
+          </div>
+          <div class="sp-add-btn" onclick="addSplitRow()">＋ 支払方法を追加</div>
+        </div>
+
+        <!-- CREDIT -->
+        <div class="credit-panel" id="panel-credit" style="display:none;">
+          <div class="terminal-icon" style="background:#FEF9EC;">📋</div>
+          <div class="terminal-label">後払い処理</div>
+          <div class="terminal-sub" style="text-align:center;line-height:1.8;">お客様の後払い情報を登録します。<br>「会計を実行」で未収金として記録されます。</div>
+          <div style="display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:20px;background:#FEF9EC;font-size:12px;color:#D4AC0D;font-weight:500;">⚠ 未収金として処理されます</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── 右: 요약 + 합계 통합 패널 ── -->
+    <div class="summary-panel">
+
+      <!-- order items -->
+      <div class="sp-header">
+        <span class="sp-title">注文内容</span>
+        <span class="sp-edit" onclick="showToast('← 注文画面へ移動')">← 編集</span>
+      </div>
+      <div class="order-scroll">
+        <div class="oi">
+          <div class="oi-left">
+            <div class="oi-name">カット <span class="oi-badge">10%割引</span></div>
+            <div class="oi-qty">×1</div>
+          </div>
+          <div class="oi-right">
+            <div class="oi-orig">¥4,400</div>
+            <div class="oi-price-disc">¥3,960</div>
+          </div>
+        </div>
+        <div class="oi">
+          <div class="oi-left">
+            <div class="oi-name">ワンカラー</div>
+            <div class="oi-qty">×1</div>
+          </div>
+          <div class="oi-right">
+            <div class="oi-price-final">¥8,800</div>
+          </div>
+        </div>
+        <div class="oi">
+          <div class="oi-left">
+            <div class="oi-name">トリートメント M</div>
+            <div class="oi-qty">×1</div>
+          </div>
+          <div class="oi-right">
+            <div class="oi-price-final">¥4,400</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- customer -->
+      <div class="cust-section">
+        <div class="cust-row">
+          <div class="cust-av">田</div>
+          <div class="cust-info">
+            <div class="cust-name">田中 美咲</div>
+            <div class="cust-sub">090-1234-5678 · VIP</div>
+          </div>
+          <div class="cust-pts">320pt</div>
+        </div>
+      </div>
+
+      <!-- options: points, tip, receipt, memo -->
+      <div class="opts-section">
+        <div class="opt-row">
+          <span class="opt-label">ポイント使用</span>
+          <div class="pts-inp-wrap">
+            <input class="pts-inp" id="ptsInp" type="number" value="0" min="0" max="320" oninput="updateTotal()">
+            <span class="pts-unit">pt</span>
+            <button class="pts-all" onclick="useAllPts()">全額</button>
+          </div>
+        </div>
+        <div class="opt-row">
+          <span class="opt-label">チップ</span>
+          <input class="tip-inp" id="tipInp" placeholder="¥0" oninput="updateTotal()">
+        </div>
+        <div class="opt-row">
+          <span class="opt-label">領収書</span>
+          <div class="toggle-switch on" id="receiptToggle" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div>
+        </div>
+        <div class="opt-row">
+          <span class="opt-label">ポイント獲得</span>
+          <span style="font-size:12px;color:#2E86C1;font-weight:500;" id="earnPts">+171pt</span>
+        </div>
+        <textarea class="memo-ta" placeholder="会計メモ...">カラーはマニキュア施術。次回トリートメント推奨。</textarea>
+      </div>
+
+      <!-- total footer -->
+      <div class="total-footer">
+        <div class="tot-rows" id="totalRows"></div>
+        <div class="tr-divider"></div>
+        <div class="final-row">
+          <span class="final-label">お支払金額</span>
+          <span class="final-val" id="finalAmt">¥17,160</span>
+        </div>
+        <div class="tax-line" id="taxLine">消費税込み ¥1,560</div>
+        <div class="action-area">
+          <button class="btn-execute" onclick="execPayment()">会計を実行</button>
+          <button class="btn-back" onclick="showToast('← 注文画面へ移動')">← 注文に戻る</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const subtotalRaw = 17600;
+const discountTotal = 440;
+const subtotal = subtotalRaw - discountTotal;
+let ptsUsed = 0;
+let cashRaw = 20000;
+let kpStr = '20000';
+let currentTab = 'cash';
+
+function updateTotal() {
+  ptsUsed = Math.min(320, Math.max(0, parseInt(document.getElementById('ptsInp').value) || 0));
+  const tip = parseInt(document.getElementById('tipInp').value) || 0;
+  const total = subtotal - ptsUsed + tip;
+  const tax = Math.round(total * 10 / 110);
+
+  document.getElementById('totalRows').innerHTML = `
+    <div class="tr"><span class="tr-label">小計</span><span class="tr-val">¥${subtotalRaw.toLocaleString()}</span></div>
+    <div class="tr"><span class="tr-label">割引合計</span><span class="tr-disc">－¥${discountTotal.toLocaleString()}</span></div>
+    ${ptsUsed > 0 ? `<div class="tr"><span class="tr-label">ポイント使用</span><span class="tr-pts">－¥${ptsUsed.toLocaleString()}</span></div>` : ''}
+    ${tip > 0 ? `<div class="tr"><span class="tr-label">チップ</span><span class="tr-val">¥${tip.toLocaleString()}</span></div>` : ''}
+  `;
+  document.getElementById('finalAmt').textContent = '¥' + total.toLocaleString();
+  document.getElementById('taxLine').textContent = '消費税込み ¥' + tax.toLocaleString();
+  document.getElementById('earnPts').textContent = '+' + Math.floor(total / 100) + 'pt';
+  calcChange();
+}
+
+function calcChange() {
+  const tip = parseInt(document.getElementById('tipInp').value) || 0;
+  const total = subtotal - ptsUsed + tip;
+  const change = cashRaw - total;
+  const bar = document.getElementById('changeBar');
+  const val = document.getElementById('changeVal');
+  bar.className = 'change-bar' + (change < 0 ? ' short' : '');
+  val.textContent = change >= 0 ? '¥' + change.toLocaleString() : '不足 ¥' + Math.abs(change).toLocaleString();
+  document.querySelector('#changeBar .cb-label').textContent = change >= 0 ? 'お釣り' : '不足額';
+}
+
+function useAllPts() {
+  document.getElementById('ptsInp').value = 320;
+  updateTotal();
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.mtab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  ['cash','card','paypay','linepay','split','credit'].forEach(p => {
+    document.getElementById('panel-' + p).style.display = p === tab ? 'flex' : 'none';
+  });
+  document.getElementById('panel-' + tab).style.flexDirection = 'column';
+  currentTab = tab;
+}
+
+function kpPress(d) {
+  if (kpStr.length >= 7) return;
+  kpStr += d;
+  cashRaw = parseInt(kpStr) || 0;
+  document.getElementById('recvDisplay').textContent = cashRaw.toLocaleString();
+  calcChange();
+}
+function kpDel() {
+  kpStr = kpStr.slice(0, -1) || '0';
+  cashRaw = parseInt(kpStr) || 0;
+  document.getElementById('recvDisplay').textContent = cashRaw.toLocaleString();
+  calcChange();
+}
+function setCash(val) {
+  const tip = parseInt(document.getElementById('tipInp').value) || 0;
+  const total = subtotal - ptsUsed + tip;
+  cashRaw = val === 'exact' ? total : val;
+  kpStr = String(cashRaw);
+  document.getElementById('recvDisplay').textContent = cashRaw.toLocaleString();
+  calcChange();
+}
+
+function addSplitRow() {
+  const row = document.createElement('div');
+  row.className = 'sp-row';
+  row.innerHTML = `
+    <div class="sp-method"><select class="sp-method"><option>💴 現金</option><option>💳 カード</option><option>📱 PayPay</option></select></div>
+    <div class="sp-divider"></div>
+    <div class="sp-amt-wrap"><span class="sp-yen">¥</span><input class="sp-amt" placeholder="0"></div>
+    <span class="sp-del" onclick="this.closest('.sp-row').remove()">✕</span>
+  `;
+  document.getElementById('splitRows').appendChild(row);
+}
+
+function execPayment() {
+  showToast('→ 会計完了！ (04_pos_complete)');
+}
+
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('open');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('open');
+}
+
+updateTotal();
+</script>
+</body>
+</html>
