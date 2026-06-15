@@ -68,6 +68,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 .oi-name{color:#1a1a1a;flex:1;}
 .oi-qty{color:#999;margin:0 8px;font-size:11px;}
 .oi-price{color:#1a1a1a;font-weight:500;}
+.oi-price-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:1px;}
+.oi-orig{font-size:10px;color:#bbb;text-decoration:line-through;}
+.oi-disc{font-size:12px;font-weight:500;color:#E74C3C;}
+.oi-disc-badge{font-size:9px;color:#E74C3C;background:#FDEDEC;border-radius:3px;padding:1px 4px;margin-left:4px;}
 
 /* customer card */
 .cust-card{padding:10px 14px;display:flex;align-items:center;gap:10px;}
@@ -224,23 +228,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
     </div>
   </div>
 
-<div class="tb-nav">
-      <span class="tb-nav-item on">会計</span>
-      <span class="tb-nav-item">予約</span>
-      <span class="tb-nav-item">顧客</span>
-      <span class="tb-nav-item">スタッフ</span>
-      <span class="tb-nav-item">在庫</span>
-      <span class="tb-nav-item">売上</span>
-      <span class="tb-nav-item">⚙</span>
-    </div>
-    <div class="tb-right">
-      <div class="tb-avatar">由</div>
-      <span style="font-size:12px;color:rgba(255,255,255,.55);">Yuki</span>
-      <div class="tb-sep"></div>
-      <span class="tb-time">06.12 木　10:31</span>
-    </div>
-  </div>
-
   <!-- step bar -->
   <div class="step-bar">
     <div class="step done">
@@ -275,7 +262,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
           <span class="sc-link" onclick="goBack()">← 編集</span>
         </div>
         <div class="order-items">
-          <div class="oi-row"><span class="oi-name">カット</span><span class="oi-qty">×1</span><span class="oi-price">¥4,400</span></div>
+          <div class="oi-row">
+            <span class="oi-name">カット<span class="oi-disc-badge">10%割引</span></span>
+            <span class="oi-qty">×1</span>
+            <div class="oi-price-wrap">
+              <span class="oi-orig">¥4,400</span>
+              <span class="oi-disc">¥3,960</span>
+            </div>
+          </div>
           <div class="oi-row"><span class="oi-name">ワンカラー</span><span class="oi-qty">×1</span><span class="oi-price">¥8,800</span></div>
           <div class="oi-row"><span class="oi-name">トリートメント M</span><span class="oi-qty">×1</span><span class="oi-price">¥4,400</span></div>
         </div>
@@ -303,6 +297,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
             <span class="pts-unit">pt</span>
             <button class="pts-all-btn" onclick="useAllPts()">全額使用</button>
           </div>
+        </div>
+      </div>
+
+      <!-- memo -->
+      <div class="section-card">
+        <div class="sc-header"><span class="sc-title">メモ</span></div>
+        <div style="padding:8px 14px 12px;">
+          <textarea style="width:100%;height:54px;border:.5px solid #E0E0DC;border-radius:8px;font-size:12px;font-family:inherit;padding:7px 10px;resize:none;outline:none;color:#333;line-height:1.5;" placeholder="会計メモを入力...">カラーはマニキュアで施術。次回はトリートメント強化を推奨。</textarea>
         </div>
       </div>
 
@@ -411,7 +413,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
         <div class="tot-divider"></div>
         <div class="tot-final">
           <span class="tot-final-label">お支払金額</span>
-          <span class="tot-final-val" id="finalAmt">¥17,600</span>
+          <span class="tot-final-val" id="finalAmt">¥17,160</span>
         </div>
         <div class="tot-tax" id="taxLine">消費税込み ¥1,600</div>
       </div>
@@ -445,7 +447,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 </div>
 
 <script>
-const subtotal = 17600;
+const subtotalRaw = 17600;   // 割引前
+const discountTotal = 440;   // 割引合計
+const subtotal = subtotalRaw - discountTotal; // 17160
 let ptsUsed = 0;
 let cashRaw = 20000;
 let currentMethod = 'cash';
@@ -458,7 +462,8 @@ function updateTotal() {
 
   const rows = document.getElementById('totalRows');
   rows.innerHTML = `
-    <div class="tot-row"><span class="tot-label">小計</span><span class="tot-val">¥${subtotal.toLocaleString()}</span></div>
+    <div class="tot-row"><span class="tot-label">小計</span><span class="tot-val">¥${subtotalRaw.toLocaleString()}</span></div>
+    <div class="tot-row"><span class="tot-label">割引合計</span><span class="tot-discount">－¥${discountTotal.toLocaleString()}</span></div>
     ${ptsUsed > 0 ? `<div class="tot-row"><span class="tot-label">ポイント使用</span><span class="tot-pts">－¥${ptsUsed.toLocaleString()}</span></div>` : ''}
     ${tip > 0 ? `<div class="tot-row"><span class="tot-label">チップ</span><span class="tot-val">¥${tip.toLocaleString()}</span></div>` : ''}
   `;
