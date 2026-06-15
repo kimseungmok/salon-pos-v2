@@ -1,524 +1,1030 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ja">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=1024">
-<title>02 · POS 注文 — salon-pos-v2 JA</title>
+<title>02 · POS 注文 — salon-pos-v2 v2 JA</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino Sans',sans-serif;background:#1C2833;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neue',sans-serif;background:#E8E8E4;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;}
 
-/* iPad frame */
-.ipad{width:1024px;height:768px;background:#F4F4F0;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.5);}
+.ipad{width:1024px;height:768px;background:#F4F4F0;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 24px 64px rgba(0,0,0,.35);position:relative;}
 
-/* topbar - light mode */
-.topbar{background:white;height:44px;display:flex;align-items:center;padding:0 16px;gap:10px;flex-shrink:0;border-bottom:.5px solid #E5E5E0;}
-.tb-menu{font-size:18px;color:#1C2833;cursor:pointer;padding:4px 6px;border-radius:6px;line-height:1;flex-shrink:0;user-select:none;}
-.tb-menu:hover{background:#F4F4F0;}
-.tb-logo{font-size:13px;color:#1C2833;font-weight:500;letter-spacing:.08em;}
+/* ── Topbar ── */
+.topbar{height:44px;background:white;border-bottom:.5px solid #E0E0DC;display:flex;align-items:center;padding:0 14px;gap:12px;flex-shrink:0;position:relative;z-index:10;}
+.tb-hamburger{width:32px;height:32px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;border-radius:8px;flex-shrink:0;}
+.tb-hamburger:hover{background:#F4F4F0;}
+.tb-hamburger span{display:block;width:18px;height:1.5px;background:#1C2833;border-radius:2px;}
+.tb-logo{font-size:13px;color:#1C2833;font-weight:600;letter-spacing:.06em;}
+.tb-logo em{font-style:normal;color:#2E86C1;}
 .tb-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
-.tb-sep{width:.5px;height:14px;background:#D0D0CC;}
-.tb-avatar{width:24px;height:24px;border-radius:50%;background:#8E44AD;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:500;color:white;}
-.tb-staff-name{font-size:12px;color:#333;}
-.tb-time{font-size:11px;color:#888;}
-.tb-lock{font-size:13px;color:#aaa;cursor:pointer;}
+.tb-sep{width:.5px;height:16px;background:#E0E0DC;}
+.tb-avatar{width:26px;height:26px;border-radius:50%;background:#8E44AD;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:white;flex-shrink:0;}
+.tb-staff{font-size:12px;color:#333;font-weight:500;}
+.tb-branch{font-size:11px;color:#AAA;margin-left:2px;}
+.tb-time{font-size:11px;color:#999;}
+.tb-lock{font-size:14px;color:#C0C0BC;cursor:pointer;}
 
-/* sidebar */
-.sidebar-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:100;opacity:0;pointer-events:none;transition:opacity .2s;}
+/* ── Sidebar ── */
+.sidebar-overlay{position:absolute;inset:0;background:rgba(0,0,0,.4);z-index:20;opacity:0;pointer-events:none;transition:opacity .2s;}
 .sidebar-overlay.open{opacity:1;pointer-events:all;}
-.sidebar{position:fixed;left:0;top:0;bottom:0;width:220px;background:#1C2833;z-index:101;transform:translateX(-100%);transition:transform .22s cubic-bezier(.25,.46,.45,.94);display:flex;flex-direction:column;box-shadow:4px 0 24px rgba(0,0,0,.3);}
+.sidebar{position:absolute;left:0;top:0;bottom:0;width:228px;background:#1C2833;z-index:21;transform:translateX(-100%);transition:transform .22s cubic-bezier(.25,.46,.45,.94);display:flex;flex-direction:column;box-shadow:6px 0 32px rgba(0,0,0,.4);}
 .sidebar.open{transform:translateX(0);}
-.sidebar-header{padding:20px 16px 14px;border-bottom:.5px solid rgba(255,255,255,.1);}
-.sidebar-logo{font-size:14px;color:white;font-weight:500;letter-spacing:.08em;}
-.sidebar-sub{font-size:10px;color:rgba(255,255,255,.3);margin-top:4px;}
-.sidebar-menu{flex:1;padding:8px 0;overflow-y:auto;}
-.sidebar-item{display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;transition:background .12s;user-select:none;}
-.sidebar-item:hover{background:rgba(255,255,255,.07);}
-.sidebar-item.on{background:rgba(255,255,255,.12);}
-.sidebar-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
-.sidebar-label{font-size:13px;color:rgba(255,255,255,.7);font-weight:400;}
-.sidebar-item.on .sidebar-label{color:white;font-weight:500;}
-.sidebar-footer{padding:14px 16px;border-top:.5px solid rgba(255,255,255,.1);}
-.sidebar-footer-text{font-size:10px;color:rgba(255,255,255,.22);}
+.sb-head{padding:18px 16px 14px;border-bottom:.5px solid rgba(255,255,255,.1);}
+.sb-logo{font-size:14px;color:white;font-weight:600;letter-spacing:.06em;}
+.sb-salon{font-size:10px;color:rgba(255,255,255,.32);margin-top:5px;}
+.sb-menu{flex:1;overflow-y:auto;padding:6px 0;}
+.sb-item{display:flex;align-items:center;gap:11px;padding:12px 16px;cursor:pointer;transition:background .12s;user-select:none;}
+.sb-item:hover{background:rgba(255,255,255,.07);}
+.sb-item.on{background:rgba(255,255,255,.11);}
+.sb-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.sb-label{font-size:13px;color:rgba(255,255,255,.65);}
+.sb-item.on .sb-label{color:white;font-weight:500;}
+.sb-foot{padding:12px 16px;border-top:.5px solid rgba(255,255,255,.08);}
+.sb-ver{font-size:10px;color:rgba(255,255,255,.2);}
 
-/* main layout */
+/* ── Main ── */
 .main{display:flex;flex:1;overflow:hidden;}
+.product-panel{flex:1;display:flex;flex-direction:column;overflow:hidden;border-right:.5px solid #E0E0DC;position:relative;}
 
-/* left: product panel (8/12) */
-.product-panel{flex:1;display:flex;flex-direction:column;overflow:hidden;border-right:.5px solid #E5E5E0;}
+/* ── Category bar (parent) ── */
+.cat-bar{
+  height:40px;background:white;border-bottom:.5px solid #E0E0DC;
+  display:flex;align-items:stretch;flex-shrink:0;position:relative;z-index:12;
+}
+.cat-scroll{
+  flex:1;display:flex;align-items:stretch;
+  overflow-x:auto;overflow-y:hidden;
+  scroll-behavior:smooth;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;min-width:0;
+}
+.cat-scroll::-webkit-scrollbar{display:none;}
+.cat-tab{
+  font-size:12px;color:#444;
+  padding:0 15px;cursor:pointer;white-space:nowrap;flex-shrink:0;
+  display:flex;align-items:center;gap:4px;
+  border-right:.5px solid #EBEBEA;user-select:none;transition:background .1s,color .1s;
+}
+.cat-tab:first-child{border-left:.5px solid #EBEBEA;}
+.cat-tab:hover{color:#111;background:#F6F6F4;}
+.cat-tab.on{background:#1C2833;color:white;font-weight:500;border-right-color:#1C2833;border-left-color:#1C2833;}
+.cat-tab .hc{font-size:8px;opacity:.55;}
+.cat-add{font-size:15px;color:#AAA;padding:0 13px;display:flex;align-items:center;cursor:pointer;flex-shrink:0;border-right:.5px solid #EBEBEA;}
+.cat-add:hover{color:#444;background:#F4F4F0;}
+.cat-expand-area{display:none;align-items:center;padding:0 8px;border-left:.5px solid #EBEBEA;background:white;flex-shrink:0;}
+.cat-expand-btn{width:28px;height:28px;border-radius:6px;border:.5px solid #E0E0DC;background:white;font-size:11px;color:#666;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.cat-expand-btn:hover{background:#F4F4F0;}
+.cat-expand-btn.open{background:#1C2833;color:white;border-color:#1C2833;}
+.cat-dropdown{position:absolute;top:40px;left:0;right:0;background:white;border-bottom:.5px solid #D8D8D4;padding:10px 14px;z-index:15;display:none;flex-wrap:wrap;gap:6px;align-items:center;box-shadow:0 8px 24px rgba(0,0,0,.12);}
+.cat-dropdown.open{display:flex;}
+.cat-dd-item{font-size:12px;color:#444;padding:6px 14px;border:.5px solid #E0E0DC;cursor:pointer;white-space:nowrap;transition:all .1s;display:flex;align-items:center;gap:4px;}
+.cat-dd-item:hover{border-color:#888;color:#111;}
+.cat-dd-item.on{background:#1C2833;color:white;border-color:#1C2833;font-weight:500;}
+.cat-dd-add{font-size:12px;color:#2E86C1;padding:6px 14px;border:.5px dashed #AED6F1;cursor:pointer;white-space:nowrap;}
+.cat-dd-add:hover{background:#EBF5FB;}
 
-/* sub-topbar */
-.sub-bar{height:44px;background:white;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 16px;gap:8px;flex-shrink:0;}
-.customer-chip{display:flex;align-items:center;gap:6px;background:#EBF5FB;border:.5px solid #AED6F1;border-radius:20px;padding:4px 10px 4px 6px;cursor:pointer;}
-.cust-avatar{width:22px;height:22px;border-radius:50%;background:#2E86C1;display:flex;align-items:center;justify-content:center;font-size:8px;color:white;font-weight:500;flex-shrink:0;}
-.cust-name{font-size:11px;color:#2E86C1;font-weight:500;}
-.cust-pts{font-size:10px;color:#5DADE2;margin-left:4px;}
-.staff-chip{display:flex;align-items:center;gap:5px;background:#F5EEF8;border:.5px solid #C39BD3;border-radius:20px;padding:4px 10px 4px 6px;cursor:pointer;}
-.staff-dot{width:10px;height:10px;border-radius:50%;background:#8E44AD;}
-.staff-name{font-size:11px;color:#8E44AD;font-weight:500;}
-.sub-bar-right{margin-left:auto;display:flex;gap:6px;}
-.link-btn{font-size:11px;color:#888;padding:4px 10px;border-radius:6px;border:.5px solid #E0E0DC;background:white;cursor:pointer;}
+/* ── Sub-category bar ── */
+.subcat-bar{height:0;overflow:hidden;background:#F4F4F2;border-bottom:.5px solid transparent;display:flex;align-items:stretch;flex-shrink:0;position:relative;transition:height .18s,border-color .18s;}
+.subcat-bar.open{height:36px;border-bottom-color:#E0E0DC;}
+.subcat-scroll{flex:1;display:flex;align-items:stretch;overflow-x:auto;overflow-y:hidden;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;scrollbar-width:none;min-width:0;}
+.subcat-scroll::-webkit-scrollbar{display:none;}
+.subcat-tab{font-size:11px;color:#444;padding:0 13px;cursor:pointer;white-space:nowrap;flex-shrink:0;display:flex;align-items:center;border-right:.5px solid #E8E8E4;user-select:none;transition:background .1s,color .1s;}
+.subcat-tab:first-child{border-left:.5px solid #E8E8E4;}
+.subcat-tab:hover{color:#111;background:#EEEEEA;}
+.subcat-tab.on{background:#444;color:white;font-weight:500;border-right-color:#444;border-left-color:#444;}
+.subcat-add{font-size:14px;color:#AAA;padding:0 10px;display:flex;align-items:center;cursor:pointer;flex-shrink:0;border-right:.5px solid #E8E8E4;}
+.subcat-add:hover{color:#444;background:#EAEAE6;}
+.subcat-expand-area{display:none;align-items:center;padding:0 6px;background:#F4F4F2;flex-shrink:0;}
+.subcat-expand-btn{width:24px;height:24px;border-radius:5px;border:.5px solid #DDDDD8;background:#EAEAE6;font-size:10px;color:#666;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.subcat-expand-btn.open{background:#444;color:white;border-color:#444;}
+.subcat-dropdown{position:absolute;top:36px;left:0;right:0;background:white;border-bottom:.5px solid #D8D8D4;padding:8px 12px;z-index:11;display:none;flex-wrap:wrap;gap:5px;box-shadow:0 6px 18px rgba(0,0,0,.1);}
+.subcat-dropdown.open{display:flex;}
+.subcat-dd-item{font-size:11px;color:#444;padding:5px 12px;border:.5px solid #E0E0DC;cursor:pointer;white-space:nowrap;transition:all .1s;}
+.subcat-dd-item:hover{border-color:#888;color:#111;}
+.subcat-dd-item.on{background:#444;color:white;border-color:#444;font-weight:500;}
+.subcat-dd-add{font-size:11px;color:#2E86C1;padding:5px 12px;border:.5px dashed #AED6F1;cursor:pointer;}
+.subcat-dd-add:hover{background:#EBF5FB;}
 
-/* category tabs */
-.cat-tabs{height:38px;background:white;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 16px;gap:0;flex-shrink:0;overflow-x:auto;}
-.cat-tab{font-size:12px;color:#888;padding:4px 14px;border-radius:20px;cursor:pointer;white-space:nowrap;flex-shrink:0;}
-.cat-tab.on{background:#1C2833;color:white;font-weight:500;}
-
-/* product grid */
-.product-grid{flex:1;padding:12px;overflow-y:auto;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;align-content:start;}
-.prod-card{background:white;border:.5px solid #E5E5E0;border-radius:10px;padding:10px 10px 8px;cursor:pointer;transition:all .12s;user-select:none;display:flex;flex-direction:column;gap:4px;min-height:72px;}
-.prod-card:hover{border-color:#2E86C1;box-shadow:0 2px 8px rgba(46,134,193,.15);}
+/* ── Product grid (4×5, no scroll) ── */
+.product-grid{flex:1;padding:9px 12px;overflow:hidden;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(5,1fr);gap:8px;}
+.prod-card{background:white;border:.5px solid #E5E5E0;border-radius:10px;padding:10px 10px 8px;cursor:pointer;transition:all .12s;user-select:none;display:flex;flex-direction:column;gap:3px;overflow:hidden;}
+.prod-card:hover{border-color:#2E86C1;box-shadow:0 2px 10px rgba(46,134,193,.13);}
 .prod-card:active{transform:scale(.97);}
-.prod-card.highlight{border-color:#2E86C1;background:#F8FCFF;}
-.prod-name{font-size:12px;font-weight:500;color:#1a1a1a;line-height:1.3;}
-.prod-price{font-size:13px;font-weight:500;color:#2E86C1;margin-top:auto;}
-.prod-time{font-size:10px;color:#bbb;}
-.prod-badge{font-size:9px;font-weight:500;color:white;background:#E74C3C;border-radius:3px;padding:1px 5px;align-self:flex-start;}
-.prod-empty{background:#F9F9F7;border:1px dashed #E0E0DC;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:20px;color:#D0D0CC;min-height:72px;}
-.prod-empty:hover{border-color:#999;color:#999;}
+.prod-card.in-cart{border-color:#2E86C1;background:#F0F8FF;}
+.prod-badge{font-size:9px;font-weight:600;color:white;background:#E74C3C;border-radius:3px;padding:1px 5px;align-self:flex-start;flex-shrink:0;}
+.prod-name{font-size:12px;font-weight:500;color:#1A1A1A;line-height:1.35;flex:1;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+.prod-price{font-size:13px;font-weight:600;color:#2E86C1;flex-shrink:0;}
+.prod-time{font-size:10px;color:#C0C0BC;flex-shrink:0;}
+.prod-empty{background:#F9F9F7;border:1px dashed #DDDDD8;border-radius:10px;display:flex;align-items:center;justify-content:center;}
 
-/* right: cart panel (4/12) */
-.cart-panel{width:320px;background:white;display:flex;flex-direction:column;flex-shrink:0;}
+/* ── Edit mode grid ── */
+.product-grid.edit-mode{background:#F0EEE8;padding:8px;gap:6px;}
 
-/* cart header */
-.cart-header{height:44px;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 14px;flex-shrink:0;}
-.cart-title{font-size:13px;font-weight:500;color:#1a1a1a;flex:1;}
-.cart-count{font-size:11px;color:#2E86C1;font-weight:500;margin-right:8px;}
-.cart-clear{font-size:11px;color:#E74C3C;cursor:pointer;padding:3px 8px;border-radius:5px;}
-.cart-clear:hover{background:#FDEDEC;}
+/* edit card redesign — bigger, clearer */
+.edit-card{
+  background:white;border:1.5px solid #D0D0CC;border-radius:10px;
+  padding:7px 7px 6px;display:flex;flex-direction:column;gap:3px;
+  cursor:grab;user-select:none;overflow:hidden;
+}
+.edit-card.hidden-item{background:#F6F6F4;border-style:dashed;opacity:.5;}
+.edit-drag{font-size:9px;color:#D0D0CC;text-align:center;letter-spacing:4px;flex-shrink:0;}
+.edit-name{font-size:11px;font-weight:500;color:#333;line-height:1.3;flex:1;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+.edit-price{font-size:11px;color:#2E86C1;font-weight:600;flex-shrink:0;}
 
-/* cart items */
-.cart-items{flex:1;overflow-y:auto;padding:8px;}
-.cart-item{padding:9px 10px;border-radius:8px;border:.5px solid #E5E5E0;margin-bottom:6px;background:white;}
-.cart-item:hover{border-color:#D0D0CC;}
-.ci-top{display:flex;align-items:center;gap:8px;}
-.ci-name{flex:1;font-size:12px;font-weight:500;color:#1a1a1a;}
-.ci-price{font-size:13px;font-weight:500;color:#1a1a1a;}
-.ci-del{font-size:14px;color:#ccc;cursor:pointer;line-height:1;padding:2px;}
-.ci-del:hover{color:#E74C3C;}
-.ci-bottom{display:flex;align-items:center;gap:6px;margin-top:6px;}
-.qty-btn{width:24px;height:24px;border-radius:5px;border:.5px solid #E0E0DC;background:#F4F4F0;font-size:14px;color:#555;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.qty-btn:hover{background:#E8E8E4;}
-.qty-val{font-size:12px;font-weight:500;width:28px;text-align:center;color:#1a1a1a;}
-.ci-note{flex:1;font-size:10px;color:#999;border:none;outline:none;background:transparent;font-family:inherit;}
-.ci-staff{font-size:10px;color:#8E44AD;background:#F5EEF8;border-radius:4px;padding:2px 6px;}
+/* two big buttons at bottom of edit card */
+.edit-btns{display:flex;gap:4px;flex-shrink:0;margin-top:3px;}
+.edit-btn{
+  flex:1;padding:5px 3px;border-radius:6px;font-size:10px;font-weight:600;
+  text-align:center;cursor:pointer;border:1.5px solid;line-height:1.2;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.edit-btn-vis{background:#EBF5FB;color:#2E86C1;border-color:#AED6F1;}
+.edit-btn-vis:hover{background:#D6EAF8;}
+.edit-btn-vis.is-hidden{background:#F4F4F0;color:#AAA;border-color:#D8D8D4;}
+.edit-btn-vis.is-hidden:hover{background:#EAEAE6;}
+.edit-btn-del{background:#FEF0F0;color:#C0392B;border-color:#F5B7B1;}
+.edit-btn-del:hover{background:#FDEDEC;}
 
-/* cart discount row */
-.discount-row{padding:8px 10px;border-top:.5px solid #F0F0EC;}
-.discount-label{font-size:11px;color:#888;margin-bottom:6px;}
-.discount-inputs{display:flex;gap:6px;}
-.disc-inp{flex:1;padding:6px 8px;border:.5px solid #E0E0DC;border-radius:6px;font-size:12px;font-family:inherit;outline:none;text-align:right;}
-.disc-unit{font-size:11px;color:#888;padding:6px 4px;align-self:center;}
-.coupon-row{display:flex;gap:6px;margin-top:6px;}
-.coupon-inp{flex:1;padding:6px 8px;border:.5px solid #E0E0DC;border-radius:6px;font-size:12px;font-family:inherit;outline:none;}
-.coupon-btn{padding:6px 10px;border-radius:6px;background:#F4F4F0;border:.5px solid #D0D0CC;font-size:11px;color:#555;cursor:pointer;font-family:inherit;}
+.edit-empty{background:#F9F9F7;border:1.5px dashed #D8D8D4;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;transition:all .12s;}
+.edit-empty:hover{border-color:#888;background:#F2F2EE;}
+.edit-empty-plus{font-size:20px;color:#CCC;}
+.edit-empty-lbl{font-size:9px;color:#CCC;font-weight:500;}
+.edit-empty:hover .edit-empty-plus,.edit-empty:hover .edit-empty-lbl{color:#888;}
 
-/* cart summary */
-.cart-summary{padding:10px 14px;border-top:.5px solid #E5E5E0;flex-shrink:0;}
+/* ── Grid bar ── */
+.grid-bar{height:38px;background:white;border-top:.5px solid #E0E0DC;display:flex;align-items:center;padding:0 10px;gap:7px;flex-shrink:0;}
+.grid-bar-btn{font-size:11px;color:#555;padding:5px 11px;border-radius:7px;border:.5px solid #D8D8D4;background:#F4F4F0;cursor:pointer;white-space:nowrap;transition:all .12s;}
+.grid-bar-btn:hover{background:#EAEAE6;}
+.grid-bar-btn.active{background:#1C2833;color:white;border-color:#1C2833;}
+.grid-bar-btn.danger{color:#C0392B;border-color:#F5B7B1;background:#FEF0F0;}
+.grid-bar-btn.danger:hover{background:#FDEDEC;}
+.grid-bar-sep{flex:1;}
+.grid-page{display:flex;align-items:center;gap:6px;}
+.grid-page-btn{width:26px;height:26px;border-radius:6px;border:.5px solid #D8D8D4;background:#F4F4F0;font-size:12px;color:#555;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.grid-page-btn:hover{background:#EAEAE6;}
+.grid-page-btn:disabled{color:#CCC;cursor:default;background:#F4F4F0;}
+.grid-page-num{font-size:11px;color:#888;min-width:36px;text-align:center;}
+
+/* ── Cart panel ── */
+.cart-panel{width:318px;background:white;display:flex;flex-direction:column;flex-shrink:0;}
+.cart-items{flex:1;overflow-y:auto;}
+.cart-empty{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:#CCC;}
+.cart-empty-icon{font-size:32px;}
+.cart-empty-text{font-size:12px;}
+.ci{padding:9px 13px;border-bottom:.5px solid #F0F0EC;}
+.ci:last-child{border-bottom:none;}
+.ci-top{display:flex;align-items:flex-start;gap:7px;}
+.ci-name{flex:1;font-size:12px;font-weight:500;color:#1A1A1A;line-height:1.35;}
+.ci-price-wrap{text-align:right;flex-shrink:0;}
+.ci-price{font-size:13px;font-weight:600;color:#1A1A1A;white-space:nowrap;display:block;}
+.ci-price-orig{font-size:10px;color:#CCC;text-decoration:line-through;display:none;}
+.ci-price.discounted{color:#E74C3C;}
+.ci-del{width:28px;height:28px;border-radius:6px;border:.5px solid #E8E8E4;background:#F9F9F7;font-size:12px;color:#CCC;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ci-del:hover{background:#FDEDEC;border-color:#FACACA;color:#E74C3C;}
+.ci-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:7px;}
+.ci-qty-group{display:flex;align-items:center;gap:5px;}
+.qty-btn{width:28px;height:28px;border-radius:6px;border:.5px solid #D8D8D4;background:#F4F4F0;font-size:15px;color:#444;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1;}
+.qty-btn:hover{background:#E4E4E0;}
+.qty-val{font-size:13px;font-weight:500;width:26px;text-align:center;color:#1A1A1A;}
+
+/* per-item discount button — same height as qty buttons */
+.ci-disc-btn{
+  height:28px;min-width:28px;padding:0 7px;
+  border-radius:6px;font-size:10px;font-weight:600;cursor:pointer;
+  border:.5px solid #D8D8D4;background:#F4F4F0;color:#555;
+  white-space:nowrap;transition:all .12s;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+}
+.ci-disc-btn:hover{background:#EEE8F8;border-color:#8E44AD;color:#8E44AD;}
+.ci-disc-btn.on{background:#F5EEF8;border-color:#8E44AD;color:#8E44AD;}
+
+/* ── Confirm modal (unsaved edit) ── */
+.confirm-overlay{
+  position:absolute;inset:0;background:rgba(0,0,0,.45);
+  z-index:60;display:none;align-items:center;justify-content:center;
+}
+.confirm-overlay.open{display:flex;}
+.confirm-modal{
+  background:white;border-radius:14px;width:340px;
+  box-shadow:0 20px 60px rgba(0,0,0,.3);padding:24px 22px 18px;
+  display:flex;flex-direction:column;gap:10px;
+}
+.confirm-icon{font-size:28px;text-align:center;}
+.confirm-title{font-size:15px;font-weight:700;color:#1A1A1A;text-align:center;}
+.confirm-msg{font-size:12px;color:#888;text-align:center;line-height:1.6;}
+.confirm-btns{display:flex;gap:8px;margin-top:6px;}
+.confirm-btn{flex:1;padding:11px;border-radius:9px;font-size:12px;font-weight:600;cursor:pointer;border:none;font-family:inherit;transition:all .12s;}
+.confirm-btn-discard{background:#FEF0F0;color:#C0392B;}
+.confirm-btn-discard:hover{background:#FDEDEC;}
+.confirm-btn-keep{background:#1C2833;color:white;}
+.confirm-btn-keep:hover{background:#2C3E50;}
+
+.cart-summary{padding:10px 14px;border-top:.5px solid #E0E0DC;flex-shrink:0;}
 .sum-row{display:flex;justify-content:space-between;align-items:center;padding:3px 0;font-size:12px;}
-.sum-label{color:#888;}
-.sum-val{color:#1a1a1a;font-weight:500;}
-.sum-discount{color:#E74C3C;}
-.sum-divider{height:.5px;background:#E5E5E0;margin:6px 0;}
-.sum-total-row{display:flex;justify-content:space-between;align-items:baseline;padding:4px 0;}
-.sum-total-label{font-size:12px;color:#555;font-weight:500;}
-.sum-total-val{font-size:22px;font-weight:700;color:#1a1a1a;}
-.sum-tax{font-size:10px;color:#999;text-align:right;}
-
-/* pay button */
-.pay-btn{margin:10px 14px 14px;padding:14px;border-radius:10px;background:#2E86C1;color:white;font-size:15px;font-weight:500;text-align:center;cursor:pointer;border:none;font-family:inherit;width:calc(100% - 28px);}
+.sum-lbl{color:#999;}
+.sum-val{color:#1A1A1A;font-weight:500;}
+.sum-disc-val{color:#E74C3C;font-weight:600;}
+.sum-divider{height:.5px;background:#E5E5E0;margin:5px 0;}
+.sum-total{display:flex;justify-content:space-between;align-items:baseline;padding:3px 0;}
+.sum-total-lbl{font-size:12px;color:#555;font-weight:600;}
+.sum-total-val{font-size:22px;font-weight:700;color:#1A1A1A;}
+.sum-tax{font-size:10px;color:#BBB;text-align:right;margin-top:1px;}
+.pay-btn{margin:8px 12px 12px;padding:14px;border-radius:10px;background:#2E86C1;color:white;font-size:15px;font-weight:600;text-align:center;cursor:pointer;border:none;font-family:inherit;width:calc(100% - 24px);transition:background .12s;}
 .pay-btn:hover{background:#2471A3;}
 .pay-btn:active{transform:scale(.98);}
-.pay-btn-disabled{background:#D0D0CC;cursor:not-allowed;}
+.pay-btn.disabled{background:#D0D0CC;cursor:not-allowed;}
+.pay-btn.disabled:hover{background:#D0D0CC;}
 
-/* memo row */
-.memo-row{padding:0 14px 8px;}
-.memo-inp{width:100%;padding:7px 10px;border:.5px solid #E0E0DC;border-radius:8px;font-size:12px;font-family:inherit;outline:none;resize:none;color:#555;}
-.memo-inp::placeholder{color:#ccc;}
+/* ── Discount modal ── */
+.disc-overlay{
+  position:absolute;inset:0;background:rgba(0,0,0,.45);
+  z-index:50;display:none;align-items:center;justify-content:center;
+}
+.disc-overlay.open{display:flex;}
+.disc-modal{
+  background:white;border-radius:14px;width:380px;
+  box-shadow:0 20px 60px rgba(0,0,0,.3);overflow:hidden;
+}
+.disc-head{padding:16px 18px 12px;border-bottom:.5px solid #F0F0EC;}
+.disc-head-label{font-size:10px;color:#AAA;font-weight:500;letter-spacing:.06em;margin-bottom:4px;}
+.disc-head-name{font-size:15px;font-weight:600;color:#1A1A1A;}
+.disc-head-price{font-size:13px;color:#888;margin-top:2px;}
 
-/* empty cart */
-.cart-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:#ccc;}
-.cart-empty-icon{font-size:36px;}
-.cart-empty-text{font-size:12px;}
+/* type tabs */
+.disc-type-tabs{display:flex;border-bottom:.5px solid #F0F0EC;}
+.disc-type-tab{flex:1;padding:10px;font-size:12px;font-weight:500;color:#888;text-align:center;cursor:pointer;border-bottom:2px solid transparent;transition:all .12s;}
+.disc-type-tab.on{color:#8E44AD;border-bottom-color:#8E44AD;}
+
+/* presets */
+.disc-presets{padding:14px 18px 8px;display:flex;gap:7px;flex-wrap:wrap;}
+.disc-preset{
+  padding:7px 13px;border-radius:8px;border:1.5px solid #E0E0DC;
+  font-size:12px;font-weight:600;color:#555;cursor:pointer;transition:all .12s;
+}
+.disc-preset:hover{border-color:#8E44AD;color:#8E44AD;background:#F9F5FC;}
+.disc-preset.on{background:#8E44AD;color:white;border-color:#8E44AD;}
+
+/* custom input */
+.disc-custom{padding:4px 18px 14px;display:flex;align-items:center;gap:8px;}
+.disc-custom-label{font-size:11px;color:#AAA;white-space:nowrap;}
+.disc-custom-inp{
+  flex:1;padding:7px 10px;border:.5px solid #D8D8D4;border-radius:8px;
+  font-size:13px;font-weight:600;color:#1A1A1A;
+  outline:none;font-family:inherit;text-align:right;
+}
+.disc-custom-inp:focus{border-color:#8E44AD;}
+.disc-custom-unit{font-size:13px;font-weight:600;color:#555;width:22px;}
+
+/* preview */
+.disc-preview{
+  margin:0 18px 14px;padding:10px 14px;
+  background:#F9F5FC;border-radius:8px;
+  border:.5px solid #E8D5F5;
+}
+.disc-preview-row{display:flex;justify-content:space-between;align-items:center;padding:3px 0;font-size:12px;}
+.disc-preview-lbl{color:#AAA;}
+.disc-preview-val{font-weight:500;color:#1A1A1A;}
+.disc-preview-val.red{color:#E74C3C;font-weight:700;}
+.disc-preview-val.purple{color:#8E44AD;font-size:13px;font-weight:700;}
+
+/* actions */
+.disc-actions{display:flex;gap:8px;padding:0 18px 16px;}
+.disc-act{flex:1;padding:10px;border-radius:9px;font-size:12px;font-weight:600;cursor:pointer;border:none;font-family:inherit;transition:all .12s;}
+.disc-act-clear{background:#FEF0F0;color:#C0392B;}
+.disc-act-clear:hover{background:#FDEDEC;}
+.disc-act-cancel{background:#F4F4F0;color:#666;}
+.disc-act-cancel:hover{background:#EAEAE6;}
+.disc-act-apply{background:#8E44AD;color:white;}
+.disc-act-apply:hover{background:#7D3C98;}
+
+/* ── Toast (fixed above iPad) ── */
+.toast{
+  position:fixed;top:18px;left:50%;
+  transform:translateX(-50%) translateY(-16px);
+  background:white;color:#1A1A1A;
+  font-size:12px;font-weight:500;
+  padding:10px 20px 10px 16px;border-radius:12px;
+  z-index:9999;white-space:nowrap;
+  opacity:0;pointer-events:none;
+  transition:transform .22s,opacity .22s;
+  box-shadow:0 6px 28px rgba(0,0,0,.18);
+  border:.5px solid rgba(0,0,0,.08);
+  display:flex;align-items:center;gap:8px;
+}
+.toast::before{content:'';width:3px;height:100%;background:#2E86C1;border-radius:2px;align-self:stretch;flex-shrink:0;}
+.toast.purple::before{background:#8E44AD;}
+.toast.green::before{background:#1E8449;}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
 </style>
 </head>
 <body>
-
-<!-- sidebar overlay -->
-<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
-<!-- sidebar -->
-<div class="sidebar" id="sidebar">
-  <div class="sidebar-header">
-    <div class="sidebar-logo">✂ salon pos</div>
-    <div class="sidebar-sub">Hair Salon Yuki · 渋谷区</div>
-  </div>
-  <div class="sidebar-menu">
-    <div class="sidebar-item on" onclick="closeSidebar()">
-      <div class="sidebar-dot" style="background:#2E86C1"></div>
-      <span class="sidebar-label">会計</span>
-    </div>
-    <div class="sidebar-item" onclick="closeSidebar()">
-      <div class="sidebar-dot" style="background:#8E44AD"></div>
-      <span class="sidebar-label">予約</span>
-    </div>
-    <div class="sidebar-item" onclick="closeSidebar()">
-      <div class="sidebar-dot" style="background:#1E8449"></div>
-      <span class="sidebar-label">顧客</span>
-    </div>
-    <div class="sidebar-item" onclick="closeSidebar()">
-      <div class="sidebar-dot" style="background:#C0392B"></div>
-      <span class="sidebar-label">スタッフ</span>
-    </div>
-    <div class="sidebar-item" onclick="closeSidebar()">
-      <div class="sidebar-dot" style="background:#7D3C98"></div>
-      <span class="sidebar-label">在庫</span>
-    </div>
-    <div class="sidebar-item" onclick="closeSidebar()">
-      <div class="sidebar-dot" style="background:#D4AC0D"></div>
-      <span class="sidebar-label">売上</span>
-    </div>
-    <div class="sidebar-item" onclick="closeSidebar()">
-      <div class="sidebar-dot" style="background:#D35400"></div>
-      <span class="sidebar-label">マーケティング</span>
-    </div>
-    <div class="sidebar-item" onclick="closeSidebar()">
-      <div class="sidebar-dot" style="background:#117A65"></div>
-      <span class="sidebar-label">店舗設定</span>
-    </div>
-    <div class="sidebar-item" onclick="closeSidebar()">
-      <div class="sidebar-dot" style="background:#1A5276"></div>
-      <span class="sidebar-label">システム設定</span>
-    </div>
-  </div>
-  <div class="sidebar-footer">
-    <div class="sidebar-footer-text">v2.0.0 · iPad Air 2</div>
-  </div>
-</div>
-
 <div class="ipad">
 
-  <!-- topbar -->
-  <div class="topbar">
-    <span class="tb-menu" onclick="toggleSidebar()">☰</span>
-    <span class="tb-logo">✂ salon pos</span>
-    <div class="tb-right">
-      <div class="tb-avatar">由</div>
-      <span class="tb-staff-name">Yuki</span>
-      <div class="tb-sep"></div>
-      <span class="tb-time">06.12 木　10:24</span>
-      <span class="tb-lock">🔒</span>
+  <div class="sidebar-overlay" id="sbOverlay" onclick="closeSidebar()"></div>
+  <div class="sidebar" id="sidebar">
+    <div class="sb-head"><div class="sb-logo">✂ salon pos</div><div class="sb-salon">Hair Salon Yuki · 渋谷区道玄坂</div></div>
+    <div class="sb-menu">
+      <div class="sb-item on" onclick="closeSidebar()"><div class="sb-dot" style="background:#2E86C1"></div><span class="sb-label">会計</span></div>
+      <div class="sb-item"   onclick="closeSidebar()"><div class="sb-dot" style="background:#8E44AD"></div><span class="sb-label">予約</span></div>
+      <div class="sb-item"   onclick="closeSidebar()"><div class="sb-dot" style="background:#1E8449"></div><span class="sb-label">顧客</span></div>
+      <div class="sb-item"   onclick="closeSidebar()"><div class="sb-dot" style="background:#C0392B"></div><span class="sb-label">スタッフ</span></div>
+      <div class="sb-item"   onclick="closeSidebar()"><div class="sb-dot" style="background:#7D3C98"></div><span class="sb-label">在庫</span></div>
+      <div class="sb-item"   onclick="closeSidebar()"><div class="sb-dot" style="background:#D4AC0D"></div><span class="sb-label">売上</span></div>
+      <div class="sb-item"   onclick="closeSidebar()"><div class="sb-dot" style="background:#D35400"></div><span class="sb-label">マーケティング</span></div>
+      <div class="sb-item"   onclick="closeSidebar()"><div class="sb-dot" style="background:#117A65"></div><span class="sb-label">店舗設定</span></div>
+      <div class="sb-item"   onclick="closeSidebar()"><div class="sb-dot" style="background:#1A5276"></div><span class="sb-label">システム設定</span></div>
     </div>
+    <div class="sb-foot"><div class="sb-ver">v2.0.0 · iPad Air 2</div></div>
   </div>
 
-<div class="tb-nav">
-      <span class="tb-nav-item on">会計</span>
-      <span class="tb-nav-item">予約</span>
-      <span class="tb-nav-item">顧客</span>
-      <span class="tb-nav-item">スタッフ</span>
-      <span class="tb-nav-item">在庫</span>
-      <span class="tb-nav-item">売上</span>
-      <span class="tb-nav-item">⚙</span>
-    </div>
+  <div class="topbar">
+    <div class="tb-hamburger" onclick="toggleSidebar()"><span></span><span></span><span></span></div>
+    <span class="tb-logo">✂ salon<em>pos</em></span>
     <div class="tb-right">
       <div class="tb-avatar">由</div>
-      <span style="font-size:12px;color:rgba(255,255,255,.55);">Yuki</span>
+      <span class="tb-staff">Yuki</span>
+      <span class="tb-branch">渋谷店</span>
       <div class="tb-sep"></div>
-      <span class="tb-time">06.12 木　10:24</span>
-      <span class="tb-bell">🔔</span>
+      <span class="tb-time">06.16 火　10:24</span>
       <span class="tb-lock">🔒</span>
     </div>
   </div>
 
   <div class="main">
-
-    <!-- product panel -->
     <div class="product-panel">
 
-      <!-- sub bar: customer + staff -->
-      <div class="sub-bar">
-        <div class="customer-chip" onclick="toggleCustomer()">
-          <div class="cust-avatar" id="custAvatar">田</div>
-          <span class="cust-name" id="custName">田中 美咲</span>
-          <span class="cust-pts" id="custPts">320pt</span>
-        </div>
-        <div class="staff-chip">
-          <div class="staff-dot"></div>
-          <span class="staff-name">Yuki</span>
-        </div>
-        <div class="sub-bar-right">
-          <span class="link-btn">📅 予約連携</span>
-          <span class="link-btn">👤 顧客詳細</span>
+      <!-- Parent category bar -->
+      <div class="cat-bar" id="catBar">
+        <div class="cat-scroll" id="catScroll"></div>
+        <div class="cat-expand-area" id="catExpandArea">
+          <div class="cat-expand-btn" id="catExpandBtn" onclick="toggleCatDropdown()">▾</div>
         </div>
       </div>
+      <div class="cat-dropdown" id="catDropdown"></div>
 
-      <!-- category tabs -->
-      <div class="cat-tabs">
-        <span class="cat-tab on" onclick="selectCat(this,'施術')">施術</span>
-        <span class="cat-tab" onclick="selectCat(this,'カラー')">カラー</span>
-        <span class="cat-tab" onclick="selectCat(this,'トリートメント')">トリートメント</span>
-        <span class="cat-tab" onclick="selectCat(this,'パーマ')">パーマ</span>
-        <span class="cat-tab" onclick="selectCat(this,'ヘッドスパ')">ヘッドスパ</span>
-        <span class="cat-tab" onclick="selectCat(this,'商品')">商品</span>
-        <span class="cat-tab" onclick="selectCat(this,'その他')">その他</span>
-        <span class="cat-tab" style="color:#2E86C1;" onclick="selectCat(this,'+')">＋ カテゴリ</span>
+      <!-- Sub-category bar -->
+      <div class="subcat-bar" id="subcatBar">
+        <div class="subcat-scroll" id="subcatScroll"></div>
+        <div class="subcat-expand-area" id="subcatExpandArea">
+          <div class="subcat-expand-btn" id="subcatExpandBtn" onclick="toggleSubcatDropdown()">▾</div>
+        </div>
       </div>
+      <div class="subcat-dropdown" id="subcatDropdown"></div>
 
-      <!-- product grid -->
+      <!-- Product grid -->
       <div class="product-grid" id="productGrid"></div>
+
+      <!-- Grid bar -->
+      <div class="grid-bar" id="gridBar">
+        <button class="grid-bar-btn" id="editModeBtn" onclick="toggleEditMode()">✏ グリッド編集</button>
+        <!-- edit mode: save button -->
+        <button class="grid-bar-btn" id="btnSave" style="display:none" onclick="saveGrid()">💾 保存する</button>
+        <!-- normal mode only -->
+        <button class="grid-bar-btn" id="btnAddProduct" onclick="addProduct()">＋ 商品追加</button>
+        <div class="grid-bar-sep"></div>
+        <!-- edit mode: page management (right of separator) -->
+        <button class="grid-bar-btn" id="btnAddPage" style="display:none" onclick="addPage()">＋ ページ追加</button>
+        <button class="grid-bar-btn danger" id="btnDelPage" style="display:none" onclick="deletePage()">ページ削除</button>
+        <div class="grid-page">
+          <button class="grid-page-btn" id="pageBack" onclick="changePage(-1)">‹</button>
+          <span class="grid-page-num" id="pageNum">1 / 1</span>
+          <button class="grid-page-btn" id="pageNext" onclick="changePage(1)">›</button>
+        </div>
+      </div>
     </div>
 
-    <!-- cart panel -->
     <div class="cart-panel">
-      <div class="cart-header">
-        <span class="cart-title">注文内容</span>
-        <span class="cart-count" id="cartCount">3件</span>
-        <span class="cart-clear" onclick="clearCart()">全て削除</span>
-      </div>
-
       <div id="cartItems" class="cart-items"></div>
-
-      <!-- discount -->
-      <div class="discount-row">
-        <div class="discount-label">割引</div>
-        <div class="discount-inputs">
-          <input class="disc-inp" id="discPct" placeholder="0" style="width:70px;" oninput="calcTotal()">
-          <span class="disc-unit">%</span>
-          <input class="disc-inp" id="discAmt" placeholder="0" oninput="calcTotal()">
-          <span class="disc-unit">¥</span>
-        </div>
-        <div class="coupon-row">
-          <input class="coupon-inp" placeholder="クーポンコード">
-          <button class="coupon-btn">適用</button>
-        </div>
-      </div>
-
-      <!-- memo -->
-      <div class="memo-row">
-        <textarea class="memo-inp" rows="2" placeholder="メモ（例：前髪はあまり切らないで）"></textarea>
-      </div>
-
-      <!-- summary -->
       <div class="cart-summary" id="cartSummary"></div>
-
-      <!-- pay button -->
-      <button class="pay-btn" id="payBtn" onclick="goPayment()">会計する</button>
+      <button class="pay-btn disabled" id="payBtn" onclick="goPayment()">会計する</button>
     </div>
+  </div>
 
+  <!-- Confirm modal (unsaved grid changes) -->
+  <div class="confirm-overlay" id="confirmOverlay">
+    <div class="confirm-modal">
+      <div class="confirm-icon">⚠️</div>
+      <div class="confirm-title">変更が保存されていません</div>
+      <div class="confirm-msg">グリッドの編集内容が保存されていません。<br>保存せずに終了しますか？</div>
+      <div class="confirm-btns">
+        <button class="confirm-btn confirm-btn-discard" onclick="confirmDiscardEdit()">保存せずに終了</button>
+        <button class="confirm-btn confirm-btn-keep" onclick="closeConfirmModal()">編集を続ける</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Discount modal (inside .ipad for proper centering) -->
+  <div class="disc-overlay" id="discOverlay" onclick="handleOverlayClick(event)">
+    <div class="disc-modal" id="discModal">
+      <div class="disc-head">
+        <div class="disc-head-label">商品割引</div>
+        <div class="disc-head-name" id="discItemName">カット</div>
+        <div class="disc-head-price" id="discHeadPrice">定価 ¥4,400</div>
+      </div>
+      <div class="disc-type-tabs">
+        <div class="disc-type-tab on" id="tabPct" onclick="setDiscType('percent')">% 割引</div>
+        <div class="disc-type-tab" id="tabFix" onclick="setDiscType('fixed')">固定額割引 (円)</div>
+      </div>
+      <div class="disc-presets" id="discPresets"></div>
+      <div class="disc-custom">
+        <span class="disc-custom-label" id="discCustomLabel">カスタム入力</span>
+        <input class="disc-custom-inp" id="discInput" type="number" min="0" placeholder="0" oninput="onDiscInput()">
+        <span class="disc-custom-unit" id="discUnit">%</span>
+      </div>
+      <div class="disc-preview" id="discPreview"></div>
+      <div class="disc-actions">
+        <button class="disc-act disc-act-clear" onclick="clearDiscount()">割引解除</button>
+        <button class="disc-act disc-act-cancel" onclick="closeDiscModal()">キャンセル</button>
+        <button class="disc-act disc-act-apply" onclick="applyDiscount()">適用する</button>
+      </div>
+    </div>
   </div>
 </div>
 
-<script>
-// ── data ──────────────────────────────────────────────────────────────────────
-const PRODUCTS = {
-  '施術': [
-    {name:'カット', price:4400, time:'40分'},
-    {name:'シャンプー・ブロー', price:1650, time:'20分'},
-    {name:'カット + シャンプー', price:5500, time:'60分'},
-    {name:'前髪カット', price:1100, time:'15分'},
-    {name:'ヘアセット', price:3300, time:'30分'},
-    {name:'縮毛矯正', price:16500, time:'180分'},
-    {name:'ストレートパーマ', price:13200, time:'150分'},
-    null, // empty slot
-  ],
-  'カラー': [
-    {name:'ワンカラー', price:8800, time:'90分', badge:'人気'},
-    {name:'ダブルカラー', price:16500, time:'150分'},
-    {name:'グラデーション', price:13200, time:'120分'},
-    {name:'ハイライト', price:11000, time:'120分'},
-    {name:'ローライト', price:9900, time:'100分'},
-    {name:'リタッチ', price:7700, time:'80分'},
-    null,null,
-  ],
-  'トリートメント': [
-    {name:'トリートメント S', price:2750, time:'20分'},
-    {name:'トリートメント M', price:4400, time:'30分'},
-    {name:'トリートメント L', price:6600, time:'40分'},
-    {name:'酸熱トリートメント', price:11000, time:'90分'},
-    null,null,null,null,
-  ],
-  'パーマ': [
-    {name:'デジタルパーマ', price:13200, time:'150分'},
-    {name:'コールドパーマ', price:8800, time:'120分'},
-    {name:'エアウェーブ', price:11000, time:'120分'},
-    null,null,null,null,null,
-  ],
-  'ヘッドスパ': [
-    {name:'ヘッドスパ 30分', price:4400, time:'30分'},
-    {name:'ヘッドスパ 60分', price:7700, time:'60分'},
-    {name:'炭酸スパ', price:5500, time:'40分'},
-    null,null,null,null,null,
-  ],
-  '商品': [
-    {name:'シャンプー', price:2750, time:''},
-    {name:'コンディショナー', price:2750, time:''},
-    {name:'トリートメント', price:3850, time:''},
-    {name:'スタイリング剤', price:2200, time:''},
-    null,null,null,null,
-  ],
-  'その他': [
-    {name:'その他', price:0, time:''},
-    null,null,null,null,null,null,null,
-  ],
-};
+<div class="toast" id="toast"></div>
 
+<script>
+// ── Category data ─────────────────────────────────────────────────────────────
+function makeChildren(parentId, extras=[]) {
+  return [{id:parentId+'_all', name:'すべて'}, ...extras];
+}
+const CATS = [
+  {id:'cut',      name:'施術',         children:makeChildren('cut')},
+  {id:'color',    name:'カラー',        children:makeChildren('color',   [{id:'color_std',name:'一般染色'},{id:'color_pre',name:'プレミアム染色'}])},
+  {id:'tr',       name:'トリートメント', children:makeChildren('tr')},
+  {id:'perm',     name:'パーマ',        children:makeChildren('perm',    [{id:'perm_digi',name:'デジタルパーマ'},{id:'perm_cold',name:'コールドパーマ'}])},
+  {id:'spa',      name:'ヘッドスパ',    children:makeChildren('spa')},
+  {id:'shohin',   name:'商品',          children:makeChildren('shohin')},
+  {id:'set',      name:'セット',        children:makeChildren('set')},
+  {id:'organic',  name:'オーガニック',   children:makeChildren('organic')},
+  {id:'bleach',   name:'ブリーチ',      children:makeChildren('bleach')},
+  {id:'straight', name:'縮毛矯正',      children:makeChildren('straight')},
+  {id:'other',    name:'その他',        children:makeChildren('other')},
+];
+
+// ── Slots ────────────────────────────────────────────────────────────────────
+const PAGE = 20;
+const SLOTS = {};
+function pad(id, items) {
+  const a=[...items];
+  while(a.length<PAGE) a.push(null);
+  SLOTS[id]=a;
+}
+
+pad('cut',[
+  {name:'カット',            price:4400,  time:'40分',  badge:'',   visible:true},
+  {name:'シャンプー・ブロー', price:1650,  time:'20分',  badge:'',   visible:true},
+  {name:'カット＋シャンプー', price:5500,  time:'60分',  badge:'',   visible:true},
+  {name:'前髪カット',         price:1100,  time:'15分',  badge:'',   visible:true},
+  {name:'ヘアセット',         price:3300,  time:'30分',  badge:'',   visible:true},
+  {name:'縮毛矯正',           price:16500, time:'180分', badge:'',   visible:true},
+  {name:'ストレートパーマ',   price:13200, time:'150分', badge:'',   visible:true},
+]);
+pad('cut_all', SLOTS['cut']);
+pad('color',[
+  {name:'ワンカラー',     price:8800,  time:'90分',  badge:'人気', visible:true},
+  {name:'ダブルカラー',   price:16500, time:'150分', badge:'',     visible:true},
+  {name:'グラデーション', price:13200, time:'120分', badge:'',     visible:true},
+  {name:'ハイライト',     price:11000, time:'120分', badge:'',     visible:true},
+  {name:'ローライト',     price:9900,  time:'100分', badge:'',     visible:true},
+  {name:'リタッチ',       price:7700,  time:'80分',  badge:'',     visible:true},
+]);
+pad('color_all', SLOTS['color']);
+pad('color_std',[
+  {name:'ワンカラー', price:8800, time:'90分',  badge:'人気', visible:true},
+  {name:'リタッチ',   price:7700, time:'80分',  badge:'',     visible:true},
+  {name:'ローライト', price:9900, time:'100分', badge:'',     visible:true},
+]);
+pad('color_pre',[
+  {name:'ダブルカラー',   price:16500, time:'150分', badge:'', visible:true},
+  {name:'グラデーション', price:13200, time:'120分', badge:'', visible:true},
+  {name:'ハイライト',     price:11000, time:'120分', badge:'', visible:true},
+]);
+pad('tr',[
+  {name:'トリートメント S',   price:2750,  time:'20分', badge:'', visible:true},
+  {name:'トリートメント M',   price:4400,  time:'30分', badge:'', visible:true},
+  {name:'トリートメント L',   price:6600,  time:'40分', badge:'', visible:true},
+  {name:'酸熱トリートメント', price:11000, time:'90分', badge:'', visible:true},
+]);
+pad('tr_all', SLOTS['tr']);
+pad('perm',[
+  {name:'デジタルパーマ', price:13200, time:'150分', badge:'', visible:true},
+  {name:'コールドパーマ', price:8800,  time:'120分', badge:'', visible:true},
+  {name:'エアウェーブ',   price:11000, time:'120分', badge:'', visible:true},
+]);
+pad('perm_all', SLOTS['perm']);
+pad('perm_digi',[
+  {name:'デジタル（ショート）',   price:11000, time:'120分', badge:'', visible:true},
+  {name:'デジタル（ミディアム）', price:13200, time:'150分', badge:'', visible:true},
+  {name:'デジタル（ロング）',     price:16500, time:'180分', badge:'', visible:true},
+]);
+pad('perm_cold',[
+  {name:'コールド（ショート）',   price:7700, time:'100分', badge:'', visible:true},
+  {name:'コールド（ミディアム）', price:8800, time:'120分', badge:'', visible:true},
+]);
+pad('spa',[
+  {name:'ヘッドスパ 30分', price:4400, time:'30分', badge:'', visible:true},
+  {name:'ヘッドスパ 60分', price:7700, time:'60分', badge:'', visible:true},
+  {name:'炭酸スパ',        price:5500, time:'40分', badge:'', visible:true},
+]);
+pad('spa_all', SLOTS['spa']);
+pad('shohin',[
+  {name:'シャンプー',       price:2750, time:'', badge:'', visible:true},
+  {name:'コンディショナー', price:2750, time:'', badge:'', visible:true},
+  {name:'トリートメント',   price:3850, time:'', badge:'', visible:true},
+  {name:'スタイリング剤',   price:2200, time:'', badge:'', visible:true},
+]);
+pad('shohin_all', SLOTS['shohin']);
+pad('other',[{name:'その他',price:0,time:'',badge:'',visible:true}]);
+pad('other_all', SLOTS['other']);
+['set','organic','bleach','straight'].forEach(id=>{pad(id,[]);pad(id+'_all',[]);});
+
+// ── State ─────────────────────────────────────────────────────────────────────
+let currentParentId   = 'cut';
+let currentChildId    = 'cut_all';
+let catDropdownOpen   = false;
+let subcatDropdownOpen = false;
+let editMode    = false;
+let isDirty     = false; // 編集中に変更があればtrue
+let currentPage = 0;
 let cart = [
-  {id:1, name:'カット', price:4400, qty:1, note:'', staffColor:'#8E44AD', staffName:'Yuki'},
-  {id:2, name:'ワンカラー', price:8800, qty:1, note:'明るめに', staffColor:'#2E86C1', staffName:'Mika'},
-  {id:3, name:'トリートメント M', price:4400, qty:1, note:'', staffColor:'#8E44AD', staffName:'Yuki'},
+  {id:1, name:'カット',           price:4400, qty:1, discount:null},
+  {id:2, name:'ワンカラー',       price:8800, qty:1, discount:{type:'percent',value:10}},
+  {id:3, name:'トリートメント M', price:4400, qty:1, discount:null},
 ];
 let nextId = 4;
-let currentCat = '施術';
 
-// ── render products ────────────────────────────────────────────────────────────
-function renderProducts(cat) {
-  const grid = document.getElementById('productGrid');
-  const items = PRODUCTS[cat] || [];
-  grid.innerHTML = items.map(p => {
-    if (!p) return `<div class="prod-empty" onclick="addCustom()">＋</div>`;
-    return `<div class="prod-card${cart.find(c=>c.name===p.name)?' highlight':''}" onclick="addToCart(${JSON.stringify(p).replace(/"/g,'&quot;')})">
-      ${p.badge ? `<span class="prod-badge">${p.badge}</span>` : ''}
-      <span class="prod-name">${p.name}</span>
-      <span class="prod-price">¥${p.price.toLocaleString()}</span>
-      ${p.time ? `<span class="prod-time">${p.time}</span>` : ''}
-    </div>`;
-  }).join('');
+// discount modal state
+let discItemId   = null;
+let discType     = 'percent'; // 'percent' | 'fixed'
+let discValue    = 0;
+
+// ── Sidebar ───────────────────────────────────────────────────────────────────
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('sbOverlay').classList.toggle('open');}
+function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sbOverlay').classList.remove('open');}
+
+// ── Toast ─────────────────────────────────────────────────────────────────────
+function showToast(msg, type='blue', duration=2400) {
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.className='toast '+type+' show';
+  clearTimeout(t._t);
+  t._t=setTimeout(()=>t.classList.remove('show'),duration);
 }
 
-// ── cart logic ─────────────────────────────────────────────────────────────────
-function addToCart(p) {
-  const ex = cart.find(c => c.name === p.name);
-  if (ex) { ex.qty++; }
-  else { cart.push({id:nextId++, name:p.name, price:p.price, qty:1, note:'', staffColor:'#8E44AD', staffName:'Yuki'}); }
-  renderAll();
+// ── Scroll fade ───────────────────────────────────────────────────────────────
+const FADE = 55;
+function updateMask(el) {
+  if(!el)return;
+  const atStart=el.scrollLeft<=1;
+  const atEnd=el.scrollLeft+el.clientWidth>=el.scrollWidth-1;
+  let mask='';
+  if(!atStart&&!atEnd) mask=`linear-gradient(to right,transparent 0px,black ${FADE}px,black calc(100% - ${FADE}px),transparent 100%)`;
+  else if(!atStart)    mask=`linear-gradient(to right,transparent 0px,black ${FADE}px)`;
+  else if(!atEnd)      mask=`linear-gradient(to right,black calc(100% - ${FADE}px),transparent 100%)`;
+  el.style.webkitMaskImage=mask;
+  el.style.maskImage=mask;
+}
+function initScrollFade(el){
+  if(!el)return;
+  el.addEventListener('scroll',()=>updateMask(el));
+  requestAnimationFrame(()=>updateMask(el));
+}
+function checkOverflow(scrollEl,expandAreaEl){
+  requestAnimationFrame(()=>{
+    const overflow=scrollEl.scrollWidth>scrollEl.clientWidth+1;
+    expandAreaEl.style.display=overflow?'flex':'none';
+    updateMask(scrollEl);
+  });
 }
 
-function addCustom() {
-  const name = prompt('商品名を入力してください');
-  if (!name) return;
-  const price = parseInt(prompt('金額 (¥)') || '0');
-  cart.push({id:nextId++, name, price, qty:1, note:'', staffColor:'#8E44AD', staffName:'Yuki'});
-  renderAll();
+// ── Parent category bar ───────────────────────────────────────────────────────
+function renderCatBar() {
+  const scroll=document.getElementById('catScroll');
+  scroll.innerHTML=CATS.map(c=>{
+    const on=c.id===currentParentId?' on':'';
+    const arrow=c.children.length>1?'<span class="hc">▾</span>':'';
+    return `<span class="cat-tab${on}" onclick="selectParent('${c.id}')">${c.name}${arrow}</span>`;
+  }).join('')+`<span class="cat-add" onclick="addCategory()">＋</span>`;
+  checkOverflow(scroll,document.getElementById('catExpandArea'));
+}
+function selectParent(id) {
+  currentParentId=id; currentChildId=id+'_all'; currentPage=0;
+  if(catDropdownOpen)closeCatDropdown();
+  requestAnimationFrame(()=>scrollToActive(document.getElementById('catScroll'),'.cat-tab.on'));
+  renderCatBar();renderSubcatBar();renderProducts();
+}
+function scrollToActive(el,sel){
+  const tab=el.querySelector(sel);if(!tab)return;
+  el.scrollTo({left:Math.max(0,tab.offsetLeft-(el.clientWidth-tab.offsetWidth)/2),behavior:'smooth'});
+}
+function toggleCatDropdown(){
+  catDropdownOpen=!catDropdownOpen;
+  document.getElementById('catExpandBtn').classList.toggle('open',catDropdownOpen);
+  const dd=document.getElementById('catDropdown');
+  if(catDropdownOpen){
+    dd.innerHTML=CATS.map(c=>{
+      const on=c.id===currentParentId?' on':'';
+      const arrow=c.children.length>1?'<span class="hc">▾</span>':'';
+      return `<div class="cat-dd-item${on}" onclick="selectParent('${c.id}')">${c.name}${arrow}</div>`;
+    }).join('')+`<div class="cat-dd-add" onclick="addCategory()">＋ カテゴリを追加</div>`;
+    dd.classList.add('open');
+  }else dd.classList.remove('open');
+}
+function closeCatDropdown(){
+  catDropdownOpen=false;
+  document.getElementById('catExpandBtn').classList.remove('open');
+  document.getElementById('catDropdown').classList.remove('open');
 }
 
-function removeItem(id) {
-  cart = cart.filter(c => c.id !== id);
-  renderAll();
+// ── Sub-category bar ──────────────────────────────────────────────────────────
+function renderSubcatBar(){
+  const parent=CATS.find(c=>c.id===currentParentId);
+  const bar=document.getElementById('subcatBar');
+  const scroll=document.getElementById('subcatScroll');
+  const expArea=document.getElementById('subcatExpandArea');
+  if(!parent||!parent.children.length){bar.classList.remove('open');return;}
+  bar.classList.add('open');
+  scroll.innerHTML=parent.children.map(ch=>{
+    const on=ch.id===currentChildId?' on':'';
+    return `<span class="subcat-tab${on}" onclick="selectChild('${ch.id}')">${ch.name}</span>`;
+  }).join('')+`<span class="subcat-add" onclick="addSubcat('${parent.id}')">＋</span>`;
+  checkOverflow(scroll,expArea);
+  requestAnimationFrame(()=>scrollToActive(scroll,'.subcat-tab.on'));
+}
+function selectChild(childId){
+  currentChildId=childId;currentPage=0;
+  if(subcatDropdownOpen)closeSubcatDropdown();
+  renderSubcatBar();renderProducts();
+}
+function toggleSubcatDropdown(){
+  const parent=CATS.find(c=>c.id===currentParentId);if(!parent)return;
+  subcatDropdownOpen=!subcatDropdownOpen;
+  document.getElementById('subcatExpandBtn').classList.toggle('open',subcatDropdownOpen);
+  const dd=document.getElementById('subcatDropdown');
+  if(subcatDropdownOpen){
+    dd.innerHTML=parent.children.map(ch=>{
+      const on=ch.id===currentChildId?' on':'';
+      return `<div class="subcat-dd-item${on}" onclick="selectChild('${ch.id}')">${ch.name}</div>`;
+    }).join('')+`<div class="subcat-dd-add" onclick="addSubcat('${parent.id}')">＋ サブカテゴリを追加</div>`;
+    dd.classList.add('open');
+  }else dd.classList.remove('open');
+}
+function closeSubcatDropdown(){
+  subcatDropdownOpen=false;
+  document.getElementById('subcatExpandBtn').classList.remove('open');
+  document.getElementById('subcatDropdown').classList.remove('open');
 }
 
-function changeQty(id, delta) {
-  const item = cart.find(c => c.id === id);
-  if (!item) return;
-  item.qty = Math.max(1, item.qty + delta);
-  renderAll();
+// ── Product grid ──────────────────────────────────────────────────────────────
+function activeKey(){
+  if(currentChildId&&currentChildId.endsWith('_all'))return currentParentId;
+  return currentChildId||currentParentId;
+}
+function getSlotArr(){
+  const k=activeKey();
+  if(!SLOTS[k])SLOTS[k]=Array(PAGE).fill(null);
+  return SLOTS[k];
+}
+function totalPages(){return Math.max(1,Math.ceil(getSlotArr().length/PAGE));}
+function currentSlots(){
+  const all=getSlotArr();
+  while(all.length<PAGE)all.push(null);
+  return all.slice(currentPage*PAGE,(currentPage+1)*PAGE);
 }
 
-function clearCart() {
-  if (cart.length === 0) return;
-  cart = [];
-  renderAll();
+function renderProducts(){
+  const grid=document.getElementById('productGrid');
+  const slots=currentSlots();
+  const tp=totalPages();
+  document.getElementById('pageNum').textContent=(currentPage+1)+' / '+tp;
+  document.getElementById('pageBack').disabled=currentPage===0;
+  document.getElementById('pageNext').disabled=currentPage>=tp-1;
+
+  if(editMode){
+    grid.className='product-grid edit-mode';
+    grid.innerHTML=slots.map((p,i)=>{
+      if(!p) return `<div class="edit-empty" onclick="addProductAtSlot(${i})"><div class="edit-empty-plus">＋</div><div class="edit-empty-lbl">商品を追加</div></div>`;
+      const hiddenClass=p.visible?'':'hidden-item';
+      const visLabel=p.visible?'👁 表示中':'🚫 非表示';
+      const visCls=p.visible?'edit-btn edit-btn-vis':'edit-btn edit-btn-vis is-hidden';
+      return `<div class="edit-card ${hiddenClass}" draggable="true">
+        <div class="edit-drag">· · ·</div>
+        <div class="edit-name">${p.name}</div>
+        <div class="edit-price">¥${p.price.toLocaleString()}</div>
+        <div class="edit-btns">
+          <div class="${visCls}" onclick="toggleVisible(${i})">${visLabel}</div>
+          <div class="edit-btn edit-btn-del" onclick="deleteSlot(${i})">✕ 取り外す</div>
+        </div>
+      </div>`;
+    }).join('');
+  }else{
+    grid.className='product-grid';
+    grid.innerHTML=slots.map(p=>{
+      if(!p||!p.visible)return`<div class="prod-empty"></div>`;
+      const ic=cart.some(c=>c.name===p.name);
+      return`<div class="prod-card${ic?' in-cart':''}" onclick='addToCart(${JSON.stringify(p)})'>
+        ${p.badge?`<span class="prod-badge">${p.badge}</span>`:''}
+        <span class="prod-name">${p.name}</span>
+        <span class="prod-price">¥${p.price.toLocaleString()}</span>
+        ${p.time?`<span class="prod-time">${p.time}</span>`:''}
+      </div>`;
+    }).join('');
+  }
 }
 
-function calcTotal() {
-  const subtotal = cart.reduce((s, c) => s + c.price * c.qty, 0);
-  const pct = parseFloat(document.getElementById('discPct').value) || 0;
-  const amt = parseInt(document.getElementById('discAmt').value) || 0;
-  const discAmt = Math.round(subtotal * pct / 100) + amt;
-  const total = Math.max(0, subtotal - discAmt);
-  const tax = Math.round(total * 10 / 110);
-  return {subtotal, discAmt, total, tax};
+function changePage(d){
+  currentPage=Math.max(0,Math.min(totalPages()-1,currentPage+d));
+  renderProducts();
 }
-
-function renderCart() {
-  const el = document.getElementById('cartItems');
-  const countEl = document.getElementById('cartCount');
-
-  if (cart.length === 0) {
-    el.innerHTML = `<div class="cart-empty"><div class="cart-empty-icon">🛒</div><div class="cart-empty-text">商品を選択してください</div></div>`;
-    countEl.textContent = '';
+function addPage(){
+  getSlotArr().push(...Array(PAGE).fill(null));
+  currentPage=totalPages()-1;
+  isDirty=true;
+  renderProducts();
+  showToast('ページを追加しました','green');
+}
+function deletePage(){
+  const arr=getSlotArr();
+  if(totalPages()<=1){showToast('最後のページは削除できません','blue');return;}
+  const start=currentPage*PAGE;
+  arr.splice(start,PAGE);
+  currentPage=Math.min(currentPage,totalPages()-1);
+  isDirty=true;
+  renderProducts();
+  showToast('ページを削除しました','blue');
+}
+function saveGrid(){
+  isDirty=false;
+  showToast('✓ グリッドを保存しました','green');
+  // ボタンを保存済みスタイルに一瞬変える
+  const btn=document.getElementById('btnSave');
+  btn.textContent='✓ 保存済み';
+  setTimeout(()=>{btn.textContent='💾 保存する';},1800);
+}
+function toggleEditMode(){
+  if(editMode && isDirty){
+    // 未保存変更あり → 確認モーダル表示
+    openConfirmModal();
     return;
   }
+  _exitOrEnterEditMode();
+}
+function _exitOrEnterEditMode(){
+  editMode=!editMode;
+  isDirty=false;
+  document.getElementById('editModeBtn').classList.toggle('active',editMode);
+  document.getElementById('btnSave').style.display=editMode?'':'none';
+  document.getElementById('btnAddProduct').style.display=editMode?'none':'';
+  document.getElementById('btnAddPage').style.display=editMode?'':'none';
+  document.getElementById('btnDelPage').style.display=editMode?'':'none';
+  showToast(
+    editMode?'✏ グリッド編集モード':'✓ 編集モードを終了しました',
+    editMode?'purple':'green'
+  );
+  renderProducts();
+}
+function openConfirmModal(){document.getElementById('confirmOverlay').classList.add('open');}
+function closeConfirmModal(){document.getElementById('confirmOverlay').classList.remove('open');}
+function confirmDiscardEdit(){
+  closeConfirmModal();
+  isDirty=false;
+  _exitOrEnterEditMode(); // editMode は true なので false に切り替わる
+}
+function toggleVisible(i){
+  const arr=getSlotArr();const g=currentPage*PAGE+i;
+  if(arr[g]){arr[g].visible=!arr[g].visible;isDirty=true;renderProducts();}
+}
+function deleteSlot(i){
+  getSlotArr()[currentPage*PAGE+i]=null;
+  isDirty=true;
+  renderProducts();
+  showToast('グリッドから取り外しました（商品データは保持されています）','blue',3000);
+}
+function addProductAtSlot(i){
+  const n=prompt('商品名');if(!n)return;
+  const p=parseInt(prompt('金額 (¥)')||'0');
+  const t=prompt('所要時間（例: 30分）')||'';
+  getSlotArr()[currentPage*PAGE+i]={name:n,price:p,time:t,badge:'',visible:true};
+  isDirty=true;
+  renderProducts();
+}
+function addProduct(){
+  const n=prompt('商品名');if(!n)return;
+  const p=parseInt(prompt('金額 (¥)')||'0');
+  const t=prompt('所要時間')||'';
+  const arr=getSlotArr();
+  const ei=arr.findIndex(s=>s===null);
+  const item={name:n,price:p,time:t,badge:'',visible:true};
+  if(ei>=0)arr[ei]=item;else arr.push(item);
+  renderProducts();
+}
+function addCategory(){
+  closeCatDropdown();
+  const n=prompt('カテゴリ名');if(!n)return;
+  const id='cat_'+Date.now();
+  CATS.push({id,name:n,children:makeChildren(id)});
+  SLOTS[id]=Array(PAGE).fill(null);SLOTS[id+'_all']=Array(PAGE).fill(null);
+  renderCatBar();
+}
+function addSubcat(pid){
+  closeSubcatDropdown();
+  const n=prompt('サブカテゴリ名');if(!n)return;
+  const id=pid+'_'+Date.now();
+  CATS.find(c=>c.id===pid).children.push({id,name:n});
+  SLOTS[id]=Array(PAGE).fill(null);
+  renderSubcatBar();
+}
 
-  countEl.textContent = cart.length + '件';
-  el.innerHTML = cart.map(item => `
-    <div class="cart-item">
+// ── Cart ──────────────────────────────────────────────────────────────────────
+function effectivePrice(item){
+  if(!item.discount)return item.price;
+  if(item.discount.type==='percent')return Math.round(item.price*(1-item.discount.value/100));
+  return Math.max(0,item.price-item.discount.value);
+}
+function discLabel(item){
+  if(!item.discount)return'割引';
+  if(item.discount.type==='percent')return`-${item.discount.value}%`;
+  return`-¥${item.discount.value.toLocaleString()}`;
+}
+
+function addToCart(p){
+  const ex=cart.find(c=>c.name===p.name);
+  if(ex){ex.qty++;}else{cart.push({id:nextId++,name:p.name,price:p.price,qty:1,discount:null});}
+  renderCartPanel();
+}
+function removeItem(id){cart=cart.filter(c=>c.id!==id);renderCartPanel();}
+function changeQty(id,d){const i=cart.find(c=>c.id===id);if(i){i.qty=Math.max(1,i.qty+d);renderCartPanel();}}
+
+function renderCartPanel(){
+  const el=document.getElementById('cartItems');
+  if(!cart.length){
+    el.innerHTML=`<div class="cart-empty"><div class="cart-empty-icon">🛒</div><div class="cart-empty-text">商品を選択してください</div></div>`;
+    document.getElementById('cartSummary').innerHTML='';
+    document.getElementById('payBtn').classList.add('disabled');
+    renderProducts();return;
+  }
+  el.innerHTML=cart.map(item=>{
+    const ep=effectivePrice(item);
+    const hasDisc=item.discount!==null;
+    const totalEP=ep*item.qty;
+    const totalOrig=item.price*item.qty;
+    const priceClass=hasDisc?'ci-price discounted':'ci-price';
+    const origHtml=hasDisc?`<span class="ci-price-orig" style="display:block">¥${totalOrig.toLocaleString()}</span>`:'';
+    const discBtnOn=hasDisc?' on':'';
+    return`<div class="ci">
       <div class="ci-top">
         <span class="ci-name">${item.name}</span>
-        <span class="ci-price">¥${(item.price * item.qty).toLocaleString()}</span>
-        <span class="ci-del" onclick="removeItem(${item.id})">✕</span>
+        <div class="ci-price-wrap">
+          ${origHtml}
+          <span class="${priceClass}">¥${totalEP.toLocaleString()}</span>
+        </div>
       </div>
       <div class="ci-bottom">
-        <div class="qty-btn" onclick="changeQty(${item.id},-1)">－</div>
-        <span class="qty-val">${item.qty}</span>
-        <div class="qty-btn" onclick="changeQty(${item.id},1)">＋</div>
-        <input class="ci-note" placeholder="メモ" value="${item.note}" onchange="updateNote(${item.id},this.value)">
-        <span class="ci-staff" style="background:${item.staffColor}20;color:${item.staffColor};">${item.staffName}</span>
+        <div class="ci-qty-group">
+          <div class="qty-btn" onclick="changeQty(${item.id},-1)">－</div>
+          <span class="qty-val">${item.qty}</span>
+          <div class="qty-btn" onclick="changeQty(${item.id},1)">＋</div>
+        </div>
+        <div class="ci-disc-btn${discBtnOn}" onclick="openDiscModal(${item.id})">${discLabel(item)}</div>
+        <div class="ci-del" onclick="removeItem(${item.id})">✕</div>
       </div>
+    </div>`;
+  }).join('');
+
+  const subOrig=cart.reduce((s,c)=>s+c.price*c.qty,0);
+  const subDisc=cart.reduce((s,c)=>s+effectivePrice(c)*c.qty,0);
+  const discAmt=subOrig-subDisc;
+  const tax=Math.round(subDisc*10/110);
+  const totalItems=cart.reduce((s,c)=>s+c.qty,0);
+  const discItems=cart.filter(c=>c.discount!==null).reduce((s,c)=>s+c.qty,0);
+  const discRow=discAmt>0
+    ?`<div class="sum-row">
+        <span class="sum-lbl">割引合計 <span style="color:#E74C3C;font-weight:600">(${discItems}点)</span></span>
+        <span class="sum-disc-val">-¥${discAmt.toLocaleString()}</span>
+      </div>`:'';
+
+  document.getElementById('cartSummary').innerHTML=`
+    <div class="sum-row">
+      <span class="sum-lbl">小計 <span style="color:#888;font-weight:500">(${totalItems}点)</span></span>
+      <span class="sum-val">¥${subOrig.toLocaleString()}</span>
     </div>
-  `).join('');
-}
-
-function updateNote(id, val) {
-  const item = cart.find(c => c.id === id);
-  if (item) item.note = val;
-}
-
-function renderSummary() {
-  const {subtotal, discAmt, total, tax} = calcTotal();
-  const el = document.getElementById('cartSummary');
-  const btn = document.getElementById('payBtn');
-  if (cart.length === 0) {
-    el.innerHTML = '';
-    btn.classList.add('pay-btn-disabled');
-    return;
-  }
-  btn.classList.remove('pay-btn-disabled');
-  el.innerHTML = `
-    <div class="sum-row"><span class="sum-label">小計</span><span class="sum-val">¥${subtotal.toLocaleString()}</span></div>
-    ${discAmt > 0 ? `<div class="sum-row"><span class="sum-label">割引</span><span class="sum-discount">－¥${discAmt.toLocaleString()}</span></div>` : ''}
+    ${discRow}
     <div class="sum-divider"></div>
-    <div class="sum-total-row"><span class="sum-total-label">合計</span><span class="sum-total-val">¥${total.toLocaleString()}</span></div>
-    <div class="sum-tax">税込み ¥${tax.toLocaleString()}</div>
-  `;
+    <div class="sum-total"><span class="sum-total-lbl">合計</span><span class="sum-total-val">¥${subDisc.toLocaleString()}</span></div>
+    <div class="sum-tax">税込み · 消費税 ¥${tax.toLocaleString()}</div>`;
+  document.getElementById('payBtn').classList.remove('disabled');
+  renderProducts();
 }
 
-function renderAll() {
-  renderCart();
-  renderSummary();
-  renderProducts(currentCat);
+function goPayment(){if(!cart.length)return;alert('→ 03_pos_payment へ');}
+
+// ── Discount modal ────────────────────────────────────────────────────────────
+const PERCENT_PRESETS = [5,10,15,20,30,50];
+
+function openDiscModal(id){
+  const item=cart.find(c=>c.id===id);if(!item)return;
+  discItemId=id;
+  // restore existing discount into modal
+  if(item.discount){
+    discType=item.discount.type;
+    discValue=item.discount.value;
+  }else{
+    discType='percent';discValue=0;
+  }
+  document.getElementById('discItemName').textContent=item.name;
+  document.getElementById('discHeadPrice').textContent='定価 ¥'+item.price.toLocaleString()+(item.qty>1?` × ${item.qty}`:'');
+  setDiscType(discType,true);
+  document.getElementById('discOverlay').classList.add('open');
+}
+function closeDiscModal(){document.getElementById('discOverlay').classList.remove('open');}
+function handleOverlayClick(e){if(e.target===document.getElementById('discOverlay'))closeDiscModal();}
+
+function setDiscType(type,skipInput=false){
+  discType=type;
+  document.getElementById('tabPct').classList.toggle('on',type==='percent');
+  document.getElementById('tabFix').classList.toggle('on',type==='fixed');
+  document.getElementById('discUnit').textContent=type==='percent'?'%':'円';
+  document.getElementById('discCustomLabel').textContent=type==='percent'?'カスタム入力':'カスタム金額';
+
+  // build presets
+  const item=cart.find(c=>c.id===discItemId);
+  const presets=document.getElementById('discPresets');
+  if(type==='percent'){
+    presets.innerHTML=PERCENT_PRESETS.map(v=>
+      `<div class="disc-preset${discValue===v&&discType==='percent'?' on':''}" onclick="setDiscPreset(${v})">${v}%</div>`
+    ).join('');
+  }else{
+    // fixed amount presets: 500, 1000, 1500, 2000, 3000
+    const fixPresets=[500,1000,1500,2000,3000];
+    presets.innerHTML=fixPresets.map(v=>
+      `<div class="disc-preset${discValue===v&&discType==='fixed'?' on':''}" onclick="setDiscPreset(${v})">¥${v.toLocaleString()}</div>`
+    ).join('');
+  }
+
+  if(!skipInput){discValue=0;document.getElementById('discInput').value='';}
+  else document.getElementById('discInput').value=discValue||'';
+  updateDiscPreview();
+}
+function setDiscPreset(v){
+  discValue=v;
+  document.getElementById('discInput').value=v;
+  // highlight selected preset
+  document.querySelectorAll('.disc-preset').forEach(el=>{
+    el.classList.toggle('on',parseInt(el.textContent)===v||el.textContent==='¥'+v.toLocaleString());
+  });
+  updateDiscPreview();
+}
+function onDiscInput(){
+  discValue=parseFloat(document.getElementById('discInput').value)||0;
+  document.querySelectorAll('.disc-preset').forEach(el=>el.classList.remove('on'));
+  updateDiscPreview();
+}
+function updateDiscPreview(){
+  const item=cart.find(c=>c.id===discItemId);if(!item)return;
+  const orig=item.price;
+  let discAmt=0,after=orig;
+  if(discValue>0){
+    if(discType==='percent'){discAmt=Math.round(orig*discValue/100);after=orig-discAmt;}
+    else{discAmt=Math.min(discValue,orig);after=orig-discAmt;}
+  }
+  document.getElementById('discPreview').innerHTML=`
+    <div class="disc-preview-row"><span class="disc-preview-lbl">通常価格</span><span class="disc-preview-val">¥${orig.toLocaleString()}</span></div>
+    <div class="disc-preview-row"><span class="disc-preview-lbl">割引額</span><span class="disc-preview-val red">${discAmt>0?`-¥${discAmt.toLocaleString()}`:'—'}</span></div>
+    <div class="disc-preview-row"><span class="disc-preview-lbl">割引後</span><span class="disc-preview-val purple">¥${after.toLocaleString()}</span></div>`;
+}
+function applyDiscount(){
+  const item=cart.find(c=>c.id===discItemId);if(!item)return;
+  if(discValue<=0){item.discount=null;}
+  else{item.discount={type:discType,value:discValue};}
+  closeDiscModal();
+  renderCartPanel();
+  const label=discValue>0?(discType==='percent'?`${discValue}% 割引`:`¥${discValue.toLocaleString()} 割引`):'割引なし';
+  showToast(`${item.name} に ${label} を適用しました`,'purple');
+}
+function clearDiscount(){
+  const item=cart.find(c=>c.id===discItemId);if(!item)return;
+  item.discount=null;
+  closeDiscModal();
+  renderCartPanel();
+  showToast('割引を解除しました','blue');
 }
 
-function selectCat(el, cat) {
-  document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('on'));
-  el.classList.add('on');
-  currentCat = cat;
-  renderProducts(cat);
-}
+// ── Close dropdowns outside ───────────────────────────────────────────────────
+document.addEventListener('click',e=>{
+  if(catDropdownOpen&&!e.target.closest('#catBar')&&!e.target.closest('#catDropdown'))closeCatDropdown();
+  if(subcatDropdownOpen&&!e.target.closest('#subcatBar')&&!e.target.closest('#subcatDropdown'))closeSubcatDropdown();
+});
 
-function toggleCustomer() {
-  const names = [
-    {av:'田', name:'田中 美咲', pts:'320pt'},
-    {av:'佐', name:'佐藤 花子', pts:'1,200pt'},
-    {av:'?', name:'非会員', pts:''},
-  ];
-  const cur = names.findIndex(n => n.name === document.getElementById('custName').textContent);
-  const next = names[(cur + 1) % names.length];
-  document.getElementById('custAvatar').textContent = next.av;
-  document.getElementById('custName').textContent = next.name;
-  document.getElementById('custPts').textContent = next.pts;
-}
-
-function goPayment() {
-  if (cart.length === 0) return;
-  alert('→ 会計画面へ (03_pos_payment)');
-}
-
-// ── init ───────────────────────────────────────────────────────────────────────
-renderProducts('施術');
-renderAll();
-
-// live recalc on discount input
-document.getElementById('discPct').addEventListener('input', renderSummary);
-document.getElementById('discAmt').addEventListener('input', renderSummary);
+// ── Init ──────────────────────────────────────────────────────────────────────
+renderCatBar();
+renderSubcatBar();
+renderProducts();
+renderCartPanel();
+requestAnimationFrame(()=>{
+  initScrollFade(document.getElementById('catScroll'));
+  initScrollFade(document.getElementById('subcatScroll'));
+});
 </script>
 </body>
 </html>
