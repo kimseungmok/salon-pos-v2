@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1024">
+<title>00 · Design System — salon-pos-v2 JA</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino Sans',sans-serif;background:#F4F4F0;color:#1A1A1A;padding:24px;font-size:13px;}
+h1{font-size:18px;font-weight:500;margin-bottom:4px;}
+.meta{font-size:11px;color:#999;margin-bottom:24px;}
+
+.ds-tabs{display:flex;gap:0;border-bottom:1px solid #E5E5E0;margin-bottom:24px;}
+.ds-tab{font-size:13px;padding:8px 18px;cursor:pointer;color:#888;border-bottom:2px solid transparent;margin-bottom:-1px;background:none;border-top:none;border-left:none;border-right:none;font-family:inherit;}
+.ds-tab.active{color:#1a1a1a;font-weight:500;border-bottom-color:#1C2833;}
+.ds-panel{display:none;}.ds-panel.active{display:block;}
+
+.section{margin-bottom:32px;}
+.section-title{font-size:11px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px;}
+
+/* COLOR */
+.color-row{display:flex;gap:8px;flex-wrap:wrap;}
+.color-chip{display:flex;flex-direction:column;align-items:center;gap:4px;}
+.color-swatch{width:56px;height:40px;border-radius:6px;}
+.color-label{font-size:10px;color:#999;text-align:center;}
+.color-hex{font-size:9px;color:#bbb;text-align:center;font-family:monospace;}
+
+/* TYPOGRAPHY */
+.type-row{display:flex;align-items:baseline;gap:16px;padding:10px 0;border-bottom:.5px solid #e8e8e4;}
+.type-row:last-child{border-bottom:none;}
+.type-meta{min-width:180px;font-size:11px;color:#999;font-family:monospace;}
+.type-sample{color:#1a1a1a;}
+
+/* SPACING */
+.spacing-row{display:flex;align-items:center;gap:12px;padding:7px 0;border-bottom:.5px solid #e8e8e4;}
+.spacing-bar{background:#2C3E50;height:14px;border-radius:2px;}
+.spacing-label{font-size:11px;color:#999;min-width:100px;font-family:monospace;}
+
+/* COMPONENTS */
+.comp-row{display:flex;align-items:center;flex-wrap:wrap;gap:10px;padding:12px 0;border-bottom:.5px solid #e8e8e4;}
+.comp-row:last-child{border-bottom:none;}
+.comp-label{font-size:11px;color:#999;min-width:110px;}
+.comp-items{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+
+/* buttons */
+.btn{padding:8px 18px;border-radius:8px;font-size:13px;font-weight:500;border:none;cursor:pointer;font-family:inherit;}
+.btn-primary{background:#1C2833;color:white;}
+.btn-secondary{background:#F4F4F0;color:#1a1a1a;border:.5px solid #D0D0CC;}
+.btn-danger{background:#E74C3C;color:white;}
+.btn-ghost{background:none;color:#1C2833;border:.5px solid #1C2833;}
+.btn-sm{padding:5px 12px;font-size:12px;border-radius:6px;}
+.btn-lg{padding:12px 28px;font-size:15px;border-radius:10px;}
+
+/* inputs */
+.inp{padding:8px 12px;border-radius:8px;border:.5px solid #D0D0CC;font-size:13px;background:white;font-family:inherit;outline:none;color:#1a1a1a;}
+.inp-label{font-size:11px;color:#666;margin-bottom:4px;display:block;}
+
+/* badges / tags */
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500;}
+.badge-blue{background:#EBF5FB;color:#2E86C1;}
+.badge-green{background:#EAFAF1;color:#1E8449;}
+.badge-red{background:#FDEDEC;color:#C0392B;}
+.badge-yellow{background:#FEF9E7;color:#D4AC0D;}
+.badge-purple{background:#F5EEF8;color:#8E44AD;}
+.badge-gray{background:#F2F3F4;color:#666;}
+.badge-orange{background:#FEF5E7;color:#D35400;}
+
+/* status dots */
+.status{display:inline-flex;align-items:center;gap:6px;font-size:12px;}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+
+/* cards */
+.card-demo{background:white;border:.5px solid #E5E5E0;border-radius:12px;padding:16px 20px;}
+.card-demo-title{font-size:13px;font-weight:500;margin-bottom:4px;}
+.card-demo-sub{font-size:12px;color:#999;}
+.card-sm{padding:10px 14px;border-radius:8px;}
+.card-metric{background:#F4F4F0;border-radius:10px;padding:12px 16px;min-width:120px;}
+.card-metric-label{font-size:10px;color:#888;margin-bottom:4px;}
+.card-metric-val{font-size:24px;font-weight:500;}
+
+/* tabs component */
+.tab-demo{display:flex;border-bottom:.5px solid #E5E5E0;gap:0;}
+.tab-item{padding:7px 16px;font-size:12px;color:#999;border-bottom:2px solid transparent;cursor:pointer;}
+.tab-item.on{color:#1a1a1a;font-weight:500;border-bottom-color:#1C2833;}
+
+/* list item */
+.list-item{display:flex;align-items:center;gap:12px;padding:10px 14px;background:white;border:.5px solid #E5E5E0;border-radius:8px;}
+.list-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:white;flex-shrink:0;}
+.list-main{flex:1;}
+.list-name{font-size:13px;font-weight:500;}
+.list-sub{font-size:11px;color:#999;margin-top:2px;}
+.list-right{font-size:13px;font-weight:500;}
+
+/* topbar - light mode */
+.topbar{background:white;height:44px;display:flex;align-items:center;padding:0 16px;gap:10px;flex-shrink:0;border-bottom:.5px solid #E5E5E0;}
+.tb-menu{font-size:18px;color:#1C2833;cursor:pointer;padding:4px 6px;border-radius:6px;line-height:1;flex-shrink:0;user-select:none;}
+.tb-menu:hover{background:#F4F4F0;}
+.tb-logo{font-size:13px;color:#1C2833;font-weight:500;letter-spacing:.08em;}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.tb-sep{width:.5px;height:14px;background:#D0D0CC;}
+.tb-avatar{width:24px;height:24px;border-radius:50%;background:#8E44AD;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:500;color:white;}
+.tb-staff-name{font-size:12px;color:#333;}
+.tb-time{font-size:11px;color:#888;}
+.tb-lock{font-size:13px;color:#aaa;cursor:pointer;}
+
+/* sidebar */
+.sidebar-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:100;opacity:0;pointer-events:none;transition:opacity .2s;}
+.sidebar-overlay.open{opacity:1;pointer-events:all;}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:220px;background:#1C2833;z-index:101;transform:translateX(-100%);transition:transform .22s cubic-bezier(.25,.46,.45,.94);display:flex;flex-direction:column;box-shadow:4px 0 24px rgba(0,0,0,.3);}
+.sidebar.open{transform:translateX(0);}
+.sidebar-header{padding:20px 16px 14px;border-bottom:.5px solid rgba(255,255,255,.1);}
+.sidebar-logo{font-size:14px;color:white;font-weight:500;letter-spacing:.08em;}
+.sidebar-sub{font-size:10px;color:rgba(255,255,255,.3);margin-top:4px;}
+.sidebar-menu{flex:1;padding:8px 0;overflow-y:auto;}
+.sidebar-item{display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;transition:background .12s;user-select:none;}
+.sidebar-item:hover{background:rgba(255,255,255,.07);}
+.sidebar-item.on{background:rgba(255,255,255,.12);}
+.sidebar-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.sidebar-label{font-size:13px;color:rgba(255,255,255,.7);font-weight:400;}
+.sidebar-item.on .sidebar-label{color:white;font-weight:500;}
+.sidebar-footer{padding:14px 16px;border-top:.5px solid rgba(255,255,255,.1);}
+.sidebar-footer-text{font-size:10px;color:rgba(255,255,255,.22);}
+
+/* grid system */
+.grid-demo{display:grid;gap:6px;}
+.grid-col{background:#EBF5FB;border:1px solid #AED6F1;border-radius:4px;height:32px;display:flex;align-items:center;justify-content:center;font-size:10px;color:#2E86C1;font-weight:500;}
+</style>
+</head>
+<body>
+
+<h1>Design System — salon-pos-v2</h1>
+<div class="meta">ターゲット: iPad Air 2 · 1024×768 論理ポイント · 4:3</div>
+
+<div class="ds-tabs">
+  <button class="ds-tab active" onclick="showDs('color',this)">カラー</button>
+  <button class="ds-tab" onclick="showDs('type',this)">タイポ</button>
+  <button class="ds-tab" onclick="showDs('spacing',this)">スペーシング</button>
+  <button class="ds-tab" onclick="showDs('comp',this)">コンポーネント</button>
+  <button class="ds-tab" onclick="showDs('layout',this)">レイアウト</button>
+</div>
+
+<!-- ────── カラー ────── -->
+<div id="ds-color" class="ds-panel active">
+
+  <div class="section">
+    <div class="section-title">ブランドカラー</div>
+    <div class="color-row">
+      <div class="color-chip"><div class="color-swatch" style="background:#1C2833;"></div><div class="color-label">Primary</div><div class="color-hex">#1C2833</div></div>
+      <div class="color-chip"><div class="color-swatch" style="background:#2C3E50;"></div><div class="color-label">Primary Dark</div><div class="color-hex">#2C3E50</div></div>
+      <div class="color-chip"><div class="color-swatch" style="background:#F4F4F0;"></div><div class="color-label">BG</div><div class="color-hex">#F4F4F0</div></div>
+      <div class="color-chip"><div class="color-swatch" style="background:white;border:.5px solid #eee;"></div><div class="color-label">Surface</div><div class="color-hex">#FFFFFF</div></div>
+      <div class="color-chip"><div class="color-swatch" style="background:#E5E5E0;"></div><div class="color-label">Border</div><div class="color-hex">#E5E5E0</div></div>
+      <div class="color-chip"><div class="color-swatch" style="background:#D0D0CC;"></div><div class="color-label">Border Dark</div><div class="color-hex">#D0D0CC</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">テキスト</div>
+    <div class="color-row">
+      <div class="color-chip"><div class="color-swatch" style="background:#1A1A1A;"></div><div class="color-label">Primary</div><div class="color-hex">#1A1A1A</div></div>
+      <div class="color-chip"><div class="color-swatch" style="background:#555555;"></div><div class="color-label">Secondary</div><div class="color-hex">#555555</div></div>
+      <div class="color-chip"><div class="color-swatch" style="background:#888888;"></div><div class="color-label">Tertiary</div><div class="color-hex">#888888</div></div>
+      <div class="color-chip"><div class="color-swatch" style="background:#BBBBBB;"></div><div class="color-label">Disabled</div><div class="color-hex">#BBBBBB</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">モジュールカラー（機能別）</div>
+    <div class="color-row">
+      <div class="color-chip"><div class="color-swatch" style="background:#2E86C1;"></div><div class="color-label">会計</div><div class="color-hex">#2E86C1</div></div>
+      <div class="color-chip"><div class="color-swatch" style="background:#8E44AD;"></div><div class="color-label">予約</div><div class="color-hex">#8E44AD</div></div>
+      <div class="color-chip"><div class="color-swatch" style="background:#1E8449;"></div><div class="color-label">顧客</div><div class="color-hex">#1E8449</div></div>
+      <div class="color-chip"><div class="color-swatch" style="background:#D4AC0D;"></div><div class="color-label">売上</div><div class="color-hex">#D4AC0D</div></div>
+      <div class="color-chip"><div class="color-swatch" style="background:#C0392B;"></div><div class="color-label">スタッフ</div><div class="color-hex">#C0392B</div></div>
+      <div class="color-chip"><div class="color-swatch" style="background:#7D3C98;"></div><div class="color-label">在庫</div><div class="color-hex">#7D3C98</div></div>
+      <div class="color-chip"><div class="color-swatch" style="background:#D35400;"></div><div class="color-label">マーケティング</div><div class="color-hex">#D35400</div></div>
+      <div class="color-chip"><div class="color-swatch" style="background:#117A65;"></div><div class="color-label">店舗</div><div class="color-hex">#117A65</div></div>
+      <div class="color-chip"><div class="color-swatch" style="background:#1A5276;"></div><div class="color-label">設定</div><div class="color-hex">#1A5276</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">セマンティック</div>
+    <div class="color-row">
+      <div class="color-chip"><div class="color-swatch" style="background:#1E8449;"></div><div class="color-label">Success</div><div class="color-hex">#1E8449</div></div>
+      <div class="color-chip"><div class="color-swatch" style="background:#D4AC0D;"></div><div class="color-label">Warning</div><div class="color-hex">#D4AC0D</div></div>
+      <div class="color-chip"><div class="color-swatch" style="background:#E74C3C;"></div><div class="color-label">Danger</div><div class="color-hex">#E74C3C</div></div>
+      <div class="color-chip"><div class="color-swatch" style="background:#2E86C1;"></div><div class="color-label">Info</div><div class="color-hex">#2E86C1</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">予約ステータスカラー</div>
+    <div class="color-row">
+      <div class="color-chip"><div class="color-swatch" style="background:#1E8449;"></div><div class="color-label">確定</div><div class="color-hex">#1E8449</div></div>
+      <div class="color-chip"><div class="color-swatch" style="background:#D4AC0D;"></div><div class="color-label">ウェイティング</div><div class="color-hex">#D4AC0D</div></div>
+      <div class="color-chip"><div class="color-swatch" style="background:#2E86C1;"></div><div class="color-label">チェックイン</div><div class="color-hex">#2E86C1</div></div>
+      <div class="color-chip"><div class="color-swatch" style="background:#E74C3C;"></div><div class="color-label">キャンセル</div><div class="color-hex">#E74C3C</div></div>
+      <div class="color-chip"><div class="color-swatch" style="background:#8E44AD;"></div><div class="color-label">ノーショー</div><div class="color-hex">#8E44AD</div></div>
+      <div class="color-chip"><div class="color-swatch" style="background:#888888;"></div><div class="color-label">ブロック</div><div class="color-hex">#888888</div></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ────── タイポ ────── -->
+<div id="ds-type" class="ds-panel">
+  <div class="section">
+    <div class="section-title">フォントスケール — SF Pro / Hiragino Sans</div>
+    <div class="type-row">
+      <div class="type-meta">28px / 700 — Large Title</div>
+      <div class="type-sample" style="font-size:28px;font-weight:700;">¥87,400</div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta">22px / 500 — Title 1</div>
+      <div class="type-sample" style="font-size:22px;font-weight:500;">本日の売上合計</div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta">18px / 500 — Title 2</div>
+      <div class="type-sample" style="font-size:18px;font-weight:500;">予約管理</div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta">15px / 500 — Headline</div>
+      <div class="type-sample" style="font-size:15px;font-weight:500;">田中 美咲</div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta">13px / 400 — Body (デフォルト)</div>
+      <div class="type-sample" style="font-size:13px;">カット + カラーリング ¥8,800</div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta">12px / 400 — Subtext</div>
+      <div class="type-sample" style="font-size:12px;color:#555;">前回来店: 2026年5月15日</div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta">11px / 400 — Caption</div>
+      <div class="type-sample" style="font-size:11px;color:#888;">担当: Yuki　|　所要時間: 90分</div>
+    </div>
+    <div class="type-row">
+      <div class="type-meta">10px / 500 — Label (大文字)</div>
+      <div class="type-sample" style="font-size:10px;font-weight:500;color:#999;letter-spacing:.08em;text-transform:uppercase;">Payment Method</div>
+    </div>
+  </div>
+</div>
+
+<!-- ────── スペーシング ────── -->
+<div id="ds-spacing" class="ds-panel">
+  <div class="section">
+    <div class="section-title">スペーシングスケール（8ptベース）</div>
+    <div class="spacing-row"><div class="spacing-label">4px — xxs</div><div class="spacing-bar" style="width:4px;"></div><div style="font-size:11px;color:#bbb;">アイコン内部</div></div>
+    <div class="spacing-row"><div class="spacing-label">8px — xs</div><div class="spacing-bar" style="width:8px;"></div><div style="font-size:11px;color:#bbb;">チップ・タグ内パディング</div></div>
+    <div class="spacing-row"><div class="spacing-label">12px — sm</div><div class="spacing-bar" style="width:12px;"></div><div style="font-size:11px;color:#bbb;">カード内要素間隔</div></div>
+    <div class="spacing-row"><div class="spacing-label">16px — md</div><div class="spacing-bar" style="width:16px;"></div><div style="font-size:11px;color:#bbb;">カードパディング、セクション間隔</div></div>
+    <div class="spacing-row"><div class="spacing-label">20px — lg</div><div class="spacing-bar" style="width:20px;"></div><div style="font-size:11px;color:#bbb;">ページパディング</div></div>
+    <div class="spacing-row"><div class="spacing-label">24px — xl</div><div class="spacing-bar" style="width:24px;"></div><div style="font-size:11px;color:#bbb;">セクション間余白</div></div>
+    <div class="spacing-row"><div class="spacing-label">32px — xxl</div><div class="spacing-bar" style="width:32px;"></div><div style="font-size:11px;color:#bbb;">ページセクション区切り</div></div>
+  </div>
+  <div class="section">
+    <div class="section-title">ボーダーラジウス</div>
+    <div style="display:flex;gap:20px;">
+      <div style="text-align:center;"><div style="width:56px;height:56px;background:#EBF5FB;border-radius:4px;border:.5px solid #AED6F1;"></div><div style="font-size:10px;color:#999;margin-top:6px;">4px<br>ミニ</div></div>
+      <div style="text-align:center;"><div style="width:56px;height:56px;background:#EBF5FB;border-radius:8px;border:.5px solid #AED6F1;"></div><div style="font-size:10px;color:#999;margin-top:6px;">8px<br>ボタン・入力</div></div>
+      <div style="text-align:center;"><div style="width:56px;height:56px;background:#EBF5FB;border-radius:10px;border:.5px solid #AED6F1;"></div><div style="font-size:10px;color:#999;margin-top:6px;">10px<br>カード</div></div>
+      <div style="text-align:center;"><div style="width:56px;height:56px;background:#EBF5FB;border-radius:12px;border:.5px solid #AED6F1;"></div><div style="font-size:10px;color:#999;margin-top:6px;">12px<br>モーダル・タイル</div></div>
+      <div style="text-align:center;"><div style="width:56px;height:56px;background:#EBF5FB;border-radius:28px;border:.5px solid #AED6F1;"></div><div style="font-size:10px;color:#999;margin-top:6px;">28px<br>チップ・バッジ</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ────── コンポーネント ────── -->
+<div id="ds-comp" class="ds-panel">
+
+  <div class="section">
+    <div class="section-title">ボタン</div>
+    <div class="comp-row">
+      <div class="comp-label">Primary</div>
+      <div class="comp-items">
+        <button class="btn btn-primary btn-sm">確認</button>
+        <button class="btn btn-primary">会計完了</button>
+        <button class="btn btn-primary btn-lg">営業開始</button>
+      </div>
+    </div>
+    <div class="comp-row">
+      <div class="comp-label">Secondary</div>
+      <div class="comp-items">
+        <button class="btn btn-secondary btn-sm">キャンセル</button>
+        <button class="btn btn-secondary">保存</button>
+        <button class="btn btn-secondary btn-lg">PDF 印刷</button>
+      </div>
+    </div>
+    <div class="comp-row">
+      <div class="comp-label">Danger</div>
+      <div class="comp-items">
+        <button class="btn btn-danger btn-sm">削除</button>
+        <button class="btn btn-danger">返金処理</button>
+      </div>
+    </div>
+    <div class="comp-row">
+      <div class="comp-label">Ghost</div>
+      <div class="comp-items">
+        <button class="btn btn-ghost btn-sm">編集</button>
+        <button class="btn btn-ghost">詳細を見る</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">入力フィールド（Slider禁止 — 常にTextField使用）</div>
+    <div class="comp-row">
+      <div class="comp-label">Text Input</div>
+      <div class="comp-items">
+        <div><label class="inp-label">顧客명</label><input class="inp" placeholder="田中 美咲" style="width:160px;"></div>
+        <div><label class="inp-label">電話番号</label><input class="inp" placeholder="090-1234-5678" style="width:170px;"></div>
+      </div>
+    </div>
+    <div class="comp-row">
+      <div class="comp-label">Number Input</div>
+      <div class="comp-items">
+        <div><label class="inp-label">金額</label><input class="inp" placeholder="¥ 8,800" style="width:120px;text-align:right;"></div>
+        <div><label class="inp-label">数量</label><input class="inp" placeholder="1" style="width:70px;text-align:center;"></div>
+        <div><label class="inp-label">割引率 %</label><input class="inp" placeholder="10" style="width:80px;text-align:right;"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">バッジ / タグ</div>
+    <div class="comp-row">
+      <div class="comp-label">ステータスバッジ</div>
+      <div class="comp-items">
+        <span class="badge badge-green">確定</span>
+        <span class="badge badge-yellow">ウェイティング</span>
+        <span class="badge badge-blue">チェックイン</span>
+        <span class="badge badge-red">キャンセル</span>
+        <span class="badge badge-purple">ノーショー</span>
+        <span class="badge badge-gray">ブロック</span>
+      </div>
+    </div>
+    <div class="comp-row">
+      <div class="comp-label">顧客タグ</div>
+      <div class="comp-items">
+        <span class="badge badge-yellow">VIP</span>
+        <span class="badge badge-blue">常連</span>
+        <span class="badge badge-red">ノーショー注意</span>
+        <span class="badge badge-purple">紹介客</span>
+        <span class="badge badge-orange">インフルエンサー</span>
+        <span class="badge badge-gray">休眠</span>
+      </div>
+    </div>
+    <div class="comp-row">
+      <div class="comp-label">支払方法</div>
+      <div class="comp-items">
+        <span class="badge badge-blue">現金</span>
+        <span class="badge badge-green">カード</span>
+        <span class="badge badge-purple">PayPay</span>
+        <span class="badge badge-orange">LINE Pay</span>
+        <span class="badge badge-gray">後払い</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">予約ステータスインジケーター</div>
+    <div class="comp-row">
+      <div class="comp-label">Status Dot</div>
+      <div class="comp-items">
+        <span class="status"><span class="dot" style="background:#1E8449;"></span>確定</span>
+        <span class="status"><span class="dot" style="background:#D4AC0D;"></span>ウェイティング</span>
+        <span class="status"><span class="dot" style="background:#2E86C1;"></span>チェックイン</span>
+        <span class="status"><span class="dot" style="background:#E74C3C;"></span>キャンセル</span>
+        <span class="status"><span class="dot" style="background:#8E44AD;"></span>ノーショー</span>
+        <span class="status"><span class="dot" style="background:#888;"></span>ブロックタイム</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">カード</div>
+    <div class="comp-row" style="align-items:flex-start;">
+      <div class="comp-label">Metric Card</div>
+      <div class="comp-items" style="align-items:flex-start;">
+        <div class="card-metric"><div class="card-metric-label">本日売上</div><div class="card-metric-val">¥87,400</div></div>
+        <div class="card-metric"><div class="card-metric-label">予約件数</div><div class="card-metric-val">12件</div></div>
+        <div class="card-metric"><div class="card-metric-label">客単価</div><div class="card-metric-val">¥7,283</div></div>
+      </div>
+    </div>
+    <div class="comp-row" style="align-items:flex-start;">
+      <div class="comp-label">Surface Card</div>
+      <div class="comp-items">
+        <div class="card-demo" style="width:220px;">
+          <div class="card-demo-title">田中 美咲</div>
+          <div class="card-demo-sub">090-1234-5678　|　VIP</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">リストアイテム</div>
+    <div style="display:flex;flex-direction:column;gap:6px;max-width:420px;">
+      <div class="list-item">
+        <div class="list-avatar" style="background:#8E44AD;">田</div>
+        <div class="list-main">
+          <div class="list-name">田中 美咲</div>
+          <div class="list-sub">前回: 2026.05.15　|　<span class="badge badge-yellow" style="font-size:10px;padding:1px 7px;">VIP</span></div>
+        </div>
+        <div class="list-right">¥8,800</div>
+      </div>
+      <div class="list-item">
+        <div class="list-avatar" style="background:#2E86C1;">佐</div>
+        <div class="list-main">
+          <div class="list-name">佐藤 花子</div>
+          <div class="list-sub">前回: 2026.06.01　|　<span class="badge badge-blue" style="font-size:10px;padding:1px 7px;">常連</span></div>
+        </div>
+        <div class="list-right">¥5,500</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">タブ</div>
+    <div class="tab-demo">
+      <div class="tab-item on">基本情報</div>
+      <div class="tab-item">カルテ</div>
+      <div class="tab-item">来店履歴</div>
+      <div class="tab-item">ポイント</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ────── レイアウト ────── -->
+<div id="ds-layout" class="ds-panel">
+
+  <div class="section">
+    <div class="section-title">グローバルトップバー（height: 44pt）</div>
+    <div class="topbar-demo">
+      <span class="tb-logo">✂ salon pos</span>
+      <div class="tb-sep"></div>
+      <div class="tb-nav">
+        <span class="tb-nav-item on">会計</span>
+        <span class="tb-nav-item">予約</span>
+        <span class="tb-nav-item">顧客</span>
+        <span class="tb-nav-item">スタッフ</span>
+        <span class="tb-nav-item">在庫</span>
+        <span class="tb-nav-item">売上</span>
+        <span class="tb-nav-item">設定</span>
+      </div>
+      <div class="tb-right">
+        <div class="tb-avatar" style="background:#8E44AD;">由</div>
+        <span style="font-size:12px;color:rgba(255,255,255,.6);">Yuki</span>
+        <div class="tb-sep"></div>
+        <span class="tb-time">2026.06.12 木　10:24</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">グリッドシステム — 12カラム / ページパディング20px</div>
+    <div class="grid-demo" style="grid-template-columns:repeat(12,1fr);">
+      <div class="grid-col" style="grid-column:span 12;">12 — 全幅</div>
+    </div>
+    <div class="grid-demo" style="grid-template-columns:repeat(12,1fr);margin-top:6px;">
+      <div class="grid-col" style="grid-column:span 8;">8 — 会計商品パネル</div>
+      <div class="grid-col" style="grid-column:span 4;">4 — カート</div>
+    </div>
+    <div class="grid-demo" style="grid-template-columns:repeat(12,1fr);margin-top:6px;">
+      <div class="grid-col" style="grid-column:span 9;">9 — 予約カレンダー</div>
+      <div class="grid-col" style="grid-column:span 3;">3 — サイドパネル</div>
+    </div>
+    <div class="grid-demo" style="grid-template-columns:repeat(12,1fr);margin-top:6px;">
+      <div class="grid-col" style="grid-column:span 3;">3 — 設定メニュー</div>
+      <div class="grid-col" style="grid-column:span 9;">9 — 設定内容</div>
+    </div>
+    <div class="grid-demo" style="grid-template-columns:repeat(12,1fr);margin-top:6px;">
+      <div class="grid-col" style="grid-column:span 6;">6</div>
+      <div class="grid-col" style="grid-column:span 6;">6</div>
+    </div>
+    <div class="grid-demo" style="grid-template-columns:repeat(12,1fr);margin-top:6px;">
+      <div class="grid-col" style="grid-column:span 3;">3</div>
+      <div class="grid-col" style="grid-column:span 3;">3</div>
+      <div class="grid-col" style="grid-column:span 3;">3</div>
+      <div class="grid-col" style="grid-column:span 3;">3</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">iPad Air 2 UI原則</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:600px;">
+      <div class="card-demo card-sm">
+        <div class="card-demo-title" style="font-size:12px;margin-bottom:6px;">タッチターゲット</div>
+        <div class="card-demo-sub" style="font-size:11px;">最小 44×44pt<br>ボタン·リストアイテム高さ44pt以上</div>
+      </div>
+      <div class="card-demo card-sm">
+        <div class="card-demo-title" style="font-size:12px;margin-bottom:6px;">フォントサイズ</div>
+        <div class="card-demo-sub" style="font-size:11px;">本文最小13px<br>ラベル最小10px（大文字のみ）</div>
+      </div>
+      <div class="card-demo card-sm">
+        <div class="card-demo-title" style="font-size:12px;margin-bottom:6px;">入力方式</div>
+        <div class="card-demo-sub" style="font-size:11px;">数値は常にTextField<br>Sliderウィジェット使用禁止</div>
+      </div>
+      <div class="card-demo card-sm">
+        <div class="card-demo-title" style="font-size:12px;margin-bottom:6px;">余白</div>
+        <div class="card-demo-sub" style="font-size:11px;">ページパディング20px<br>カードパディング16px / セクション間16px</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function showDs(id, el) {
+  document.querySelectorAll('.ds-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.ds-panel').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('ds-' + id).classList.add('active');
+}
+
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('open');
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('open');
+}
+</script>
+</body>
+</html>

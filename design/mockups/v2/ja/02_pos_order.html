@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1024">
+<title>02 · POS 注文 — salon-pos-v2 JA</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino Sans',sans-serif;background:#1C2833;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;}
+
+/* iPad frame */
+.ipad{width:1024px;height:768px;background:#F4F4F0;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.5);}
+
+/* topbar - light mode */
+.topbar{background:white;height:44px;display:flex;align-items:center;padding:0 16px;gap:10px;flex-shrink:0;border-bottom:.5px solid #E5E5E0;}
+.tb-menu{font-size:18px;color:#1C2833;cursor:pointer;padding:4px 6px;border-radius:6px;line-height:1;flex-shrink:0;user-select:none;}
+.tb-menu:hover{background:#F4F4F0;}
+.tb-logo{font-size:13px;color:#1C2833;font-weight:500;letter-spacing:.08em;}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.tb-sep{width:.5px;height:14px;background:#D0D0CC;}
+.tb-avatar{width:24px;height:24px;border-radius:50%;background:#8E44AD;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:500;color:white;}
+.tb-staff-name{font-size:12px;color:#333;}
+.tb-time{font-size:11px;color:#888;}
+.tb-lock{font-size:13px;color:#aaa;cursor:pointer;}
+
+/* sidebar */
+.sidebar-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:100;opacity:0;pointer-events:none;transition:opacity .2s;}
+.sidebar-overlay.open{opacity:1;pointer-events:all;}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:220px;background:#1C2833;z-index:101;transform:translateX(-100%);transition:transform .22s cubic-bezier(.25,.46,.45,.94);display:flex;flex-direction:column;box-shadow:4px 0 24px rgba(0,0,0,.3);}
+.sidebar.open{transform:translateX(0);}
+.sidebar-header{padding:20px 16px 14px;border-bottom:.5px solid rgba(255,255,255,.1);}
+.sidebar-logo{font-size:14px;color:white;font-weight:500;letter-spacing:.08em;}
+.sidebar-sub{font-size:10px;color:rgba(255,255,255,.3);margin-top:4px;}
+.sidebar-menu{flex:1;padding:8px 0;overflow-y:auto;}
+.sidebar-item{display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;transition:background .12s;user-select:none;}
+.sidebar-item:hover{background:rgba(255,255,255,.07);}
+.sidebar-item.on{background:rgba(255,255,255,.12);}
+.sidebar-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.sidebar-label{font-size:13px;color:rgba(255,255,255,.7);font-weight:400;}
+.sidebar-item.on .sidebar-label{color:white;font-weight:500;}
+.sidebar-footer{padding:14px 16px;border-top:.5px solid rgba(255,255,255,.1);}
+.sidebar-footer-text{font-size:10px;color:rgba(255,255,255,.22);}
+
+/* main layout */
+.main{display:flex;flex:1;overflow:hidden;}
+
+/* left: product panel (8/12) */
+.product-panel{flex:1;display:flex;flex-direction:column;overflow:hidden;border-right:.5px solid #E5E5E0;}
+
+/* sub-topbar */
+.sub-bar{height:44px;background:white;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 16px;gap:8px;flex-shrink:0;}
+.customer-chip{display:flex;align-items:center;gap:6px;background:#EBF5FB;border:.5px solid #AED6F1;border-radius:20px;padding:4px 10px 4px 6px;cursor:pointer;}
+.cust-avatar{width:22px;height:22px;border-radius:50%;background:#2E86C1;display:flex;align-items:center;justify-content:center;font-size:8px;color:white;font-weight:500;flex-shrink:0;}
+.cust-name{font-size:11px;color:#2E86C1;font-weight:500;}
+.cust-pts{font-size:10px;color:#5DADE2;margin-left:4px;}
+.staff-chip{display:flex;align-items:center;gap:5px;background:#F5EEF8;border:.5px solid #C39BD3;border-radius:20px;padding:4px 10px 4px 6px;cursor:pointer;}
+.staff-dot{width:10px;height:10px;border-radius:50%;background:#8E44AD;}
+.staff-name{font-size:11px;color:#8E44AD;font-weight:500;}
+.sub-bar-right{margin-left:auto;display:flex;gap:6px;}
+.link-btn{font-size:11px;color:#888;padding:4px 10px;border-radius:6px;border:.5px solid #E0E0DC;background:white;cursor:pointer;}
+
+/* category tabs */
+.cat-tabs{height:38px;background:white;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 16px;gap:0;flex-shrink:0;overflow-x:auto;}
+.cat-tab{font-size:12px;color:#888;padding:4px 14px;border-radius:20px;cursor:pointer;white-space:nowrap;flex-shrink:0;}
+.cat-tab.on{background:#1C2833;color:white;font-weight:500;}
+
+/* product grid */
+.product-grid{flex:1;padding:12px;overflow-y:auto;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;align-content:start;}
+.prod-card{background:white;border:.5px solid #E5E5E0;border-radius:10px;padding:10px 10px 8px;cursor:pointer;transition:all .12s;user-select:none;display:flex;flex-direction:column;gap:4px;min-height:72px;}
+.prod-card:hover{border-color:#2E86C1;box-shadow:0 2px 8px rgba(46,134,193,.15);}
+.prod-card:active{transform:scale(.97);}
+.prod-card.highlight{border-color:#2E86C1;background:#F8FCFF;}
+.prod-name{font-size:12px;font-weight:500;color:#1a1a1a;line-height:1.3;}
+.prod-price{font-size:13px;font-weight:500;color:#2E86C1;margin-top:auto;}
+.prod-time{font-size:10px;color:#bbb;}
+.prod-badge{font-size:9px;font-weight:500;color:white;background:#E74C3C;border-radius:3px;padding:1px 5px;align-self:flex-start;}
+.prod-empty{background:#F9F9F7;border:1px dashed #E0E0DC;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:20px;color:#D0D0CC;min-height:72px;}
+.prod-empty:hover{border-color:#999;color:#999;}
+
+/* right: cart panel (4/12) */
+.cart-panel{width:320px;background:white;display:flex;flex-direction:column;flex-shrink:0;}
+
+/* cart header */
+.cart-header{height:44px;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 14px;flex-shrink:0;}
+.cart-title{font-size:13px;font-weight:500;color:#1a1a1a;flex:1;}
+.cart-count{font-size:11px;color:#2E86C1;font-weight:500;margin-right:8px;}
+.cart-clear{font-size:11px;color:#E74C3C;cursor:pointer;padding:3px 8px;border-radius:5px;}
+.cart-clear:hover{background:#FDEDEC;}
+
+/* cart items */
+.cart-items{flex:1;overflow-y:auto;padding:8px;}
+.cart-item{padding:9px 10px;border-radius:8px;border:.5px solid #E5E5E0;margin-bottom:6px;background:white;}
+.cart-item:hover{border-color:#D0D0CC;}
+.ci-top{display:flex;align-items:center;gap:8px;}
+.ci-name{flex:1;font-size:12px;font-weight:500;color:#1a1a1a;}
+.ci-price{font-size:13px;font-weight:500;color:#1a1a1a;}
+.ci-del{font-size:14px;color:#ccc;cursor:pointer;line-height:1;padding:2px;}
+.ci-del:hover{color:#E74C3C;}
+.ci-bottom{display:flex;align-items:center;gap:6px;margin-top:6px;}
+.qty-btn{width:24px;height:24px;border-radius:5px;border:.5px solid #E0E0DC;background:#F4F4F0;font-size:14px;color:#555;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.qty-btn:hover{background:#E8E8E4;}
+.qty-val{font-size:12px;font-weight:500;width:28px;text-align:center;color:#1a1a1a;}
+.ci-note{flex:1;font-size:10px;color:#999;border:none;outline:none;background:transparent;font-family:inherit;}
+.ci-staff{font-size:10px;color:#8E44AD;background:#F5EEF8;border-radius:4px;padding:2px 6px;}
+
+/* cart discount row */
+.discount-row{padding:8px 10px;border-top:.5px solid #F0F0EC;}
+.discount-label{font-size:11px;color:#888;margin-bottom:6px;}
+.discount-inputs{display:flex;gap:6px;}
+.disc-inp{flex:1;padding:6px 8px;border:.5px solid #E0E0DC;border-radius:6px;font-size:12px;font-family:inherit;outline:none;text-align:right;}
+.disc-unit{font-size:11px;color:#888;padding:6px 4px;align-self:center;}
+.coupon-row{display:flex;gap:6px;margin-top:6px;}
+.coupon-inp{flex:1;padding:6px 8px;border:.5px solid #E0E0DC;border-radius:6px;font-size:12px;font-family:inherit;outline:none;}
+.coupon-btn{padding:6px 10px;border-radius:6px;background:#F4F4F0;border:.5px solid #D0D0CC;font-size:11px;color:#555;cursor:pointer;font-family:inherit;}
+
+/* cart summary */
+.cart-summary{padding:10px 14px;border-top:.5px solid #E5E5E0;flex-shrink:0;}
+.sum-row{display:flex;justify-content:space-between;align-items:center;padding:3px 0;font-size:12px;}
+.sum-label{color:#888;}
+.sum-val{color:#1a1a1a;font-weight:500;}
+.sum-discount{color:#E74C3C;}
+.sum-divider{height:.5px;background:#E5E5E0;margin:6px 0;}
+.sum-total-row{display:flex;justify-content:space-between;align-items:baseline;padding:4px 0;}
+.sum-total-label{font-size:12px;color:#555;font-weight:500;}
+.sum-total-val{font-size:22px;font-weight:700;color:#1a1a1a;}
+.sum-tax{font-size:10px;color:#999;text-align:right;}
+
+/* pay button */
+.pay-btn{margin:10px 14px 14px;padding:14px;border-radius:10px;background:#2E86C1;color:white;font-size:15px;font-weight:500;text-align:center;cursor:pointer;border:none;font-family:inherit;width:calc(100% - 28px);}
+.pay-btn:hover{background:#2471A3;}
+.pay-btn:active{transform:scale(.98);}
+.pay-btn-disabled{background:#D0D0CC;cursor:not-allowed;}
+
+/* memo row */
+.memo-row{padding:0 14px 8px;}
+.memo-inp{width:100%;padding:7px 10px;border:.5px solid #E0E0DC;border-radius:8px;font-size:12px;font-family:inherit;outline:none;resize:none;color:#555;}
+.memo-inp::placeholder{color:#ccc;}
+
+/* empty cart */
+.cart-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:#ccc;}
+.cart-empty-icon{font-size:36px;}
+.cart-empty-text{font-size:12px;}
+</style>
+</head>
+<body>
+
+<!-- sidebar overlay -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+<!-- sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">✂ salon pos</div>
+    <div class="sidebar-sub">Hair Salon Yuki · 渋谷区</div>
+  </div>
+  <div class="sidebar-menu">
+    <div class="sidebar-item on" onclick="closeSidebar()">
+      <div class="sidebar-dot" style="background:#2E86C1"></div>
+      <span class="sidebar-label">会計</span>
+    </div>
+    <div class="sidebar-item" onclick="closeSidebar()">
+      <div class="sidebar-dot" style="background:#8E44AD"></div>
+      <span class="sidebar-label">予約</span>
+    </div>
+    <div class="sidebar-item" onclick="closeSidebar()">
+      <div class="sidebar-dot" style="background:#1E8449"></div>
+      <span class="sidebar-label">顧客</span>
+    </div>
+    <div class="sidebar-item" onclick="closeSidebar()">
+      <div class="sidebar-dot" style="background:#C0392B"></div>
+      <span class="sidebar-label">スタッフ</span>
+    </div>
+    <div class="sidebar-item" onclick="closeSidebar()">
+      <div class="sidebar-dot" style="background:#7D3C98"></div>
+      <span class="sidebar-label">在庫</span>
+    </div>
+    <div class="sidebar-item" onclick="closeSidebar()">
+      <div class="sidebar-dot" style="background:#D4AC0D"></div>
+      <span class="sidebar-label">売上</span>
+    </div>
+    <div class="sidebar-item" onclick="closeSidebar()">
+      <div class="sidebar-dot" style="background:#D35400"></div>
+      <span class="sidebar-label">マーケティング</span>
+    </div>
+    <div class="sidebar-item" onclick="closeSidebar()">
+      <div class="sidebar-dot" style="background:#117A65"></div>
+      <span class="sidebar-label">店舗設定</span>
+    </div>
+    <div class="sidebar-item" onclick="closeSidebar()">
+      <div class="sidebar-dot" style="background:#1A5276"></div>
+      <span class="sidebar-label">システム設定</span>
+    </div>
+  </div>
+  <div class="sidebar-footer">
+    <div class="sidebar-footer-text">v2.0.0 · iPad Air 2</div>
+  </div>
+</div>
+
+<div class="ipad">
+
+  <!-- topbar -->
+  <div class="topbar">
+    <span class="tb-menu" onclick="toggleSidebar()">☰</span>
+    <span class="tb-logo">✂ salon pos</span>
+    <div class="tb-right">
+      <div class="tb-avatar">由</div>
+      <span class="tb-staff-name">Yuki</span>
+      <div class="tb-sep"></div>
+      <span class="tb-time">06.12 木　10:24</span>
+      <span class="tb-lock">🔒</span>
+    </div>
+  </div>
+
+<div class="tb-nav">
+      <span class="tb-nav-item on">会計</span>
+      <span class="tb-nav-item">予約</span>
+      <span class="tb-nav-item">顧客</span>
+      <span class="tb-nav-item">スタッフ</span>
+      <span class="tb-nav-item">在庫</span>
+      <span class="tb-nav-item">売上</span>
+      <span class="tb-nav-item">⚙</span>
+    </div>
+    <div class="tb-right">
+      <div class="tb-avatar">由</div>
+      <span style="font-size:12px;color:rgba(255,255,255,.55);">Yuki</span>
+      <div class="tb-sep"></div>
+      <span class="tb-time">06.12 木　10:24</span>
+      <span class="tb-bell">🔔</span>
+      <span class="tb-lock">🔒</span>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <!-- product panel -->
+    <div class="product-panel">
+
+      <!-- sub bar: customer + staff -->
+      <div class="sub-bar">
+        <div class="customer-chip" onclick="toggleCustomer()">
+          <div class="cust-avatar" id="custAvatar">田</div>
+          <span class="cust-name" id="custName">田中 美咲</span>
+          <span class="cust-pts" id="custPts">320pt</span>
+        </div>
+        <div class="staff-chip">
+          <div class="staff-dot"></div>
+          <span class="staff-name">Yuki</span>
+        </div>
+        <div class="sub-bar-right">
+          <span class="link-btn">📅 予約連携</span>
+          <span class="link-btn">👤 顧客詳細</span>
+        </div>
+      </div>
+
+      <!-- category tabs -->
+      <div class="cat-tabs">
+        <span class="cat-tab on" onclick="selectCat(this,'施術')">施術</span>
+        <span class="cat-tab" onclick="selectCat(this,'カラー')">カラー</span>
+        <span class="cat-tab" onclick="selectCat(this,'トリートメント')">トリートメント</span>
+        <span class="cat-tab" onclick="selectCat(this,'パーマ')">パーマ</span>
+        <span class="cat-tab" onclick="selectCat(this,'ヘッドスパ')">ヘッドスパ</span>
+        <span class="cat-tab" onclick="selectCat(this,'商品')">商品</span>
+        <span class="cat-tab" onclick="selectCat(this,'その他')">その他</span>
+        <span class="cat-tab" style="color:#2E86C1;" onclick="selectCat(this,'+')">＋ カテゴリ</span>
+      </div>
+
+      <!-- product grid -->
+      <div class="product-grid" id="productGrid"></div>
+    </div>
+
+    <!-- cart panel -->
+    <div class="cart-panel">
+      <div class="cart-header">
+        <span class="cart-title">注文内容</span>
+        <span class="cart-count" id="cartCount">3件</span>
+        <span class="cart-clear" onclick="clearCart()">全て削除</span>
+      </div>
+
+      <div id="cartItems" class="cart-items"></div>
+
+      <!-- discount -->
+      <div class="discount-row">
+        <div class="discount-label">割引</div>
+        <div class="discount-inputs">
+          <input class="disc-inp" id="discPct" placeholder="0" style="width:70px;" oninput="calcTotal()">
+          <span class="disc-unit">%</span>
+          <input class="disc-inp" id="discAmt" placeholder="0" oninput="calcTotal()">
+          <span class="disc-unit">¥</span>
+        </div>
+        <div class="coupon-row">
+          <input class="coupon-inp" placeholder="クーポンコード">
+          <button class="coupon-btn">適用</button>
+        </div>
+      </div>
+
+      <!-- memo -->
+      <div class="memo-row">
+        <textarea class="memo-inp" rows="2" placeholder="メモ（例：前髪はあまり切らないで）"></textarea>
+      </div>
+
+      <!-- summary -->
+      <div class="cart-summary" id="cartSummary"></div>
+
+      <!-- pay button -->
+      <button class="pay-btn" id="payBtn" onclick="goPayment()">会計する</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ── data ──────────────────────────────────────────────────────────────────────
+const PRODUCTS = {
+  '施術': [
+    {name:'カット', price:4400, time:'40分'},
+    {name:'シャンプー・ブロー', price:1650, time:'20分'},
+    {name:'カット + シャンプー', price:5500, time:'60分'},
+    {name:'前髪カット', price:1100, time:'15分'},
+    {name:'ヘアセット', price:3300, time:'30分'},
+    {name:'縮毛矯正', price:16500, time:'180分'},
+    {name:'ストレートパーマ', price:13200, time:'150分'},
+    null, // empty slot
+  ],
+  'カラー': [
+    {name:'ワンカラー', price:8800, time:'90分', badge:'人気'},
+    {name:'ダブルカラー', price:16500, time:'150分'},
+    {name:'グラデーション', price:13200, time:'120分'},
+    {name:'ハイライト', price:11000, time:'120分'},
+    {name:'ローライト', price:9900, time:'100分'},
+    {name:'リタッチ', price:7700, time:'80分'},
+    null,null,
+  ],
+  'トリートメント': [
+    {name:'トリートメント S', price:2750, time:'20分'},
+    {name:'トリートメント M', price:4400, time:'30分'},
+    {name:'トリートメント L', price:6600, time:'40分'},
+    {name:'酸熱トリートメント', price:11000, time:'90分'},
+    null,null,null,null,
+  ],
+  'パーマ': [
+    {name:'デジタルパーマ', price:13200, time:'150分'},
+    {name:'コールドパーマ', price:8800, time:'120分'},
+    {name:'エアウェーブ', price:11000, time:'120分'},
+    null,null,null,null,null,
+  ],
+  'ヘッドスパ': [
+    {name:'ヘッドスパ 30分', price:4400, time:'30分'},
+    {name:'ヘッドスパ 60分', price:7700, time:'60分'},
+    {name:'炭酸スパ', price:5500, time:'40分'},
+    null,null,null,null,null,
+  ],
+  '商品': [
+    {name:'シャンプー', price:2750, time:''},
+    {name:'コンディショナー', price:2750, time:''},
+    {name:'トリートメント', price:3850, time:''},
+    {name:'スタイリング剤', price:2200, time:''},
+    null,null,null,null,
+  ],
+  'その他': [
+    {name:'その他', price:0, time:''},
+    null,null,null,null,null,null,null,
+  ],
+};
+
+let cart = [
+  {id:1, name:'カット', price:4400, qty:1, note:'', staffColor:'#8E44AD', staffName:'Yuki'},
+  {id:2, name:'ワンカラー', price:8800, qty:1, note:'明るめに', staffColor:'#2E86C1', staffName:'Mika'},
+  {id:3, name:'トリートメント M', price:4400, qty:1, note:'', staffColor:'#8E44AD', staffName:'Yuki'},
+];
+let nextId = 4;
+let currentCat = '施術';
+
+// ── render products ────────────────────────────────────────────────────────────
+function renderProducts(cat) {
+  const grid = document.getElementById('productGrid');
+  const items = PRODUCTS[cat] || [];
+  grid.innerHTML = items.map(p => {
+    if (!p) return `<div class="prod-empty" onclick="addCustom()">＋</div>`;
+    return `<div class="prod-card${cart.find(c=>c.name===p.name)?' highlight':''}" onclick="addToCart(${JSON.stringify(p).replace(/"/g,'&quot;')})">
+      ${p.badge ? `<span class="prod-badge">${p.badge}</span>` : ''}
+      <span class="prod-name">${p.name}</span>
+      <span class="prod-price">¥${p.price.toLocaleString()}</span>
+      ${p.time ? `<span class="prod-time">${p.time}</span>` : ''}
+    </div>`;
+  }).join('');
+}
+
+// ── cart logic ─────────────────────────────────────────────────────────────────
+function addToCart(p) {
+  const ex = cart.find(c => c.name === p.name);
+  if (ex) { ex.qty++; }
+  else { cart.push({id:nextId++, name:p.name, price:p.price, qty:1, note:'', staffColor:'#8E44AD', staffName:'Yuki'}); }
+  renderAll();
+}
+
+function addCustom() {
+  const name = prompt('商品名を入力してください');
+  if (!name) return;
+  const price = parseInt(prompt('金額 (¥)') || '0');
+  cart.push({id:nextId++, name, price, qty:1, note:'', staffColor:'#8E44AD', staffName:'Yuki'});
+  renderAll();
+}
+
+function removeItem(id) {
+  cart = cart.filter(c => c.id !== id);
+  renderAll();
+}
+
+function changeQty(id, delta) {
+  const item = cart.find(c => c.id === id);
+  if (!item) return;
+  item.qty = Math.max(1, item.qty + delta);
+  renderAll();
+}
+
+function clearCart() {
+  if (cart.length === 0) return;
+  cart = [];
+  renderAll();
+}
+
+function calcTotal() {
+  const subtotal = cart.reduce((s, c) => s + c.price * c.qty, 0);
+  const pct = parseFloat(document.getElementById('discPct').value) || 0;
+  const amt = parseInt(document.getElementById('discAmt').value) || 0;
+  const discAmt = Math.round(subtotal * pct / 100) + amt;
+  const total = Math.max(0, subtotal - discAmt);
+  const tax = Math.round(total * 10 / 110);
+  return {subtotal, discAmt, total, tax};
+}
+
+function renderCart() {
+  const el = document.getElementById('cartItems');
+  const countEl = document.getElementById('cartCount');
+
+  if (cart.length === 0) {
+    el.innerHTML = `<div class="cart-empty"><div class="cart-empty-icon">🛒</div><div class="cart-empty-text">商品を選択してください</div></div>`;
+    countEl.textContent = '';
+    return;
+  }
+
+  countEl.textContent = cart.length + '件';
+  el.innerHTML = cart.map(item => `
+    <div class="cart-item">
+      <div class="ci-top">
+        <span class="ci-name">${item.name}</span>
+        <span class="ci-price">¥${(item.price * item.qty).toLocaleString()}</span>
+        <span class="ci-del" onclick="removeItem(${item.id})">✕</span>
+      </div>
+      <div class="ci-bottom">
+        <div class="qty-btn" onclick="changeQty(${item.id},-1)">－</div>
+        <span class="qty-val">${item.qty}</span>
+        <div class="qty-btn" onclick="changeQty(${item.id},1)">＋</div>
+        <input class="ci-note" placeholder="メモ" value="${item.note}" onchange="updateNote(${item.id},this.value)">
+        <span class="ci-staff" style="background:${item.staffColor}20;color:${item.staffColor};">${item.staffName}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function updateNote(id, val) {
+  const item = cart.find(c => c.id === id);
+  if (item) item.note = val;
+}
+
+function renderSummary() {
+  const {subtotal, discAmt, total, tax} = calcTotal();
+  const el = document.getElementById('cartSummary');
+  const btn = document.getElementById('payBtn');
+  if (cart.length === 0) {
+    el.innerHTML = '';
+    btn.classList.add('pay-btn-disabled');
+    return;
+  }
+  btn.classList.remove('pay-btn-disabled');
+  el.innerHTML = `
+    <div class="sum-row"><span class="sum-label">小計</span><span class="sum-val">¥${subtotal.toLocaleString()}</span></div>
+    ${discAmt > 0 ? `<div class="sum-row"><span class="sum-label">割引</span><span class="sum-discount">－¥${discAmt.toLocaleString()}</span></div>` : ''}
+    <div class="sum-divider"></div>
+    <div class="sum-total-row"><span class="sum-total-label">合計</span><span class="sum-total-val">¥${total.toLocaleString()}</span></div>
+    <div class="sum-tax">税込み ¥${tax.toLocaleString()}</div>
+  `;
+}
+
+function renderAll() {
+  renderCart();
+  renderSummary();
+  renderProducts(currentCat);
+}
+
+function selectCat(el, cat) {
+  document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('on'));
+  el.classList.add('on');
+  currentCat = cat;
+  renderProducts(cat);
+}
+
+function toggleCustomer() {
+  const names = [
+    {av:'田', name:'田中 美咲', pts:'320pt'},
+    {av:'佐', name:'佐藤 花子', pts:'1,200pt'},
+    {av:'?', name:'非会員', pts:''},
+  ];
+  const cur = names.findIndex(n => n.name === document.getElementById('custName').textContent);
+  const next = names[(cur + 1) % names.length];
+  document.getElementById('custAvatar').textContent = next.av;
+  document.getElementById('custName').textContent = next.name;
+  document.getElementById('custPts').textContent = next.pts;
+}
+
+function goPayment() {
+  if (cart.length === 0) return;
+  alert('→ 会計画面へ (03_pos_payment)');
+}
+
+// ── init ───────────────────────────────────────────────────────────────────────
+renderProducts('施術');
+renderAll();
+
+// live recalc on discount input
+document.getElementById('discPct').addEventListener('input', renderSummary);
+document.getElementById('discAmt').addEventListener('input', renderSummary);
+</script>
+</body>
+</html>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>01 로그인 · 메인 — salon-pos-v2 mockup</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#e8e8e8;display:flex;flex-direction:column;align-items:center;padding:32px 16px;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;gap:16px;}
+h1{font-size:13px;font-weight:500;color:#666;letter-spacing:.05em;}
+.ipad{width:min(960px,100%);aspect-ratio:1024/768;background:#1a1a1a;border-radius:22px;padding:24px 18px;position:relative;display:flex;align-items:center;justify-content:center;}
+.ipad::after{content:'';position:absolute;bottom:5px;left:50%;transform:translateX(-50%);width:34px;height:34px;border-radius:50%;border:1.5px solid #3a3a3a;background:#222;}
+.screen{width:100%;height:100%;border-radius:6px;overflow:hidden;position:relative;}
+#s-login{position:absolute;inset:0;background:linear-gradient(160deg,#1C2833 0%,#2C3E50 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .35s,transform .35s;}
+.login-logo{font-size:22px;font-weight:300;color:white;letter-spacing:.15em;margin-bottom:4px;}
+.login-sub{font-size:11px;color:rgba(255,255,255,.35);letter-spacing:.2em;margin-bottom:36px;}
+.staff-label{font-size:11px;color:rgba(255,255,255,.45);margin-bottom:14px;}
+.staff-row{display:flex;gap:14px;margin-bottom:32px;}
+.staff-btn{display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;opacity:.55;transition:opacity .15s;}
+.staff-btn.selected{opacity:1;}
+.staff-avatar{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:500;color:white;border:2px solid transparent;transition:border-color .15s;}
+.staff-btn.selected .staff-avatar{border-color:rgba(255,255,255,.7);}
+.staff-name{font-size:11px;color:rgba(255,255,255,.7);}
+.pin-box{background:rgba(255,255,255,.07);border:.5px solid rgba(255,255,255,.15);border-radius:14px;padding:20px 24px;display:flex;flex-direction:column;align-items:center;gap:14px;}
+.pin-dots{display:flex;gap:12px;}
+.pin-dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.2);transition:background .15s;}
+.pin-dot.filled{background:white;}
+.pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.pin-key{width:52px;height:40px;border-radius:8px;background:rgba(255,255,255,.1);color:white;font-size:15px;border:none;cursor:pointer;transition:background .1s;}
+.pin-key:hover{background:rgba(255,255,255,.2);}
+.pin-key.del{font-size:12px;background:transparent;color:rgba(255,255,255,.5);}
+.pin-key.enter{background:#2E86C1;font-size:11px;}
+.login-hint{font-size:10px;color:rgba(255,255,255,.25);margin-top:8px;}
+#s-main{position:absolute;inset:0;background:#F4F4F0;display:flex;flex-direction:column;opacity:0;transform:scale(.97);pointer-events:none;transition:opacity .35s,transform .35s;}
+#s-main.visible{opacity:1;transform:scale(1);pointer-events:all;}
+#s-login.hidden{opacity:0;pointer-events:none;}
+.topbar{height:46px;background:#1C2833;display:flex;align-items:center;padding:0 20px;gap:12px;flex-shrink:0;}
+.topbar-logo{font-size:13px;font-weight:400;color:white;letter-spacing:.1em;}
+.topbar-sep{width:.5px;height:16px;background:rgba(255,255,255,.2);}
+.topbar-store{font-size:12px;color:rgba(255,255,255,.6);}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:14px;}
+.topbar-staff{display:flex;align-items:center;gap:7px;}
+.topbar-avatar{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;color:white;}
+.topbar-staffname{font-size:12px;color:rgba(255,255,255,.75);}
+.topbar-time{font-size:11px;color:rgba(255,255,255,.4);}
+.topbar-bell{font-size:16px;color:rgba(255,255,255,.5);position:relative;cursor:pointer;}
+.bell-badge{position:absolute;top:-3px;right:-3px;width:8px;height:8px;border-radius:50%;background:#E74C3C;}
+.topbar-lock{font-size:13px;color:rgba(255,255,255,.4);cursor:pointer;}
+.main-body{flex:1;padding:20px 24px;display:flex;flex-direction:column;gap:16px;overflow:hidden;}
+.stats-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
+.stat-card{background:white;border-radius:10px;padding:12px 14px;border:.5px solid rgba(0,0,0,.07);}
+.stat-label{font-size:10px;color:#888;margin-bottom:4px;}
+.stat-val{font-size:20px;font-weight:500;color:#1a1a1a;}
+.stat-sub{font-size:10px;color:#aaa;margin-top:2px;}
+.stat-val.warn{color:#E74C3C;}
+.stat-val.good{color:#1E8449;}
+.tiles-grid{flex:1;display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
+.tile{background:white;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;border:.5px solid rgba(0,0,0,.07);transition:transform .12s;padding:12px 8px;}
+.tile:hover{transform:translateY(-2px);}
+.tile-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;}
+.tile-icon i{font-size:20px;}
+.tile-name{font-size:12px;font-weight:500;color:#333;text-align:center;}
+.tile.big{flex-direction:row;justify-content:flex-start;padding:14px 18px;gap:14px;grid-column:span 2;}
+.tile.big .tile-icon{width:46px;height:46px;border-radius:12px;flex-shrink:0;}
+.tile.big .tile-icon i{font-size:22px;}
+.tile.big .tile-text{display:flex;flex-direction:column;gap:3px;}
+.tile.big .tile-name{font-size:14px;}
+.tile.big .tile-sub{font-size:11px;color:#999;}
+.apt-strip{background:white;border-radius:10px;padding:10px 14px;border:.5px solid rgba(0,0,0,.07);}
+.apt-strip-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.apt-strip-title{font-size:11px;font-weight:500;color:#333;}
+.apt-strip-more{font-size:10px;color:#2E86C1;cursor:pointer;}
+.apt-list{display:flex;gap:8px;}
+.apt-chip{background:#F8F8F6;border-radius:7px;padding:6px 10px;flex-shrink:0;border:.5px solid rgba(0,0,0,.06);}
+.apt-chip-time{font-size:10px;color:#888;}
+.apt-chip-name{font-size:11px;font-weight:500;color:#1a1a1a;margin-top:1px;}
+.apt-chip-menu{font-size:10px;color:#aaa;margin-top:1px;}
+.apt-chip-staff{display:inline-block;width:14px;height:14px;border-radius:50%;margin-top:3px;}
+</style>
+</head>
+<body>
+<h1>salon-pos-v2 · 01 로그인 / 메인 화면 모크업</h1>
+<div class="ipad">
+<div class="screen">
+<div id="s-login">
+  <div class="login-logo">✂ salon pos</div>
+  <div class="login-sub">STAFF LOGIN</div>
+  <div class="staff-label">担当者を選んでください</div>
+  <div class="staff-row">
+    <div class="staff-btn selected" onclick="selStaff(this,'#8E44AD','由','Yuki')">
+      <div class="staff-avatar" style="background:#8E44AD;">由</div>
+      <span class="staff-name">Yuki</span>
+    </div>
+    <div class="staff-btn" onclick="selStaff(this,'#2E86C1','花','Hana')">
+      <div class="staff-avatar" style="background:#2E86C1;">花</div>
+      <span class="staff-name">Hana</span>
+    </div>
+    <div class="staff-btn" onclick="selStaff(this,'#1E8449','蓮','Ren')">
+      <div class="staff-avatar" style="background:#1E8449;">蓮</div>
+      <span class="staff-name">Ren</span>
+    </div>
+    <div class="staff-btn" onclick="selStaff(this,'#C0392B','管','Admin')">
+      <div class="staff-avatar" style="background:#C0392B;">管</div>
+      <span class="staff-name">Admin</span>
+    </div>
+  </div>
+  <div class="pin-box">
+    <div class="pin-dots" id="pindots">
+      <div class="pin-dot"></div><div class="pin-dot"></div>
+      <div class="pin-dot"></div><div class="pin-dot"></div>
+    </div>
+    <div class="pin-pad">
+      <button class="pin-key" onclick="pinKey('1')">1</button>
+      <button class="pin-key" onclick="pinKey('2')">2</button>
+      <button class="pin-key" onclick="pinKey('3')">3</button>
+      <button class="pin-key" onclick="pinKey('4')">4</button>
+      <button class="pin-key" onclick="pinKey('5')">5</button>
+      <button class="pin-key" onclick="pinKey('6')">6</button>
+      <button class="pin-key" onclick="pinKey('7')">7</button>
+      <button class="pin-key" onclick="pinKey('8')">8</button>
+      <button class="pin-key" onclick="pinKey('9')">9</button>
+      <button class="pin-key del" onclick="pinDel()">⌫</button>
+      <button class="pin-key" onclick="pinKey('0')">0</button>
+      <button class="pin-key enter" onclick="doLogin()">→</button>
+    </div>
+  </div>
+  <div class="login-hint">PIN 1234 로 로그인 (데모)</div>
+</div>
+<div id="s-main">
+  <div class="topbar">
+    <span class="topbar-logo">✂ salon pos</span>
+    <div class="topbar-sep"></div>
+    <span class="topbar-store">Bloom Hair Salon</span>
+    <div class="topbar-right">
+      <div class="topbar-staff">
+        <div class="topbar-avatar" id="topAvatar" style="background:#8E44AD;">由</div>
+        <span class="topbar-staffname" id="topName">Yuki</span>
+      </div>
+      <div class="topbar-sep"></div>
+      <span class="topbar-time">2026.06.12 木　10:24</span>
+      <div class="topbar-bell"><i class="ti ti-bell"></i><div class="bell-badge"></div></div>
+      <div class="topbar-lock" onclick="doLogout()"><i class="ti ti-lock"></i></div>
+    </div>
+  </div>
+  <div class="main-body">
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-label">本日売上</div><div class="stat-val good">¥87,400</div><div class="stat-sub">전일比 +12%</div></div>
+      <div class="stat-card"><div class="stat-label">予約 合計</div><div class="stat-val">12件</div><div class="stat-sub">완료 8 · 남은 4</div></div>
+      <div class="stat-card"><div class="stat-label">대기 예약</div><div class="stat-val warn">2건</div><div class="stat-sub">확인 필요</div></div>
+      <div class="stat-card"><div class="stat-label">新規顧客</div><div class="stat-val">3명</div><div class="stat-sub">이달 누계 18명</div></div>
+      <div class="stat-card"><div class="stat-label">재고 경고</div><div class="stat-val warn">2종</div><div class="stat-sub">발주 필요</div></div>
+    </div>
+    <div class="tiles-grid">
+      <div class="tile big" style="background:#EBF5FB;">
+        <div class="tile-icon" style="background:#2E86C1;"><i class="ti ti-credit-card" style="color:white;"></i></div>
+        <div class="tile-text"><div class="tile-name">결제</div><div class="tile-sub">주문 · 계산 · 이력</div></div>
+      </div>
+      <div class="tile big" style="background:#F5EEF8;">
+        <div class="tile-icon" style="background:#8E44AD;"><i class="ti ti-calendar" style="color:white;"></i></div>
+        <div class="tile-text"><div class="tile-name">예약관리</div><div class="tile-sub">오늘 12건 예약</div></div>
+      </div>
+      <div class="tile"><div class="tile-icon" style="background:#EAFAF1;"><i class="ti ti-users" style="color:#1E8449;"></i></div><div class="tile-name">고객관리</div></div>
+      <div class="tile"><div class="tile-icon" style="background:#FEF9E7;"><i class="ti ti-chart-bar" style="color:#D4AC0D;"></i></div><div class="tile-name">매출현황</div></div>
+      <div class="tile"><div class="tile-icon" style="background:#FDEDEC;"><i class="ti ti-id-badge" style="color:#C0392B;"></i></div><div class="tile-name">직원관리</div></div>
+      <div class="tile"><div class="tile-icon" style="background:#F4ECF7;"><i class="ti ti-package" style="color:#7D3C98;"></i></div><div class="tile-name">재고관리</div></div>
+      <div class="tile"><div class="tile-icon" style="background:#FEF5E7;"><i class="ti ti-speakerphone" style="color:#D35400;"></i></div><div class="tile-name">마케팅</div></div>
+      <div class="tile"><div class="tile-icon" style="background:#EAFAF1;"><i class="ti ti-building-store" style="color:#1E8449;"></i></div><div class="tile-name">매장관리</div></div>
+      <div class="tile"><div class="tile-icon" style="background:#F2F3F4;"><i class="ti ti-settings" style="color:#666;"></i></div><div class="tile-name">설정</div></div>
+    </div>
+    <div class="apt-strip">
+      <div class="apt-strip-head"><span class="apt-strip-title">직후 예약</span><span class="apt-strip-more">전체 보기 →</span></div>
+      <div class="apt-list">
+        <div class="apt-chip"><div class="apt-chip-time">10:30</div><div class="apt-chip-name">田中 美咲</div><div class="apt-chip-menu">カット + カラー</div><div class="apt-chip-staff" style="background:#8E44AD;"></div></div>
+        <div class="apt-chip"><div class="apt-chip-time">11:00</div><div class="apt-chip-name">佐藤 花子</div><div class="apt-chip-menu">パーマ</div><div class="apt-chip-staff" style="background:#2E86C1;"></div></div>
+        <div class="apt-chip"><div class="apt-chip-time">11:30</div><div class="apt-chip-name">山田 恵</div><div class="apt-chip-menu">トリートメント</div><div class="apt-chip-staff" style="background:#1E8449;"></div></div>
+        <div class="apt-chip"><div class="apt-chip-time">12:00</div><div class="apt-chip-name">鈴木 陽子</div><div class="apt-chip-menu">カット</div><div class="apt-chip-staff" style="background:#8E44AD;"></div></div>
+        <div class="apt-chip"><div class="apt-chip-time">13:30</div><div class="apt-chip-name">高橋 さくら</div><div class="apt-chip-menu">ヘッドスパ</div><div class="apt-chip-staff" style="background:#C0392B;"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+<p style="font-size:11px;color:#999;">PIN 1234 입력 후 → 버튼으로 로그인　/　🔒 버튼으로 잠금 화면 복귀</p>
+<script>
+let pin='',selColor='#8E44AD',selInitial='由',selNameStr='Yuki';
+function selStaff(el,c,i,n){document.querySelectorAll('.staff-btn').forEach(b=>b.classList.remove('selected'));el.classList.add('selected');selColor=c;selInitial=i;selNameStr=n;pin='';updateDots();}
+function pinKey(k){if(pin.length>=4)return;pin+=k;updateDots();if(pin.length===4)setTimeout(doLogin,300);}
+function pinDel(){pin=pin.slice(0,-1);updateDots();}
+function updateDots(){document.querySelectorAll('.pin-dot').forEach((d,i)=>d.classList.toggle('filled',i<pin.length));}
+function doLogin(){if(pin!=='1234'){pin='';updateDots();return;}document.getElementById('topAvatar').style.background=selColor;document.getElementById('topAvatar').textContent=selInitial;document.getElementById('topName').textContent=selNameStr;document.getElementById('s-login').classList.add('hidden');document.getElementById('s-main').classList.add('visible');}
+function doLogout(){pin='';updateDots();document.getElementById('s-login').classList.remove('hidden');document.getElementById('s-main').classList.remove('visible');}
+</script>
+</body>
+</html>
