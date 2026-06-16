@@ -464,7 +464,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
         <!-- edit mode: save button -->
         <button class="grid-bar-btn" id="btnSave" style="display:none" onclick="saveGrid()">💾 保存する</button>
         <!-- normal mode only -->
-        <button class="grid-bar-btn" id="btnAddProduct" onclick="addProduct()">＋ 商品追加</button>
+
         <div class="grid-bar-sep"></div>
         <!-- edit mode: page management (right of separator) -->
         <button class="grid-bar-btn" id="btnAddPage" style="display:none" onclick="addPage()">＋ ページ追加</button>
@@ -880,7 +880,6 @@ function _exitOrEnterEditMode(){
   isDirty=false;
   document.getElementById('editModeBtn').classList.toggle('active',editMode);
   document.getElementById('btnSave').style.display=editMode?'':'none';
-  document.getElementById('btnAddProduct').style.display=editMode?'none':'';
   document.getElementById('btnAddPage').style.display=editMode?'':'none';
   document.getElementById('btnDelPage').style.display=editMode?'':'none';
   showToast(
