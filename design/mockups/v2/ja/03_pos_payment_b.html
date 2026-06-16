@@ -209,9 +209,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 /* 탭 */
 .split-tabs{display:flex;gap:4px;margin-bottom:14px;flex-shrink:0;}
 /* 탭 패널 래퍼 — 고정 높이로 탭 전환 시 밀림 방지 */
-.tab-panel-wrap{position:relative;height:195px;flex-shrink:0;overflow:hidden;}
-.tab-panel-wrap>div{position:absolute;top:0;left:0;right:0;bottom:0;visibility:hidden;overflow-y:auto;}
-.tab-panel-wrap>div.tab-active{visibility:visible;}
+.tab-panel-wrap{height:195px;flex-shrink:0;overflow:hidden;position:relative;}
+.tab-panel-wrap>div{display:none;}
+.tab-panel-wrap>div.tab-active{display:block;}
 /* 현금 인라인 래퍼 — 항상 공간 확보, visibility로 토글 */
 .split-cash-wrap{flex-shrink:0;}
 .split-tab{flex:1;padding:8px 4px;border-radius:8px;border:1px solid #E0E0DC;background:white;font-size:11px;font-weight:600;color:#888;cursor:pointer;font-family:inherit;text-align:center;transition:all .12s;}
@@ -1062,6 +1062,7 @@ function goBackToOrder() {
 let splitTab = 'amount';
 let splitHistory = [];
 let splitRemaining = subtotal;
+let splitOrigTotal = subtotal; // 더치페이 기준 원래 합계
 let splitCurMethod = null;
 let dutchCount = 2;
 let menuChecked = new Set();
@@ -1069,6 +1070,7 @@ let sciCashRaw = 20000;
 
 function openSplitModal() {
   splitRemaining = getTotal();
+  splitOrigTotal = splitRemaining; // 더치페이 기준 원래 합계 저장
   splitHistory = [];
   menuChecked.clear();
   splitCurMethod = null;
@@ -1120,7 +1122,8 @@ function getSplitCurrentAmt() {
     const v = document.getElementById('splitAmtInp').value.replace(/,/g,'');
     return Math.min(parseInt(v) || 0, splitRemaining);
   } else if (splitTab === 'dutch') {
-    return Math.ceil(splitRemaining / dutchCount);
+    const perPerson = Math.ceil(splitOrigTotal / dutchCount);
+    return Math.min(perPerson, splitRemaining); // 마지막 인원은 잔액 그대로
   } else {
     // 메뉴
     return [...menuChecked].reduce((sum, i) => sum + ORDER_ITEMS[i].price, 0);
@@ -1141,7 +1144,7 @@ function changeDutch(d) {
   updateSplitPayBtn();
 }
 function updateDutch() {
-  const per = Math.ceil(splitRemaining / dutchCount);
+  const per = Math.ceil(splitOrigTotal / dutchCount);
   document.getElementById('dutchPerVal').textContent = '¥' + per.toLocaleString();
 }
 
