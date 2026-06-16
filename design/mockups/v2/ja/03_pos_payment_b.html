@@ -209,8 +209,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 /* 탭 */
 .split-tabs{display:flex;gap:4px;margin-bottom:14px;flex-shrink:0;}
 /* 탭 패널 래퍼 — 고정 높이로 탭 전환 시 밀림 방지 */
-.tab-panel-wrap{position:relative;height:195px;flex-shrink:0;}
-.tab-panel-wrap>div{position:absolute;top:0;left:0;right:0;visibility:hidden;}
+.tab-panel-wrap{position:relative;height:195px;flex-shrink:0;overflow:hidden;}
+.tab-panel-wrap>div{position:absolute;top:0;left:0;right:0;bottom:0;visibility:hidden;overflow-y:auto;}
 .tab-panel-wrap>div.tab-active{visibility:visible;}
 /* 현금 인라인 래퍼 — 항상 공간 확보, visibility로 토글 */
 .split-cash-wrap{flex-shrink:0;}
@@ -1103,6 +1103,15 @@ function switchSplitTab(tab) {
   });
   if (tab === 'dutch') updateDutch();
   if (tab === 'menu') renderMenuChecklist();
+  // 現金選択中にタブ切替した場合、受取金額を新しい金額で更新
+  if (splitCurMethod === 'cash') {
+    const amt = getSplitCurrentAmt();
+    sciCashRaw = Math.ceil(amt / 1000) * 1000;
+    const inp = document.getElementById('sciCashInp');
+    if (inp) inp.value = sciCashRaw.toLocaleString();
+    updateSciChange();
+    updateSciQuickBtns();
+  }
   updateSplitPayBtn();
 }
 
@@ -1150,6 +1159,14 @@ function toggleMenuCheck(i) {
   if (menuChecked.has(i)) menuChecked.delete(i);
   else menuChecked.add(i);
   renderMenuChecklist();
+  if (splitCurMethod === 'cash') {
+    const amt = getSplitCurrentAmt();
+    sciCashRaw = Math.ceil(amt / 1000) * 1000;
+    const inp = document.getElementById('sciCashInp');
+    if (inp) inp.value = sciCashRaw.toLocaleString();
+    updateSciChange();
+    updateSciQuickBtns();
+  }
   updateSplitPayBtn();
 }
 
