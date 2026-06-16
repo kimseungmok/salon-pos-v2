@@ -261,39 +261,45 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 .cd-r-header{background:#1C2833;padding:11px 18px;display:flex;justify-content:space-between;align-items:center;}
 .cd-r-hname{font-size:11px;color:rgba(255,255,255,.6);}
 .cd-r-hval{font-size:11px;color:white;font-weight:500;}
-.cd-r-body{padding:12px 18px;display:flex;flex-direction:column;gap:0;}
+/* 영수증 본문 — 2열 */
+.cd-r-body{display:flex;gap:0;min-height:0;}
+.cd-r-col{flex:1;padding:12px 16px;display:flex;flex-direction:column;}
+.cd-r-col.right{border-left:.5px solid #EAEAE6;background:#FAFAF8;}
 
-/* 메뉴 섹션 */
-.cd-section-label{font-size:9px;font-weight:700;color:#CCC;letter-spacing:.06em;text-transform:uppercase;padding:6px 0 5px;}
-.cd-item{display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-size:12px;border-bottom:.5px solid #F5F5F3;}
+/* 섹션 라벨 */
+.cd-section-label{font-size:9px;font-weight:700;color:#CCC;letter-spacing:.06em;text-transform:uppercase;padding:2px 0 7px;}
+
+/* 메뉴 항목 */
+.cd-item{display:flex;justify-content:space-between;align-items:flex-start;padding:5px 0;font-size:12px;border-bottom:.5px solid #F0F0EC;}
 .cd-item:last-of-type{border-bottom:none;}
-.cd-item-name{color:#1A1A1A;flex:1;}
-.cd-item-disc-tag{font-size:9px;color:#E74C3C;background:#FDEDEC;border-radius:3px;padding:1px 4px;margin-left:5px;font-weight:600;}
-.cd-item-orig{font-size:10px;color:#CCC;text-decoration:line-through;margin-right:6px;}
-.cd-item-price{color:#1A1A1A;font-weight:500;white-space:nowrap;}
+.cd-item-name{color:#1A1A1A;flex:1;line-height:1.4;}
+.cd-item-disc-tag{font-size:9px;color:#E74C3C;background:#FDEDEC;border-radius:3px;padding:1px 4px;margin-left:4px;font-weight:600;}
+.cd-item-price-wrap{text-align:right;flex-shrink:0;}
+.cd-item-orig{font-size:10px;color:#CCC;text-decoration:line-through;display:block;}
+.cd-item-price{color:#1A1A1A;font-weight:500;font-size:12px;}
 
 /* 구분선 */
-.cd-divider{height:.5px;background:#EAEAE6;margin:8px 0;}
+.cd-divider{height:.5px;background:#EAEAE6;margin:7px 0;}
 
-/* 금액 내역 */
+/* 금액 내역 행 */
 .cd-row{display:flex;justify-content:space-between;font-size:11px;padding:3px 0;}
 .cd-row-label{color:#AAA;}
 .cd-row-val{color:#555;font-weight:500;}
 .cd-row-disc{color:#E74C3C;font-weight:500;}
 .cd-row-change{color:#E67E22;font-weight:700;}
-.cd-coupon-row{display:flex;justify-content:space-between;font-size:11px;padding:3px 0;}
+.cd-coupon-row{display:flex;justify-content:space-between;font-size:10px;padding:3px 0;}
 .cd-coupon-label{color:#27AE60;}
 .cd-coupon-val{color:#27AE60;font-weight:600;}
 
 /* 합계 */
-.cd-total-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0 2px;}
-.cd-total-label{font-size:13px;font-weight:700;color:#1A1A1A;}
-.cd-total-val{font-size:22px;font-weight:700;color:#1A1A1A;}
+.cd-total-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0 4px;}
+.cd-total-label{font-size:12px;font-weight:700;color:#1A1A1A;}
+.cd-total-val{font-size:17px;font-weight:700;color:#1A1A1A;}
 
 /* 결제수단 */
-.cd-method-row{display:flex;align-items:center;gap:8px;padding:3px 0;font-size:12px;}
-.cd-method-icon{font-size:15px;}
-.cd-method-name{color:#555;flex:1;}
+.cd-method-row{display:flex;align-items:center;gap:6px;padding:4px 0;font-size:11px;}
+.cd-method-icon{font-size:14px;}
+.cd-method-name{color:#555;flex:1;font-weight:500;}
 .cd-method-amt{color:#1A1A1A;font-weight:600;}
 
 /* 푸터 */
@@ -648,36 +654,45 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
           <span class="cd-r-hval">06.17 火 10:22</span>
         </div>
         <div class="cd-r-body">
-          <div class="cd-section-label">メニュー</div>
-          <div class="cd-item">
-            <span class="cd-item-name">カット<span class="cd-item-disc-tag">10%割引</span></span>
-            <span class="cd-item-orig">¥4,400</span><span class="cd-item-price">¥3,960</span>
-          </div>
-          <div class="cd-item">
-            <span class="cd-item-name">ワンカラー</span>
-            <span class="cd-item-price">¥8,800</span>
-          </div>
-          <div class="cd-item">
-            <span class="cd-item-name">トリートメント M</span>
-            <span class="cd-item-price">¥4,400</span>
-          </div>
-
-          <div class="cd-divider"></div>
-          <div class="cd-row"><span class="cd-row-label">小計 (税抜)</span><span class="cd-row-val">¥15,600</span></div>
-          <div class="cd-row"><span class="cd-row-label">割引合計</span><span class="cd-row-disc">－¥400</span></div>
-          <div class="cd-coupon-row"><span class="cd-coupon-label">🌸 春の感謝クーポン (10%OFF)</span><span class="cd-coupon-val">適用済</span></div>
-          <div class="cd-row"><span class="cd-row-label">外税 10%</span><span class="cd-row-val">¥1,560</span></div>
-
-          <div class="cd-divider"></div>
-          <div class="cd-total-row">
-            <span class="cd-total-label">お支払い合計</span>
-            <span class="cd-total-val">¥17,160</span>
+          <!-- 왼쪽 열: メニュー -->
+          <div class="cd-r-col">
+            <div class="cd-section-label">メニュー</div>
+            <div class="cd-item">
+              <span class="cd-item-name">カット<span class="cd-item-disc-tag">10%割引</span></span>
+              <div class="cd-item-price-wrap">
+                <span class="cd-item-orig">¥4,400</span>
+                <span class="cd-item-price">¥3,960</span>
+              </div>
+            </div>
+            <div class="cd-item">
+              <span class="cd-item-name">ワンカラー</span>
+              <div class="cd-item-price-wrap"><span class="cd-item-price">¥8,800</span></div>
+            </div>
+            <div class="cd-item">
+              <span class="cd-item-name">トリートメント M</span>
+              <div class="cd-item-price-wrap"><span class="cd-item-price">¥4,400</span></div>
+            </div>
           </div>
 
-          <div class="cd-divider"></div>
-          <div class="cd-method-row"><span class="cd-method-icon">💴</span><span class="cd-method-name">現金</span><span class="cd-method-amt">¥17,160</span></div>
-          <div class="cd-row"><span class="cd-row-label">お預かり</span><span class="cd-row-val">¥20,000</span></div>
-          <div class="cd-row"><span class="cd-row-label">お釣り</span><span class="cd-row-change">¥2,840</span></div>
+          <!-- 오른쪽 열: 金額内訳 + お支払い -->
+          <div class="cd-r-col right">
+            <div class="cd-section-label">金額内訳</div>
+            <div class="cd-row"><span class="cd-row-label">小計 (税抜)</span><span class="cd-row-val">¥15,600</span></div>
+            <div class="cd-row"><span class="cd-row-label">割引合計</span><span class="cd-row-disc">－¥400</span></div>
+            <div class="cd-coupon-row"><span class="cd-coupon-label">🌸 春の感謝クーポン</span><span class="cd-coupon-val">適用済</span></div>
+            <div class="cd-row"><span class="cd-row-label">外税 10%</span><span class="cd-row-val">¥1,560</span></div>
+
+            <div class="cd-total-row">
+              <span class="cd-total-label">お支払い合計</span>
+              <span class="cd-total-val">¥17,160</span>
+            </div>
+
+            <div class="cd-divider"></div>
+            <div class="cd-section-label">お支払い</div>
+            <div class="cd-method-row"><span class="cd-method-icon">💴</span><span class="cd-method-name">現金</span><span class="cd-method-amt">¥17,160</span></div>
+            <div class="cd-row"><span class="cd-row-label">お預かり</span><span class="cd-row-val">¥20,000</span></div>
+            <div class="cd-row"><span class="cd-row-label">お釣り</span><span class="cd-row-change">¥2,840</span></div>
+          </div>
         </div>
         <div class="cd-r-footer">
           <span class="cd-r-pts-earn">＋171pt 獲得</span>
