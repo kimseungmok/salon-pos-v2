@@ -249,7 +249,7 @@
 |------|----|
 | 배경 | `#F9F9F7`, 테두리 `1px dashed #DDDDD8` |
 | 일반 모드 | 내용 없음 (표시만) |
-| 편집 모드 | `.edit-empty` → ＋아이콘 + 「商品を追加」, 클릭 시 `addProductAtSlot(i)` |
+| 편집 모드 | `.edit-empty` → ＋아이콘 + 「商品を追加」, 클릭 시 `addProductAtSlot(i)` → **상품 피커 모달(J)** 열기 |
 
 ### E-04 · 편집 카드 (`.edit-card`) — 편집 모드
 
@@ -475,7 +475,77 @@ effectivePrice(item) → number
 
 ---
 
-## J. 토스트 알림 (`.toast`)
+## J. 상품 피커 모달 (`.picker-overlay` / `.picker-modal`)
+
+> 그리드 편집 모드에서 빈 슬롯(`＋ 商品を追加`)을 클릭했을 때 표시되는 상품 선택 모달.  
+> `prompt()` 대신 기존 SLOTS/CATS 데이터를 그대로 활용하여 카탈로그를 렌더링함.
+
+### J-01 · 오버레이 & 모달 컨테이너
+
+| 항목 | 값 |
+|------|----|
+| 오버레이 | `position:absolute;inset:0`, `rgba(0,0,0,.5)`, z-index 70 |
+| 모달 크기 | 920×580px, border-radius 16px |
+| 열기 | `openPickerModal(slotIdx)` — 대상 슬롯 인덱스를 `pickerSlotIdx`에 저장 |
+| 닫기 | `closePickerModal()` — ✕ 버튼 또는 오버레이 외부 클릭 |
+
+### J-02 · 헤더
+
+| 항목 | 값 |
+|------|----|
+| 제목 | `商品を選択` (14px / 700) |
+| 부제 | `グリッドに追加する商品を選んでください` (11px / `#AAA`) |
+| 닫기 버튼 | 30×30px, `#F4F4F0` 배경, `✕` |
+
+### J-03 · 좌측: 부모 카테고리 리스트 (`.picker-cats`, 168px)
+
+| 항목 | 값 |
+|------|----|
+| 배경 | `#FAFAF8` |
+| 각 항목 | 카테고리명 + 오른쪽에 상품 수 (null 제외 count) |
+| 선택 상태 | `background:white`, 오른쪽 `2.5px solid #2E86C1`, 글자 700 |
+| 클릭 | `pickParent(id)` → pickerParentId 갱신, 서브탭·그리드 재렌더 |
+
+### J-04 · 우측: 서브카테고리 탭바 (`.picker-subcat-bar`)
+
+| 항목 | 값 |
+|------|----|
+| 높이 | 34px |
+| 탭 목록 | 선택된 부모의 `children` (すべて 포함) |
+| 선택 스타일 | `color:#2E86C1`, `border-bottom: 2px solid #2E86C1`, 600 |
+| 클릭 | `pickChild(id)` → pickerChildId 갱신, 그리드 재렌더 |
+
+### J-05 · 우측: 상품 그리드 (`.picker-grid`)
+
+| 항목 | 값 |
+|------|----|
+| 컬럼 | `repeat(4, 1fr)` |
+| 데이터 소스 | `SLOTS[pickerChildId]` (단, `_all` 계열은 `SLOTS[pickerParentId]`) |
+| 빈 카탈로그 | 안내 텍스트 + 📭 아이콘 표시 |
+| 스크롤 | 세로 스크롤 가능 (`overflow-y:auto`) |
+
+#### J-05-1 · 상품 카드 (`.pcard`)
+
+| 항목 | 값 |
+|------|----|
+| 배경 | `white`, 테두리 `1.5px solid #E5E5E0`, border-radius 10px |
+| hover | 테두리 `#2E86C1`, 배경 `#EBF5FB`, `translateY(-1px)` |
+| 내부 구성 (위→아래) | 인기 배지(있을 때) → 상품명(12px/600) → 가격(13px/700/`#2E86C1`) → 소요시간(10px/`#BBB`) |
+| 클릭 | `confirmPickProduct(p)` |
+
+### J-06 · 상품 확정 (`confirmPickProduct(p)`)
+
+```
+1. getSlotArr()[currentPage * PAGE + pickerSlotIdx] = { name, price, time, badge, visible:true }
+2. isDirty = true
+3. closePickerModal()
+4. renderProducts()
+5. showToast(`「${p.name}」をグリッドに追加しました`, 'blue', 2000)
+```
+
+---
+
+## K. 토스트 알림 (`.toast`)
 
 | 항목 | 값 |
 |------|----|
@@ -492,7 +562,7 @@ effectivePrice(item) → number
 
 ---
 
-## K. JS 상태 관리
+## L. JS 상태 관리
 
 ### 변수
 
@@ -511,6 +581,9 @@ effectivePrice(item) → number
 | `discItemId` | number\|null | 현재 할인 모달이 열려있는 카트 아이템 ID |
 | `discType` | string | `'percent'` \| `'fixed'` |
 | `discValue` | number | 현재 입력된 할인 값 |
+| `pickerSlotIdx` | number\|null | 피커 모달이 열린 대상 슬롯 인덱스 (현재 페이지 내 0~19) |
+| `pickerParentId` | string\|null | 피커 모달 내 선택된 부모 카테고리 id |
+| `pickerChildId` | string\|null | 피커 모달 내 선택된 서브카테고리 id |
 
 ### 주요 함수
 
@@ -535,13 +608,22 @@ effectivePrice(item) → number
 | `addPage()` / `deletePage()` | 슬롯 배열 확장/축소 |
 | `toggleVisible(i)` | 슬롯 visible 토글, isDirty = true |
 | `deleteSlot(i)` | 슬롯 null 처리, isDirty = true |
+| `openPickerModal(slotIdx)` | 피커 모달 열기, pickerSlotIdx 저장, 기본 카테고리로 초기화 |
+| `closePickerModal()` | 피커 모달 닫기, pickerSlotIdx = null |
+| `renderPickerCats()` | 좌측 부모 카테고리 리스트 렌더링 (상품 수 포함) |
+| `renderPickerSubcats()` | 상단 서브카테고리 탭 렌더링 |
+| `renderPickerGrid()` | 현재 pickerChildId 기준 상품 카드 그리드 렌더링 |
+| `pickParent(id)` | 피커 내 부모 카테고리 선택, 서브탭·그리드 재렌더 |
+| `pickChild(id)` | 피커 내 서브카테고리 선택, 그리드 재렌더 |
+| `confirmPickProduct(p)` | 상품을 슬롯에 배치, 모달 닫기, toast |
+| `addProductAtSlot(i)` | `openPickerModal(i)` 의 alias (그리드 빈 슬롯 onclick) |
 | `updateMask(el)` | 스크롤 위치에 따라 페이드 마스크 동적 적용 |
 | `checkOverflow(sc, exp)` | 오버플로우 여부로 ▾ 버튼 표시/숨김 |
 | `showToast(msg, type, dur)` | 토스트 표시 (type: blue/purple/green) |
 
 ---
 
-## L. DB 스키마 예고 (Flutter 구현 시)
+## M. DB 스키마 예고 (Flutter 구현 시)
 
 ```
 product_master (id, name, price, time, badge, category_id, created_at)
@@ -555,4 +637,4 @@ order_session  (id, staff_id, created_at, status)
 
 ---
 
-*최종 수정: 2026-06-16 (v2 완성) | 기준 모크업: `design/mockups/v2/ja/02_pos_order.html`*
+*최종 수정: 2026-06-16 (J. 상품 피커 모달 추가) | 기준 모크업: `design/mockups/v2/ja/02_pos_order.html`*
