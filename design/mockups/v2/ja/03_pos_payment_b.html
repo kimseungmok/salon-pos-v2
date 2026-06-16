@@ -321,28 +321,49 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 .toggle-knob{position:absolute;width:16px;height:16px;border-radius:50%;background:white;top:2px;left:2px;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2);}
 .toggle-switch.on .toggle-knob{left:18px;}
 
-/* ── 쿠폰 모달 ── */
-.coupon-modal{width:460px;background:white;border-radius:16px;box-shadow:0 24px 80px rgba(0,0,0,.3);overflow:hidden;display:flex;flex-direction:column;max-height:540px;}
-.coupon-search{padding:14px 18px;border-bottom:.5px solid #F0F0EC;display:flex;gap:6px;flex-shrink:0;}
+/* ── 쿠폰 모달 (redesigned) ── */
+.coupon-modal{width:580px;height:620px;background:white;border-radius:16px;box-shadow:0 24px 80px rgba(0,0,0,.3);overflow:hidden;display:flex;flex-direction:column;}
+/* 검색 */
+.coupon-search-wrap{padding:14px 18px 10px;border-bottom:.5px solid #F0F0EC;flex-shrink:0;}
+.coupon-search-row{display:flex;gap:6px;margin-bottom:10px;}
 .coupon-inp{flex:1;padding:8px 12px;border:.5px solid #E0E0DC;border-radius:8px;font-size:13px;font-family:inherit;outline:none;}
 .coupon-inp:focus{border-color:#8E44AD;}
 .coupon-inp-btn{padding:8px 14px;border-radius:8px;background:#8E44AD;color:white;font-size:12px;font-weight:600;border:none;cursor:pointer;font-family:inherit;}
-.coupon-list{flex:1;overflow-y:auto;padding:8px 0;}
+/* 카테고리 필터 칩 */
+.coupon-cats{display:flex;gap:5px;flex-wrap:wrap;}
+.coupon-cat{padding:4px 12px;border-radius:20px;border:1px solid #E0E0DC;background:white;font-size:11px;font-weight:500;color:#888;cursor:pointer;font-family:inherit;transition:all .12s;white-space:nowrap;}
+.coupon-cat:hover{border-color:#8E44AD;color:#8E44AD;}
+.coupon-cat.active{background:#8E44AD;border-color:#8E44AD;color:white;}
+/* 목록 */
+.coupon-list{flex:1;overflow-y:auto;padding:4px 0;}
 .coupon-list::-webkit-scrollbar{width:3px;}
 .coupon-list::-webkit-scrollbar-thumb{background:#E0E0DC;}
-.coupon-item{display:flex;align-items:center;gap:12px;padding:11px 18px;border-bottom:.5px solid #F8F8F6;cursor:pointer;transition:background .1s;}
-.coupon-item:hover{background:#F9F5FC;}
-.coupon-item:last-child{border-bottom:none;}
+.coupon-item{display:flex;align-items:center;gap:12px;padding:10px 18px;border-bottom:.5px solid #F8F8F6;cursor:pointer;transition:background .1s;user-select:none;}
+.coupon-item:hover:not(.disabled){background:#F9F5FC;}
 .coupon-item.selected{background:#F9F5FC;}
-.coupon-badge{width:44px;height:44px;border-radius:10px;background:#F4ECF7;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
-.coupon-info{flex:1;}
-.coupon-name{font-size:12px;font-weight:600;color:#1A1A1A;margin-bottom:2px;}
-.coupon-desc{font-size:11px;color:#888;}
-.coupon-disc{font-size:13px;font-weight:700;color:#8E44AD;text-align:right;flex-shrink:0;}
-.coupon-radio{width:18px;height:18px;border-radius:50%;border:1.5px solid #D0D0CC;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
-.coupon-radio.on{border-color:#8E44AD;background:#8E44AD;}
-.coupon-radio.on::after{content:'';width:7px;height:7px;border-radius:50%;background:white;}
+.coupon-item.disabled{opacity:.4;cursor:not-allowed;}
+.coupon-cb{width:18px;height:18px;border-radius:5px;border:1.5px solid #D0D0CC;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .12s;}
+.coupon-cb.on{background:#8E44AD;border-color:#8E44AD;color:white;font-size:11px;font-weight:700;}
+.coupon-icon{width:36px;height:36px;border-radius:9px;background:#F4ECF7;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.coupon-info{flex:1;min-width:0;}
+.coupon-name{font-size:12px;font-weight:600;color:#1A1A1A;margin-bottom:1px;display:flex;align-items:center;gap:5px;}
+.coupon-cat-badge{font-size:9px;font-weight:600;padding:1px 5px;border-radius:3px;background:#F4ECF7;color:#8E44AD;flex-shrink:0;}
+.coupon-cat-badge.exclusive{background:#FDEDEC;color:#E74C3C;}
+.coupon-desc{font-size:10px;color:#AAA;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.coupon-right{text-align:right;flex-shrink:0;}
+.coupon-disc{font-size:13px;font-weight:700;color:#8E44AD;}
+.coupon-expiry{font-size:9px;color:#CCC;margin-top:2px;}
+.coupon-expiry.near{color:#E67E22;}
+.coupon-stack-tag{font-size:9px;padding:2px 5px;border-radius:3px;background:#FEF3E2;color:#E67E22;margin-top:3px;display:inline-block;}
+.coupon-stack-tag.excl{background:#FDEDEC;color:#E74C3C;}
 .coupon-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;color:#CCC;gap:8px;font-size:12px;}
+/* 선택 요약 */
+.coupon-summary{padding:10px 18px;background:#F9F5FC;border-top:.5px solid #EDE0F5;flex-shrink:0;display:flex;align-items:center;gap:10px;min-height:42px;}
+.coupon-summary-empty{font-size:11px;color:#CCC;flex:1;}
+.coupon-summary-tags{flex:1;display:flex;flex-wrap:wrap;gap:5px;}
+.cs-tag{display:flex;align-items:center;gap:4px;padding:3px 8px;border-radius:12px;background:#8E44AD;color:white;font-size:10px;font-weight:600;}
+.cs-tag-x{cursor:pointer;opacity:.7;font-size:11px;}
+.cs-tag-x:hover{opacity:1;}
 
 /* Toast */
 .toast{position:fixed;top:18px;left:50%;transform:translateX(-50%) translateY(-16px);background:white;color:#1A1A1A;font-size:12px;font-weight:500;padding:10px 20px 10px 16px;border-radius:12px;z-index:9999;white-space:nowrap;opacity:0;pointer-events:none;transition:transform .22s,opacity .22s;box-shadow:0 6px 28px rgba(0,0,0,.18);border:.5px solid rgba(0,0,0,.08);display:flex;align-items:center;gap:8px;}
@@ -443,14 +464,24 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
       <span class="modal-title">クーポン適用</span>
       <div class="modal-close" onclick="closeCouponModal()">✕</div>
     </div>
-    <div class="coupon-search">
-      <input class="coupon-inp" id="couponInp" placeholder="クーポンコードを入力...">
-      <button class="coupon-inp-btn" onclick="applyCouponCode()">適用</button>
+    <!-- 검색 + 카테고리 필터 -->
+    <div class="coupon-search-wrap">
+      <div class="coupon-search-row">
+        <input class="coupon-inp" id="couponInp" placeholder="クーポン名・コードで検索..." oninput="renderCouponList()">
+        <button class="coupon-inp-btn" onclick="applyCouponCode()">コード適用</button>
+      </div>
+      <div class="coupon-cats" id="couponCats"></div>
     </div>
+    <!-- 쿠폰 목록 -->
     <div class="coupon-list" id="couponList"></div>
+    <!-- 선택 요약 -->
+    <div class="coupon-summary" id="couponSummary">
+      <span class="coupon-summary-empty" id="couponSummaryEmpty">クーポンを選択してください</span>
+      <div class="coupon-summary-tags" id="couponSummaryTags" style="display:none;"></div>
+    </div>
     <div class="modal-footer">
       <button class="modal-btn modal-btn-cancel" onclick="closeCouponModal()">キャンセル</button>
-      <button class="modal-btn modal-btn-apply" style="background:#8E44AD;" onclick="confirmCoupon()">適用する</button>
+      <button class="modal-btn modal-btn-apply" style="background:#8E44AD;" id="couponApplyBtn" onclick="confirmCoupon()">適用する</button>
     </div>
   </div>
 </div>
@@ -778,11 +809,18 @@ const ORDER_ITEMS = [
 ];
 
 const COUPONS = [
-  {id:1, icon:'🌸', name:'春の感謝クーポン',  desc:'全メニュー対象 · 期限: 2026-07-31', disc:'10%OFF'},
-  {id:2, icon:'💇', name:'カット割引券',       desc:'カットメニュー限定 · 期限: 2026-06-30', disc:'¥500 OFF'},
-  {id:3, icon:'🎁', name:'初回来店特典',       desc:'初回限定 · 期限: 2026-12-31', disc:'20%OFF'},
-  {id:4, icon:'⭐', name:'VIP限定クーポン',    desc:'VIP会員専用 · 期限: 2026-08-31', disc:'¥1,000 OFF'},
+  {id:1, icon:'🌸', name:'春の感謝クーポン',   cat:'期間限定', desc:'全メニュー対象', expiry:'2026-07-31', disc:'10%OFF',    exclusive:false, maxStack:2},
+  {id:2, icon:'💇', name:'カット割引券',        cat:'割引',    desc:'カットメニュー限定', expiry:'2026-06-30', disc:'¥500 OFF', exclusive:false, maxStack:1},
+  {id:3, icon:'🎁', name:'初回来店特典',        cat:'特典',    desc:'初回限定・他券と併用不可', expiry:'2026-12-31', disc:'20%OFF',   exclusive:true,  maxStack:1},
+  {id:4, icon:'⭐', name:'VIP限定クーポン',     cat:'VIP',     desc:'VIP会員専用', expiry:'2026-08-31', disc:'¥1,000 OFF', exclusive:false, maxStack:1},
+  {id:5, icon:'🎀', name:'誕生日特典',          cat:'特典',    desc:'誕生月限定・他券と併用不可', expiry:'2026-06-25', disc:'15%OFF',   exclusive:true,  maxStack:1},
+  {id:6, icon:'💝', name:'友達紹介クーポン',    cat:'割引',    desc:'紹介者・被紹介者対象', expiry:'2026-09-30', disc:'¥800 OFF', exclusive:false, maxStack:2},
+  {id:7, icon:'🧴', name:'トリートメント割引',  cat:'メニュー', desc:'トリートメントメニュー限定', expiry:'2026-08-15', disc:'¥500 OFF', exclusive:false, maxStack:1},
+  {id:8, icon:'🎨', name:'カラー20%OFF',        cat:'メニュー', desc:'カラーメニュー限定', expiry:'2026-07-20', disc:'20%OFF',   exclusive:false, maxStack:1},
+  {id:9, icon:'💌', name:'LINE登録特典',         cat:'特典',    desc:'LINE友達登録者限定', expiry:'2026-12-31', disc:'¥300 OFF', exclusive:false, maxStack:1},
+  {id:10,icon:'🏷',  name:'まとめ割クーポン',   cat:'割引',    desc:'¥10,000以上のご利用で適用', expiry:'2026-10-31', disc:'5%OFF',    exclusive:false, maxStack:1},
 ];
+const COUPON_CATS = ['全て','割引','特典','VIP','メニュー','期間限定'];
 
 const METHOD_META = {
   cash:    {icon:'💴', name:'現金',    sub:'お釣りを自動計算します',      bg:'#EBF5FB'},
@@ -797,7 +835,8 @@ const METHOD_META = {
 
 let ptsUsed = 0;
 let cashRaw = 20000;
-let selectedCoupon = null;
+let selectedCoupons = []; // 복수 쿠폰
+let activeCouponCat = '全て';
 let toastTimer;
 
 // ════════════ 합계 계산 ════════════
@@ -850,10 +889,10 @@ function updateLeftSummary() {
   if (ptsUsed > 0) {
     rows.push(`<div class="ls-row"><span class="ls-label">ポイント使用 ${ptsUsed}pt</span><span class="ls-val" style="color:#2E86C1;">－¥${ptsUsed.toLocaleString()}</span></div>`);
   }
-  // クーポン
-  if (selectedCoupon) {
-    rows.push(`<div class="ls-row"><span class="ls-label">🎟 ${selectedCoupon.name}</span><span class="ls-val" style="color:#8E44AD;">${selectedCoupon.disc}</span></div>`);
-  }
+  // クーポン (복수)
+  selectedCoupons.forEach(c => {
+    rows.push(`<div class="ls-row"><span class="ls-label">🎟 ${c.name}</span><span class="ls-val" style="color:#8E44AD;">${c.disc}</span></div>`);
+  });
   // メモ
   const memo = document.getElementById('memoTa')?.value.trim();
   if (memo) {
@@ -1318,40 +1357,113 @@ function applyCpmModal() {
 
 // ════════════ 쿠폰 모달 ════════════
 function openCouponModal() {
-  renderCouponList('');
+  activeCouponCat = '全て';
+  renderCouponCats();
+  renderCouponList();
+  renderCouponSummary();
   document.getElementById('couponOverlay').classList.add('open');
 }
 function closeCouponModal() { document.getElementById('couponOverlay').classList.remove('open'); }
 function handleCouponOverlay(e) { if (e.target === document.getElementById('couponOverlay')) closeCouponModal(); }
-function renderCouponList(query) {
-  const filtered = COUPONS.filter(c => !query || c.name.includes(query));
+
+function renderCouponCats() {
+  document.getElementById('couponCats').innerHTML = COUPON_CATS.map(cat => `
+    <button class="coupon-cat${activeCouponCat === cat ? ' active' : ''}" onclick="setCouponCat('${cat}')">${cat}</button>
+  `).join('');
+}
+function setCouponCat(cat) {
+  activeCouponCat = cat;
+  renderCouponCats();
+  renderCouponList();
+}
+
+function renderCouponList() {
+  const query = document.getElementById('couponInp').value.trim();
+  const today = '2026-06-16';
+  const hasExclusive = selectedCoupons.some(c => c.exclusive);
+  const filtered = COUPONS.filter(c => {
+    if (activeCouponCat !== '全て' && c.cat !== activeCouponCat) return false;
+    if (query && !c.name.includes(query) && !c.cat.includes(query)) return false;
+    return true;
+  });
   if (!filtered.length) {
     document.getElementById('couponList').innerHTML = '<div class="coupon-empty"><div style="font-size:28px">🎟</div><div>クーポンが見つかりません</div></div>';
     return;
   }
-  document.getElementById('couponList').innerHTML = filtered.map(c => `
-    <div class="coupon-item${selectedCoupon?.id === c.id ? ' selected' : ''}" onclick="selectCoupon(${c.id})">
-      <div class="coupon-badge">${c.icon}</div>
+  document.getElementById('couponList').innerHTML = filtered.map(c => {
+    const isSelected = selectedCoupons.some(s => s.id === c.id);
+    // 비활성화: 이미 exclusive 있고 이건 아닌 경우 / 이미 exclusive 아닌게 있고 이건 exclusive
+    const isDisabled = !isSelected && (hasExclusive || (c.exclusive && selectedCoupons.length > 0));
+    const daysLeft = Math.ceil((new Date(c.expiry) - new Date(today)) / 86400000);
+    const nearExpiry = daysLeft <= 14;
+    const expiryText = daysLeft <= 0 ? '期限切れ' : `期限: ${c.expiry}${nearExpiry ? ` (残${daysLeft}日)` : ''}`;
+    const stackTag = c.exclusive
+      ? '<span class="coupon-stack-tag excl">単独使用のみ</span>'
+      : c.maxStack > 1 ? `<span class="coupon-stack-tag">最大${c.maxStack}枚まで重複可</span>` : '';
+    return `
+    <div class="coupon-item${isSelected ? ' selected' : ''}${isDisabled ? ' disabled' : ''}" onclick="${isDisabled ? '' : `toggleCoupon(${c.id})`}">
+      <div class="coupon-cb${isSelected ? ' on' : ''}">${isSelected ? '✓' : ''}</div>
+      <div class="coupon-icon">${c.icon}</div>
       <div class="coupon-info">
-        <div class="coupon-name">${c.name}</div>
-        <div class="coupon-desc">${c.desc}</div>
+        <div class="coupon-name">
+          ${c.name}
+          <span class="coupon-cat-badge${c.exclusive ? ' exclusive' : ''}">${c.exclusive ? '単独' : c.cat}</span>
+        </div>
+        <div class="coupon-desc">${c.desc} ${stackTag}</div>
       </div>
-      <div class="coupon-disc">${c.disc}</div>
-      <div class="coupon-radio${selectedCoupon?.id === c.id ? ' on' : ''}"></div>
-    </div>`).join('');
+      <div class="coupon-right">
+        <div class="coupon-disc">${c.disc}</div>
+        <div class="coupon-expiry${nearExpiry ? ' near' : ''}">${expiryText}</div>
+      </div>
+    </div>`;
+  }).join('');
 }
-function selectCoupon(id) {
-  selectedCoupon = selectedCoupon?.id === id ? null : COUPONS.find(c => c.id === id);
-  renderCouponList(document.getElementById('couponInp').value);
+
+function toggleCoupon(id) {
+  const c = COUPONS.find(x => x.id === id);
+  const idx = selectedCoupons.findIndex(x => x.id === id);
+  if (idx >= 0) {
+    selectedCoupons.splice(idx, 1);
+  } else {
+    if (c.exclusive && selectedCoupons.length > 0) return;
+    if (!c.exclusive && selectedCoupons.some(x => x.exclusive)) return;
+    selectedCoupons.push(c);
+  }
+  renderCouponList();
+  renderCouponSummary();
 }
-function applyCouponCode() { showToast('クーポンコードを確認中...', 'purple'); setTimeout(closeCouponModal, 600); }
+
+function renderCouponSummary() {
+  const empty = document.getElementById('couponSummaryEmpty');
+  const tags = document.getElementById('couponSummaryTags');
+  if (selectedCoupons.length === 0) {
+    empty.style.display = '';
+    tags.style.display = 'none';
+  } else {
+    empty.style.display = 'none';
+    tags.style.display = 'flex';
+    tags.innerHTML = selectedCoupons.map(c => `
+      <div class="cs-tag">
+        ${c.icon} ${c.disc}
+        <span class="cs-tag-x" onclick="toggleCoupon(${c.id})">✕</span>
+      </div>`).join('');
+  }
+  const btn = document.getElementById('couponApplyBtn');
+  if (btn) btn.textContent = selectedCoupons.length > 0 ? `${selectedCoupons.length}枚を適用する` : '適用する';
+}
+
+function applyCouponCode() { showToast('クーポンコードを確認中...', 'purple'); }
 function confirmCoupon() {
-  if (!selectedCoupon) { showToast('クーポンを選択してください'); return; }
+  if (selectedCoupons.length === 0) { showToast('クーポンを選択してください'); return; }
+  const label = selectedCoupons.length === 1
+    ? selectedCoupons[0].disc + ' 適用中'
+    : selectedCoupons.length + '枚適用中';
   document.getElementById('couponChip').className = 'chip applied';
-  document.getElementById('couponChip').innerHTML = `<span class="chip-icon">🎟</span>${selectedCoupon.disc} 適用中`;
+  document.getElementById('couponChip').innerHTML = `<span class="chip-icon">🎟</span>${label}`;
   closeCouponModal();
   updateLeftSummary();
-  showToast(`「${selectedCoupon.name}」を適用しました`, 'purple');
+  const names = selectedCoupons.map(c => c.name).join('・');
+  showToast(`「${names}」を適用しました`, 'purple');
 }
 
 // ════════════ Toast ════════════
@@ -1376,7 +1488,6 @@ function closeSidebar() {
 
 // ════════════ 초기화 ════════════
 document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('couponInp').addEventListener('input', e => renderCouponList(e.target.value));
   updateTotal();
 });
 </script>
