@@ -3,37 +3,36 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=1024">
-<title>06 · 予約カレンダー A — スタッフ列</title>
+<title>06 · 予約カレンダー B — タイムライン</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neue',sans-serif;background:#0F1D5C;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;}
 
-/* ── iPad frame ── */
-.ipad{width:1024px;height:768px;background:#F8FAFF;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.55);position:relative;}
+.ipad{width:1024px;height:768px;background:#F4F5F8;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.55);position:relative;}
 
 /* ── Topbar ── */
-.topbar{height:44px;background:#fff;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 14px;gap:10px;flex-shrink:0;}
-.tb-menu{font-size:18px;color:#1E3A8A;cursor:pointer;padding:4px 6px;border-radius:6px;line-height:1;user-select:none;}
-.tb-menu:hover{background:#EEF2FF;}
-.tb-logo{font-size:13px;color:#1E3A8A;font-weight:700;letter-spacing:.06em;}
+.topbar{height:44px;background:#1E3A8A;display:flex;align-items:center;padding:0 14px;gap:10px;flex-shrink:0;}
+.tb-menu{font-size:18px;color:rgba(255,255,255,.7);cursor:pointer;padding:4px 6px;border-radius:6px;line-height:1;user-select:none;}
+.tb-menu:hover{background:rgba(255,255,255,.1);}
+.tb-logo{font-size:13px;color:#fff;font-weight:700;letter-spacing:.08em;}
 .tb-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
-.tb-sep{width:.5px;height:14px;background:#D0D0CC;}
-.tb-avatar{width:24px;height:24px;border-radius:50%;background:#8E44AD;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:#fff;}
-.tb-name{font-size:12px;color:#333;font-weight:500;}
-.tb-branch{font-size:11px;color:#888;}
-.tb-time{font-size:11px;color:#555;font-weight:500;}
-.tb-lock{font-size:13px;color:#bbb;cursor:pointer;}
+.tb-sep{width:.5px;height:14px;background:rgba(255,255,255,.2);}
+.tb-avatar{width:26px;height:26px;border-radius:50%;background:#8E44AD;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;border:1.5px solid rgba(255,255,255,.3);}
+.tb-name{font-size:12px;color:rgba(255,255,255,.85);font-weight:500;}
+.tb-branch{font-size:11px;color:rgba(255,255,255,.5);}
+.tb-time{font-size:11px;color:rgba(255,255,255,.6);font-weight:500;}
+.tb-lock{font-size:13px;color:rgba(255,255,255,.3);cursor:pointer;}
 
-/* ── Sidebar overlay ── */
-.sb-overlay{position:absolute;inset:0;background:rgba(0,0,0,.38);z-index:200;opacity:0;pointer-events:none;transition:opacity .2s;}
+/* ── Sidebar ── */
+.sb-overlay{position:absolute;inset:0;background:rgba(0,0,0,.4);z-index:200;opacity:0;pointer-events:none;transition:opacity .2s;}
 .sb-overlay.open{opacity:1;pointer-events:all;}
 .sidebar{position:absolute;left:0;top:0;bottom:0;width:220px;background:#1E3A8A;z-index:201;transform:translateX(-100%);transition:transform .22s cubic-bezier(.25,.46,.45,.94);display:flex;flex-direction:column;}
 .sidebar.open{transform:translateX(0);}
 .sb-head{padding:20px 16px 14px;border-bottom:.5px solid rgba(255,255,255,.1);}
 .sb-logo{font-size:14px;color:#fff;font-weight:700;letter-spacing:.06em;}
 .sb-sub{font-size:10px;color:rgba(255,255,255,.3);margin-top:3px;}
-.sb-nav{flex:1;padding:8px 0;overflow-y:auto;}
-.sb-item{display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;transition:background .12s;user-select:none;}
+.sb-nav{flex:1;padding:8px 0;}
+.sb-item{display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;transition:background .12s;}
 .sb-item:hover{background:rgba(255,255,255,.07);}
 .sb-item.active{background:rgba(255,255,255,.13);}
 .sb-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
@@ -43,80 +42,99 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 .sb-ver{font-size:10px;color:rgba(255,255,255,.2);}
 
 /* ── Toolbar ── */
-.toolbar{height:48px;background:#fff;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 12px;gap:7px;flex-shrink:0;}
-.nav-btn{width:28px;height:28px;border-radius:7px;border:.5px solid #E0E0DC;background:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;color:#555;cursor:pointer;flex-shrink:0;transition:background .1s;}
+.toolbar{height:50px;background:#fff;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 14px;gap:8px;flex-shrink:0;}
+.nav-btn{width:30px;height:30px;border-radius:8px;border:.5px solid #E0E0DC;background:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;color:#555;cursor:pointer;flex-shrink:0;transition:background .1s;}
 .nav-btn:hover{background:#F4F4F0;}
-.today-btn{padding:5px 11px;border-radius:7px;border:.5px solid #E0E0DC;background:#fff;font-size:12px;color:#555;cursor:pointer;font-family:inherit;flex-shrink:0;transition:background .1s;}
+.today-btn{padding:6px 12px;border-radius:8px;border:.5px solid #E0E0DC;background:#fff;font-size:12px;color:#555;cursor:pointer;font-family:inherit;flex-shrink:0;transition:background .1s;}
 .today-btn:hover{background:#F4F4F0;}
-.cal-date-label{font-size:14px;font-weight:600;color:#1A1A1A;min-width:155px;white-space:nowrap;}
+.cal-date-label{font-size:15px;font-weight:700;color:#1A1A1A;min-width:155px;white-space:nowrap;}
 
-.view-tabs{display:flex;border:.5px solid #E0E0DC;border-radius:8px;overflow:hidden;flex-shrink:0;}
-.vt{padding:5px 11px;font-size:12px;font-weight:500;color:#888;cursor:pointer;background:#fff;border:none;font-family:inherit;border-right:.5px solid #E0E0DC;white-space:nowrap;transition:background .1s,color .1s;}
-.vt:last-child{border-right:none;}
-.vt.active{background:#1E3A8A;color:#fff;}
+.view-tabs{display:flex;background:#F4F5F8;border-radius:9px;padding:3px;gap:2px;flex-shrink:0;}
+.vt{padding:5px 12px;font-size:12px;font-weight:600;color:#999;cursor:pointer;border-radius:7px;background:transparent;border:none;font-family:inherit;white-space:nowrap;transition:all .15s;}
+.vt.active{background:#fff;color:#1E3A8A;box-shadow:0 1px 4px rgba(0,0,0,.1);}
 
 .staff-chips{display:flex;gap:4px;flex-shrink:0;}
-.sch{padding:4px 10px;border-radius:20px;border:.5px solid #E0E0DC;background:#fff;font-size:11px;color:#888;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:4px;white-space:nowrap;user-select:none;transition:all .12s;}
-.sch:hover{border-color:#aaa;}
-.sch.on-all{border-color:#1E3A8A;background:#EEF2FF;color:#1E3A8A;font-weight:500;}
-.sch.on-0{border-color:#8E44AD;background:#F5EEF8;color:#8E44AD;font-weight:500;}
-.sch.on-1{border-color:#3B5BDB;background:#EEF2FF;color:#3B5BDB;font-weight:500;}
-.sch.on-2{border-color:#E67E22;background:#FEF5E7;color:#E67E22;font-weight:500;}
+.sch{padding:5px 11px;border-radius:20px;border:1.5px solid #E0E0DC;background:#fff;font-size:11px;color:#aaa;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:4px;white-space:nowrap;user-select:none;transition:all .12s;font-weight:500;}
+.sch.on-all{border-color:#1E3A8A;background:#EEF2FF;color:#1E3A8A;}
+.sch.on-0{border-color:#8E44AD;background:#F5EEF8;color:#8E44AD;}
+.sch.on-1{border-color:#3B5BDB;background:#EEF2FF;color:#3B5BDB;}
+.sch.on-2{border-color:#E67E22;background:#FEF5E7;color:#E67E22;}
 .sch-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
 
 .tb-spacer{flex:1;}
-.side-toggle{width:30px;height:30px;border-radius:7px;border:.5px solid #E0E0DC;background:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;flex-shrink:0;transition:background .1s;}
+.side-toggle{width:30px;height:30px;border-radius:8px;border:.5px solid #E0E0DC;background:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;flex-shrink:0;transition:background .1s;}
 .side-toggle:hover{background:#EEF2FF;}
-.add-btn{display:flex;align-items:center;gap:4px;padding:7px 13px;border-radius:8px;background:#8E44AD;color:#fff;font-size:12px;font-weight:700;border:none;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0;transition:background .12s;}
+.add-btn{display:flex;align-items:center;gap:4px;padding:8px 14px;border-radius:9px;background:#8E44AD;color:#fff;font-size:12px;font-weight:700;border:none;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0;box-shadow:0 2px 8px rgba(142,68,173,.35);transition:background .12s;}
 .add-btn:hover{background:#7D3C98;}
 
 /* ── Main layout ── */
 .cal-main{flex:1;display:flex;overflow:hidden;}
 .cal-body{flex:1;display:flex;flex-direction:column;overflow:hidden;}
-
-/* ── View panels ── */
 .view-panel{display:none;flex:1;flex-direction:column;overflow:hidden;}
 .view-panel.active{display:flex;}
 
-/* ════ DAY VIEW ════ */
-.day-staff-header{height:34px;background:#fff;border-bottom:.5px solid #E5E5E0;display:flex;flex-shrink:0;}
-.dsh-spacer{width:50px;flex-shrink:0;border-right:.5px solid #E5E5E0;background:#FAFAFA;}
-.dsh-cols{flex:1;display:flex;}
-.dsh-col{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;border-right:.5px solid #EBEBEB;font-size:11px;font-weight:600;color:#333;cursor:default;}
-.dsh-col:last-child{border-right:none;}
-.dsh-col.dim{opacity:.38;}
-.dsh-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
-.dsh-bk-count{font-size:9px;font-weight:400;color:#aaa;margin-left:2px;}
+/* ═══════════════════════════════════
+   DAY VIEW — TIMELINE (concept B)
+   Single column, all staff visible
+   ════════════════════════════════ */
+.tl-wrap{flex:1;display:flex;overflow:hidden;}
 
-.day-scroll{flex:1;overflow-y:auto;}
-.day-scroll::-webkit-scrollbar{width:4px;}
-.day-scroll::-webkit-scrollbar-thumb{background:#E0E0DC;border-radius:2px;}
-.day-grid{display:flex;min-height:440px;}
+/* Left: staff legend */
+.tl-legend{width:100px;flex-shrink:0;background:#fff;border-right:.5px solid #E5E5E0;display:flex;flex-direction:column;padding:8px 0;}
+.tl-legend-title{font-size:9px;font-weight:700;color:#C8C8C4;letter-spacing:.07em;padding:6px 12px 8px;text-transform:uppercase;}
+.tl-staff-row{display:flex;align-items:center;gap:7px;padding:7px 12px;cursor:pointer;transition:background .1s;border-radius:0;}
+.tl-staff-row:hover{background:#F8F8F6;}
+.tl-staff-row.dim{opacity:.35;}
+.tl-staff-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.tl-staff-name{font-size:12px;font-weight:600;color:#333;}
+.tl-staff-cnt{font-size:10px;color:#bbb;margin-left:auto;}
+.tl-legend-sep{flex:1;}
+.tl-now-info{padding:8px 10px;border-top:.5px solid #F0F0EC;}
+.tl-now-label{font-size:9px;color:#EF4444;font-weight:700;margin-bottom:2px;}
+.tl-now-time{font-size:14px;font-weight:700;color:#1A1A1A;font-variant-numeric:tabular-nums;}
 
-.time-gutter{width:50px;flex-shrink:0;border-right:.5px solid #E5E5E0;background:#FAFAFA;position:relative;}
-.time-label{height:40px;display:flex;align-items:flex-start;justify-content:flex-end;padding:3px 7px 0;font-size:10px;color:#bbb;border-bottom:.5px solid #EBEBEB;position:relative;}
-.time-label.half{align-items:flex-start;font-size:9px;color:#ddd;border-bottom:.5px solid #F5F5F3;}
+/* Right: timeline grid */
+.tl-right{flex:1;display:flex;flex-direction:column;overflow:hidden;}
 
-.staff-grid{flex:1;display:flex;}
-.staff-col{flex:1;position:relative;border-right:.5px solid #EBEBEB;}
-.staff-col:last-child{border-right:none;}
-.staff-col.dim{background:repeating-linear-gradient(45deg,#F9F9F7,#F9F9F7 3px,#FAFAF8 3px,#FAFAF8 7px);}
-.h-line{position:absolute;left:0;right:0;height:.5px;background:#EBEBEB;pointer-events:none;}
-.h-line.half-hr{background:#F4F4F2;}
+/* Hour header bar */
+.tl-hour-header{height:32px;background:#fff;border-bottom:.5px solid #E5E5E0;display:flex;flex-shrink:0;position:relative;overflow:hidden;}
+.tl-hour-cell{flex:1;display:flex;align-items:center;justify-content:center;font-size:9px;color:#bbb;font-weight:500;border-right:.5px solid #F0F0EC;}
+.tl-hour-cell:last-child{border-right:none;}
 
-/* Booking block */
-.bk{position:absolute;left:3px;right:3px;border-radius:7px;overflow:hidden;cursor:pointer;display:flex;flex-direction:column;padding:5px 7px;gap:2px;transition:filter .12s,box-shadow .12s;}
-.bk:hover{filter:brightness(.9);box-shadow:0 3px 10px rgba(0,0,0,.22);}
-.bk-customer{font-size:11px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3;}
-.bk-service{font-size:9px;color:rgba(255,255,255,.88);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.bk-time{font-size:9px;color:rgba(255,255,255,.65);}
-.bk-price{font-size:9px;color:rgba(255,255,255,.7);font-weight:500;}
-.bk-status-dot{position:absolute;top:5px;right:6px;width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.5);}
-.bk-block{background:repeating-linear-gradient(45deg,rgba(0,0,0,0),rgba(0,0,0,0)4px,rgba(0,0,0,.13)4px,rgba(0,0,0,.13)5px)!important;}
+/* Scrollable timeline */
+.tl-scroll{flex:1;overflow-y:auto;position:relative;}
+.tl-scroll::-webkit-scrollbar{width:4px;}
+.tl-scroll::-webkit-scrollbar-thumb{background:#E0E0DC;border-radius:2px;}
 
-/* Now line */
-.now-line{position:absolute;left:0;right:0;height:2px;background:#EF4444;z-index:20;pointer-events:none;}
-.now-line::before{content:'';position:absolute;left:-5px;top:-4px;width:10px;height:10px;border-radius:50%;background:#EF4444;}
+/* Timeline: each hour row */
+.tl-hour-row{display:flex;align-items:stretch;border-bottom:.5px solid #EBEBEB;position:relative;}
+.tl-hour-row:nth-child(even){background:#FAFAF8;}
+.tl-time-cell{width:46px;flex-shrink:0;display:flex;align-items:flex-start;padding:4px 7px 0;font-size:10px;color:#bbb;font-weight:500;border-right:.5px solid #E5E5E0;}
+.tl-lane{flex:1;position:relative;min-height:60px;}
+
+/* Booking cards in timeline */
+.tl-bk{position:absolute;border-radius:8px;cursor:pointer;overflow:hidden;display:flex;transition:box-shadow .12s,filter .12s;}
+.tl-bk:hover{filter:brightness(.94);box-shadow:0 4px 14px rgba(0,0,0,.18);}
+
+/* Staff color accent bar on left */
+.tl-bk-accent{width:4px;flex-shrink:0;align-self:stretch;}
+.tl-bk-body{flex:1;padding:8px 10px;display:flex;flex-direction:column;gap:3px;min-width:0;background:rgba(255,255,255,.94);}
+.tl-bk-top{display:flex;align-items:center;gap:6px;}
+.tl-bk-customer{font-size:12px;font-weight:700;color:#1A1A1A;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.tl-bk-staff-badge{font-size:9px;font-weight:700;padding:2px 6px;border-radius:6px;flex-shrink:0;white-space:nowrap;}
+.tl-bk-service{font-size:11px;color:#666;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.tl-bk-meta{display:flex;align-items:center;gap:8px;margin-top:1px;}
+.tl-bk-time{font-size:10px;color:#aaa;}
+.tl-bk-price{font-size:10px;font-weight:700;color:#1A1A1A;margin-left:auto;}
+.tl-bk-status{font-size:9px;font-weight:600;padding:2px 6px;border-radius:5px;}
+
+/* Now line across full timeline */
+.tl-now-line{position:absolute;left:0;right:0;height:2px;background:#EF4444;z-index:20;pointer-events:none;}
+.tl-now-line::before{content:'10:24';position:absolute;left:2px;top:-8px;font-size:9px;color:#EF4444;font-weight:700;}
+.tl-now-line::after{content:'';position:absolute;left:-3px;top:-4px;width:10px;height:10px;border-radius:50%;background:#EF4444;}
+
+/* Conflict indicator */
+.tl-conflict-zone{position:absolute;background:rgba(239,68,68,.06);border-left:2px solid #EF4444;pointer-events:none;}
 
 /* ════ WEEK VIEW ════ */
 .week-header{height:42px;background:#fff;border-bottom:.5px solid #E5E5E0;display:flex;flex-shrink:0;}
@@ -139,10 +157,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 .week-scroll::-webkit-scrollbar-thumb{background:#E0E0DC;border-radius:2px;}
 .week-grid{display:flex;}
 .week-time-gutter{width:50px;flex-shrink:0;border-right:.5px solid #E5E5E0;background:#FAFAFA;}
+.week-time-cell{height:40px;display:flex;align-items:flex-start;justify-content:flex-end;padding:3px 7px 0;font-size:10px;color:#bbb;border-bottom:.5px solid #EBEBEB;}
 .week-day-cols{flex:1;display:flex;}
 .week-day-col{flex:1;position:relative;border-right:.5px solid #EBEBEB;}
 .week-day-col:last-child{border-right:none;}
 .week-day-col.today{background:#FAFBFF;}
+.h-line{position:absolute;left:0;right:0;height:.5px;background:#EBEBEB;pointer-events:none;}
+.h-half{background:#F4F4F2;}
 
 /* ════ MONTH VIEW ════ */
 .month-dow-row{height:28px;display:grid;grid-template-columns:repeat(7,1fr);background:#fff;border-bottom:.5px solid #E5E5E0;flex-shrink:0;}
@@ -166,19 +187,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 .list-scroll::-webkit-scrollbar{width:4px;}
 .list-scroll::-webkit-scrollbar-thumb{background:#E0E0DC;border-radius:2px;}
 .list-inner{padding:12px 14px;display:flex;flex-direction:column;gap:4px;}
-.list-day-header{font-size:10px;font-weight:700;color:#999;letter-spacing:.08em;text-transform:uppercase;padding:10px 4px 5px;flex-shrink:0;}
+.list-day-header{font-size:10px;font-weight:700;color:#999;letter-spacing:.08em;text-transform:uppercase;padding:10px 4px 5px;}
 .list-day-header:first-child{padding-top:2px;}
-.list-item{background:#fff;border:.5px solid #E5E5E0;border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:9px;cursor:pointer;transition:all .12s;}
-.list-item:hover{border-color:#C5D0FC;background:#F8FAFF;transform:translateY(-1px);box-shadow:0 2px 8px rgba(59,91,219,.07);}
+.list-item{background:#fff;border:.5px solid #E5E5E0;border-radius:11px;padding:10px 12px;display:flex;align-items:center;gap:9px;cursor:pointer;transition:all .12s;}
+.list-item:hover{border-color:#C5D0FC;background:#F8FAFF;box-shadow:0 2px 8px rgba(59,91,219,.07);}
+.li-accent{width:3px;height:42px;border-radius:2px;flex-shrink:0;}
 .li-time-col{min-width:82px;flex-shrink:0;}
 .li-start{font-size:13px;font-weight:700;color:#1A1A1A;}
 .li-end{font-size:10px;color:#aaa;}
 .li-dur{font-size:10px;color:#bbb;}
-.li-bar{width:3px;height:40px;border-radius:2px;flex-shrink:0;}
 .li-body{flex:1;min-width:0;}
 .li-customer{font-size:13px;font-weight:700;color:#1A1A1A;}
 .li-service{font-size:11px;color:#777;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.li-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;}
+.li-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px;}
 .li-price{font-size:12px;font-weight:700;color:#1A1A1A;}
 .li-staff-badge{font-size:10px;font-weight:600;padding:2px 7px;border-radius:8px;}
 .status-badge{font-size:10px;font-weight:600;padding:3px 8px;border-radius:8px;flex-shrink:0;}
@@ -187,13 +208,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 .s-confirmed{background:#ECFDF5;color:#10B981;}
 .s-pending{background:#FEF9EC;color:#D4AC0D;}
 .s-noshow{background:#F5EEF8;color:#8E44AD;}
-.s-block{background:#F4F4F2;color:#888;}
 
 /* ════ SIDE PANEL ════ */
 .side-panel{width:210px;flex-shrink:0;border-left:.5px solid #E5E5E0;background:#fff;display:flex;flex-direction:column;overflow:hidden;transition:width .2s,border-color .2s;}
-.side-panel.closed{width:0;border-left-color:transparent;overflow:hidden;}
+.side-panel.closed{width:0;border-left-color:transparent;}
 
-/* Mini calendar */
 .mini-cal{padding:12px 10px 8px;border-bottom:.5px solid #F0F0EC;}
 .mc-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
 .mc-month-label{font-size:12px;font-weight:700;color:#1A1A1A;}
@@ -208,9 +227,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 .mc-d.is-today{background:#8E44AD;color:#fff;font-weight:700;}
 .mc-d.has-bk{font-weight:700;color:#3B5BDB;}
 .mc-d.other-m{color:#ddd;}
-.mc-d.selected{background:#EEF2FF;color:#3B5BDB;font-weight:700;}
 
-/* Stats */
 .stats-box{padding:10px 12px;border-bottom:.5px solid #F0F0EC;}
 .stats-title{font-size:9px;font-weight:700;color:#C8C8C4;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;}
 .stats-row{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:.5px solid #F8F8F6;font-size:11px;}
@@ -222,12 +239,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 .sr-val.r{color:#EF4444;}
 .sr-val.b{color:#3B5BDB;}
 
-/* Waiting */
 .waiting-box{flex:1;display:flex;flex-direction:column;padding:10px 10px 8px;overflow:hidden;}
 .waiting-title{font-size:9px;font-weight:700;color:#C8C8C4;letter-spacing:.08em;text-transform:uppercase;margin-bottom:7px;flex-shrink:0;}
 .waiting-list{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:4px;}
-.waiting-list::-webkit-scrollbar{width:3px;}
-.waiting-list::-webkit-scrollbar-thumb{background:#E0E0DC;}
 .w-item{display:flex;align-items:center;gap:6px;padding:7px 8px;border-radius:8px;border:.5px solid #E8E8E4;background:#FAFAF8;}
 .w-rank{font-size:11px;font-weight:700;color:#D4AC0D;width:14px;flex-shrink:0;}
 .w-body{flex:1;min-width:0;}
@@ -236,7 +250,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 .w-confirm-btn{font-size:10px;color:#3B5BDB;border:.5px solid #C5D0FC;border-radius:5px;padding:3px 6px;cursor:pointer;background:#fff;font-family:inherit;transition:all .12s;flex-shrink:0;}
 .w-confirm-btn:hover{background:#EEF2FF;}
 
-/* Toast */
 .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(12px);background:#1A1A1A;color:#fff;font-size:12px;font-weight:500;padding:10px 18px;border-radius:10px;z-index:9999;opacity:0;pointer-events:none;transition:all .22s;white-space:nowrap;}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
 </style>
@@ -257,11 +270,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
       <div class="sb-item active" onclick="closeSb()"><div class="sb-dot" style="background:#8E44AD"></div><span class="sb-label">予約カレンダー</span></div>
       <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#10B981"></div><span class="sb-label">顧客管理</span></div>
       <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#EF4444"></div><span class="sb-label">スタッフ</span></div>
-      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#7D3C98"></div><span class="sb-label">在庫</span></div>
       <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#D4AC0D"></div><span class="sb-label">売上レポート</span></div>
       <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#117A65"></div><span class="sb-label">店舗設定</span></div>
     </div>
-    <div class="sb-foot"><div class="sb-ver">v2.0.0 · Concept A · スタッフ列</div></div>
+    <div class="sb-foot"><div class="sb-ver">v2.0.0 · Concept B · タイムライン</div></div>
   </div>
 
   <!-- Topbar -->
@@ -308,16 +320,26 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
   <div class="cal-main">
     <div class="cal-body">
 
-      <!-- DAY VIEW -->
+      <!-- DAY VIEW — TIMELINE -->
       <div class="view-panel active" id="view-day">
-        <div class="day-staff-header">
-          <div class="dsh-spacer"></div>
-          <div class="dsh-cols" id="dshCols"></div>
-        </div>
-        <div class="day-scroll">
-          <div class="day-grid">
-            <div class="time-gutter" id="timeGutter"></div>
-            <div class="staff-grid" id="staffGrid"></div>
+        <div class="tl-wrap">
+          <!-- Staff legend column -->
+          <div class="tl-legend">
+            <div class="tl-legend-title">スタッフ</div>
+            <div id="tlLegend"></div>
+            <div class="tl-legend-sep"></div>
+            <div class="tl-now-info">
+              <div class="tl-now-label">▶ NOW</div>
+              <div class="tl-now-time" id="nowTimeLbl">10:24</div>
+            </div>
+          </div>
+
+          <!-- Timeline grid -->
+          <div class="tl-right">
+            <div class="tl-scroll" id="tlScroll">
+              <!-- Hours + booking cards rendered by JS -->
+              <div id="tlRows"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -363,7 +385,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 
     <!-- Side panel -->
     <div class="side-panel" id="sidePanel">
-      <!-- Mini calendar -->
       <div class="mini-cal">
         <div class="mc-head">
           <span class="mc-month-label">2026年6月</span>
@@ -379,7 +400,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
         <div class="mc-days" id="miniCalDays"></div>
       </div>
 
-      <!-- Stats -->
       <div class="stats-box">
         <div class="stats-title">今日の状況</div>
         <div class="stats-row"><span class="sr-label">総予約</span><span class="sr-val b">13件</span></div>
@@ -389,7 +409,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
         <div class="stats-row"><span class="sr-label">売上見込み</span><span class="sr-val">¥128,700</span></div>
       </div>
 
-      <!-- Waiting -->
       <div class="waiting-box">
         <div class="waiting-title">ウェイティング (3)</div>
         <div class="waiting-list" id="waitingList"></div>
@@ -411,20 +430,16 @@ const SL = {done:'完了',checkin:'チェックイン',confirmed:'確定',pendin
 const DOW = ['日','月','火','水','木','金','土'];
 
 const BK = [
-  // Yuki (staff 0)
   {s:0,sh:9, sm:0,  dur:60,  name:'田中 美咲',    svc:'カット＋カラー',  price:14300, status:'done'},
   {s:0,sh:10,sm:30, dur:90,  name:'佐藤 里奈',    svc:'パーマ',          price:18700, status:'checkin'},
-  {s:0,sh:11,sm:30, dur:60,  name:'(ブロック)',   svc:'',               price:0,     status:'block'},
   {s:0,sh:13,sm:0,  dur:60,  name:'山田 花子',    svc:'ヘッドスパ 60分', price:8800,  status:'confirmed'},
   {s:0,sh:14,sm:30, dur:45,  name:'鈴木 めぐみ',  svc:'カット',          price:5500,  status:'confirmed'},
   {s:0,sh:16,sm:0,  dur:120, name:'伊藤 さくら',  svc:'ダブルカラー',    price:22000, status:'pending'},
-  // Mika (staff 1)
   {s:1,sh:9, sm:30, dur:75,  name:'高橋 あおい',  svc:'トリートメントM', price:9900,  status:'done'},
   {s:1,sh:11,sm:0,  dur:60,  name:'渡辺 ゆき',    svc:'ワンカラー',      price:11000, status:'done'},
   {s:1,sh:12,sm:30, dur:30,  name:'中村 はな',    svc:'前髪カット',      price:2200,  status:'noshow'},
   {s:1,sh:14,sm:0,  dur:90,  name:'小林 なつ',    svc:'縮毛矯正',        price:27500, status:'confirmed'},
   {s:1,sh:16,sm:30, dur:60,  name:'松田 あかり',  svc:'カット＋ブロー',  price:8800,  status:'pending'},
-  // Kenji (staff 2)
   {s:2,sh:10,sm:0,  dur:60,  name:'加藤 みさき',  svc:'カット',          price:5500,  status:'done'},
   {s:2,sh:11,sm:30, dur:120, name:'松本 えり',    svc:'デジタルパーマ',  price:33000, status:'checkin'},
   {s:2,sh:14,sm:0,  dur:60,  name:'井上 るか',    svc:'ヘアセット',      price:6600,  status:'confirmed'},
@@ -438,115 +453,157 @@ const WAITING = [
 ];
 
 // ── State ────────────────────────────────────────────────────────────────
-let curView = 'day';
-let curDate = new Date(2026,5,17);
-let sideOpen = true;
-let filters = new Set(['all',0,1,2]);
+const PX_PER_MIN = 1.4; // pixels per minute in timeline
+let curView='day', curDate=new Date(2026,5,17), sideOpen=true;
+let filters=new Set(['all',0,1,2]);
 
 // ── Helpers ──────────────────────────────────────────────────────────────
-const toTop = (h,m) => (h-9)*40 + m*(40/60);
-const toH   = (h,m) => Math.max(22, (m||0)*(40/60) - 2);
-const fmtT  = (h,m) => `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
-const endT  = b => { const t=b.sh*60+b.sm+b.dur; return fmtT(Math.floor(t/60),t%60); };
-const fmtY  = n => `¥${n.toLocaleString()}`;
-const filtBK = () => filters.has('all') ? BK : BK.filter(b=>filters.has(b.s));
+const fmtT  = (h,m)=>`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+const endT  = b=>{ const t=b.sh*60+b.sm+b.dur; return fmtT(Math.floor(t/60),t%60); };
+const fmtY  = n=>`¥${n.toLocaleString()}`;
+const minsFrom9 = (h,m)=>(h-9)*60+m;
+const filtBK = ()=>filters.has('all') ? BK : BK.filter(b=>filters.has(b.s));
 
-// ── DAY VIEW ─────────────────────────────────────────────────────────────
+// ── DAY VIEW — Timeline ───────────────────────────────────────────────────
 function buildDay() {
-  const bks = filtBK();
+  const bks = filtBK().filter(b=>b.status!=='block');
+  const totalMins = 10*60; // 9:00–19:00
+  const totalH = totalMins * PX_PER_MIN;
 
-  // Staff header with booking count
-  document.getElementById('dshCols').innerHTML = STAFF.map((st,i) => {
-    const cnt = bks.filter(b=>b.s===i && b.status!=='block').length;
-    return `<div class="dsh-col${st.off?' dim':''}">
-      <div class="dsh-dot" style="background:${st.color}"></div>
-      ${st.name}${st.off?' (休)':''}
-      <span class="dsh-bk-count">${cnt}件</span>
+  // Staff legend
+  document.getElementById('tlLegend').innerHTML = STAFF.map((st,i)=>{
+    const cnt=bks.filter(b=>b.s===i).length;
+    return `<div class="tl-staff-row${st.off?' dim':''}">
+      <div class="tl-staff-dot" style="background:${st.color}"></div>
+      <span class="tl-staff-name">${st.name}</span>
+      <span class="tl-staff-cnt">${cnt}</span>
     </div>`;
   }).join('');
 
-  // Time gutter: half-hour lines
-  let tg = '';
-  for(let h=9;h<=19;h++){
-    tg += `<div class="time-label">${h}:00</div>`;
-    if(h<19) tg += `<div class="time-label half" style="height:20px;font-size:0"></div>`;
-  }
-  document.getElementById('timeGutter').innerHTML = tg;
+  // Build hour rows as background — position bookings absolutely over all rows
+  // Use a single relative container with absolute booking cards
+  let rowsHtml = `<div style="position:relative;height:${totalH}px;">`;
 
-  // Staff columns
-  const nowTop = toTop(10,24);
-  document.getElementById('staffGrid').innerHTML = STAFF.map((st,si) => {
-    let lines = '';
-    for(let h=9;h<=19;h++){
-      lines += `<div class="h-line" style="top:${toTop(h,0)}px"></div>`;
-      if(h<19) lines += `<div class="h-line half-hr" style="top:${toTop(h,30)}px"></div>`;
+  // Hour grid lines
+  for(let h=9;h<=19;h++){
+    const top=minsFrom9(h,0)*PX_PER_MIN;
+    const halfTop=minsFrom9(h,30)*PX_PER_MIN;
+    rowsHtml += `<div style="position:absolute;left:0;right:0;top:${top}px;display:flex;align-items:flex-start;pointer-events:none;">
+      <div style="width:46px;flex-shrink:0;font-size:10px;color:#bbb;padding:2px 7px 0;border-right:.5px solid #E5E5E0;">${h}:00</div>
+      <div style="flex:1;height:.5px;background:#EBEBEB;margin-top:10px;"></div>
+    </div>`;
+    if(h<19){
+      rowsHtml += `<div style="position:absolute;left:46px;right:0;top:${halfTop}px;height:.5px;background:#F4F4F2;pointer-events:none;"></div>`;
     }
-    const blocks = bks.filter(b=>b.s===si).map(b=>{
-      const top = toTop(b.sh,b.sm);
-      const ht  = Math.max(22, b.dur*(40/60)-2);
-      const isBlock = b.status==='block';
-      const extra = isBlock ? ' bk-block' : '';
-      // Progressive info: show more as block gets taller
-      const showSvc   = ht >= 30 && b.svc;
-      const showTime  = ht >= 46;
-      const showPrice = ht >= 60 && b.price > 0;
-      return `<div class="bk${extra}" style="top:${top}px;height:${ht}px;background:${SC[b.status]};" onclick="showDetail(${BK.indexOf(b)})">
-        <div class="bk-status-dot"></div>
-        <div class="bk-customer">${b.name}</div>
-        ${showSvc   ? `<div class="bk-service">${b.svc}</div>` : ''}
-        ${showTime  ? `<div class="bk-time">${fmtT(b.sh,b.sm)}〜${endT(b)} (${b.dur}分)</div>` : ''}
-        ${showPrice ? `<div class="bk-price">${fmtY(b.price)}</div>` : ''}
-      </div>`;
-    }).join('');
-    const nowLine = si===0 ? `<div class="now-line" style="top:${nowTop}px"></div>` : '';
-    return `<div class="staff-col${st.off?' dim':''}" style="height:${11*40+10}px;">${lines}${blocks}${nowLine}</div>`;
-  }).join('');
+  }
+
+  // Now line at 10:24
+  const nowTop = minsFrom9(10,24)*PX_PER_MIN;
+  rowsHtml += `<div class="tl-now-line" style="position:absolute;left:46px;right:0;top:${nowTop}px;"></div>`;
+
+  // Layout bookings: detect overlaps and offset horizontally
+  // Sort by start time
+  const sorted = [...bks].sort((a,b)=>a.sh*60+a.sm-(b.sh*60+b.sm));
+  // Assign columns (simple greedy)
+  const cols = [];
+  sorted.forEach(b=>{
+    const bStart=b.sh*60+b.sm, bEnd=bStart+b.dur;
+    let placed=false;
+    for(let c=0;c<cols.length;c++){
+      if(cols[c].end<=bStart){
+        cols[c]={bk:b, end:bEnd, col:c};
+        b._col=c; placed=true; break;
+      }
+    }
+    if(!placed){ b._col=cols.length; cols.push({bk:b,end:bEnd,col:b._col}); }
+  });
+  const maxCol=Math.max(1,...sorted.map(b=>b._col+1));
+  const laneL=46, laneW=`calc(100% - 46px)`;
+
+  sorted.forEach(b=>{
+    const top=minsFrom9(b.sh,b.sm)*PX_PER_MIN;
+    const ht=Math.max(28, b.dur*PX_PER_MIN-2);
+    const st=STAFF[b.s];
+    const colW=100/maxCol;
+    const left=laneL+(b._col*colW/100)+''; // will use percent
+    const showMeta = ht>=52;
+    const showPrice = ht>=70 && b.price>0;
+    rowsHtml += `
+    <div class="tl-bk" style="
+      position:absolute;
+      top:${top}px;
+      height:${ht}px;
+      left:calc(46px + ${b._col*colW}%);
+      width:calc(${colW}% - 4px);
+      border:.5px solid rgba(0,0,0,.06);
+      box-shadow:0 1px 4px rgba(0,0,0,.08);
+    " onclick="showDetail(${BK.indexOf(b)})">
+      <div class="tl-bk-accent" style="background:${st.color}"></div>
+      <div class="tl-bk-body">
+        <div class="tl-bk-top">
+          <div class="tl-bk-customer">${b.name}</div>
+          <div class="tl-bk-staff-badge" style="background:${st.color}20;color:${st.color};">${st.name}</div>
+        </div>
+        ${ht>=36 ? `<div class="tl-bk-service">${b.svc}</div>` : ''}
+        ${showMeta ? `<div class="tl-bk-meta">
+          <span class="tl-bk-time">${fmtT(b.sh,b.sm)}〜${endT(b)}</span>
+          ${showPrice ? `<span class="tl-bk-price">${fmtY(b.price)}</span>` : ''}
+        </div>` : ''}
+        ${showMeta ? `<div class="tl-bk-status s-${b.status}" style="font-size:9px;font-weight:600;padding:2px 6px;border-radius:5px;display:inline-block;margin-top:2px;">${SL[b.status]}</div>` : ''}
+      </div>
+    </div>`;
+  });
+
+  rowsHtml += '</div>';
+  document.getElementById('tlRows').innerHTML = rowsHtml;
+
+  // Scroll to 9:00 start
+  setTimeout(()=>{ document.getElementById('tlScroll').scrollTop=0; },0);
 }
 
 // ── WEEK VIEW ────────────────────────────────────────────────────────────
 function buildWeek() {
-  const mon = new Date(curDate);
-  mon.setDate(mon.getDate() - ((mon.getDay()+6)%7));
-  const days = Array.from({length:7},(_,i)=>{const d=new Date(mon);d.setDate(d.getDate()+i);return d;});
-  const todayS = new Date(2026,5,17).toDateString();
-  const bks = filtBK();
+  const mon=new Date(curDate);
+  mon.setDate(mon.getDate()-((mon.getDay()+6)%7));
+  const days=Array.from({length:7},(_,i)=>{const d=new Date(mon);d.setDate(d.getDate()+i);return d;});
+  const todayS=new Date(2026,5,17).toDateString();
+  const bks=filtBK();
+  const toTop2=(h,m)=>(h-9)*40+m*(40/60);
 
-  // Header
-  document.getElementById('whCols').innerHTML = days.map(d=>{
-    const isTod = d.toDateString()===todayS;
-    const isSun = d.getDay()===0;
-    const isSat = d.getDay()===6;
-    const dayBks = BK.filter(b=>isTod); // simplified: show today's
-    const dots = dayBks.slice(0,4).map(b=>`<div class="wh-bk-dot" style="background:${STAFF[b.s].color}"></div>`).join('');
+  document.getElementById('whCols').innerHTML=days.map(d=>{
+    const isTod=d.toDateString()===todayS;
+    const isSun=d.getDay()===0, isSat=d.getDay()===6;
+    const dots=STAFF.slice(0,3).map(st=>`<div class="wh-bk-dot" style="background:${st.color}"></div>`).join('');
     return `<div class="wh-col${isTod?' today':''}${isSun?' is-sun':''}${isSat?' is-sat':''}" onclick="jumpDate(${d.getDate()})">
       <div class="wh-dow">${DOW[d.getDay()]}</div>
       <div class="wh-day">${d.getDate()}</div>
-      <div class="wh-bk-dots">${dots}</div>
+      ${isTod?`<div class="wh-bk-dots">${dots}</div>`:'<div style="height:10px"></div>'}
     </div>`;
   }).join('');
 
-  // Time gutter
   let tg='';
-  for(let h=9;h<=19;h++) tg+=`<div class="time-label">${h}:00</div>`;
+  for(let h=9;h<=19;h++) tg+=`<div class="week-time-cell">${h}:00</div>`;
   document.getElementById('weekTimeGutter').innerHTML=tg;
 
-  // Day columns
-  document.getElementById('weekDayCols').innerHTML = days.map(d=>{
-    const isTod = d.toDateString()===todayS;
+  document.getElementById('weekDayCols').innerHTML=days.map(d=>{
+    const isTod=d.toDateString()===todayS;
     let lines='';
     for(let h=9;h<=19;h++){
-      lines+=`<div class="h-line" style="top:${toTop(h,0)}px"></div>`;
-      if(h<19) lines+=`<div class="h-line half-hr" style="top:${toTop(h,30)}px"></div>`;
+      lines+=`<div class="h-line" style="top:${toTop2(h,0)}px"></div>`;
+      if(h<19) lines+=`<div class="h-line h-half" style="top:${toTop2(h,30)}px"></div>`;
     }
-    const blocks = (isTod ? bks : []).map(b=>{
-      const top=toTop(b.sh,b.sm), ht=Math.max(18,b.dur*(40/60)-2);
-      const sc = STAFF[b.s];
-      return `<div class="bk" style="top:${top}px;height:${ht}px;background:${SC[b.status]};left:2px;right:2px;" onclick="showDetail(${BK.indexOf(b)})">
-        <div class="bk-customer" style="font-size:9px;">${b.name}</div>
-        ${ht>=28?`<div class="bk-service" style="font-size:8px;">${sc.name}</div>`:''}
+    const blocks=(isTod?bks:[]).map(b=>{
+      const top=toTop2(b.sh,b.sm), ht=Math.max(18,b.dur*(40/60)-2);
+      const st=STAFF[b.s];
+      return `<div style="position:absolute;top:${top}px;height:${ht}px;left:2px;right:2px;border-radius:6px;overflow:hidden;cursor:pointer;display:flex;" onclick="showDetail(${BK.indexOf(b)})">
+        <div style="width:3px;background:${st.color};flex-shrink:0;"></div>
+        <div style="flex:1;background:rgba(255,255,255,.9);padding:3px 5px;">
+          <div style="font-size:9px;font-weight:700;color:#1A1A1A;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${b.name}</div>
+          ${ht>=28?`<div style="font-size:8px;color:${st.color};font-weight:600;">${st.name}</div>`:''}
+        </div>
       </div>`;
     }).join('');
-    const nowLine = isTod?`<div class="now-line" style="top:${toTop(10,24)}px"></div>`:'';
+    const nowLine=isTod?`<div class="h-line" style="top:${toTop2(10,24)}px;background:#EF4444;height:2px;z-index:10;"></div>`:'';
     return `<div class="week-day-col${isTod?' today':''}" style="height:${11*40+10}px;position:relative;">${lines}${blocks}${nowLine}</div>`;
   }).join('');
 }
@@ -585,26 +642,23 @@ function buildList() {
   html+=bks.map(b=>{
     const st=STAFF[b.s];
     return `<div class="list-item" onclick="showDetail(${BK.indexOf(b)})">
+      <div class="li-accent" style="background:${st.color}"></div>
       <div class="li-time-col">
         <div class="li-start">${fmtT(b.sh,b.sm)}</div>
         <div class="li-end">〜${endT(b)}</div>
         <div class="li-dur">${b.dur}分</div>
       </div>
-      <div class="li-bar" style="background:${st.color}"></div>
       <div class="li-body">
         <div class="li-customer">${b.name}</div>
         <div class="li-service">${b.svc}</div>
       </div>
       <div class="li-right">
         <div class="li-price">${b.price?fmtY(b.price):''}</div>
-        <div class="li-staff-badge" style="background:${st.color}20;color:${st.color};">${st.name}</div>
+        <div class="li-staff-badge" style="background:${st.color}15;color:${st.color};">${st.name}</div>
       </div>
       <div class="status-badge s-${b.status}">${SL[b.status]}</div>
     </div>`;
   }).join('');
-  // Next day preview
-  html+=`<div class="list-day-header" style="margin-top:8px;">2026年6月18日 (木) — 8件</div>`;
-  html+=`<div style="padding:12px;text-align:center;font-size:11px;color:#bbb;background:#fff;border:.5px solid #E5E5E0;border-radius:10px;">翌日の予約は予約画面から確認できます</div>`;
   document.getElementById('listInner').innerHTML=html;
 }
 
@@ -625,7 +679,6 @@ function buildMiniCal() {
   document.getElementById('miniCalDays').innerHTML=html;
 }
 
-// ── Waiting list ──────────────────────────────────────────────────────────
 function buildWaiting() {
   document.getElementById('waitingList').innerHTML=WAITING.map((w,i)=>
     `<div class="w-item">
@@ -639,7 +692,7 @@ function buildWaiting() {
 }
 
 // ── Navigation ────────────────────────────────────────────────────────────
-function switchView(v, el) {
+function switchView(v,el){
   curView=v;
   document.querySelectorAll('.view-panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.vt').forEach(t=>t.classList.remove('active'));
@@ -648,7 +701,7 @@ function switchView(v, el) {
   render();
 }
 
-function render() {
+function render(){
   updateDateLabel();
   if(curView==='day')   buildDay();
   if(curView==='week')  buildWeek();
@@ -656,7 +709,7 @@ function render() {
   if(curView==='list')  buildList();
 }
 
-function updateDateLabel() {
+function updateDateLabel(){
   const d=curDate;
   let s='';
   if(curView==='day'||curView==='list') s=`${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日 (${DOW[d.getDay()]})`;
@@ -668,24 +721,22 @@ function updateDateLabel() {
   document.getElementById('calDateLabel').textContent=s;
 }
 
-function navigate(dir) {
+function navigate(dir){
   if(curView==='day'||curView==='list') curDate.setDate(curDate.getDate()+dir);
   else if(curView==='week') curDate.setDate(curDate.getDate()+dir*7);
   else curDate.setMonth(curDate.getMonth()+dir);
   render();
 }
 
-function goToday() { curDate=new Date(2026,5,17); render(); }
-
-function jumpDate(d) {
+function goToday(){ curDate=new Date(2026,5,17); render(); }
+function jumpDate(d){
   curDate=new Date(2026,5,d);
-  switchView('day', document.querySelector('.vt'));
+  switchView('day',document.querySelector('.vt'));
   document.querySelectorAll('.vt').forEach(t=>t.classList.remove('active'));
   document.querySelector('.vt').classList.add('active');
 }
 
-// ── Filters ───────────────────────────────────────────────────────────────
-function toggleFilter(key, el) {
+function toggleFilter(key,el){
   if(key==='all'){
     filters=new Set(['all',0,1,2]);
     document.getElementById('sf-all').className='sch on-all';
@@ -695,48 +746,43 @@ function toggleFilter(key, el) {
   } else {
     filters.delete('all');
     document.getElementById('sf-all').className='sch';
-    if(filters.has(key)){ filters.delete(key); el.className='sch'; }
-    else { filters.add(key); el.className=`sch on-${key}`; }
-    if(filters.size===0){ filters.add('all'); document.getElementById('sf-all').className='sch on-all'; }
+    if(filters.has(key)){filters.delete(key);el.className='sch';}
+    else{filters.add(key);el.className=`sch on-${key}`;}
+    if(filters.size===0){filters.add('all');document.getElementById('sf-all').className='sch on-all';}
   }
   render();
 }
 
-// ── Side & Sidebar ────────────────────────────────────────────────────────
-function toggleSide() {
+function toggleSide(){
   sideOpen=!sideOpen;
   document.getElementById('sidePanel').classList.toggle('closed',!sideOpen);
 }
-function openSb()  { document.getElementById('sidebar').classList.add('open'); document.getElementById('sbOverlay').classList.add('open'); }
-function closeSb() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sbOverlay').classList.remove('open'); }
+function openSb(){document.getElementById('sidebar').classList.add('open');document.getElementById('sbOverlay').classList.add('open');}
+function closeSb(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sbOverlay').classList.remove('open');}
 
-// ── Booking detail ────────────────────────────────────────────────────────
-function showDetail(i) {
+function showDetail(i){
   const b=BK[i]; if(!b) return;
-  toast(`${b.name} · ${b.svc} · ${b.dur}分 → 07_booking_form`);
+  toast(`${b.name} · ${b.svc} · ${b.dur}分`);
 }
 
-// ── Toast ─────────────────────────────────────────────────────────────────
 let _tt;
-function toast(msg) {
+function toast(msg){
   const el=document.getElementById('toast');
   el.textContent=msg; el.classList.add('show');
   clearTimeout(_tt); _tt=setTimeout(()=>el.classList.remove('show'),2200);
 }
 
-// ── Clock ─────────────────────────────────────────────────────────────────
-function tick() {
+function tick(){
   const d=new Date();
   const el=document.getElementById('tbTime');
   if(el) el.textContent=`${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} ${DOW[d.getDay()]}　${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
 }
 
-// ── Init ──────────────────────────────────────────────────────────────────
 buildMiniCal();
 buildWaiting();
 render();
 tick();
-setInterval(tick, 30000);
+setInterval(tick,30000);
 </script>
 </body>
 </html>
