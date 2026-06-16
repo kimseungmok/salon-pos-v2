@@ -208,6 +208,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 .split-left{flex:1;display:flex;flex-direction:column;padding:16px 20px;border-right:.5px solid #F0F0EC;overflow-y:auto;min-height:0;}
 /* 탭 */
 .split-tabs{display:flex;gap:4px;margin-bottom:14px;flex-shrink:0;}
+/* 탭 패널 래퍼 — 고정 높이로 탭 전환 시 밀림 방지 */
+.tab-panel-wrap{position:relative;height:195px;flex-shrink:0;}
+.tab-panel-wrap>div{position:absolute;top:0;left:0;right:0;visibility:hidden;}
+.tab-panel-wrap>div.tab-active{visibility:visible;}
+/* 현금 인라인 래퍼 — 항상 공간 확보, visibility로 토글 */
+.split-cash-wrap{flex-shrink:0;}
 .split-tab{flex:1;padding:8px 4px;border-radius:8px;border:1px solid #E0E0DC;background:white;font-size:11px;font-weight:600;color:#888;cursor:pointer;font-family:inherit;text-align:center;transition:all .12s;}
 .split-tab.active{background:#E67E22;border-color:#E67E22;color:white;}
 .split-tab:hover:not(.active){background:#F9F9F7;}
@@ -491,47 +497,52 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
           <button class="split-tab" onclick="switchSplitTab('menu')">📋 メニュー別</button>
         </div>
 
-        <!-- 금액 탭 -->
-        <div id="tabAmount">
-          <div style="font-size:10px;color:#AAA;margin-bottom:6px;">この決済金額を入力</div>
-          <input class="sp-amt-big" id="splitAmtInp" value="17,160" oninput="onSplitAmtInput()">
-          <div class="sp-quick">
-            <button class="sp-qbtn" onclick="setSplitAmt('remaining')">残額全額</button>
-            <button class="sp-qbtn" onclick="setSplitAmt(5000)">¥5,000</button>
-            <button class="sp-qbtn" onclick="setSplitAmt(10000)">¥10,000</button>
-            <button class="sp-qbtn" onclick="setSplitAmt(3000)">¥3,000</button>
-            <button class="sp-qbtn" onclick="setSplitAmt(8000)">¥8,000</button>
-            <button class="sp-qbtn" onclick="setSplitAmt(15000)">¥15,000</button>
-          </div>
-        </div>
+        <!-- 탭 패널 래퍼 (고정 높이 — 탭 전환해도 아래 요소 밀리지 않음) -->
+        <div class="tab-panel-wrap">
 
-        <!-- 인원수/더치페이 탭 -->
-        <div id="tabDutch" style="display:none;">
-          <div style="font-size:10px;color:#AAA;margin-bottom:8px;">人数を入力して均等割りします</div>
-          <div class="dutch-row">
-            <span class="dutch-label">人数</span>
-            <div class="dutch-count-row">
-              <button class="dutch-btn" onclick="changeDutch(-1)">−</button>
-              <span class="dutch-num" id="dutchNum">2</span>
-              <button class="dutch-btn" onclick="changeDutch(1)">＋</button>
-              <span style="font-size:12px;color:#888;margin-left:4px;">人</span>
+          <!-- 금액 탭 -->
+          <div id="tabAmount" class="tab-active">
+            <div style="font-size:10px;color:#AAA;margin-bottom:6px;">この決済金額を入力</div>
+            <input class="sp-amt-big" id="splitAmtInp" value="17,160" oninput="onSplitAmtInput()">
+            <div class="sp-quick">
+              <button class="sp-qbtn" onclick="setSplitAmt('remaining')">残額全額</button>
+              <button class="sp-qbtn" onclick="setSplitAmt(5000)">¥5,000</button>
+              <button class="sp-qbtn" onclick="setSplitAmt(10000)">¥10,000</button>
+              <button class="sp-qbtn" onclick="setSplitAmt(3000)">¥3,000</button>
+              <button class="sp-qbtn" onclick="setSplitAmt(8000)">¥8,000</button>
+              <button class="sp-qbtn" onclick="setSplitAmt(15000)">¥15,000</button>
             </div>
           </div>
-          <div class="dutch-per">
-            <span class="dutch-per-label">1人あたり</span>
-            <span class="dutch-per-val" id="dutchPerVal">¥8,580</span>
-          </div>
-        </div>
 
-        <!-- 메뉴별 탭 -->
-        <div id="tabMenu" style="display:none;">
-          <div style="font-size:10px;color:#AAA;margin-bottom:8px;">決済するメニューを選択</div>
-          <div class="menu-check-list" id="menuCheckList"></div>
-          <div class="menu-selected-total">
-            <span class="mst-label">選択合計</span>
-            <span class="mst-val" id="menuTotal">¥0</span>
+          <!-- 인원수/더치페이 탭 -->
+          <div id="tabDutch">
+            <div style="font-size:10px;color:#AAA;margin-bottom:8px;">人数を入力して均等割りします</div>
+            <div class="dutch-row">
+              <span class="dutch-label">人数</span>
+              <div class="dutch-count-row">
+                <button class="dutch-btn" onclick="changeDutch(-1)">−</button>
+                <span class="dutch-num" id="dutchNum">2</span>
+                <button class="dutch-btn" onclick="changeDutch(1)">＋</button>
+                <span style="font-size:12px;color:#888;margin-left:4px;">人</span>
+              </div>
+            </div>
+            <div class="dutch-per">
+              <span class="dutch-per-label">1人あたり</span>
+              <span class="dutch-per-val" id="dutchPerVal">¥8,580</span>
+            </div>
           </div>
-        </div>
+
+          <!-- 메뉴별 탭 -->
+          <div id="tabMenu">
+            <div style="font-size:10px;color:#AAA;margin-bottom:8px;">決済するメニューを選択</div>
+            <div class="menu-check-list" id="menuCheckList"></div>
+            <div class="menu-selected-total">
+              <span class="mst-label">選択合計</span>
+              <span class="mst-val" id="menuTotal">¥0</span>
+            </div>
+          </div>
+
+        </div><!-- /.tab-panel-wrap -->
 
         <!-- 결제수단 선택 (공통) -->
         <div class="split-method-label">支払方法</div>
@@ -553,8 +564,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
           </div>
         </div>
 
-        <!-- 현금 인라인 (split 내) -->
-        <div class="split-cash-inline" id="splitCashInline" style="display:none;">
+        <!-- 현금 인라인 (항상 공간 확보, visibility 토글) -->
+        <div class="split-cash-wrap" id="splitCashWrap" style="visibility:hidden;">
+        <div class="split-cash-inline" id="splitCashInline">
           <div class="sci-row">
             <span class="sci-label">受取金額</span>
             <span style="font-size:12px;color:#888;">¥</span>
@@ -571,6 +583,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
             <span class="sci-cc-val" id="sciChangeVal">¥2,840</span>
           </div>
         </div>
+        </div><!-- /.split-cash-wrap -->
 
         <button class="split-pay-btn" id="splitPayBtn" onclick="execSplitPay()" disabled>支払方法を選択してください</button>
       </div>
@@ -1065,7 +1078,7 @@ function openSplitModal() {
   updateSplitRemaining();
   updateDutch();
   renderMenuChecklist();
-  document.getElementById('splitCashInline').style.display = 'none';
+  document.getElementById('splitCashWrap').style.visibility = 'hidden';
   document.getElementById('splitPayBtn').disabled = true;
   document.getElementById('splitPayBtn').textContent = '支払方法を選択してください';
   document.getElementById('splitDoneBtn').disabled = true;
@@ -1082,7 +1095,8 @@ function handleSplitOverlay(e) {
 function switchSplitTab(tab) {
   splitTab = tab;
   ['amount','dutch','menu'].forEach(t => {
-    document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1)).style.display = t === tab ? '' : 'none';
+    const el = document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1));
+    el.classList.toggle('tab-active', t === tab);
   });
   document.querySelectorAll('.split-tab').forEach((el, i) => {
     el.classList.toggle('active', ['amount','dutch','menu'][i] === tab);
@@ -1143,16 +1157,16 @@ function selectSplitMethod(m) {
   splitCurMethod = m;
   document.querySelectorAll('.smc').forEach(el => el.classList.remove('selected'));
   document.getElementById('smc-' + m).classList.add('selected');
-  const cashInline = document.getElementById('splitCashInline');
+  const cashWrap = document.getElementById('splitCashWrap');
   if (m === 'cash') {
-    cashInline.style.display = '';
+    cashWrap.style.visibility = 'visible';
     const amt = getSplitCurrentAmt();
     sciCashRaw = Math.ceil(amt / 100) * 100;
     document.getElementById('sciCashInp').value = sciCashRaw.toLocaleString();
     updateSciChange();
     updateSciQuickBtns();
   } else {
-    cashInline.style.display = 'none';
+    cashWrap.style.visibility = 'hidden';
   }
   updateSplitPayBtn();
 }
@@ -1212,7 +1226,7 @@ function execSplitPay() {
   // 분할 상태 리셋
   splitCurMethod = null;
   document.querySelectorAll('.smc').forEach(el => el.classList.remove('selected'));
-  document.getElementById('splitCashInline').style.display = 'none';
+  document.getElementById('splitCashWrap').style.visibility = 'hidden';
   menuChecked.clear();
   document.getElementById('splitAmtInp').value = splitRemaining.toLocaleString();
 
