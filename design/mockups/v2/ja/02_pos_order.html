@@ -315,6 +315,90 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 .toast.purple::before{background:#8E44AD;}
 .toast.green::before{background:#1E8449;}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+
+/* ── Product Picker Modal ── */
+.picker-overlay{
+  position:absolute;inset:0;background:rgba(0,0,0,.5);
+  z-index:70;display:none;align-items:center;justify-content:center;
+}
+.picker-overlay.open{display:flex;}
+.picker-modal{
+  width:920px;height:580px;background:white;border-radius:16px;
+  box-shadow:0 24px 80px rgba(0,0,0,.35);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.picker-head{
+  display:flex;align-items:center;padding:14px 18px;
+  border-bottom:.5px solid #F0F0EC;flex-shrink:0;
+}
+.picker-head-title{font-size:14px;font-weight:700;color:#1A1A1A;flex:1;}
+.picker-head-sub{font-size:11px;color:#AAA;margin-left:8px;}
+.picker-close{
+  width:30px;height:30px;border-radius:8px;border:.5px solid #E0E0DC;
+  background:#F4F4F0;display:flex;align-items:center;justify-content:center;
+  font-size:16px;color:#888;cursor:pointer;
+}
+.picker-close:hover{background:#EAEAE6;}
+.picker-body{flex:1;display:flex;overflow:hidden;}
+
+/* left: parent category list */
+.picker-cats{
+  width:168px;flex-shrink:0;border-right:.5px solid #F0F0EC;
+  overflow-y:auto;padding:8px 0;background:#FAFAF8;
+}
+.picker-cats::-webkit-scrollbar{width:3px;}
+.picker-cats::-webkit-scrollbar-thumb{background:#E0E0DC;}
+.pcat-item{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:9px 14px;cursor:pointer;font-size:12px;color:#555;
+  transition:background .1s;user-select:none;
+}
+.pcat-item:hover{background:#F0F0EC;}
+.pcat-item.on{background:white;color:#1A1A1A;font-weight:600;border-right:2.5px solid #2E86C1;}
+.pcat-count{font-size:10px;color:#BBB;font-weight:400;}
+
+/* right: subcat tabs + product grid */
+.picker-right{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+
+.picker-subcat-bar{
+  display:flex;align-items:stretch;border-bottom:.5px solid #F0F0EC;
+  flex-shrink:0;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;
+}
+.picker-subcat-bar::-webkit-scrollbar{display:none;}
+.psubcat{
+  font-size:11px;color:#888;padding:0 14px;cursor:pointer;
+  white-space:nowrap;display:flex;align-items:center;
+  border-bottom:2px solid transparent;transition:all .12s;flex-shrink:0;height:34px;
+}
+.psubcat:hover{color:#444;}
+.psubcat.on{color:#2E86C1;border-bottom-color:#2E86C1;font-weight:600;}
+
+.picker-grid-wrap{flex:1;overflow-y:auto;padding:12px 14px;}
+.picker-grid-wrap::-webkit-scrollbar{width:4px;}
+.picker-grid-wrap::-webkit-scrollbar-thumb{background:#E0E0DC;border-radius:2px;}
+.picker-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:8px;
+}
+.pcard{
+  background:white;border:1.5px solid #E5E5E0;border-radius:10px;
+  padding:12px 10px 10px;cursor:pointer;transition:all .12s;
+  display:flex;flex-direction:column;gap:4px;
+}
+.pcard:hover{border-color:#2E86C1;background:#EBF5FB;transform:translateY(-1px);box-shadow:0 4px 12px rgba(46,134,193,.15);}
+.pcard:active{transform:scale(.97);}
+.pcard-name{font-size:12px;font-weight:600;color:#1A1A1A;line-height:1.3;}
+.pcard-price{font-size:13px;font-weight:700;color:#2E86C1;margin-top:2px;}
+.pcard-time{font-size:10px;color:#BBB;}
+.pcard-badge{
+  display:inline-block;font-size:9px;font-weight:600;
+  padding:2px 6px;border-radius:4px;background:#FDEDEC;color:#E74C3C;
+  width:fit-content;
+}
+.picker-empty{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  height:200px;color:#CCC;font-size:12px;gap:8px;
+}
+.picker-empty-icon{font-size:32px;}
 </style>
 </head>
 <body>
@@ -439,6 +523,27 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
       </div>
     </div>
   </div>
+
+  <!-- Product Picker Modal -->
+  <div class="picker-overlay" id="pickerOverlay" onclick="handlePickerOverlayClick(event)">
+    <div class="picker-modal">
+      <div class="picker-head">
+        <span class="picker-head-title">商品を選択</span>
+        <span class="picker-head-sub" id="pickerHeadSub">グリッドに追加する商品を選んでください</span>
+        <div class="picker-close" onclick="closePickerModal()">✕</div>
+      </div>
+      <div class="picker-body">
+        <div class="picker-cats" id="pickerCats"></div>
+        <div class="picker-right">
+          <div class="picker-subcat-bar" id="pickerSubcatBar"></div>
+          <div class="picker-grid-wrap">
+            <div class="picker-grid" id="pickerGrid"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <div class="toast" id="toast"></div>
@@ -801,13 +906,100 @@ function deleteSlot(i){
   renderProducts();
   showToast('グリッドから取り外しました（商品データは保持されています）','blue',3000);
 }
-function addProductAtSlot(i){
-  const n=prompt('商品名');if(!n)return;
-  const p=parseInt(prompt('金額 (¥)')||'0');
-  const t=prompt('所要時間（例: 30分）')||'';
-  getSlotArr()[currentPage*PAGE+i]={name:n,price:p,time:t,badge:'',visible:true};
-  isDirty=true;
+// ── Product Picker Modal ──────────────────────────────────────────────────────
+let pickerSlotIdx = null;
+let pickerParentId = null;
+let pickerChildId  = null;
+
+function openPickerModal(slotIdx) {
+  pickerSlotIdx = slotIdx;
+  // default to current parent
+  pickerParentId = CATS[0].id;
+  pickerChildId  = CATS[0].children[0].id;
+  document.getElementById('pickerOverlay').classList.add('open');
+  renderPickerCats();
+  renderPickerSubcats();
+  renderPickerGrid();
+}
+function closePickerModal() {
+  document.getElementById('pickerOverlay').classList.remove('open');
+  pickerSlotIdx = null;
+}
+function handlePickerOverlayClick(e) {
+  if (e.target === document.getElementById('pickerOverlay')) closePickerModal();
+}
+
+function renderPickerCats() {
+  document.getElementById('pickerCats').innerHTML = CATS.map(c => {
+    const items = (SLOTS[c.id] || []).filter(x => x !== null);
+    const on = c.id === pickerParentId ? ' on' : '';
+    return `<div class="pcat-item${on}" onclick="pickParent('${c.id}')">
+      <span>${c.name}</span>
+      <span class="pcat-count">${items.length}</span>
+    </div>`;
+  }).join('');
+}
+
+function renderPickerSubcats() {
+  const cat = CATS.find(c => c.id === pickerParentId);
+  if (!cat) return;
+  document.getElementById('pickerSubcatBar').innerHTML = cat.children.map(ch => {
+    const on = ch.id === pickerChildId ? ' on' : '';
+    return `<div class="psubcat${on}" onclick="pickChild('${ch.id}')">${ch.name}</div>`;
+  }).join('');
+}
+
+function renderPickerGrid() {
+  // get products for current child (or parent if _all)
+  let key = pickerChildId;
+  // _all → use parent key
+  if (pickerChildId && pickerChildId.endsWith('_all')) key = pickerParentId;
+  const items = (SLOTS[key] || []).filter(x => x !== null);
+
+  const grid = document.getElementById('pickerGrid');
+  if (items.length === 0) {
+    grid.innerHTML = `<div class="picker-empty" style="grid-column:1/-1">
+      <div class="picker-empty-icon">📭</div>
+      <div>このカテゴリには商品がありません</div>
+    </div>`;
+    return;
+  }
+  grid.innerHTML = items.map((p, idx) => `
+    <div class="pcard" onclick="confirmPickProduct(${JSON.stringify(p).replace(/"/g,'&quot;')})">
+      ${p.badge ? `<div class="pcard-badge">${p.badge}</div>` : ''}
+      <div class="pcard-name">${p.name}</div>
+      <div class="pcard-price">¥${p.price.toLocaleString()}</div>
+      ${p.time ? `<div class="pcard-time">⏱ ${p.time}</div>` : ''}
+    </div>
+  `).join('');
+}
+
+function pickParent(id) {
+  pickerParentId = id;
+  const cat = CATS.find(c => c.id === id);
+  pickerChildId = cat ? cat.children[0].id : null;
+  renderPickerCats();
+  renderPickerSubcats();
+  renderPickerGrid();
+}
+function pickChild(id) {
+  pickerChildId = id;
+  renderPickerSubcats();
+  renderPickerGrid();
+}
+function confirmPickProduct(p) {
+  if (pickerSlotIdx === null) return;
+  getSlotArr()[currentPage * PAGE + pickerSlotIdx] = {
+    name: p.name, price: p.price, time: p.time || '', badge: p.badge || '', visible: true
+  };
+  isDirty = true;
+  closePickerModal();
   renderProducts();
+  showToast(`「${p.name}」をグリッドに追加しました`, 'blue', 2000);
+}
+
+function addProductAtSlot(i) {
+  openPickerModal(i);
 }
 function addProduct(){
   const n=prompt('商品名');if(!n)return;
