@@ -1,590 +1,678 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ja">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=1024">
 <title>06 · 予約カレンダー — salon-pos-v2 JA</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino Sans',sans-serif;background:#1C2833;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;}
-.ipad{width:1024px;height:768px;background:#F4F4F0;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.5);}
+body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neue',sans-serif;background:#0F1D5C;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;}
 
-/* topbar - light mode */
-.topbar{background:white;height:44px;display:flex;align-items:center;padding:0 16px;gap:10px;flex-shrink:0;border-bottom:.5px solid #E5E5E0;}
-.tb-menu{font-size:18px;color:#1C2833;cursor:pointer;padding:4px 6px;border-radius:6px;line-height:1;flex-shrink:0;user-select:none;}
-.tb-menu:hover{background:#F4F4F0;}
-.tb-logo{font-size:13px;color:#1C2833;font-weight:500;letter-spacing:.08em;}
+.ipad{width:1024px;height:768px;background:#F8FAFF;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.5);position:relative;}
+
+/* ── Topbar ── */
+.topbar{height:44px;background:white;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 16px;gap:10px;flex-shrink:0;z-index:10;}
+.tb-menu{font-size:18px;color:#1E3A8A;cursor:pointer;padding:4px 6px;border-radius:6px;line-height:1;flex-shrink:0;user-select:none;}
+.tb-menu:hover{background:#EEF2FF;}
+.tb-logo{font-size:13px;color:#1E3A8A;font-weight:600;letter-spacing:.06em;}
 .tb-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
 .tb-sep{width:.5px;height:14px;background:#D0D0CC;}
 .tb-avatar{width:24px;height:24px;border-radius:50%;background:#8E44AD;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:500;color:white;}
-.tb-staff-name{font-size:12px;color:#333;}
-.tb-time{font-size:11px;color:#888;}
+.tb-staff{font-size:12px;color:#333;}
+.tb-branch{font-size:11px;color:#555;margin-left:2px;font-weight:500;}
+.tb-time{font-size:11px;color:#555;font-weight:500;}
 .tb-lock{font-size:13px;color:#aaa;cursor:pointer;}
 
-/* sidebar */
-.sidebar-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:100;opacity:0;pointer-events:none;transition:opacity .2s;}
+/* ── Sidebar ── */
+.sidebar-overlay{position:absolute;inset:0;background:rgba(0,0,0,.35);z-index:100;opacity:0;pointer-events:none;transition:opacity .2s;}
 .sidebar-overlay.open{opacity:1;pointer-events:all;}
-.sidebar{position:fixed;left:0;top:0;bottom:0;width:220px;background:#1C2833;z-index:101;transform:translateX(-100%);transition:transform .22s cubic-bezier(.25,.46,.45,.94);display:flex;flex-direction:column;box-shadow:4px 0 24px rgba(0,0,0,.3);}
+.sidebar{position:absolute;left:0;top:0;bottom:0;width:220px;background:#1E3A8A;z-index:101;transform:translateX(-100%);transition:transform .22s cubic-bezier(.25,.46,.45,.94);display:flex;flex-direction:column;box-shadow:4px 0 24px rgba(0,0,0,.3);}
 .sidebar.open{transform:translateX(0);}
-.sidebar-header{padding:20px 16px 14px;border-bottom:.5px solid rgba(255,255,255,.1);}
-.sidebar-logo{font-size:14px;color:white;font-weight:500;letter-spacing:.08em;}
-.sidebar-sub{font-size:10px;color:rgba(255,255,255,.3);margin-top:4px;}
-.sidebar-menu{flex:1;padding:8px 0;overflow-y:auto;}
-.sidebar-item{display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;transition:background .12s;user-select:none;}
-.sidebar-item:hover{background:rgba(255,255,255,.07);}
-.sidebar-item.on{background:rgba(255,255,255,.12);}
-.sidebar-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
-.sidebar-label{font-size:13px;color:rgba(255,255,255,.7);font-weight:400;}
-.sidebar-item.on .sidebar-label{color:white;font-weight:500;}
-.sidebar-footer{padding:14px 16px;border-top:.5px solid rgba(255,255,255,.1);}
-.sidebar-footer-text{font-size:10px;color:rgba(255,255,255,.22);}
+.sb-head{padding:20px 16px 14px;border-bottom:.5px solid rgba(255,255,255,.1);}
+.sb-logo{font-size:14px;color:white;font-weight:600;letter-spacing:.06em;}
+.sb-sub{font-size:10px;color:rgba(255,255,255,.3);margin-top:4px;}
+.sb-menu{flex:1;padding:8px 0;overflow-y:auto;}
+.sb-item{display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;transition:background .12s;user-select:none;}
+.sb-item:hover{background:rgba(255,255,255,.07);}
+.sb-item.on{background:rgba(255,255,255,.12);}
+.sb-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.sb-label{font-size:13px;color:rgba(255,255,255,.7);}
+.sb-item.on .sb-label{color:white;font-weight:500;}
+.sb-foot{padding:14px 16px;border-top:.5px solid rgba(255,255,255,.1);}
+.sb-ver{font-size:10px;color:rgba(255,255,255,.22);}
 
-/* calendar toolbar */
-.cal-toolbar{height:44px;background:white;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 14px;gap:8px;flex-shrink:0;}
-.nav-btn{width:28px;height:28px;border-radius:7px;border:.5px solid #E0E0DC;background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:#555;}
+/* ── Calendar Toolbar ── */
+.cal-toolbar{height:48px;background:white;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 14px;gap:8px;flex-shrink:0;}
+.nav-btn{width:28px;height:28px;border-radius:7px;border:.5px solid #E0E0DC;background:white;display:flex;align-items:center;justify-content:center;font-size:14px;color:#555;cursor:pointer;transition:background .1s;flex-shrink:0;}
 .nav-btn:hover{background:#F4F4F0;}
-.today-btn{padding:4px 12px;border-radius:7px;border:.5px solid #E0E0DC;background:white;font-size:12px;color:#555;cursor:pointer;font-family:inherit;}
+.today-btn{padding:5px 12px;border-radius:7px;border:.5px solid #E0E0DC;background:white;font-size:12px;color:#555;cursor:pointer;font-family:inherit;white-space:nowrap;transition:background .1s;}
 .today-btn:hover{background:#F4F4F0;}
-.cal-date{font-size:14px;font-weight:500;color:#1a1a1a;min-width:120px;}
-.view-tabs{display:flex;border:.5px solid #E0E0DC;border-radius:8px;overflow:hidden;margin-left:4px;}
-.view-tab{padding:5px 12px;font-size:12px;color:#888;cursor:pointer;background:white;border:none;font-family:inherit;}
-.view-tab.on{background:#1C2833;color:white;font-weight:500;}
-.filter-chip{display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;border:.5px solid #E0E0DC;background:white;font-size:11px;color:#555;cursor:pointer;margin-left:4px;}
-.filter-chip.active{border-color:#8E44AD;background:#F5EEF8;color:#8E44AD;}
-.toolbar-right{margin-left:auto;display:flex;gap:6px;}
-.add-btn{padding:6px 14px;border-radius:8px;background:#8E44AD;color:white;font-size:12px;font-weight:500;border:none;cursor:pointer;font-family:inherit;}
+.cal-date{font-size:14px;font-weight:500;color:#1A1A1A;min-width:160px;white-space:nowrap;}
+
+.view-tabs{display:flex;border:.5px solid #E0E0DC;border-radius:8px;overflow:hidden;flex-shrink:0;}
+.view-tab{padding:5px 12px;font-size:12px;font-weight:500;color:#888;cursor:pointer;background:white;border:none;font-family:inherit;border-right:.5px solid #E0E0DC;white-space:nowrap;transition:background .1s,color .1s;}
+.view-tab:last-child{border-right:none;}
+.view-tab.active{background:#1E3A8A;color:white;}
+
+.staff-filters{display:flex;gap:5px;flex-shrink:0;}
+.sf-chip{display:flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;border:.5px solid #E0E0DC;background:white;font-size:11px;color:#888;cursor:pointer;font-family:inherit;transition:all .12s;white-space:nowrap;user-select:none;}
+.sf-chip:hover{border-color:#aaa;}
+.sf-chip.on-all{border-color:#8E44AD;background:#F5EEF8;color:#8E44AD;}
+.sf-chip.on-0{border-color:#8E44AD;background:#F5EEF8;color:#8E44AD;}
+.sf-chip.on-1{border-color:#3B5BDB;background:#EEF2FF;color:#3B5BDB;}
+.sf-chip.on-2{border-color:#E67E22;background:#FEF5E7;color:#E67E22;}
+
+.tb-right-tools{margin-left:auto;display:flex;align-items:center;gap:6px;}
+.side-toggle{width:30px;height:30px;border-radius:7px;border:.5px solid #E0E0DC;background:white;display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;transition:background .1s;}
+.side-toggle:hover{background:#EEF2FF;}
+.add-btn{display:flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;background:#8E44AD;color:white;font-size:12px;font-weight:600;border:none;cursor:pointer;font-family:inherit;white-space:nowrap;transition:background .12s;}
 .add-btn:hover{background:#7D3C98;}
-.stats-toggle{padding:6px 10px;border-radius:8px;border:.5px solid #E0E0DC;background:white;font-size:12px;color:#555;cursor:pointer;font-family:inherit;}
 
-/* main layout */
-.main{flex:1;display:flex;overflow:hidden;}
+/* ── Main Area ── */
+.cal-main{flex:1;display:flex;overflow:hidden;}
+.cal-body{flex:1;display:flex;flex-direction:column;overflow:hidden;}
 
-/* time sidebar */
-.time-col{width:48px;flex-shrink:0;background:white;border-right:.5px solid #E5E5E0;padding-top:32px;overflow:hidden;}
-.time-label{height:40px;display:flex;align-items:flex-start;justify-content:flex-end;padding-right:6px;font-size:10px;color:#bbb;padding-top:2px;}
+/* ── View containers ── */
+.view-panel{display:none;flex:1;flex-direction:column;overflow:hidden;}
+.view-panel.active{display:flex;}
 
-/* day view staff columns */
-.day-view{flex:1;display:flex;flex-direction:column;overflow:hidden;}
-.staff-header{display:flex;background:white;border-bottom:.5px solid #E5E5E0;height:32px;flex-shrink:0;}
-.sh-spacer{width:48px;flex-shrink:0;border-right:.5px solid #E5E5E0;}
-.sh-col{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;border-right:.5px solid #F0F0EC;font-size:11px;font-weight:500;color:#555;}
-.sh-dot{width:8px;height:8px;border-radius:50%;}
-.sh-col.off{opacity:.35;}
+/* ════════ DAY VIEW ════════ */
+.day-staff-header{height:32px;background:white;border-bottom:.5px solid #E5E5E0;display:flex;flex-shrink:0;}
+.dsh-spacer{width:48px;flex-shrink:0;border-right:.5px solid #E5E5E0;}
+.dsh-cols{flex:1;display:flex;}
+.dsh-col{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;border-right:.5px solid #F0F0EC;font-size:11px;font-weight:500;color:#444;}
+.dsh-col:last-child{border-right:none;}
+.dsh-col.off{opacity:.35;}
+.dsh-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
 
-.day-grid{flex:1;overflow-y:auto;display:flex;position:relative;}
-.time-labels{width:48px;flex-shrink:0;}
-.t-label{height:40px;display:flex;align-items:flex-start;justify-content:flex-end;padding-right:6px;font-size:10px;color:#bbb;padding-top:2px;border-right:.5px solid #E5E5E0;}
-
-.staff-cols{flex:1;display:flex;position:relative;}
-.staff-col{flex:1;border-right:.5px solid #F0F0EC;position:relative;background:white;}
-.staff-col.off{background:repeating-linear-gradient(45deg,#F9F9F7,#F9F9F7 3px,#FAFAF8 3px,#FAFAF8 6px);}
-.hour-line{position:absolute;left:0;right:0;height:.5px;background:#F0F0EC;}
+.day-grid-wrap{flex:1;overflow-y:auto;}
+.day-grid-wrap::-webkit-scrollbar{width:4px;}
+.day-grid-wrap::-webkit-scrollbar-thumb{background:#E0E0DC;border-radius:2px;}
+.day-grid{display:flex;position:relative;}
+.time-col{width:48px;flex-shrink:0;border-right:.5px solid #E5E5E0;background:white;}
+.time-cell{height:40px;display:flex;align-items:flex-start;justify-content:flex-end;padding:3px 6px 0 0;font-size:10px;color:#bbb;border-bottom:.5px solid #F0F0EC;}
+.staff-cols{flex:1;display:flex;}
+.staff-col{flex:1;position:relative;border-right:.5px solid #F0F0EC;}
+.staff-col:last-child{border-right:none;}
+.staff-col.off{background:repeating-linear-gradient(45deg,#F9F9F7,#F9F9F7 3px,#FAFAF8 3px,#FAFAF8 7px);}
+.hour-line{position:absolute;left:0;right:0;height:.5px;background:#F0F0EC;pointer-events:none;}
 .hour-line.half{background:#F8F8F6;}
 
-/* booking block */
-.bk{position:absolute;left:3px;right:3px;border-radius:6px;padding:4px 6px;cursor:pointer;overflow:hidden;transition:opacity .1s;}
-.bk:hover{opacity:.85;box-shadow:0 2px 8px rgba(0,0,0,.15);}
-.bk-name{font-size:11px;font-weight:500;color:white;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.bk-service{font-size:10px;color:rgba(255,255,255,.8);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+/* Booking block */
+.bk{position:absolute;left:3px;right:3px;border-radius:6px;cursor:pointer;overflow:hidden;transition:opacity .12s,box-shadow .12s;padding:4px 6px;display:flex;flex-direction:column;gap:1px;}
+.bk:hover{opacity:.82;box-shadow:0 2px 8px rgba(0,0,0,.18);}
+.bk-name{font-size:11px;font-weight:600;color:white;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3;}
+.bk-service{font-size:9px;color:rgba(255,255,255,.85);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .bk-time{font-size:9px;color:rgba(255,255,255,.65);}
-.bk-block{background:repeating-linear-gradient(45deg,rgba(0,0,0,.07),rgba(0,0,0,.07) 2px,transparent 2px,transparent 6px);}
+.bk-block-bg{background:repeating-linear-gradient(45deg,rgba(0,0,0,0),rgba(0,0,0,0) 4px,rgba(0,0,0,.12) 4px,rgba(0,0,0,.12) 5px);}
 
-/* current time indicator */
-.now-line{position:absolute;left:0;right:0;height:2px;background:#E74C3C;z-index:10;pointer-events:none;}
-.now-line::before{content:'';position:absolute;left:-3px;top:-4px;width:10px;height:10px;border-radius:50%;background:#E74C3C;}
+/* Now line */
+.now-line{position:absolute;left:0;right:0;height:2px;background:#EF4444;z-index:10;pointer-events:none;}
+.now-line::before{content:'';position:absolute;left:-4px;top:-4px;width:10px;height:10px;border-radius:50%;background:#EF4444;}
 
-/* week view */
-.week-view{flex:1;display:flex;flex-direction:column;overflow:hidden;display:none;}
+/* ════════ WEEK VIEW ════════ */
+.week-day-header{height:40px;background:white;border-bottom:.5px solid #E5E5E0;display:flex;flex-shrink:0;}
+.wdh-spacer{width:48px;flex-shrink:0;border-right:.5px solid #E5E5E0;}
+.wdh-cols{flex:1;display:flex;}
+.wdh-col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border-right:.5px solid #F0F0EC;font-size:11px;color:#555;}
+.wdh-col:last-child{border-right:none;}
+.wdh-col.is-today{color:#8E44AD;font-weight:600;}
+.wdh-col.is-sun{color:#EF4444;}
+.wdh-day-num{font-size:13px;font-weight:600;margin-bottom:1px;}
 
-/* month view */
-.month-view{flex:1;overflow:hidden;display:none;flex-direction:column;}
-.month-header{display:grid;grid-template-columns:repeat(7,1fr);background:white;border-bottom:.5px solid #E5E5E0;flex-shrink:0;}
-.mh-cell{padding:6px 0;text-align:center;font-size:11px;font-weight:500;color:#888;}
-.mh-cell:first-child{color:#E74C3C;}
+.week-grid-wrap{flex:1;overflow-y:auto;}
+.week-grid-wrap::-webkit-scrollbar{width:4px;}
+.week-grid-wrap::-webkit-scrollbar-thumb{background:#E0E0DC;border-radius:2px;}
+.week-grid{display:flex;}
+.week-time-col{width:48px;flex-shrink:0;border-right:.5px solid #E5E5E0;background:white;}
+.week-day-col{flex:1;position:relative;border-right:.5px solid #F0F0EC;}
+.week-day-col:last-child{border-right:none;}
+
+/* ════════ MONTH VIEW ════════ */
+.month-view{flex:1;display:flex;flex-direction:column;overflow:hidden;background:white;}
+.month-dow-header{display:grid;grid-template-columns:repeat(7,1fr);border-bottom:.5px solid #E5E5E0;flex-shrink:0;}
+.month-dow{padding:6px 0;text-align:center;font-size:11px;font-weight:500;color:#888;}
+.month-dow.sun{color:#EF4444;}
+.month-dow.sat{color:#3B5BDB;}
 .month-grid{flex:1;display:grid;grid-template-columns:repeat(7,1fr);grid-template-rows:repeat(6,1fr);overflow:hidden;}
-.m-cell{border-right:.5px solid #E8E8E4;border-bottom:.5px solid #E8E8E4;padding:4px;background:white;overflow:hidden;}
-.m-cell.other-month{background:#F9F9F7;}
-.m-cell.today{background:#EBF5FB;}
-.m-day{font-size:11px;font-weight:500;color:#555;margin-bottom:3px;}
-.m-cell.today .m-day{color:#2E86C1;font-weight:600;}
-.m-cell:nth-child(7n+1) .m-day{color:#E74C3C;}
-.m-bk{font-size:9px;padding:1px 5px;border-radius:3px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:white;}
-.m-more{font-size:9px;color:#888;cursor:pointer;}
+.month-cell{border-right:.5px solid #E8E8E4;border-bottom:.5px solid #E8E8E4;padding:4px;display:flex;flex-direction:column;gap:2px;overflow:hidden;cursor:pointer;transition:background .1s;}
+.month-cell:hover{background:#F8FAFF;}
+.month-cell.other{background:#F9F9F7;}
+.month-cell.mc-today{background:#EEF2FF;}
+.mc-date{font-size:11px;font-weight:500;color:#555;line-height:1;margin-bottom:2px;}
+.month-cell.mc-today .mc-date{color:#3B5BDB;font-weight:700;}
+.month-cell.other .mc-date{color:#CCC;}
+.mc-bk{font-size:9px;color:white;padding:1px 5px;border-radius:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.mc-more{font-size:9px;color:#888;}
 
-/* list view */
-.list-view{flex:1;overflow-y:auto;display:none;padding:12px 16px;gap:10px;flex-direction:column;}
-.lv-date-header{font-size:11px;font-weight:600;color:#888;text-transform:uppercase;padding:4px 0 8px;border-bottom:.5px solid #E5E5E0;margin-bottom:6px;}
-.lv-item{background:white;border:.5px solid #E5E5E0;border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:12px;cursor:pointer;margin-bottom:6px;}
-.lv-item:hover{border-color:#C39BD3;background:#FEFBFF;}
-.lv-time{font-size:12px;font-weight:500;color:#1a1a1a;min-width:80px;}
-.lv-bar{width:3px;height:36px;border-radius:2px;flex-shrink:0;}
-.lv-main{flex:1;}
-.lv-name{font-size:13px;font-weight:500;color:#1a1a1a;}
-.lv-service{font-size:11px;color:#888;margin-top:2px;}
-.lv-staff{font-size:11px;padding:2px 8px;border-radius:12px;font-weight:500;}
-.lv-status{font-size:11px;padding:2px 8px;border-radius:12px;font-weight:500;}
+/* ════════ LIST VIEW ════════ */
+.list-view{flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:6px;}
+.list-view::-webkit-scrollbar{width:4px;}
+.list-view::-webkit-scrollbar-thumb{background:#E0E0DC;border-radius:2px;}
+.list-date-header{font-size:11px;font-weight:600;color:#888;letter-spacing:.06em;padding:8px 0 4px;border-bottom:.5px solid #E5E5E0;margin-top:4px;}
+.list-date-header:first-child{margin-top:0;}
+.list-item{background:white;border:.5px solid #E5E5E0;border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:all .12s;}
+.list-item:hover{border-color:#C5D0FC;background:#F8FAFF;}
+.li-time{font-size:12px;font-weight:500;color:#1A1A1A;min-width:90px;flex-shrink:0;}
+.li-bar{width:3px;height:36px;border-radius:2px;flex-shrink:0;}
+.li-info{flex:1;min-width:0;}
+.li-name{font-size:13px;font-weight:600;color:#1A1A1A;}
+.li-detail{font-size:11px;color:#888;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.li-staff-chip{font-size:10px;font-weight:600;padding:3px 8px;border-radius:10px;flex-shrink:0;}
+.sbadge{padding:3px 7px;border-radius:8px;font-size:10px;font-weight:600;flex-shrink:0;}
+.sbadge.done{background:#F4F4F0;color:#888;}
+.sbadge.checkin{background:#EEF2FF;color:#3B5BDB;}
+.sbadge.confirmed{background:#ECFDF5;color:#10B981;}
+.sbadge.pending{background:#FEF9EC;color:#D4AC0D;}
+.sbadge.noshow{background:#F5EEF8;color:#8E44AD;}
 
-/* side panel */
-.side-panel{width:220px;background:white;border-left:.5px solid #E5E5E0;display:flex;flex-direction:column;flex-shrink:0;}
-.sp-header{padding:10px 14px;border-bottom:.5px solid #E5E5E0;font-size:12px;font-weight:500;color:#555;}
-.mini-cal{padding:10px 14px;}
+/* ════════ SIDE PANEL ════════ */
+.side-panel{width:216px;flex-shrink:0;border-left:.5px solid #E5E5E0;background:white;display:flex;flex-direction:column;overflow:hidden;transition:width .2s,border .2s;}
+.side-panel.hidden{width:0;border-left:none;overflow:hidden;}
+
+.mini-cal{padding:12px 12px 8px;border-bottom:.5px solid #F0F0EC;flex-shrink:0;}
 .mc-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
-.mc-month{font-size:12px;font-weight:500;}
-.mc-nav{font-size:14px;color:#888;cursor:pointer;padding:2px 4px;}
-.mc-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
-.mc-cell{height:24px;display:flex;align-items:center;justify-content:center;font-size:10px;color:#555;border-radius:4px;cursor:pointer;}
-.mc-cell.today{background:#8E44AD;color:white;font-weight:600;}
-.mc-cell.has-bk{font-weight:600;color:#8E44AD;}
-.mc-cell.other{color:#ccc;}
-.mc-cell.sun{color:#E74C3C;}
-.mc-cell:hover:not(.today){background:#F4F4F0;}
-.mc-day-header{font-size:10px;color:#999;text-align:center;}
+.mc-month{font-size:12px;font-weight:600;color:#1A1A1A;}
+.mc-nav{display:flex;gap:3px;}
+.mc-nav-btn{width:22px;height:22px;border-radius:5px;border:.5px solid #E0E0DC;background:white;font-size:11px;color:#555;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .1s;}
+.mc-nav-btn:hover{background:#F4F4F0;}
+.mc-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;}
+.mc-dow{font-size:9px;color:#999;text-align:center;padding:2px 0;}
+.mc-day{width:24px;height:24px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:10px;color:#555;cursor:pointer;margin:auto;transition:background .1s;}
+.mc-day:hover{background:#F4F4F0;}
+.mc-day.mc-today-d{background:#8E44AD;color:white;font-weight:600;}
+.mc-day.has-bk{font-weight:600;color:#8E44AD;}
+.mc-day.other-mo{color:#CCC;}
 
-/* daily stats */
-.daily-stats{padding:10px 14px;border-top:.5px solid #E5E5E0;}
-.ds-title{font-size:10px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
-.ds-row{display:flex;justify-content:space-between;font-size:11px;padding:3px 0;border-bottom:.5px solid #F0F0EC;}
-.ds-row:last-child{border-bottom:none;}
-.ds-label{color:#888;}
-.ds-val{font-weight:500;color:#1a1a1a;}
+.side-stats{padding:10px 12px;border-bottom:.5px solid #F0F0EC;flex-shrink:0;}
+.ss-title{font-size:9px;font-weight:700;color:#BBB;letter-spacing:.07em;text-transform:uppercase;margin-bottom:7px;}
+.ss-row{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:.5px solid #F8F8F6;font-size:11px;}
+.ss-row:last-child{border-bottom:none;}
+.ss-label{color:#888;}
+.ss-val{font-weight:600;color:#1A1A1A;}
+.ss-val.green{color:#10B981;}
+.ss-val.purple{color:#8E44AD;}
+.ss-val.red{color:#EF4444;}
 
-/* waiting list */
-.waiting-list{flex:1;overflow-y:auto;padding:10px 14px;border-top:.5px solid #E5E5E0;}
-.wl-title{font-size:10px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
-.wl-item{padding:7px 0;border-bottom:.5px solid #F0F0EC;display:flex;align-items:center;gap:8px;}
-.wl-item:last-child{border-bottom:none;}
-.wl-num{font-size:10px;font-weight:600;color:#D4AC0D;width:16px;}
-.wl-info{flex:1;}
-.wl-name{font-size:11px;font-weight:500;color:#1a1a1a;}
-.wl-time{font-size:10px;color:#999;}
-.wl-confirm{font-size:10px;color:#2E86C1;cursor:pointer;border:.5px solid #AED6F1;border-radius:5px;padding:2px 7px;white-space:nowrap;}
+.side-waiting{flex:1;overflow:hidden;display:flex;flex-direction:column;padding:10px 12px;}
+.sw-title{font-size:9px;font-weight:700;color:#BBB;letter-spacing:.07em;text-transform:uppercase;margin-bottom:7px;flex-shrink:0;}
+.sw-list{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:5px;}
+.sw-item{display:flex;align-items:center;gap:6px;padding:7px 8px;border-radius:8px;border:.5px solid #E8E8E4;background:#FAFAF8;}
+.sw-num{font-size:10px;font-weight:700;color:#D4AC0D;width:14px;flex-shrink:0;}
+.sw-info{flex:1;min-width:0;}
+.sw-name{font-size:11px;font-weight:500;color:#1A1A1A;}
+.sw-detail{font-size:9px;color:#AAA;margin-top:1px;}
+.sw-confirm{font-size:10px;color:#3B5BDB;border:.5px solid #C5D0FC;border-radius:5px;padding:3px 7px;cursor:pointer;white-space:nowrap;background:white;font-family:inherit;transition:all .12s;}
+.sw-confirm:hover{background:#EEF2FF;}
+
+/* Toast */
+.toast{position:fixed;top:18px;left:50%;transform:translateX(-50%) translateY(-16px);background:white;color:#1A1A1A;font-size:12px;font-weight:500;padding:10px 20px 10px 16px;border-radius:12px;z-index:9999;white-space:nowrap;opacity:0;pointer-events:none;transition:transform .22s,opacity .22s;box-shadow:0 6px 28px rgba(0,0,0,.18);border:.5px solid rgba(0,0,0,.08);display:flex;align-items:center;gap:8px;}
+.toast::before{content:'';width:3px;height:100%;background:#3B5BDB;border-radius:2px;align-self:stretch;flex-shrink:0;}
+.toast.green::before{background:#10B981;}
+.toast.purple::before{background:#8E44AD;}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
 </style>
 </head>
 <body>
-
-<!-- sidebar overlay -->
-<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
-<!-- sidebar -->
-<div class="sidebar" id="sidebar">
-  <div class="sidebar-header">
-    <div class="sidebar-logo">✂ salon pos</div>
-    <div class="sidebar-sub">Hair Salon Yuki · 渋谷区</div>
-  </div>
-  <div class="sidebar-menu">
-    <div class="sidebar-item" onclick="closeSidebar()">
-      <div class="sidebar-dot" style="background:#2E86C1"></div>
-      <span class="sidebar-label">会計</span>
-    </div>
-    <div class="sidebar-item on" onclick="closeSidebar()">
-      <div class="sidebar-dot" style="background:#8E44AD"></div>
-      <span class="sidebar-label">予約</span>
-    </div>
-    <div class="sidebar-item" onclick="closeSidebar()">
-      <div class="sidebar-dot" style="background:#1E8449"></div>
-      <span class="sidebar-label">顧客</span>
-    </div>
-    <div class="sidebar-item" onclick="closeSidebar()">
-      <div class="sidebar-dot" style="background:#C0392B"></div>
-      <span class="sidebar-label">スタッフ</span>
-    </div>
-    <div class="sidebar-item" onclick="closeSidebar()">
-      <div class="sidebar-dot" style="background:#7D3C98"></div>
-      <span class="sidebar-label">在庫</span>
-    </div>
-    <div class="sidebar-item" onclick="closeSidebar()">
-      <div class="sidebar-dot" style="background:#D4AC0D"></div>
-      <span class="sidebar-label">売上</span>
-    </div>
-    <div class="sidebar-item" onclick="closeSidebar()">
-      <div class="sidebar-dot" style="background:#D35400"></div>
-      <span class="sidebar-label">マーケティング</span>
-    </div>
-    <div class="sidebar-item" onclick="closeSidebar()">
-      <div class="sidebar-dot" style="background:#117A65"></div>
-      <span class="sidebar-label">店舗設定</span>
-    </div>
-    <div class="sidebar-item" onclick="closeSidebar()">
-      <div class="sidebar-dot" style="background:#1A5276"></div>
-      <span class="sidebar-label">システム設定</span>
-    </div>
-  </div>
-  <div class="sidebar-footer">
-    <div class="sidebar-footer-text">v2.0.0 · iPad Air 2</div>
-  </div>
-</div>
+<div class="toast" id="toast"></div>
 
 <div class="ipad">
-
-  <!-- topbar -->
+  <div class="sidebar-overlay" id="sbOverlay" onclick="closeSidebar()"></div>
+  <div class="sidebar" id="sidebar">
+    <div class="sb-head"><div class="sb-logo">✂ salon pos</div><div class="sb-sub">Hair Salon Yuki · 渋谷区道玄坂</div></div>
+    <div class="sb-menu">
+      <div class="sb-item" onclick="closeSidebar()"><div class="sb-dot" style="background:#3B5BDB"></div><span class="sb-label">会計</span></div>
+      <div class="sb-item on" onclick="closeSidebar()"><div class="sb-dot" style="background:#8E44AD"></div><span class="sb-label">予約</span></div>
+      <div class="sb-item" onclick="closeSidebar()"><div class="sb-dot" style="background:#10B981"></div><span class="sb-label">顧客</span></div>
+      <div class="sb-item" onclick="closeSidebar()"><div class="sb-dot" style="background:#EF4444"></div><span class="sb-label">スタッフ</span></div>
+      <div class="sb-item" onclick="closeSidebar()"><div class="sb-dot" style="background:#7D3C98"></div><span class="sb-label">在庫</span></div>
+      <div class="sb-item" onclick="closeSidebar()"><div class="sb-dot" style="background:#D4AC0D"></div><span class="sb-label">売上</span></div>
+      <div class="sb-item" onclick="closeSidebar()"><div class="sb-dot" style="background:#D35400"></div><span class="sb-label">マーケティング</span></div>
+      <div class="sb-item" onclick="closeSidebar()"><div class="sb-dot" style="background:#117A65"></div><span class="sb-label">店舗設定</span></div>
+    </div>
+    <div class="sb-foot"><div class="sb-ver">v2.0.0 · iPad Air 2</div></div>
+  </div>
   <div class="topbar">
     <span class="tb-menu" onclick="toggleSidebar()">☰</span>
     <span class="tb-logo">✂ salon pos</span>
     <div class="tb-right">
       <div class="tb-avatar">由</div>
-      <span class="tb-staff-name">Yuki</span>
+      <span class="tb-staff">Yuki</span>
+      <span class="tb-branch">渋谷店</span>
       <div class="tb-sep"></div>
-      <span class="tb-time">06.12 木　10:24</span>
+      <span class="tb-time" id="tbTime">06.17 水　10:24</span>
       <span class="tb-lock">🔒</span>
     </div>
   </div>
 
-<div class="tb-nav">
-      <span class="tb-nav-item">会計</span>
-      <span class="tb-nav-item on">予約</span>
-      <span class="tb-nav-item">顧客</span>
-      <span class="tb-nav-item">スタッフ</span>
-      <span class="tb-nav-item">在庫</span>
-      <span class="tb-nav-item">売上</span>
-      <span class="tb-nav-item">⚙</span>
-    </div>
-    <div class="tb-right">
-      <div class="tb-avatar">由</div>
-      <span style="font-size:12px;color:rgba(255,255,255,.55);">Yuki</span>
-      <div class="tb-sep"></div>
-      <span class="tb-time">06.12 木　11:00</span>
-    </div>
-  </div>
-
-  <!-- calendar toolbar -->
+  <!-- ── Cal Toolbar ── -->
   <div class="cal-toolbar">
-    <button class="nav-btn" onclick="navigate(-1)">‹</button>
-    <button class="today-btn" onclick="goToday()">今日</button>
-    <button class="nav-btn" onclick="navigate(1)">›</button>
-    <span class="cal-date" id="calDate">2026年6月12日 (木)</span>
+    <div class="nav-btn" onclick="navigate(-1)">‹</div>
+    <div class="today-btn" onclick="goToday()">今日</div>
+    <div class="nav-btn" onclick="navigate(1)">›</div>
+    <div class="cal-date" id="calDate">2026年6月17日 (水)</div>
+
     <div class="view-tabs">
-      <button class="view-tab on" onclick="switchView('day',this)">日</button>
-      <button class="view-tab" onclick="switchView('week',this)">週</button>
-      <button class="view-tab" onclick="switchView('month',this)">月</button>
-      <button class="view-tab" onclick="switchView('list',this)">一覧</button>
+      <div class="view-tab active" onclick="switchView('day',this)">日</div>
+      <div class="view-tab" onclick="switchView('week',this)">週</div>
+      <div class="view-tab" onclick="switchView('month',this)">月</div>
+      <div class="view-tab" onclick="switchView('list',this)">一覧</div>
     </div>
-    <div class="filter-chip active" id="filterAll" onclick="toggleFilter(this)">👥 全て</div>
-    <div class="filter-chip" onclick="toggleFilter(this)">🟣 Yuki</div>
-    <div class="filter-chip" onclick="toggleFilter(this)">🔵 Mika</div>
-    <div class="filter-chip" onclick="toggleFilter(this)">🟠 Kenji</div>
-    <div class="toolbar-right">
-      <button class="stats-toggle" onclick="toggleSide()">📊</button>
-      <button class="add-btn" onclick="alert('→ 07_booking_form — 新規予約')">＋ 予約追加</button>
+
+    <div class="staff-filters">
+      <div class="sf-chip on-all" id="sf-all" onclick="toggleFilter('all',this)">全て</div>
+      <div class="sf-chip on-0" id="sf-0" onclick="toggleFilter(0,this)">Yuki</div>
+      <div class="sf-chip on-1" id="sf-1" onclick="toggleFilter(1,this)">Mika</div>
+      <div class="sf-chip on-2" id="sf-2" onclick="toggleFilter(2,this)">Kenji</div>
+    </div>
+
+    <div class="tb-right-tools">
+      <div class="side-toggle" onclick="toggleSide()" title="サイドパネル">📊</div>
+      <button class="add-btn" onclick="showToast('予約フォームを開く → 07_booking_form','purple')">＋ 予約追加</button>
     </div>
   </div>
 
-  <div class="main">
+  <!-- ── Main ── -->
+  <div class="cal-main">
+    <div class="cal-body">
 
-    <!-- ── 日ビュー ── -->
-    <div id="view-day" style="flex:1;display:flex;flex-direction:column;overflow:hidden;">
-      <!-- staff header -->
-      <div class="staff-header">
-        <div class="sh-spacer"></div>
-        <div class="sh-col"><div class="sh-dot" style="background:#8E44AD;"></div>Yuki</div>
-        <div class="sh-col"><div class="sh-dot" style="background:#2E86C1;"></div>Mika</div>
-        <div class="sh-col"><div class="sh-dot" style="background:#E67E22;"></div>Kenji</div>
-        <div class="sh-col off"><div class="sh-dot" style="background:#888;"></div>Hana <span style="font-size:9px;color:#bbb;">(休み)</span></div>
+      <!-- ═══ DAY VIEW ═══ -->
+      <div class="view-panel active" id="view-day">
+        <div class="day-staff-header">
+          <div class="dsh-spacer"></div>
+          <div class="dsh-cols" id="dshCols"></div>
+        </div>
+        <div class="day-grid-wrap">
+          <div class="day-grid">
+            <div class="time-col" id="timeCol"></div>
+            <div class="staff-cols" id="staffCols"></div>
+          </div>
+        </div>
       </div>
-      <div class="day-grid">
-        <div class="time-labels" id="timeLabels"></div>
-        <div class="staff-cols" id="staffCols"></div>
+
+      <!-- ═══ WEEK VIEW ═══ -->
+      <div class="view-panel" id="view-week">
+        <div class="week-day-header">
+          <div class="wdh-spacer"></div>
+          <div class="wdh-cols" id="wdhCols"></div>
+        </div>
+        <div class="week-grid-wrap">
+          <div class="week-grid">
+            <div class="week-time-col" id="weekTimeCol"></div>
+            <div id="weekDayCols" style="flex:1;display:flex;"></div>
+          </div>
+        </div>
       </div>
+
+      <!-- ═══ MONTH VIEW ═══ -->
+      <div class="view-panel" id="view-month">
+        <div class="month-view">
+          <div class="month-dow-header">
+            <div class="month-dow sun">日</div>
+            <div class="month-dow">月</div>
+            <div class="month-dow">火</div>
+            <div class="month-dow">水</div>
+            <div class="month-dow">木</div>
+            <div class="month-dow">金</div>
+            <div class="month-dow sat">土</div>
+          </div>
+          <div class="month-grid" id="monthGrid"></div>
+        </div>
+      </div>
+
+      <!-- ═══ LIST VIEW ═══ -->
+      <div class="view-panel" id="view-list">
+        <div class="list-view" id="listView"></div>
+      </div>
+
     </div>
 
-    <!-- ── 週ビュー ── -->
-    <div id="view-week" style="flex:1;display:none;flex-direction:column;overflow:hidden;">
-      <div style="display:grid;grid-template-columns:48px repeat(7,1fr);background:white;border-bottom:.5px solid #E5E5E0;flex-shrink:0;">
-        <div></div>
-        <div id="weekHeaders"></div>
-      </div>
-      <div style="flex:1;overflow-y:auto;display:flex;" id="weekGrid"></div>
-    </div>
-
-    <!-- ── 月ビュー ── -->
-    <div id="view-month" style="flex:1;display:none;flex-direction:column;overflow:hidden;">
-      <div class="month-header">
-        <div class="mh-cell">日</div><div class="mh-cell">月</div><div class="mh-cell">火</div>
-        <div class="mh-cell">水</div><div class="mh-cell">木</div><div class="mh-cell">金</div><div class="mh-cell">土</div>
-      </div>
-      <div class="month-grid" id="monthGrid"></div>
-    </div>
-
-    <!-- ── 一覧ビュー ── -->
-    <div id="view-list" style="flex:1;display:none;overflow-y:auto;padding:12px 16px;"></div>
-
-    <!-- side panel -->
+    <!-- ── Side Panel ── -->
     <div class="side-panel" id="sidePanel">
-      <div class="sp-header">📅 6月 2026</div>
-
-      <!-- mini calendar -->
       <div class="mini-cal">
         <div class="mc-header">
           <span class="mc-month">2026年6月</span>
-          <div style="display:flex;gap:4px;">
-            <span class="mc-nav">‹</span>
-            <span class="mc-nav">›</span>
+          <div class="mc-nav">
+            <button class="mc-nav-btn">‹</button>
+            <button class="mc-nav-btn">›</button>
           </div>
         </div>
-        <div class="mc-grid" id="miniCal"></div>
+        <div class="mc-grid" id="miniCalGrid"></div>
       </div>
 
-      <!-- daily stats -->
-      <div class="daily-stats">
-        <div class="ds-title">今日の状況</div>
-        <div class="ds-row"><span class="ds-label">予約件数</span><span class="ds-val">12件</span></div>
-        <div class="ds-row"><span class="ds-label">完了</span><span class="ds-val" style="color:#1E8449;">5件</span></div>
-        <div class="ds-row"><span class="ds-label">残り予約</span><span class="ds-val" style="color:#8E44AD;">7件</span></div>
-        <div class="ds-row"><span class="ds-label">見込み売上</span><span class="ds-val">¥124,400</span></div>
-        <div class="ds-row"><span class="ds-label">ノーショー</span><span class="ds-val" style="color:#E74C3C;">1件</span></div>
+      <div class="side-stats">
+        <div class="ss-title">今日の状況</div>
+        <div class="ss-row"><span class="ss-label">予約件数</span><span class="ss-val">12件</span></div>
+        <div class="ss-row"><span class="ss-label">完了</span><span class="ss-val green">5件</span></div>
+        <div class="ss-row"><span class="ss-label">残り予約</span><span class="ss-val purple">7件</span></div>
+        <div class="ss-row"><span class="ss-label">見込み売上</span><span class="ss-val">¥124,400</span></div>
+        <div class="ss-row"><span class="ss-label">ノーショー</span><span class="ss-val red">1件</span></div>
       </div>
 
-      <!-- waiting list -->
-      <div class="waiting-list">
-        <div class="wl-title">ウェイティングリスト</div>
-        <div class="wl-item">
-          <div class="wl-num">1</div>
-          <div class="wl-info">
-            <div class="wl-name">中村 さくら</div>
-            <div class="wl-time">カット · 40分</div>
-          </div>
-          <div class="wl-confirm">予約確定</div>
-        </div>
-        <div class="wl-item">
-          <div class="wl-num">2</div>
-          <div class="wl-info">
-            <div class="wl-name">松本 あかね</div>
-            <div class="wl-time">カラー · 90分</div>
-          </div>
-          <div class="wl-confirm">予約確定</div>
-        </div>
-        <div class="wl-item">
-          <div class="wl-num">3</div>
-          <div class="wl-info">
-            <div class="wl-name">遠藤 みなみ</div>
-            <div class="wl-time">パーマ · 120分</div>
-          </div>
-          <div class="wl-confirm">予約確定</div>
-        </div>
+      <div class="side-waiting">
+        <div class="sw-title">ウェイティングリスト</div>
+        <div class="sw-list" id="waitingList"></div>
       </div>
     </div>
-
   </div>
 </div>
 
 <script>
-// ── booking data ──────────────────────────────────────────────────────────────
 const STAFF = [
-  {name:'Yuki', color:'#8E44AD'},
-  {name:'Mika', color:'#2E86C1'},
-  {name:'Kenji', color:'#E67E22'},
-  {name:'Hana', color:'#888', off:true},
+  {name:'Yuki',  color:'#8E44AD', off:false},
+  {name:'Mika',  color:'#3B5BDB', off:false},
+  {name:'Kenji', color:'#E67E22', off:false},
+  {name:'Hana',  color:'#888',    off:true},
 ];
+const STATUS_COLOR = {
+  done:'#888', checkin:'#3B5BDB', confirmed:'#10B981',
+  pending:'#D4AC0D', noshow:'#8E44AD', block:'#555'
+};
+const STATUS_LABEL = {
+  done:'完了', checkin:'チェックイン', confirmed:'確定',
+  pending:'仮予約', noshow:'ノーショー', block:'ブロック'
+};
+const DAYS_JP = ['日','月','火','水','木','金','土'];
 
 const BOOKINGS = [
-  // Yuki col 0
-  {staff:0, startH:9, startM:0, dur:60, name:'田中 美咲', service:'カット + カラー', status:'done'},
-  {staff:0, startH:10, startM:30, dur:90, name:'佐藤 花子', service:'ワンカラー', status:'checkin'},
-  {staff:0, startH:13, startM:0, dur:60, name:'山田 由美', service:'カット', status:'confirmed'},
-  {staff:0, startH:14, startM:30, dur:120, name:'鈴木 麻衣', service:'デジタルパーマ', status:'confirmed'},
-  {staff:0, startH:17, startM:0, dur:40, name:'伊藤 美月', service:'カット + シャンプー', status:'confirmed'},
-  // Mika col 1
-  {staff:1, startH:9, startM:30, dur:90, name:'高橋 愛子', service:'ダブルカラー', status:'done'},
-  {staff:1, startH:11, startM:30, dur:60, name:'渡辺 菜摘', service:'トリートメント', status:'confirmed'},
-  {staff:1, startH:13, startM:30, dur:150, name:'中島 さくら', service:'ストレート + カラー', status:'confirmed'},
-  {staff:1, startH:17, startM:30, dur:60, name:'小林 ゆき', service:'カット', status:'confirmed'},
-  // Kenji col 2
-  {staff:2, startH:9, startM:0, dur:120, name:'加藤 恵', service:'デジタルパーマ', status:'done'},
-  {staff:2, startH:11, startM:30, dur:90, name:'吉田 みか', service:'カラー + TR', status:'noshow'},
-  {staff:2, startH:14, startM:0, dur:60, name:'山本 ゆかり', service:'カット', status:'confirmed'},
-  {staff:2, startH:15, startM:30, dur:60, name:'ブロック', service:'休憩', status:'block'},
-  {staff:2, startH:16, startM:30, dur:60, name:'清水 ひな', service:'カット + ブロー', status:'confirmed'},
+  {staff:0, startH:9,  startM:0,  dur:60,  name:'田中 美咲',   service:'カット + カラー',  status:'done'},
+  {staff:0, startH:10, startM:30, dur:90,  name:'佐藤 里奈',   service:'パーマ',           status:'checkin'},
+  {staff:0, startH:11, startM:30, dur:60,  name:'(ブロック)',   service:'',                 status:'block'},
+  {staff:0, startH:13, startM:0,  dur:60,  name:'山田 花子',   service:'ヘッドスパ 60分',  status:'confirmed'},
+  {staff:0, startH:14, startM:30, dur:45,  name:'鈴木 めぐみ', service:'カット',           status:'confirmed'},
+  {staff:0, startH:16, startM:0,  dur:120, name:'伊藤 さくら', service:'ダブルカラー',     status:'pending'},
+  {staff:1, startH:9,  startM:30, dur:75,  name:'高橋 あおい', service:'トリートメント M', status:'done'},
+  {staff:1, startH:11, startM:0,  dur:60,  name:'渡辺 ゆき',   service:'ワンカラー',       status:'done'},
+  {staff:1, startH:12, startM:30, dur:30,  name:'中村 はな',   service:'前髪カット',       status:'noshow'},
+  {staff:1, startH:14, startM:0,  dur:90,  name:'小林 なつ',   service:'縮毛矯正',         status:'confirmed'},
+  {staff:2, startH:10, startM:0,  dur:60,  name:'加藤 みさき', service:'カット',           status:'done'},
+  {staff:2, startH:11, startM:30, dur:120, name:'松本 えり',   service:'デジタルパーマ',   status:'checkin'},
+  {staff:2, startH:14, startM:0,  dur:60,  name:'井上 るか',   service:'ヘアセット',       status:'confirmed'},
+  {staff:2, startH:15, startM:30, dur:90,  name:'木村 あや',   service:'グラデーション',   status:'pending'},
 ];
 
-const STATUS_COLOR = {done:'#888', checkin:'#2E86C1', confirmed:'#1E8449', pending:'#D4AC0D', noshow:'#8E44AD', block:'#555'};
-const HOURS = [9,10,11,12,13,14,15,16,17,18,19];
-const PX_PER_MIN = 40/60; // 40px per hour
+const WAITING = [
+  {name:'森 かれん', service:'カット + カラー', duration:90},
+  {name:'清水 まい', service:'ヘッドスパ 60分', duration:60},
+  {name:'橋本 ゆな', service:'パーマ',          duration:120},
+];
 
-function toTop(h, m) { return (h - 9) * 40 + m * PX_PER_MIN; }
+let currentView = 'day';
+let curDate = new Date(2026, 5, 17);
+let sideOpen = true;
+let activeFilters = new Set(['all', 0, 1, 2]);
 
-// ── day view ──────────────────────────────────────────────────────────────────
-function buildDayView() {
-  const labels = document.getElementById('timeLabels');
-  labels.innerHTML = HOURS.map(h => `<div class="t-label">${h}:00</div>`).join('');
-
-  const cols = document.getElementById('staffCols');
-  const totalH = HOURS.length * 40;
-  cols.innerHTML = '';
-
-  STAFF.forEach((s, si) => {
-    const col = document.createElement('div');
-    col.className = 'staff-col' + (s.off ? ' off' : '');
-    col.style.position = 'relative';
-
-    // hour lines
-    HOURS.forEach((h, hi) => {
-      const line = document.createElement('div');
-      line.className = 'hour-line';
-      line.style.top = hi * 40 + 'px';
-      col.appendChild(line);
-      if (hi < HOURS.length - 1) {
-        const half = document.createElement('div');
-        half.className = 'hour-line half';
-        half.style.top = (hi * 40 + 20) + 'px';
-        col.appendChild(half);
-      }
-    });
-    col.style.height = totalH + 'px';
-
-    // bookings
-    BOOKINGS.filter(b => b.staff === si).forEach(b => {
-      const top = toTop(b.startH, b.startM);
-      const height = Math.max(22, b.dur * PX_PER_MIN - 2);
-      const div = document.createElement('div');
-      div.className = 'bk' + (b.status === 'block' ? ' bk-block' : '');
-      div.style.cssText = `top:${top}px;height:${height}px;background:${STATUS_COLOR[b.status]};`;
-      div.innerHTML = `<div class="bk-name">${b.name}</div>${height > 30 ? `<div class="bk-service">${b.service}</div>` : ''}${height > 50 ? `<div class="bk-time">${b.startH}:${String(b.startM).padStart(2,'0')} (${b.dur}分)</div>` : ''}`;
-      div.onclick = () => showBookingDetail(b);
-      col.appendChild(div);
-    });
-
-    cols.appendChild(col);
-  });
-
-  // current time line (11:00)
-  const now = document.createElement('div');
-  now.className = 'now-line';
-  now.style.top = toTop(11, 0) + 'px';
-  cols.style.position = 'relative';
-  cols.appendChild(now);
-
-  // scroll to 8:30
-  setTimeout(() => { document.querySelector('.day-grid').scrollTop = toTop(8,30); }, 50);
+function toTop(h, m) { return (h - 9) * 40 + m * (40 / 60); }
+function formatTime(h, m) { return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`; }
+function endTime(b) {
+  const t = b.startH * 60 + b.startM + b.dur;
+  return formatTime(Math.floor(t / 60), t % 60);
+}
+function filteredBookings() {
+  return activeFilters.has('all') ? BOOKINGS : BOOKINGS.filter(b => activeFilters.has(b.staff));
 }
 
-// ── week view ─────────────────────────────────────────────────────────────────
-function buildWeekView() {
-  const days = ['月', '火', '水', '木', '金', '土', '日'];
-  const dates = [8,9,10,11,12,13,14];
-  const header = document.getElementById('weekHeaders');
-  header.style.cssText = 'display:contents;';
-  header.innerHTML = dates.map((d,i) => `
-    <div style="text-align:center;padding:6px 0;border-right:.5px solid #F0F0EC;font-size:11px;font-weight:${d===12?'600':'400'};color:${d===12?'#8E44AD':i===6?'#E74C3C':'#555'};">
-      <div>${days[i]}</div>
-      <div style="font-size:13px;${d===12?'color:#8E44AD;':''};">${d}</div>
+function buildDayView() {
+  document.getElementById('dshCols').innerHTML = STAFF.map(s =>
+    `<div class="dsh-col${s.off?' off':''}">
+      <div class="dsh-dot" style="background:${s.color}"></div>${s.name}${s.off?' (休)':''}
     </div>`).join('');
 
-  const grid = document.getElementById('weekGrid');
-  const totalH = HOURS.length * 40;
-  grid.innerHTML = `<div style="width:48px;flex-shrink:0;">${HOURS.map(h=>`<div class="t-label" style="height:40px;display:flex;align-items:flex-start;padding:2px 6px 0 0;justify-content:flex-end;font-size:10px;color:#bbb;border-right:.5px solid #E5E5E0;">${h}:00</div>`).join('')}</div>
-  ${dates.map((d,di)=>{
-    const bks = di===4 ? BOOKINGS.slice(0,4) : di===3 ? BOOKINGS.slice(4,8) : [];
-    return `<div style="flex:1;border-right:.5px solid #F0F0EC;position:relative;background:white;height:${totalH}px;">
-      ${HOURS.map((_,hi)=>`<div style="position:absolute;left:0;right:0;top:${hi*40}px;height:.5px;background:#F0F0EC;"></div><div style="position:absolute;left:0;right:0;top:${hi*40+20}px;height:.5px;background:#F8F8F6;"></div>`).join('')}
-      ${bks.map(b=>{
-        const top=toTop(b.startH,b.startM);
-        const h=Math.max(18,b.dur*PX_PER_MIN-2);
-        return `<div class="bk" style="top:${top}px;height:${h}px;background:${STATUS_COLOR[b.status]};left:2px;right:2px;" onclick="showBookingDetail(${JSON.stringify(b).replace(/"/g,'&quot;')})">
-          <div class="bk-name" style="font-size:10px;">${b.name}</div>
-          ${h>28?`<div class="bk-service" style="font-size:9px;">${b.service}</div>`:''}
-        </div>`;
-      }).join('')}
-      ${di===4?`<div style="position:absolute;left:0;right:0;top:${toTop(11,0)}px;height:2px;background:#E74C3C;z-index:10;"></div>`:''}
-    </div>`;
-  }).join('')}`;
+  let timeCells = '';
+  for (let h = 9; h <= 19; h++) timeCells += `<div class="time-cell">${h}:00</div>`;
+  document.getElementById('timeCol').innerHTML = timeCells;
+
+  const bks = filteredBookings();
+  document.getElementById('staffCols').innerHTML = STAFF.map((s, si) => {
+    let lines = '';
+    for (let h = 9; h <= 19; h++) {
+      lines += `<div class="hour-line" style="top:${toTop(h,0)}px"></div>`;
+      if (h < 19) lines += `<div class="hour-line half" style="top:${toTop(h,30)}px"></div>`;
+    }
+    const blocks = bks.filter(b => b.staff === si).map(b => {
+      const top = toTop(b.startH, b.startM);
+      const ht = Math.max(22, b.dur * (40 / 60) - 2);
+      const isBlock = b.status === 'block';
+      const extra = isBlock ? ' bk-block-bg' : '';
+      return `<div class="bk${extra}" style="top:${top}px;height:${ht}px;background:${STATUS_COLOR[b.status]};" onclick="showBookingDetail('${b.name}')">
+        <div class="bk-name">${b.name}</div>
+        ${ht >= 30 && b.service ? `<div class="bk-service">${b.service}</div>` : ''}
+        ${ht >= 50 ? `<div class="bk-time">${formatTime(b.startH,b.startM)} (${b.dur}分)</div>` : ''}
+      </div>`;
+    }).join('');
+    const nowLine = si === 0 ? `<div class="now-line" style="top:${toTop(10,24)}px"></div>` : '';
+    return `<div class="staff-col${s.off?' off':''}" style="height:${11*40}px;">${lines}${blocks}${nowLine}</div>`;
+  }).join('');
 }
 
-// ── month view ─────────────────────────────────────────────────────────────────
-function buildMonthView() {
-  const grid = document.getElementById('monthGrid');
-  // June 2026: starts Monday (1), 30 days
-  const bksPerDay = {8:3,9:5,10:2,11:8,12:12,13:7,14:4,15:6,16:3,17:9,18:5,19:2};
-  const colors = ['#8E44AD','#2E86C1','#1E8449','#E67E22'];
-  let cells = '';
-  // prev month days (Sun before June 1)
-  for(let d=26;d<=31;d++) cells+=`<div class="m-cell other-month"><div class="m-day" style="color:#D0D0CC;">${d}</div></div>`;
-  for(let d=1;d<=30;d++){
-    const isToday = d===12;
-    const n = bksPerDay[d]||0;
-    const c = isToday?'m-cell today':'m-cell';
-    cells+=`<div class="${c}"><div class="m-day">${d}</div>${n>0?`<div class="m-bk" style="background:${colors[d%4]};">${n}件</div>`:''}${n>2?`<div class="m-bk" style="background:${colors[(d+2)%4]};">カット</div>`:''}${n>4?`<div class="m-more">+${n-2}件以上</div>`:''}</div>`;
-  }
-  // next month
-  for(let d=1;d<=4;d++) cells+=`<div class="m-cell other-month"><div class="m-day" style="color:#D0D0CC;">${d}</div></div>`;
-  grid.innerHTML = cells;
-}
-
-// ── list view ──────────────────────────────────────────────────────────────────
-function buildListView() {
-  const el = document.getElementById('view-list');
-  const statusLabel = {done:'完了',checkin:'チェックイン',confirmed:'確定',noshow:'ノーショー',block:'ブロック'};
-  const statusBg = {done:'#F2F3F4',checkin:'#EBF5FB',confirmed:'#EAFAF1',noshow:'#F5EEF8',block:'#F2F3F4'};
-  const statusFg = {done:'#666',checkin:'#2E86C1',confirmed:'#1E8449',noshow:'#8E44AD',block:'#666'};
-
-  el.innerHTML = `<div class="lv-date-header">2026年6月12日 (木) — ${BOOKINGS.length}件</div>` +
-    BOOKINGS.sort((a,b)=>a.startH*60+a.startM-(b.startH*60+b.startM)).map(b=>`
-      <div class="lv-item" onclick="showBookingDetail(${JSON.stringify(b).replace(/"/g,'&quot;')})">
-        <div class="lv-time">${b.startH}:${String(b.startM).padStart(2,'0')} — ${b.startH+Math.floor((b.startM+b.dur)/60)}:${String((b.startM+b.dur)%60).padStart(2,'0')}</div>
-        <div class="lv-bar" style="background:${STAFF[b.staff].color};"></div>
-        <div class="lv-main">
-          <div class="lv-name">${b.name}</div>
-          <div class="lv-service">${b.service} · ${b.dur}分 · ${STAFF[b.staff].name}</div>
-        </div>
-        <span class="lv-staff" style="background:${STAFF[b.staff].color}20;color:${STAFF[b.staff].color};">${STAFF[b.staff].name}</span>
-        <span class="lv-status" style="background:${statusBg[b.status]};color:${statusFg[b.status]};">${statusLabel[b.status]||b.status}</span>
-      </div>`).join('');
-}
-
-// ── mini calendar ──────────────────────────────────────────────────────────────
-function buildMiniCal() {
-  const mc = document.getElementById('miniCal');
-  const days = ['日','月','火','水','木','金','土'];
-  const hasBk = new Set([3,5,8,9,10,11,12,13,14,16,17,18,19,20,23,24,25]);
-  let html = days.map(d=>`<div class="mc-day-header">${d}</div>`).join('');
-  for(let d=26;d<=31;d++) html+=`<div class="mc-cell other">${d}</div>`;
-  for(let d=1;d<=30;d++){
-    const dow = (d+0)%7; // June 1 = Mon (1)
-    html+=`<div class="mc-cell${d===12?' today':''}${hasBk.has(d)&&d!==12?' has-bk':''}">${d}</div>`;
-  }
-  for(let d=1;d<=4;d++) html+=`<div class="mc-cell other">${d}</div>`;
-  mc.innerHTML = html;
-}
-
-// ── ui interactions ────────────────────────────────────────────────────────────
-let currentView = 'day';
-function switchView(v, el) {
-  document.querySelectorAll('.view-tab').forEach(t=>t.classList.remove('on'));
-  el.classList.add('on');
-  ['day','week','month','list'].forEach(id=>{
-    document.getElementById('view-'+id).style.display = id===v?'flex':'none';
+function buildWeekView() {
+  const mon = new Date(curDate);
+  mon.setDate(mon.getDate() - ((mon.getDay() + 6) % 7));
+  const weekDays = Array.from({length:7}, (_, i) => {
+    const d = new Date(mon); d.setDate(d.getDate() + i); return d;
   });
+  const todayStr = new Date(2026, 5, 17).toDateString();
+
+  document.getElementById('wdhCols').innerHTML = weekDays.map(d => {
+    const isTod = d.toDateString() === todayStr;
+    const isSun = d.getDay() === 0;
+    return `<div class="wdh-col${isTod?' is-today':''}${isSun?' is-sun':''}">
+      <div class="wdh-day-num">${d.getDate()}</div>
+      <div>${DAYS_JP[d.getDay()]}</div>
+    </div>`;
+  }).join('');
+
+  let timeCells = '';
+  for (let h = 9; h <= 19; h++) timeCells += `<div class="time-cell">${h}:00</div>`;
+  document.getElementById('weekTimeCol').innerHTML = timeCells;
+
+  const bks = filteredBookings();
+  document.getElementById('weekDayCols').innerHTML = weekDays.map(d => {
+    const isTod = d.toDateString() === todayStr;
+    let lines = '';
+    for (let h = 9; h <= 19; h++) {
+      lines += `<div class="hour-line" style="top:${toTop(h,0)}px"></div>`;
+      if (h < 19) lines += `<div class="hour-line half" style="top:${toTop(h,30)}px"></div>`;
+    }
+    const blocks = isTod ? bks.map(b => {
+      const top = toTop(b.startH, b.startM);
+      const ht = Math.max(18, b.dur * (40 / 60) - 2);
+      return `<div class="bk" style="top:${top}px;height:${ht}px;background:${STATUS_COLOR[b.status]};left:2px;right:2px;" onclick="showBookingDetail('${b.name}')">
+        <div class="bk-name" style="font-size:9px;">${b.name}</div>
+      </div>`;
+    }).join('') : '';
+    const nowLine = isTod ? `<div class="now-line" style="top:${toTop(10,24)}px"></div>` : '';
+    return `<div class="week-day-col" style="height:${11*40}px;position:relative;">${lines}${blocks}${nowLine}</div>`;
+  }).join('');
+}
+
+function buildMonthView() {
+  const y = curDate.getFullYear(), mo = curDate.getMonth();
+  const first = new Date(y, mo, 1);
+  const todayStr = new Date(2026, 5, 17).toDateString();
+  const BK_COLORS = ['#8E44AD','#3B5BDB','#E67E22','#10B981'];
+  const BK_LABELS = ['カット','カラー','パーマ','ヘアセット'];
+  let cells = '';
+  for (let i = 0; i < 42; i++) {
+    const d = new Date(y, mo, 1 - first.getDay() + i);
+    const isOther = d.getMonth() !== mo;
+    const isTod = d.toDateString() === todayStr;
+    const seed = (d.getDate() * 7 + d.getMonth()) % 7;
+    const count = isOther ? 0 : [0,1,2,3,1,2,4][seed];
+    const mini = Array.from({length:Math.min(count,2)}, (_,j) =>
+      `<div class="mc-bk" style="background:${BK_COLORS[j]};">${BK_LABELS[j]}</div>`).join('');
+    const more = count > 2 ? `<div class="mc-more">+${count-2}件以上</div>` : '';
+    cells += `<div class="month-cell${isOther?' other':''}${isTod?' mc-today':''}">
+      <div class="mc-date">${d.getDate()}</div>${mini}${more}
+    </div>`;
+  }
+  document.getElementById('monthGrid').innerHTML = cells;
+}
+
+function buildListView() {
+  const bks = filteredBookings().filter(b => b.status !== 'block')
+    .sort((a, b) => a.startH * 60 + a.startM - (b.startH * 60 + b.startM));
+  let html = `<div class="list-date-header">2026年6月17日 (水) — ${bks.length}件</div>`;
+  html += bks.map(b => {
+    const s = STAFF[b.staff];
+    return `<div class="list-item">
+      <div class="li-time">${formatTime(b.startH,b.startM)}〜${endTime(b)}</div>
+      <div class="li-bar" style="background:${s.color}"></div>
+      <div class="li-info">
+        <div class="li-name">${b.name}</div>
+        <div class="li-detail">${b.service} · ${b.dur}分</div>
+      </div>
+      <div class="li-staff-chip" style="background:${s.color}20;color:${s.color};">${s.name}</div>
+      <div class="sbadge ${b.status}">${STATUS_LABEL[b.status]}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('listView').innerHTML = html;
+}
+
+function buildMiniCal() {
+  const y = 2026, mo = 5;
+  const first = new Date(y, mo, 1);
+  const hasBk = new Set([3,5,8,10,11,12,17,18,19,22,24,25]);
+  let html = ['日','月','火','水','木','金','土'].map(d => `<div class="mc-dow">${d}</div>`).join('');
+  for (let i = 0; i < 35; i++) {
+    const dayN = i - first.getDay() + 1;
+    if (dayN < 1 || dayN > 30) {
+      html += `<div class="mc-day other-mo">${dayN < 1 ? 30 + dayN : dayN - 30}</div>`;
+    } else {
+      const isTod = dayN === 17;
+      const hasBkg = hasBk.has(dayN);
+      html += `<div class="mc-day${isTod?' mc-today-d':hasBkg?' has-bk':''}" onclick="jumpToDate(${dayN})">${dayN}</div>`;
+    }
+  }
+  document.getElementById('miniCalGrid').innerHTML = html;
+}
+
+function buildWaiting() {
+  document.getElementById('waitingList').innerHTML = WAITING.map((w, i) =>
+    `<div class="sw-item">
+      <div class="sw-num">${i + 1}</div>
+      <div class="sw-info">
+        <div class="sw-name">${w.name}</div>
+        <div class="sw-detail">${w.service} · ${w.duration}分</div>
+      </div>
+      <button class="sw-confirm" onclick="showToast('${w.name} の予約を確定しました','green')">予約確定</button>
+    </div>`).join('');
+}
+
+function switchView(v, el) {
   currentView = v;
-  if(v==='week') { document.getElementById('view-week').style.flexDirection='column'; buildWeekView(); }
-  if(v==='month') buildMonthView();
-  if(v==='list') { document.getElementById('view-list').style.flexDirection='column'; buildListView(); }
+  document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.view-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('view-' + v).classList.add('active');
+  if (el) el.classList.add('active');
+  renderView();
 }
 
-function toggleFilter(el) {
-  el.classList.toggle('active');
+function renderView() {
+  updateCalDate();
+  if (currentView === 'day')   buildDayView();
+  if (currentView === 'week')  buildWeekView();
+  if (currentView === 'month') buildMonthView();
+  if (currentView === 'list')  buildListView();
 }
 
-let sideVisible = true;
-function toggleSide() {
-  const s = document.getElementById('sidePanel');
-  sideVisible = !sideVisible;
-  s.style.display = sideVisible ? 'flex' : 'none';
+function updateCalDate() {
+  const d = curDate;
+  let label = '';
+  if (currentView === 'day') {
+    label = `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日 (${DAYS_JP[d.getDay()]})`;
+  } else if (currentView === 'week') {
+    const mon = new Date(d); mon.setDate(d.getDate() - ((d.getDay()+6)%7));
+    const sun = new Date(mon); sun.setDate(mon.getDate() + 6);
+    label = `${mon.getMonth()+1}月${mon.getDate()}日〜${sun.getDate()}日`;
+  } else if (currentView === 'month') {
+    label = `${d.getFullYear()}年${d.getMonth()+1}月`;
+  } else {
+    label = `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日 (${DAYS_JP[d.getDay()]})`;
+  }
+  document.getElementById('calDate').textContent = label;
 }
 
 function navigate(dir) {
-  const labels = {day:'2026年6月'+(12+dir)+'日', week:'6月'+(8+dir*7)+'〜'+(14+dir*7)+'日', month:'2026年'+(6+dir)+'月', list:'6月'+(12+dir)+'日'};
-  document.getElementById('calDate').textContent = labels[currentView] || '2026年6月12日';
+  if (currentView === 'day' || currentView === 'list') curDate.setDate(curDate.getDate() + dir);
+  else if (currentView === 'week')  curDate.setDate(curDate.getDate() + dir * 7);
+  else if (currentView === 'month') curDate.setMonth(curDate.getMonth() + dir);
+  renderView();
 }
 
 function goToday() {
-  document.getElementById('calDate').textContent = '2026年6月12日 (木)';
+  curDate = new Date(2026, 5, 17);
+  renderView();
 }
 
-function showBookingDetail(b) {
-  alert(`${b.name}\n${b.service}\n${b.startH}:${String(b.startM).padStart(2,'0')} (${b.dur}分)\n担当: ${STAFF[b.staff].name}\n→ 07_booking_form で編集`);
+function jumpToDate(d) {
+  curDate = new Date(2026, 5, d);
+  const tab = document.querySelector('.view-tab');
+  switchView('day', tab);
 }
 
-// ── init ───────────────────────────────────────────────────────────────────────
-buildDayView();
+function toggleFilter(key, el) {
+  if (key === 'all') {
+    activeFilters = new Set(['all', 0, 1, 2]);
+    document.querySelectorAll('.sf-chip').forEach(c => {
+      c.className = 'sf-chip ' + (c.id === 'sf-all' ? 'on-all' : c.id === 'sf-0' ? 'on-0' : c.id === 'sf-1' ? 'on-1' : 'on-2');
+    });
+  } else {
+    activeFilters.delete('all');
+    document.getElementById('sf-all').className = 'sf-chip';
+    if (activeFilters.has(key)) {
+      activeFilters.delete(key);
+      el.classList.remove('on-' + key);
+    } else {
+      activeFilters.add(key);
+      el.classList.add('on-' + key);
+    }
+    if (activeFilters.size === 0) {
+      activeFilters.add('all');
+      document.getElementById('sf-all').classList.add('on-all');
+    }
+  }
+  renderView();
+}
+
+function toggleSide() {
+  sideOpen = !sideOpen;
+  document.getElementById('sidePanel').classList.toggle('hidden', !sideOpen);
+}
+
+function showBookingDetail(name) {
+  showToast(`${name} の詳細 → 07_booking_form`, 'purple');
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sbOverlay').classList.toggle('open');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sbOverlay').classList.remove('open');
+}
+
+let toastTimer;
+function showToast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast' + (type ? ' ' + type : '') + ' show';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+function updateTime() {
+  const d = new Date();
+  const el = document.getElementById('tbTime');
+  if (el) el.textContent = `${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} ${DAYS_JP[d.getDay()]}　${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
+
 buildMiniCal();
-document.getElementById('calDate').textContent = '2026年6月12日 (木)';
+buildWaiting();
+renderView();
+updateTime();
+setInterval(updateTime, 30000);
 </script>
 </body>
 </html>
