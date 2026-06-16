@@ -7,11 +7,10 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino Sans',sans-serif;background:#1C2833;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;}
+.ipad{width:1024px;height:768px;background:#F4F4F0;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.5);position:relative;}
 
-.ipad{width:1024px;height:768px;background:#F4F4F0;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.5);}
-
-/* topbar */
-.topbar{background:white;height:44px;display:flex;align-items:center;padding:0 16px;gap:10px;flex-shrink:0;border-bottom:.5px solid #E5E5E0;}
+/* ── Topbar ── */
+.topbar{background:white;height:44px;display:flex;align-items:center;padding:0 16px;gap:10px;flex-shrink:0;border-bottom:.5px solid #E5E5E0;z-index:10;}
 .tb-menu{font-size:18px;color:#1C2833;cursor:pointer;padding:4px 6px;border-radius:6px;line-height:1;flex-shrink:0;user-select:none;}
 .tb-menu:hover{background:#F4F4F0;}
 .tb-logo{font-size:13px;color:#1C2833;font-weight:500;letter-spacing:.08em;}
@@ -22,10 +21,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 .tb-time{font-size:11px;color:#888;}
 .tb-lock{font-size:13px;color:#aaa;cursor:pointer;}
 
-/* sidebar */
-.sidebar-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:100;opacity:0;pointer-events:none;transition:opacity .2s;}
+/* ── Sidebar ── */
+.sidebar-overlay{position:absolute;inset:0;background:rgba(0,0,0,.35);z-index:100;opacity:0;pointer-events:none;transition:opacity .2s;}
 .sidebar-overlay.open{opacity:1;pointer-events:all;}
-.sidebar{position:fixed;left:0;top:0;bottom:0;width:220px;background:#1C2833;z-index:101;transform:translateX(-100%);transition:transform .22s cubic-bezier(.25,.46,.45,.94);display:flex;flex-direction:column;box-shadow:4px 0 24px rgba(0,0,0,.3);}
+.sidebar{position:absolute;left:0;top:0;bottom:0;width:220px;background:#1C2833;z-index:101;transform:translateX(-100%);transition:transform .22s cubic-bezier(.25,.46,.45,.94);display:flex;flex-direction:column;box-shadow:4px 0 24px rgba(0,0,0,.3);}
 .sidebar.open{transform:translateX(0);}
 .sidebar-header{padding:20px 16px 14px;border-bottom:.5px solid rgba(255,255,255,.1);}
 .sidebar-logo{font-size:14px;color:white;font-weight:500;letter-spacing:.08em;}
@@ -35,12 +34,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 .sidebar-item:hover{background:rgba(255,255,255,.07);}
 .sidebar-item.on{background:rgba(255,255,255,.12);}
 .sidebar-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
-.sidebar-label{font-size:13px;color:rgba(255,255,255,.7);font-weight:400;}
+.sidebar-label{font-size:13px;color:rgba(255,255,255,.7);}
 .sidebar-item.on .sidebar-label{color:white;font-weight:500;}
 .sidebar-footer{padding:14px 16px;border-top:.5px solid rgba(255,255,255,.1);}
 .sidebar-footer-text{font-size:10px;color:rgba(255,255,255,.22);}
 
-/* step bar */
+/* ── Step bar ── */
 .step-bar{height:36px;background:white;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 16px;flex-shrink:0;}
 .step{display:flex;align-items:center;gap:6px;font-size:11px;color:#bbb;}
 .step.done{color:#1E8449;}
@@ -50,183 +49,357 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 .step.active .step-num{background:#2E86C1;border-color:#2E86C1;color:white;}
 .step-arr{margin:0 10px;color:#D0D0CC;font-size:11px;}
 
-/* ── CONCEPT B: 2-column layout ── */
+/* ── Main 2-column ── */
 .main{flex:1;display:flex;overflow:hidden;}
 
-/* LEFT: payment area (flex:1, dark bg for "payment zone" feel) */
-.pay-zone{flex:1;display:flex;flex-direction:column;background:#1C2833;overflow:hidden;}
+/* ════════════════════════════════
+   LEFT PANEL
+════════════════════════════════ */
+.pay-left{flex:1;display:flex;flex-direction:column;background:white;overflow:hidden;}
 
-/* method tabs */
-.method-tabs{display:flex;padding:14px 16px 0;gap:8px;flex-shrink:0;}
-.mtab{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;padding:12px 6px 10px;border-radius:12px 12px 0 0;border:1.5px solid rgba(255,255,255,.1);border-bottom:none;background:rgba(255,255,255,.05);cursor:pointer;transition:all .15s;color:rgba(255,255,255,.5);}
-.mtab:hover{background:rgba(255,255,255,.1);color:rgba(255,255,255,.8);}
-.mtab.active{background:white;color:#1a1a1a;border-color:transparent;}
-.mtab-icon{font-size:20px;line-height:1;}
-.mtab-name{font-size:11px;font-weight:500;}
+/* 금액 존 */
+.amount-zone{padding:22px 28px 18px;flex-shrink:0;}
+.amount-label{font-size:11px;color:#999;font-weight:500;letter-spacing:.05em;margin-bottom:6px;}
+.amount-row{display:flex;align-items:flex-end;justify-content:space-between;}
+.amount-main{font-size:34px;font-weight:700;color:#1A1A1A;letter-spacing:-.02em;line-height:1;}
+.amount-yen{font-size:20px;font-weight:500;color:#888;margin-right:3px;}
+.amount-tax{font-size:11px;color:#BBB;margin-top:4px;}
+.split-btn{padding:8px 16px;border-radius:8px;border:1.5px solid #D0D0CC;background:white;font-size:12px;font-weight:500;color:#555;cursor:pointer;font-family:inherit;transition:all .12s;white-space:nowrap;}
+.split-btn:hover{border-color:#2E86C1;color:#2E86C1;background:#EBF5FB;}
+.split-btn.active{border-color:#2E86C1;color:#2E86C1;background:#EBF5FB;font-weight:600;}
 
-/* method panel */
-.method-panel{flex:1;background:white;border-radius:0 0 0 0;margin:0 16px;display:flex;flex-direction:column;overflow:hidden;}
+/* 고객/쿠폰 칩 */
+.chips-row{display:flex;gap:7px;padding:0 28px 14px;flex-shrink:0;}
+.chip{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;border:1px solid #E0E0DC;background:#FAFAF8;font-size:11px;color:#555;cursor:pointer;font-family:inherit;transition:all .12s;user-select:none;}
+.chip:hover{border-color:#2E86C1;color:#2E86C1;background:#EBF5FB;}
+.chip.applied{border-color:#1E8449;color:#1E8449;background:#EAFAF1;}
+.chip-icon{font-size:13px;}
 
-/* ── CASH panel ── */
-.cash-panel{flex:1;display:flex;flex-direction:column;padding:16px;}
-.recv-label{font-size:11px;color:#999;margin-bottom:6px;font-weight:500;letter-spacing:.04em;text-transform:uppercase;}
-.recv-display{background:#F9F9F7;border:.5px solid #E5E5E0;border-radius:10px;padding:10px 16px;display:flex;align-items:baseline;justify-content:flex-end;gap:6px;margin-bottom:10px;}
-.recv-yen{font-size:16px;color:#888;font-weight:500;}
-.recv-amount{font-size:36px;font-weight:700;color:#1a1a1a;letter-spacing:-.02em;}
+.left-divider{height:.5px;background:#F0F0EC;margin:0 28px;flex-shrink:0;}
 
-.quick-btns{display:flex;gap:6px;margin-bottom:12px;}
-.quick-btn{flex:1;padding:8px 4px;border-radius:8px;border:.5px solid #E5E5E0;background:white;font-size:12px;font-weight:500;color:#1a1a1a;cursor:pointer;font-family:inherit;text-align:center;}
-.quick-btn:hover{background:#F4F4F0;}
+/* 결제수단 */
+.method-zone{padding:16px 28px 14px;flex-shrink:0;}
+.method-zone-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.method-zone-label{font-size:12px;font-weight:600;color:#1A1A1A;}
+.method-zone-edit{font-size:11px;color:#2E86C1;cursor:pointer;}
 
-.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;flex:1;}
-.kp{display:flex;align-items:center;justify-content:center;border-radius:10px;border:.5px solid #E5E5E0;background:white;font-size:20px;font-weight:500;color:#1a1a1a;cursor:pointer;font-family:inherit;}
-.kp:hover{background:#F4F4F0;}
-.kp:active{background:#E8E8E4;transform:scale(.96);}
-.kp.kp-action{background:#F4F4F0;color:#555;font-size:14px;}
+.method-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.mcard{
+  padding:14px 10px 12px;border-radius:10px;
+  border:1.5px solid #EAEAE6;background:white;
+  cursor:pointer;text-align:center;
+  transition:all .12s;font-family:inherit;
+  display:flex;flex-direction:column;align-items:center;gap:5px;
+}
+.mcard:hover{border-color:#C8C8C4;background:#FAFAF8;}
+.mcard.selected{border-color:#2E86C1;border-width:2px;background:#EBF5FB;}
+.mcard-icon{font-size:22px;line-height:1;}
+.mcard-name{font-size:12px;font-weight:500;color:#1A1A1A;}
+.mcard-sub{font-size:10px;color:#AAA;margin-top:-2px;}
+.mcard.selected .mcard-name{color:#2E86C1;font-weight:600;}
 
-.change-bar{margin-top:10px;display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#EAFAF1;border-radius:10px;flex-shrink:0;}
-.change-bar.short{background:#FDEDEC;}
-.cb-label{font-size:12px;color:#1E8449;font-weight:500;}
-.cb-val{font-size:18px;font-weight:700;color:#1E8449;}
-.change-bar.short .cb-label,.change-bar.short .cb-val{color:#E74C3C;}
+/* 현금 섹션 */
+.cash-zone{padding:0 28px 14px;flex-shrink:0;}
+.cash-zone-inner{background:#F9F9F7;border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;}
+.cash-recv-row{display:flex;align-items:center;gap:8px;}
+.cash-recv-label{font-size:11px;color:#999;white-space:nowrap;}
+.cash-recv-inp{flex:1;border:none;background:transparent;font-size:18px;font-weight:600;font-family:inherit;color:#1A1A1A;text-align:right;outline:none;}
+.cash-recv-yen{font-size:14px;color:#888;}
+.cash-quick{display:flex;gap:6px;}
+.cash-qbtn{flex:1;padding:6px 4px;border-radius:7px;border:1px solid #E0E0DC;background:white;font-size:11px;font-weight:500;color:#555;cursor:pointer;font-family:inherit;text-align:center;}
+.cash-qbtn:hover{background:#F4F4F0;}
+.cash-change{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-radius:8px;background:#EAFAF1;}
+.cash-change.short{background:#FDEDEC;}
+.cc-label{font-size:11px;color:#1E8449;font-weight:500;}
+.cc-val{font-size:15px;font-weight:700;color:#1E8449;}
+.cash-change.short .cc-label,.cash-change.short .cc-val{color:#E74C3C;}
 
-/* ── CARD panel ── */
-.card-panel{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;}
-.terminal-icon{width:72px;height:72px;border-radius:16px;background:#EBF5FB;display:flex;align-items:center;justify-content:center;font-size:36px;}
-.terminal-label{font-size:15px;font-weight:500;color:#1a1a1a;}
-.terminal-sub{font-size:12px;color:#888;text-align:center;line-height:1.6;}
-.terminal-ready{display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:20px;background:#EAFAF1;font-size:12px;color:#1E8449;font-weight:500;}
-.terminal-dot{width:6px;height:6px;border-radius:50%;background:#1E8449;animation:pulse 1.5s ease-in-out infinite;}
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+/* QR 섹션 */
+.qr-zone{padding:0 28px 14px;flex-shrink:0;}
+.qr-zone-inner{background:#F9F9F7;border-radius:10px;padding:16px;display:flex;align-items:center;gap:16px;}
+.qr-thumb{width:70px;height:70px;border:1.5px solid #1A1A1A;border-radius:8px;display:grid;grid-template-columns:repeat(3,1fr);gap:3px;padding:8px;flex-shrink:0;}
+.qr-c{background:#1A1A1A;border-radius:1px;}
+.qr-c.w{background:white;}
+.qr-info{flex:1;}
+.qr-info-name{font-size:13px;font-weight:600;color:#1A1A1A;margin-bottom:3px;}
+.qr-info-sub{font-size:11px;color:#888;line-height:1.5;}
 
-/* ── QR panel ── */
-.qr-panel{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:20px;}
-.qr-box{width:140px;height:140px;border:2px solid #1a1a1a;border-radius:12px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;padding:10px;}
-.qr-cell{background:#1a1a1a;border-radius:2px;}
-.qr-cell.w{background:white;}
-.qr-label{font-size:13px;font-weight:500;color:#1a1a1a;}
-.qr-sub{font-size:11px;color:#888;}
+/* 카드 섹션 */
+.card-zone{padding:0 28px 14px;flex-shrink:0;}
+.card-zone-inner{background:#F9F9F7;border-radius:10px;padding:14px;display:flex;align-items:center;gap:12px;}
+.card-terminal-icon{width:44px;height:44px;border-radius:10px;background:#EBF5FB;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.card-terminal-info{flex:1;}
+.card-terminal-name{font-size:13px;font-weight:600;margin-bottom:2px;}
+.card-terminal-ready{display:flex;align-items:center;gap:5px;font-size:11px;color:#1E8449;}
+.card-pulse{width:6px;height:6px;border-radius:50%;background:#1E8449;animation:pulse 1.4s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.25;}}
 
-/* ── SPLIT panel ── */
-.split-panel{flex:1;display:flex;flex-direction:column;padding:16px;gap:8px;overflow-y:auto;}
-.sp-row{display:flex;gap:8px;align-items:center;background:#F9F9F7;border:.5px solid #E5E5E0;border-radius:10px;padding:10px 12px;}
-.sp-method{flex:1;font-size:13px;font-weight:500;}
-.sp-method select{border:none;background:transparent;font-size:13px;font-weight:500;font-family:inherit;color:#1a1a1a;outline:none;}
-.sp-divider{width:.5px;height:20px;background:#E5E5E0;flex-shrink:0;}
-.sp-amt-wrap{display:flex;align-items:center;gap:4px;}
-.sp-yen{font-size:12px;color:#888;}
-.sp-amt{border:none;background:transparent;font-size:15px;font-weight:600;font-family:inherit;color:#1a1a1a;outline:none;text-align:right;width:90px;}
-.sp-del{font-size:18px;color:#D0D0CC;cursor:pointer;padding:2px 4px;}
+/* 分割払い 섹션 */
+.split-zone{padding:0 28px 14px;flex-shrink:0;}
+.split-rows{display:flex;flex-direction:column;gap:6px;}
+.split-row{display:flex;align-items:center;gap:8px;background:#F9F9F7;border-radius:8px;padding:8px 12px;}
+.sp-sel{border:none;background:transparent;font-size:12px;font-weight:500;font-family:inherit;color:#1A1A1A;outline:none;flex:1;}
+.sp-sep{width:.5px;height:18px;background:#E0E0DC;flex-shrink:0;}
+.sp-yen{font-size:11px;color:#AAA;}
+.sp-amt{border:none;background:transparent;font-size:14px;font-weight:600;font-family:inherit;color:#1A1A1A;text-align:right;width:80px;outline:none;}
+.sp-del{font-size:16px;color:#D0D0CC;cursor:pointer;padding:0 2px;}
 .sp-del:hover{color:#E74C3C;}
-.sp-add-btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;border-radius:10px;border:1.5px dashed #AED6F1;color:#2E86C1;font-size:13px;font-weight:500;cursor:pointer;}
-.sp-add-btn:hover{background:#EBF5FB;}
+.sp-add{display:flex;align-items:center;justify-content:center;gap:5px;padding:8px;border-radius:8px;border:1.5px dashed #AED6F1;color:#2E86C1;font-size:12px;font-weight:500;cursor:pointer;margin-top:2px;}
+.sp-add:hover{background:#EBF5FB;}
 
-/* ── CREDIT panel ── */
-.credit-panel{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;}
-
-/* RIGHT: summary panel */
-.summary-panel{width:300px;display:flex;flex-direction:column;border-left:.5px solid #E5E5E0;background:white;overflow:hidden;}
-
-/* order items section */
-.sp-header{padding:10px 14px;border-bottom:.5px solid #F0F0EC;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
-.sp-title{font-size:10px;font-weight:600;color:#999;letter-spacing:.07em;text-transform:uppercase;}
-.sp-edit{font-size:11px;color:#2E86C1;cursor:pointer;}
-
-.order-scroll{flex:1;overflow-y:auto;padding:6px 14px 8px;}
-.order-scroll::-webkit-scrollbar{width:3px;}
-.order-scroll::-webkit-scrollbar-thumb{background:#E0E0DC;border-radius:2px;}
-.oi{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:.5px solid #F8F8F6;font-size:12px;}
-.oi:last-child{border-bottom:none;}
-.oi-left{flex:1;}
-.oi-name{color:#1a1a1a;}
-.oi-badge{display:inline-block;font-size:9px;color:#E74C3C;background:#FDEDEC;border-radius:3px;padding:1px 4px;margin-left:4px;}
-.oi-qty{font-size:10px;color:#999;margin-top:1px;}
-.oi-right{text-align:right;}
-.oi-orig{font-size:10px;color:#bbb;text-decoration:line-through;}
-.oi-price-final{font-size:12px;font-weight:500;color:#1a1a1a;}
-.oi-price-disc{font-size:12px;font-weight:500;color:#E74C3C;}
-
-/* customer section */
-.cust-section{flex-shrink:0;border-top:.5px solid #F0F0EC;padding:8px 14px;}
-.cust-row{display:flex;align-items:center;gap:8px;}
-.cust-av{width:30px;height:30px;border-radius:50%;background:#2E86C1;display:flex;align-items:center;justify-content:center;font-size:11px;color:white;font-weight:500;flex-shrink:0;}
-.cust-info{flex:1;}
-.cust-name{font-size:12px;font-weight:500;}
-.cust-sub{font-size:10px;color:#888;}
-.cust-pts{font-size:13px;font-weight:600;color:#2E86C1;}
-
-/* points + memo */
-.opts-section{flex-shrink:0;border-top:.5px solid #F0F0EC;padding:8px 14px;display:flex;flex-direction:column;gap:7px;}
-.opt-row{display:flex;align-items:center;justify-content:space-between;}
-.opt-label{font-size:11px;color:#666;}
-.pts-inp-wrap{display:flex;align-items:center;gap:5px;}
-.pts-inp{width:70px;padding:4px 8px;border:.5px solid #E0E0DC;border-radius:6px;font-size:12px;font-family:inherit;outline:none;text-align:right;}
-.pts-unit{font-size:11px;color:#888;}
-.pts-all{font-size:10px;color:#2E86C1;border:.5px solid #AED6F1;border-radius:5px;padding:3px 8px;cursor:pointer;background:#EBF5FB;font-family:inherit;}
-.tip-inp{width:70px;padding:4px 8px;border:.5px solid #E0E0DC;border-radius:6px;font-size:12px;font-family:inherit;outline:none;text-align:right;}
-.toggle-switch{width:34px;height:19px;border-radius:10px;background:#E0E0DC;position:relative;cursor:pointer;transition:.2s;flex-shrink:0;}
-.toggle-switch.on{background:#2E86C1;}
-.toggle-knob{position:absolute;width:15px;height:15px;border-radius:50%;background:white;top:2px;left:2px;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2);}
-.toggle-switch.on .toggle-knob{left:17px;}
-.memo-ta{width:100%;height:40px;border:.5px solid #E0E0DC;border-radius:7px;font-size:11px;font-family:inherit;padding:5px 8px;resize:none;outline:none;color:#555;line-height:1.5;}
-
-/* total footer */
-.total-footer{flex-shrink:0;border-top:.5px solid #E5E5E0;background:white;}
-.tot-rows{padding:10px 14px 0;display:flex;flex-direction:column;gap:5px;}
-.tr{display:flex;justify-content:space-between;font-size:12px;}
-.tr-label{color:#888;}
-.tr-val{font-weight:500;color:#1a1a1a;}
-.tr-disc{color:#E74C3C;}
-.tr-pts{color:#2E86C1;}
-.tr-divider{height:.5px;background:#E5E5E0;margin:8px 14px 0;}
-.final-row{display:flex;justify-content:space-between;align-items:baseline;padding:6px 14px 0;}
-.final-label{font-size:13px;font-weight:500;}
-.final-val{font-size:28px;font-weight:700;color:#1a1a1a;letter-spacing:-.02em;}
-.tax-line{font-size:10px;color:#bbb;text-align:right;padding:0 14px 8px;}
-
-.action-area{padding:8px 14px 12px;display:flex;flex-direction:column;gap:6px;}
-.btn-execute{width:100%;padding:14px;border-radius:12px;background:#2E86C1;color:white;font-size:15px;font-weight:600;border:none;cursor:pointer;font-family:inherit;}
+/* 하단 실행 영역 */
+.exec-zone{margin-top:auto;padding:12px 28px 16px;flex-shrink:0;border-top:.5px solid #F0F0EC;}
+.exec-row{display:flex;gap:8px;}
+.btn-execute{flex:1;padding:14px;border-radius:12px;background:#2E86C1;color:white;font-size:15px;font-weight:600;border:none;cursor:pointer;font-family:inherit;transition:background .12s;}
 .btn-execute:hover{background:#2471A3;}
 .btn-execute:active{transform:scale(.98);}
-.btn-back{width:100%;padding:9px;border-radius:10px;background:#F4F4F0;border:.5px solid #D0D0CC;color:#555;font-size:12px;cursor:pointer;font-family:inherit;}
+.btn-back{padding:14px 18px;border-radius:12px;background:#F4F4F0;border:.5px solid #D0D0CC;color:#555;font-size:13px;cursor:pointer;font-family:inherit;white-space:nowrap;}
 .btn-back:hover{background:#EAEAE6;}
 
-/* toast */
+/* ════════════════════════════════
+   RIGHT PANEL — 주문내역
+════════════════════════════════ */
+.pay-right{width:320px;flex-shrink:0;display:flex;flex-direction:column;border-left:.5px solid #E5E5E0;background:white;overflow:hidden;}
+
+.right-header{background:#1C2833;padding:11px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.right-header-title{font-size:12px;font-weight:600;color:white;display:flex;align-items:center;gap:6px;}
+.right-header-edit{font-size:11px;color:rgba(255,255,255,.45);cursor:pointer;}
+.right-header-edit:hover{color:rgba(255,255,255,.8);}
+
+.right-list{flex:1;overflow-y:auto;padding:0;}
+.right-list::-webkit-scrollbar{width:3px;}
+.right-list::-webkit-scrollbar-thumb{background:#E0E0DC;border-radius:2px;}
+
+.oi{padding:10px 16px;border-bottom:.5px solid #F5F5F3;}
+.oi:last-child{border-bottom:none;}
+.oi-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;}
+.oi-name{font-size:12px;font-weight:500;color:#1A1A1A;flex:1;line-height:1.4;}
+.oi-badge{display:inline-block;font-size:9px;color:#E74C3C;background:#FDEDEC;border-radius:3px;padding:1px 4px;margin-left:4px;font-weight:600;vertical-align:middle;}
+.oi-price-wrap{text-align:right;flex-shrink:0;}
+.oi-orig{font-size:10px;color:#CCC;text-decoration:line-through;display:block;}
+.oi-price{font-size:12px;font-weight:600;color:#1A1A1A;}
+.oi-price.disc{color:#E74C3C;}
+.oi-bottom{display:flex;align-items:center;gap:6px;margin-top:3px;}
+.oi-qty{font-size:10px;color:#AAA;}
+
+.right-footer{flex-shrink:0;border-top:.5px solid #E5E5E0;padding:12px 16px;}
+.rf-row{display:flex;justify-content:space-between;font-size:12px;padding:2px 0;}
+.rf-label{color:#999;}
+.rf-val{font-weight:500;color:#1A1A1A;}
+.rf-disc{color:#E74C3C;}
+.rf-pts{color:#2E86C1;}
+.rf-divider{height:.5px;background:#E5E5E0;margin:8px 0;}
+.rf-total{display:flex;justify-content:space-between;align-items:baseline;}
+.rf-total-label{font-size:13px;font-weight:600;}
+.rf-total-val{font-size:24px;font-weight:700;color:#1A1A1A;letter-spacing:-.02em;}
+.rf-tax{font-size:10px;color:#BBB;text-align:right;margin-top:2px;}
+.rf-earn{display:flex;align-items:center;justify-content:flex-end;gap:4px;margin-top:6px;font-size:11px;color:#2E86C1;font-weight:500;}
+
+/* ════════════════════════════════
+   MODALS
+════════════════════════════════ */
+.modal-overlay{position:absolute;inset:0;background:rgba(0,0,0,.5);z-index:80;display:none;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+
+/* 고객/포인트/메모 모달 */
+.cpm-modal{width:520px;background:white;border-radius:16px;box-shadow:0 24px 80px rgba(0,0,0,.3);overflow:hidden;display:flex;flex-direction:column;max-height:640px;}
+.modal-head{padding:14px 18px;border-bottom:.5px solid #F0F0EC;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.modal-title{font-size:14px;font-weight:700;color:#1A1A1A;}
+.modal-close{width:28px;height:28px;border-radius:7px;border:.5px solid #E0E0DC;background:#F4F4F0;display:flex;align-items:center;justify-content:center;font-size:14px;color:#888;cursor:pointer;}
+.modal-close:hover{background:#EAEAE6;}
+.modal-body{overflow-y:auto;flex:1;}
+.modal-body::-webkit-scrollbar{width:3px;}
+.modal-body::-webkit-scrollbar-thumb{background:#E0E0DC;}
+.modal-section{padding:14px 18px;border-bottom:.5px solid #F8F8F6;}
+.modal-section:last-child{border-bottom:none;}
+.ms-label{font-size:10px;font-weight:600;color:#AAA;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;}
+
+/* 고객 섹션 */
+.cust-search-row{display:flex;gap:6px;}
+.cust-search-inp{flex:1;padding:8px 12px;border:.5px solid #E0E0DC;border-radius:8px;font-size:13px;font-family:inherit;outline:none;color:#1A1A1A;}
+.cust-search-inp:focus{border-color:#2E86C1;}
+.cust-search-btn{padding:8px 14px;border-radius:8px;background:#2E86C1;color:white;font-size:12px;font-weight:600;border:none;cursor:pointer;font-family:inherit;white-space:nowrap;}
+.cust-card-row{display:flex;align-items:center;gap:10px;margin-top:10px;padding:10px 12px;background:#F4F9FE;border-radius:10px;}
+.cust-av{width:36px;height:36px;border-radius:50%;background:#2E86C1;display:flex;align-items:center;justify-content:center;font-size:14px;color:white;font-weight:500;flex-shrink:0;}
+.cust-info{flex:1;}
+.cust-name{font-size:13px;font-weight:600;color:#1A1A1A;}
+.cust-sub{font-size:11px;color:#888;margin-top:1px;}
+.cust-pts-badge{font-size:13px;font-weight:700;color:#2E86C1;}
+.cust-remove{font-size:11px;color:#E74C3C;cursor:pointer;padding:4px 8px;border-radius:6px;border:.5px solid #F5B7B1;background:#FEF0F0;}
+.cust-remove:hover{background:#FDEDEC;}
+
+/* 포인트 섹션 */
+.pts-row{display:flex;align-items:center;gap:8px;}
+.pts-balance{font-size:11px;color:#888;flex:1;}
+.pts-balance strong{color:#2E86C1;}
+.pts-inp{width:80px;padding:6px 10px;border:.5px solid #E0E0DC;border-radius:7px;font-size:13px;font-family:inherit;outline:none;text-align:right;}
+.pts-unit{font-size:12px;color:#888;}
+.pts-all-btn{font-size:11px;color:#2E86C1;border:.5px solid #AED6F1;border-radius:6px;padding:5px 10px;cursor:pointer;background:#EBF5FB;font-family:inherit;white-space:nowrap;}
+
+/* 메모 섹션 */
+.memo-ta{width:100%;height:72px;border:.5px solid #E0E0DC;border-radius:8px;font-size:12px;font-family:inherit;padding:9px 12px;resize:none;outline:none;color:#555;line-height:1.6;}
+.memo-ta:focus{border-color:#2E86C1;}
+
+/* 영수증 토글 */
+.toggle-row{display:flex;align-items:center;justify-content:space-between;}
+.toggle-label{font-size:12px;color:#555;}
+.toggle-switch{width:36px;height:20px;border-radius:10px;background:#E0E0DC;position:relative;cursor:pointer;transition:.2s;flex-shrink:0;}
+.toggle-switch.on{background:#2E86C1;}
+.toggle-knob{position:absolute;width:16px;height:16px;border-radius:50%;background:white;top:2px;left:2px;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2);}
+.toggle-switch.on .toggle-knob{left:18px;}
+
+.modal-footer{padding:12px 18px;border-top:.5px solid #F0F0EC;display:flex;gap:8px;flex-shrink:0;}
+.modal-btn{flex:1;padding:11px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;border:none;font-family:inherit;transition:all .12s;}
+.modal-btn-cancel{background:#F4F4F0;color:#666;}
+.modal-btn-cancel:hover{background:#EAEAE6;}
+.modal-btn-apply{background:#2E86C1;color:white;}
+.modal-btn-apply:hover{background:#2471A3;}
+
+/* 쿠폰 모달 */
+.coupon-modal{width:460px;background:white;border-radius:16px;box-shadow:0 24px 80px rgba(0,0,0,.3);overflow:hidden;display:flex;flex-direction:column;max-height:540px;}
+.coupon-search{padding:14px 18px;border-bottom:.5px solid #F0F0EC;display:flex;gap:6px;flex-shrink:0;}
+.coupon-inp{flex:1;padding:8px 12px;border:.5px solid #E0E0DC;border-radius:8px;font-size:13px;font-family:inherit;outline:none;}
+.coupon-inp:focus{border-color:#8E44AD;}
+.coupon-inp-btn{padding:8px 14px;border-radius:8px;background:#8E44AD;color:white;font-size:12px;font-weight:600;border:none;cursor:pointer;font-family:inherit;}
+.coupon-list{flex:1;overflow-y:auto;padding:8px 0;}
+.coupon-list::-webkit-scrollbar{width:3px;}
+.coupon-list::-webkit-scrollbar-thumb{background:#E0E0DC;}
+.coupon-item{display:flex;align-items:center;gap:12px;padding:11px 18px;border-bottom:.5px solid #F8F8F6;cursor:pointer;transition:background .1s;}
+.coupon-item:hover{background:#F9F5FC;}
+.coupon-item:last-child{border-bottom:none;}
+.coupon-item.selected{background:#F9F5FC;}
+.coupon-badge{width:44px;height:44px;border-radius:10px;background:#F4ECF7;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.coupon-info{flex:1;}
+.coupon-name{font-size:12px;font-weight:600;color:#1A1A1A;margin-bottom:2px;}
+.coupon-desc{font-size:11px;color:#888;}
+.coupon-disc{font-size:13px;font-weight:700;color:#8E44AD;text-align:right;flex-shrink:0;}
+.coupon-radio{width:18px;height:18px;border-radius:50%;border:1.5px solid #D0D0CC;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.coupon-radio.on{border-color:#8E44AD;background:#8E44AD;}
+.coupon-radio.on::after{content:'';width:7px;height:7px;border-radius:50%;background:white;}
+.coupon-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;color:#CCC;gap:8px;font-size:12px;}
+
+/* 分割払い 섹션 모달 내에서 사용 가능한 전용 UI는 method zone 아래에서 inline으로 */
+
+/* Toast */
 .toast{position:fixed;top:18px;left:50%;transform:translateX(-50%) translateY(-16px);background:white;color:#1A1A1A;font-size:12px;font-weight:500;padding:10px 20px 10px 16px;border-radius:12px;z-index:9999;white-space:nowrap;opacity:0;pointer-events:none;transition:transform .22s,opacity .22s;box-shadow:0 6px 28px rgba(0,0,0,.18);border:.5px solid rgba(0,0,0,.08);display:flex;align-items:center;gap:8px;}
 .toast::before{content:'';width:3px;height:100%;background:#2E86C1;border-radius:2px;align-self:stretch;flex-shrink:0;}
+.toast.purple::before{background:#8E44AD;}
+.toast.green::before{background:#1E8449;}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
 </style>
 </head>
 <body>
 
-<!-- toast -->
 <div class="toast" id="toast"></div>
 
-<!-- sidebar overlay -->
+<!-- Sidebar -->
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
-<!-- sidebar -->
 <div class="sidebar" id="sidebar">
   <div class="sidebar-header">
     <div class="sidebar-logo">✂ salon pos</div>
     <div class="sidebar-sub">Hair Salon Yuki · 渋谷区</div>
   </div>
   <div class="sidebar-menu">
-    <div class="sidebar-item on" onclick="closeSidebar()"><div class="sidebar-dot" style="background:#2E86C1"></div><span class="sidebar-label">会計</span></div>
-    <div class="sidebar-item" onclick="closeSidebar()"><div class="sidebar-dot" style="background:#8E44AD"></div><span class="sidebar-label">予約</span></div>
-    <div class="sidebar-item" onclick="closeSidebar()"><div class="sidebar-dot" style="background:#1E8449"></div><span class="sidebar-label">顧客</span></div>
-    <div class="sidebar-item" onclick="closeSidebar()"><div class="sidebar-dot" style="background:#C0392B"></div><span class="sidebar-label">スタッフ</span></div>
-    <div class="sidebar-item" onclick="closeSidebar()"><div class="sidebar-dot" style="background:#7D3C98"></div><span class="sidebar-label">在庫</span></div>
-    <div class="sidebar-item" onclick="closeSidebar()"><div class="sidebar-dot" style="background:#D4AC0D"></div><span class="sidebar-label">売上</span></div>
-    <div class="sidebar-item" onclick="closeSidebar()"><div class="sidebar-dot" style="background:#D35400"></div><span class="sidebar-label">マーケティング</span></div>
-    <div class="sidebar-item" onclick="closeSidebar()"><div class="sidebar-dot" style="background:#117A65"></div><span class="sidebar-label">店舗設定</span></div>
-    <div class="sidebar-item" onclick="closeSidebar()"><div class="sidebar-dot" style="background:#1A5276"></div><span class="sidebar-label">システム設定</span></div>
+    <div class="sidebar-item on"  onclick="closeSidebar()"><div class="sidebar-dot" style="background:#2E86C1"></div><span class="sidebar-label">会計</span></div>
+    <div class="sidebar-item"     onclick="closeSidebar()"><div class="sidebar-dot" style="background:#8E44AD"></div><span class="sidebar-label">予約</span></div>
+    <div class="sidebar-item"     onclick="closeSidebar()"><div class="sidebar-dot" style="background:#1E8449"></div><span class="sidebar-label">顧客</span></div>
+    <div class="sidebar-item"     onclick="closeSidebar()"><div class="sidebar-dot" style="background:#C0392B"></div><span class="sidebar-label">スタッフ</span></div>
+    <div class="sidebar-item"     onclick="closeSidebar()"><div class="sidebar-dot" style="background:#7D3C98"></div><span class="sidebar-label">在庫</span></div>
+    <div class="sidebar-item"     onclick="closeSidebar()"><div class="sidebar-dot" style="background:#D4AC0D"></div><span class="sidebar-label">売上</span></div>
+    <div class="sidebar-item"     onclick="closeSidebar()"><div class="sidebar-dot" style="background:#D35400"></div><span class="sidebar-label">マーケティング</span></div>
+    <div class="sidebar-item"     onclick="closeSidebar()"><div class="sidebar-dot" style="background:#117A65"></div><span class="sidebar-label">店舗設定</span></div>
+    <div class="sidebar-item"     onclick="closeSidebar()"><div class="sidebar-dot" style="background:#1A5276"></div><span class="sidebar-label">システム設定</span></div>
   </div>
   <div class="sidebar-footer"><div class="sidebar-footer-text">v2.0.0 · iPad Air 2</div></div>
 </div>
 
+<!-- 고객/포인트/메모 모달 -->
+<div class="modal-overlay" id="cpmOverlay" onclick="handleCpmOverlay(event)">
+  <div class="cpm-modal">
+    <div class="modal-head">
+      <span class="modal-title">顧客・ポイント・メモ</span>
+      <div class="modal-close" onclick="closeCpmModal()">✕</div>
+    </div>
+    <div class="modal-body">
+      <!-- 고객 -->
+      <div class="modal-section">
+        <div class="ms-label">顧客</div>
+        <div class="cust-search-row">
+          <input class="cust-search-inp" placeholder="名前・電話番号で検索..." id="custSearchInp">
+          <button class="cust-search-btn" onclick="searchCustomer()">検索</button>
+        </div>
+        <div class="cust-card-row" id="custCardRow">
+          <div class="cust-av">田</div>
+          <div class="cust-info">
+            <div class="cust-name">田中 美咲</div>
+            <div class="cust-sub">090-1234-5678 · VIP · 来店 24回</div>
+          </div>
+          <div class="cust-pts-badge">320pt</div>
+          <div class="cust-remove" onclick="removeCustomer()">削除</div>
+        </div>
+      </div>
+      <!-- 포인트 -->
+      <div class="modal-section">
+        <div class="ms-label">ポイント使用</div>
+        <div class="pts-row">
+          <span class="pts-balance">保有ポイント: <strong>320pt</strong></span>
+          <input class="pts-inp" id="ptsInp" type="number" value="0" min="0" max="320" oninput="updateTotal()">
+          <span class="pts-unit">pt</span>
+          <button class="pts-all-btn" onclick="useAllPts()">全額使用</button>
+        </div>
+      </div>
+      <!-- 메모 -->
+      <div class="modal-section">
+        <div class="ms-label">会計メモ</div>
+        <textarea class="memo-ta" id="memoTa" placeholder="会計メモを入力...">カラーはマニキュア施術。次回はトリートメント強化を推奨。</textarea>
+      </div>
+      <!-- 팁 / 영수증 -->
+      <div class="modal-section">
+        <div class="ms-label">オプション</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div class="toggle-row">
+            <span class="toggle-label">チップ</span>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <input style="width:70px;padding:5px 8px;border:.5px solid #E0E0DC;border-radius:6px;font-size:12px;font-family:inherit;outline:none;text-align:right;" id="tipInp" placeholder="¥0" oninput="updateTotal()">
+              <span style="font-size:11px;color:#888;">円</span>
+            </div>
+          </div>
+          <div class="toggle-row">
+            <span class="toggle-label">領収書</span>
+            <div class="toggle-switch on" id="receiptToggle" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-btn modal-btn-cancel" onclick="closeCpmModal()">キャンセル</button>
+      <button class="modal-btn modal-btn-apply" onclick="applyCpmModal()">適用する</button>
+    </div>
+  </div>
+</div>
+
+<!-- 쿠폰 모달 -->
+<div class="modal-overlay" id="couponOverlay" onclick="handleCouponOverlay(event)">
+  <div class="coupon-modal">
+    <div class="modal-head">
+      <span class="modal-title">クーポン適用</span>
+      <div class="modal-close" onclick="closeCouponModal()">✕</div>
+    </div>
+    <div class="coupon-search">
+      <input class="coupon-inp" id="couponInp" placeholder="クーポンコードを入力...">
+      <button class="coupon-inp-btn" onclick="applyCouponCode()">適用</button>
+    </div>
+    <div class="coupon-list" id="couponList"></div>
+    <div class="modal-footer">
+      <button class="modal-btn modal-btn-cancel" onclick="closeCouponModal()">キャンセル</button>
+      <button class="modal-btn modal-btn-apply" style="background:#8E44AD;" onclick="confirmCoupon()">適用する</button>
+    </div>
+  </div>
+</div>
+
 <div class="ipad">
 
-  <!-- topbar -->
+  <!-- Topbar -->
   <div class="topbar">
     <span class="tb-menu" onclick="toggleSidebar()">☰</span>
     <span class="tb-logo">✂ salon pos</span>
@@ -239,7 +412,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
     </div>
   </div>
 
-  <!-- step bar -->
+  <!-- Step bar -->
   <div class="step-bar">
     <div class="step done"><div class="step-num">✓</div>注文</div>
     <div class="step-arr">›</div>
@@ -254,328 +427,388 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 
   <div class="main">
 
-    <!-- ── 左: 결제 조작 영역 (다크 배경) ── -->
-    <div class="pay-zone">
+    <!-- ══ 좌측: 결제 조작 ══ -->
+    <div class="pay-left">
 
-      <!-- method tabs -->
-      <div class="method-tabs">
-        <div class="mtab active" id="tab-cash" onclick="switchTab('cash')">
-          <div class="mtab-icon">💴</div>
-          <div class="mtab-name">現金</div>
-        </div>
-        <div class="mtab" id="tab-card" onclick="switchTab('card')">
-          <div class="mtab-icon">💳</div>
-          <div class="mtab-name">カード</div>
-        </div>
-        <div class="mtab" id="tab-paypay" onclick="switchTab('paypay')">
-          <div class="mtab-icon">📱</div>
-          <div class="mtab-name">PayPay</div>
-        </div>
-        <div class="mtab" id="tab-linepay" onclick="switchTab('linepay')">
-          <div class="mtab-icon">💬</div>
-          <div class="mtab-name">LINE Pay</div>
-        </div>
-        <div class="mtab" id="tab-split" onclick="switchTab('split')">
-          <div class="mtab-icon">🔀</div>
-          <div class="mtab-name">分割払い</div>
-        </div>
-        <div class="mtab" id="tab-credit" onclick="switchTab('credit')">
-          <div class="mtab-icon">📋</div>
-          <div class="mtab-name">後払い</div>
-        </div>
-      </div>
-
-      <!-- method panel (white content area) -->
-      <div class="method-panel">
-
-        <!-- CASH -->
-        <div class="cash-panel" id="panel-cash">
-          <div class="recv-label">受取金額</div>
-          <div class="recv-display">
-            <span class="recv-yen">¥</span>
-            <span class="recv-amount" id="recvDisplay">20,000</span>
-          </div>
-          <div class="quick-btns">
-            <button class="quick-btn" onclick="setCash('exact')">ちょうど</button>
-            <button class="quick-btn" onclick="setCash(10000)">¥10,000</button>
-            <button class="quick-btn" onclick="setCash(20000)">¥20,000</button>
-            <button class="quick-btn" onclick="setCash(50000)">¥50,000</button>
-          </div>
-          <div class="keypad">
-            <button class="kp" onclick="kpPress('1')">1</button>
-            <button class="kp" onclick="kpPress('2')">2</button>
-            <button class="kp" onclick="kpPress('3')">3</button>
-            <button class="kp" onclick="kpPress('4')">4</button>
-            <button class="kp" onclick="kpPress('5')">5</button>
-            <button class="kp" onclick="kpPress('6')">6</button>
-            <button class="kp" onclick="kpPress('7')">7</button>
-            <button class="kp" onclick="kpPress('8')">8</button>
-            <button class="kp" onclick="kpPress('9')">9</button>
-            <button class="kp kp-action" onclick="kpPress('000')">000</button>
-            <button class="kp" onclick="kpPress('0')">0</button>
-            <button class="kp kp-action" onclick="kpDel()">⌫</button>
-          </div>
-          <div class="change-bar" id="changeBar">
-            <span class="cb-label">お釣り</span>
-            <span class="cb-val" id="changeVal">¥2,840</span>
-          </div>
-        </div>
-
-        <!-- CARD -->
-        <div class="card-panel" id="panel-card" style="display:none;">
-          <div class="terminal-icon">💳</div>
-          <div class="terminal-label">カード端末</div>
-          <div class="terminal-sub">お客様のカードを端末に<br>タッチまたは挿入してください</div>
-          <div class="terminal-ready"><span class="terminal-dot"></span>端末スタンバイ中</div>
-        </div>
-
-        <!-- PAYPAY -->
-        <div class="qr-panel" id="panel-paypay" style="display:none;">
-          <div class="qr-box">
-            <div class="qr-cell"></div><div class="qr-cell w"></div><div class="qr-cell"></div>
-            <div class="qr-cell w"></div><div class="qr-cell"></div><div class="qr-cell w"></div>
-            <div class="qr-cell"></div><div class="qr-cell w"></div><div class="qr-cell"></div>
-          </div>
-          <div class="qr-label">PayPay QRコード</div>
-          <div class="qr-sub">お客様にQRコードを読み取ってもらってください</div>
-        </div>
-
-        <!-- LINEPAY -->
-        <div class="qr-panel" id="panel-linepay" style="display:none;">
-          <div class="qr-box" style="border-color:#06B25D;">
-            <div class="qr-cell" style="background:#06B25D;"></div><div class="qr-cell w"></div><div class="qr-cell" style="background:#06B25D;"></div>
-            <div class="qr-cell w"></div><div class="qr-cell" style="background:#06B25D;"></div><div class="qr-cell w"></div>
-            <div class="qr-cell" style="background:#06B25D;"></div><div class="qr-cell w"></div><div class="qr-cell" style="background:#06B25D;"></div>
-          </div>
-          <div class="qr-label" style="color:#06B25D;">LINE Pay QRコード</div>
-          <div class="qr-sub">お客様にQRコードを読み取ってもらってください</div>
-        </div>
-
-        <!-- SPLIT -->
-        <div class="split-panel" id="panel-split" style="display:none;">
-          <div id="splitRows">
-            <div class="sp-row">
-              <div class="sp-method"><select class="sp-method"><option>💳 カード</option><option>💴 現金</option><option>📱 PayPay</option></select></div>
-              <div class="sp-divider"></div>
-              <div class="sp-amt-wrap"><span class="sp-yen">¥</span><input class="sp-amt" value="10,000"></div>
-              <span class="sp-del" onclick="this.closest('.sp-row').remove()">✕</span>
+      <!-- 금액 -->
+      <div class="amount-zone">
+        <div class="amount-label">お支払金額</div>
+        <div class="amount-row">
+          <div>
+            <div style="display:flex;align-items:baseline;gap:0;">
+              <span class="amount-yen">¥</span>
+              <span class="amount-main" id="amountMain">17,160</span>
             </div>
-            <div class="sp-row">
-              <div class="sp-method"><select class="sp-method"><option>💴 現金</option><option>💳 カード</option><option>📱 PayPay</option></select></div>
-              <div class="sp-divider"></div>
-              <div class="sp-amt-wrap"><span class="sp-yen">¥</span><input class="sp-amt" value="7,160"></div>
-              <span class="sp-del" onclick="this.closest('.sp-row').remove()">✕</span>
-            </div>
+            <div class="amount-tax" id="amountTax">消費税込み ¥1,560</div>
           </div>
-          <div class="sp-add-btn" onclick="addSplitRow()">＋ 支払方法を追加</div>
+          <button class="split-btn" id="splitToggleBtn" onclick="toggleSplit()">分割払い</button>
         </div>
-
-        <!-- CREDIT -->
-        <div class="credit-panel" id="panel-credit" style="display:none;">
-          <div class="terminal-icon" style="background:#FEF9EC;">📋</div>
-          <div class="terminal-label">後払い処理</div>
-          <div class="terminal-sub" style="text-align:center;line-height:1.8;">お客様の後払い情報を登録します。<br>「会計を実行」で未収金として記録されます。</div>
-          <div style="display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:20px;background:#FEF9EC;font-size:12px;color:#D4AC0D;font-weight:500;">⚠ 未収金として処理されます</div>
-        </div>
-
       </div>
-    </div>
 
-    <!-- ── 右: 요약 + 합계 통합 패널 ── -->
-    <div class="summary-panel">
-
-      <!-- order items -->
-      <div class="sp-header">
-        <span class="sp-title">注文内容</span>
-        <span class="sp-edit" onclick="showToast('← 注文画面へ移動')">← 編集</span>
+      <!-- 고객/쿠폰 칩 -->
+      <div class="chips-row">
+        <button class="chip applied" id="custChip" onclick="openCpmModal()">
+          <span class="chip-icon">👤</span>田中 美咲 · 320pt
+        </button>
+        <button class="chip" id="couponChip" onclick="openCouponModal()">
+          <span class="chip-icon">🎟</span>クーポン適用
+        </button>
+        <button class="chip" id="earnChip" style="margin-left:auto;pointer-events:none;border-color:transparent;background:transparent;color:#2E86C1;">
+          <span class="chip-icon">⭐</span><span id="earnPts">+171pt 獲得予定</span>
+        </button>
       </div>
-      <div class="order-scroll">
-        <div class="oi">
-          <div class="oi-left">
-            <div class="oi-name">カット <span class="oi-badge">10%割引</span></div>
-            <div class="oi-qty">×1</div>
-          </div>
-          <div class="oi-right">
-            <div class="oi-orig">¥4,400</div>
-            <div class="oi-price-disc">¥3,960</div>
-          </div>
+
+      <div class="left-divider"></div>
+
+      <!-- 결제수단 -->
+      <div class="method-zone">
+        <div class="method-zone-head">
+          <span class="method-zone-label">支払方法</span>
         </div>
-        <div class="oi">
-          <div class="oi-left">
-            <div class="oi-name">ワンカラー</div>
-            <div class="oi-qty">×1</div>
+        <div class="method-grid" id="methodGrid">
+          <div class="mcard selected" id="m-cash" onclick="selectMethod('cash')">
+            <div class="mcard-icon">💴</div>
+            <div class="mcard-name">現金</div>
+            <div class="mcard-sub">お釣り自動計算</div>
           </div>
-          <div class="oi-right">
-            <div class="oi-price-final">¥8,800</div>
+          <div class="mcard" id="m-card" onclick="selectMethod('card')">
+            <div class="mcard-icon">💳</div>
+            <div class="mcard-name">カード</div>
+            <div class="mcard-sub">端末連携</div>
           </div>
-        </div>
-        <div class="oi">
-          <div class="oi-left">
-            <div class="oi-name">トリートメント M</div>
-            <div class="oi-qty">×1</div>
+          <div class="mcard" id="m-paypay" onclick="selectMethod('paypay')">
+            <div class="mcard-icon">📱</div>
+            <div class="mcard-name">PayPay</div>
+            <div class="mcard-sub">QR決済</div>
           </div>
-          <div class="oi-right">
-            <div class="oi-price-final">¥4,400</div>
+          <div class="mcard" id="m-linepay" onclick="selectMethod('linepay')">
+            <div class="mcard-icon">💬</div>
+            <div class="mcard-name">LINE Pay</div>
+            <div class="mcard-sub">QR決済</div>
+          </div>
+          <div class="mcard" id="m-credit" onclick="selectMethod('credit')">
+            <div class="mcard-icon">📋</div>
+            <div class="mcard-name">後払い</div>
+            <div class="mcard-sub">未収金処理</div>
           </div>
         </div>
       </div>
 
-      <!-- customer -->
-      <div class="cust-section">
-        <div class="cust-row">
-          <div class="cust-av">田</div>
-          <div class="cust-info">
-            <div class="cust-name">田中 美咲</div>
-            <div class="cust-sub">090-1234-5678 · VIP</div>
+      <!-- 현금 섹션 -->
+      <div class="cash-zone" id="cashZone">
+        <div class="cash-zone-inner">
+          <div class="cash-recv-row">
+            <span class="cash-recv-label">受取金額</span>
+            <span class="cash-recv-yen">¥</span>
+            <input class="cash-recv-inp" id="cashInp" value="20,000" oninput="onCashInput()">
           </div>
-          <div class="cust-pts">320pt</div>
+          <div class="cash-quick">
+            <button class="cash-qbtn" onclick="setCash('exact')">ちょうど</button>
+            <button class="cash-qbtn" onclick="setCash(10000)">¥10,000</button>
+            <button class="cash-qbtn" onclick="setCash(20000)">¥20,000</button>
+            <button class="cash-qbtn" onclick="setCash(50000)">¥50,000</button>
+          </div>
+          <div class="cash-change" id="changeBar">
+            <span class="cc-label">お釣り</span>
+            <span class="cc-val" id="changeVal">¥2,840</span>
+          </div>
         </div>
       </div>
 
-      <!-- options: points, tip, receipt, memo -->
-      <div class="opts-section">
-        <div class="opt-row">
-          <span class="opt-label">ポイント使用</span>
-          <div class="pts-inp-wrap">
-            <input class="pts-inp" id="ptsInp" type="number" value="0" min="0" max="320" oninput="updateTotal()">
-            <span class="pts-unit">pt</span>
-            <button class="pts-all" onclick="useAllPts()">全額</button>
+      <!-- 카드 섹션 -->
+      <div class="card-zone" id="cardZone" style="display:none;">
+        <div class="card-zone-inner">
+          <div class="card-terminal-icon">💳</div>
+          <div class="card-terminal-info">
+            <div class="card-terminal-name">カード端末</div>
+            <div class="card-terminal-ready"><span class="card-pulse"></span>スタンバイ中 — カードをタッチまたは挿入してください</div>
           </div>
         </div>
-        <div class="opt-row">
-          <span class="opt-label">チップ</span>
-          <input class="tip-inp" id="tipInp" placeholder="¥0" oninput="updateTotal()">
-        </div>
-        <div class="opt-row">
-          <span class="opt-label">領収書</span>
-          <div class="toggle-switch on" id="receiptToggle" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div>
-        </div>
-        <div class="opt-row">
-          <span class="opt-label">ポイント獲得</span>
-          <span style="font-size:12px;color:#2E86C1;font-weight:500;" id="earnPts">+171pt</span>
-        </div>
-        <textarea class="memo-ta" placeholder="会計メモ...">カラーはマニキュア施術。次回トリートメント推奨。</textarea>
       </div>
 
-      <!-- total footer -->
-      <div class="total-footer">
-        <div class="tot-rows" id="totalRows"></div>
-        <div class="tr-divider"></div>
-        <div class="final-row">
-          <span class="final-label">お支払金額</span>
-          <span class="final-val" id="finalAmt">¥17,160</span>
+      <!-- QR 섹션 -->
+      <div class="qr-zone" id="qrZone" style="display:none;">
+        <div class="qr-zone-inner">
+          <div class="qr-thumb">
+            <div class="qr-c"></div><div class="qr-c w"></div><div class="qr-c"></div>
+            <div class="qr-c w"></div><div class="qr-c"></div><div class="qr-c w"></div>
+            <div class="qr-c"></div><div class="qr-c w"></div><div class="qr-c"></div>
+          </div>
+          <div class="qr-info">
+            <div class="qr-info-name" id="qrName">PayPay QRコード</div>
+            <div class="qr-info-sub">お客様のスマートフォンで<br>QRコードを読み取ってください</div>
+          </div>
         </div>
-        <div class="tax-line" id="taxLine">消費税込み ¥1,560</div>
-        <div class="action-area">
+      </div>
+
+      <!-- 分割払い 섹션 -->
+      <div class="split-zone" id="splitZone" style="display:none;">
+        <div class="split-rows" id="splitRows">
+          <div class="split-row">
+            <select class="sp-sel"><option>💳 カード</option><option>💴 現金</option><option>📱 PayPay</option></select>
+            <div class="sp-sep"></div>
+            <span class="sp-yen">¥</span>
+            <input class="sp-amt" value="10,000">
+            <span class="sp-del" onclick="this.closest('.split-row').remove()">✕</span>
+          </div>
+          <div class="split-row">
+            <select class="sp-sel"><option>💴 現金</option><option>💳 カード</option><option>📱 PayPay</option></select>
+            <div class="sp-sep"></div>
+            <span class="sp-yen">¥</span>
+            <input class="sp-amt" value="7,160">
+            <span class="sp-del" onclick="this.closest('.split-row').remove()">✕</span>
+          </div>
+        </div>
+        <div class="sp-add" onclick="addSplitRow()">＋ 支払方法を追加</div>
+      </div>
+
+      <!-- 실행 버튼 -->
+      <div class="exec-zone">
+        <div class="exec-row">
           <button class="btn-execute" onclick="execPayment()">会計を実行</button>
           <button class="btn-back" onclick="showToast('← 注文画面へ移動')">← 注文に戻る</button>
         </div>
       </div>
+
+    </div>
+
+    <!-- ══ 우측: 주문내역 ══ -->
+    <div class="pay-right">
+
+      <div class="right-header">
+        <div class="right-header-title">✏ 注文内容</div>
+        <span class="right-header-edit" onclick="showToast('← 注文画面へ移動')">← 編集</span>
+      </div>
+
+      <div class="right-list" id="rightList">
+        <div class="oi">
+          <div class="oi-top">
+            <div class="oi-name">カット <span class="oi-badge">10%割引</span></div>
+            <div class="oi-price-wrap">
+              <span class="oi-orig">¥4,400</span>
+              <span class="oi-price disc">¥3,960</span>
+            </div>
+          </div>
+          <div class="oi-bottom"><span class="oi-qty">×1</span></div>
+        </div>
+        <div class="oi">
+          <div class="oi-top">
+            <div class="oi-name">ワンカラー</div>
+            <div class="oi-price-wrap"><span class="oi-price">¥8,800</span></div>
+          </div>
+          <div class="oi-bottom"><span class="oi-qty">×1</span></div>
+        </div>
+        <div class="oi">
+          <div class="oi-top">
+            <div class="oi-name">トリートメント M</div>
+            <div class="oi-price-wrap"><span class="oi-price">¥4,400</span></div>
+          </div>
+          <div class="oi-bottom"><span class="oi-qty">×1</span></div>
+        </div>
+      </div>
+
+      <div class="right-footer">
+        <div id="rfRows"></div>
+        <div class="rf-divider"></div>
+        <div class="rf-total">
+          <span class="rf-total-label">お支払金額</span>
+          <span class="rf-total-val" id="rfTotal">¥17,160</span>
+        </div>
+        <div class="rf-tax" id="rfTax">消費税込み ¥1,560</div>
+        <div class="rf-earn"><span>⭐</span><span id="rfEarn">+171pt 獲得予定</span></div>
+      </div>
+
     </div>
 
   </div>
 </div>
 
 <script>
-const subtotalRaw = 17600;
+// ── 데이터 ──
+const subtotalRaw  = 17600;
 const discountTotal = 440;
-const subtotal = subtotalRaw - discountTotal;
+const subtotal = subtotalRaw - discountTotal; // 17160
 let ptsUsed = 0;
 let cashRaw = 20000;
-let kpStr = '20000';
-let currentTab = 'cash';
+let currentMethod = 'cash';
+let isSplit = false;
+let selectedCoupon = null;
+let toastTimer;
+
+const COUPONS = [
+  {id:1, icon:'🌸', name:'春の感謝クーポン',    desc:'全メニュー対象 · 期限: 2026-07-31', disc:'10%OFF'},
+  {id:2, icon:'💇', name:'カット割引券',          desc:'カットメニュー限定 · 期限: 2026-06-30', disc:'¥500 OFF'},
+  {id:3, icon:'🎁', name:'初回来店特典',          desc:'初回限定 · 期限: 2026-12-31', disc:'20%OFF'},
+  {id:4, icon:'⭐', name:'VIP限定クーポン',       desc:'VIP会員専用 · 期限: 2026-08-31', disc:'¥1,000 OFF'},
+];
+
+// ── 합계 계산 ──
+function getTotal() {
+  const tip = parseInt(document.getElementById('tipInp')?.value) || 0;
+  return subtotal - ptsUsed + tip;
+}
 
 function updateTotal() {
   ptsUsed = Math.min(320, Math.max(0, parseInt(document.getElementById('ptsInp').value) || 0));
-  const tip = parseInt(document.getElementById('tipInp').value) || 0;
-  const total = subtotal - ptsUsed + tip;
+  const total = getTotal();
   const tax = Math.round(total * 10 / 110);
+  const earn = Math.floor(total / 100);
 
-  document.getElementById('totalRows').innerHTML = `
-    <div class="tr"><span class="tr-label">小計</span><span class="tr-val">¥${subtotalRaw.toLocaleString()}</span></div>
-    <div class="tr"><span class="tr-label">割引合計</span><span class="tr-disc">－¥${discountTotal.toLocaleString()}</span></div>
-    ${ptsUsed > 0 ? `<div class="tr"><span class="tr-label">ポイント使用</span><span class="tr-pts">－¥${ptsUsed.toLocaleString()}</span></div>` : ''}
-    ${tip > 0 ? `<div class="tr"><span class="tr-label">チップ</span><span class="tr-val">¥${tip.toLocaleString()}</span></div>` : ''}
-  `;
-  document.getElementById('finalAmt').textContent = '¥' + total.toLocaleString();
-  document.getElementById('taxLine').textContent = '消費税込み ¥' + tax.toLocaleString();
-  document.getElementById('earnPts').textContent = '+' + Math.floor(total / 100) + 'pt';
+  document.getElementById('amountMain').textContent = '¥' + total.toLocaleString();
+  document.getElementById('amountTax').textContent = '消費税込み ¥' + tax.toLocaleString();
+  document.getElementById('earnPts').textContent = '+' + earn + 'pt 獲得予定';
+
+  // 우측 패널 합계
+  let rowsHtml = `<div class="rf-row"><span class="rf-label">小計</span><span class="rf-val">¥${subtotalRaw.toLocaleString()}</span></div>`;
+  rowsHtml += `<div class="rf-row"><span class="rf-label">割引合計</span><span class="rf-disc">－¥${discountTotal.toLocaleString()}</span></div>`;
+  if (ptsUsed > 0) rowsHtml += `<div class="rf-row"><span class="rf-label">ポイント使用</span><span class="rf-pts">－¥${ptsUsed.toLocaleString()}</span></div>`;
+  const tip = parseInt(document.getElementById('tipInp')?.value) || 0;
+  if (tip > 0) rowsHtml += `<div class="rf-row"><span class="rf-label">チップ</span><span class="rf-val">¥${tip.toLocaleString()}</span></div>`;
+  document.getElementById('rfRows').innerHTML = rowsHtml;
+  document.getElementById('rfTotal').textContent = '¥' + total.toLocaleString();
+  document.getElementById('rfTax').textContent = '消費税込み ¥' + tax.toLocaleString();
+  document.getElementById('rfEarn').textContent = '+' + earn + 'pt 獲得予定';
+
   calcChange();
 }
 
+// ── 현금 거스름돈 ──
 function calcChange() {
-  const tip = parseInt(document.getElementById('tipInp').value) || 0;
-  const total = subtotal - ptsUsed + tip;
+  if (currentMethod !== 'cash') return;
+  const total = getTotal();
   const change = cashRaw - total;
   const bar = document.getElementById('changeBar');
   const val = document.getElementById('changeVal');
-  bar.className = 'change-bar' + (change < 0 ? ' short' : '');
+  bar.className = 'cash-change' + (change < 0 ? ' short' : '');
+  document.querySelector('#changeBar .cc-label').textContent = change >= 0 ? 'お釣り' : '不足額';
   val.textContent = change >= 0 ? '¥' + change.toLocaleString() : '不足 ¥' + Math.abs(change).toLocaleString();
-  document.querySelector('#changeBar .cb-label').textContent = change >= 0 ? 'お釣り' : '不足額';
 }
-
+function onCashInput() {
+  const v = document.getElementById('cashInp').value.replace(/,/g,'');
+  cashRaw = parseInt(v) || 0;
+  calcChange();
+}
+function setCash(val) {
+  const total = getTotal();
+  cashRaw = val === 'exact' ? total : val;
+  document.getElementById('cashInp').value = cashRaw.toLocaleString();
+  calcChange();
+}
 function useAllPts() {
   document.getElementById('ptsInp').value = 320;
   updateTotal();
 }
 
-function switchTab(tab) {
-  document.querySelectorAll('.mtab').forEach(t => t.classList.remove('active'));
-  document.getElementById('tab-' + tab).classList.add('active');
-  ['cash','card','paypay','linepay','split','credit'].forEach(p => {
-    document.getElementById('panel-' + p).style.display = p === tab ? 'flex' : 'none';
-  });
-  document.getElementById('panel-' + tab).style.flexDirection = 'column';
-  currentTab = tab;
+// ── 결제수단 전환 ──
+function selectMethod(m) {
+  if (isSplit) return;
+  currentMethod = m;
+  document.querySelectorAll('.mcard').forEach(b => b.classList.remove('selected'));
+  document.getElementById('m-' + m)?.classList.add('selected');
+  document.getElementById('cashZone').style.display   = m === 'cash'   ? '' : 'none';
+  document.getElementById('cardZone').style.display   = m === 'card'   ? '' : 'none';
+  const isQr = m === 'paypay' || m === 'linepay';
+  document.getElementById('qrZone').style.display     = isQr           ? '' : 'none';
+  document.getElementById('splitZone').style.display  = 'none';
+  if (isQr) document.getElementById('qrName').textContent = m === 'paypay' ? 'PayPay QRコード' : 'LINE Pay QRコード';
 }
 
-function kpPress(d) {
-  if (kpStr.length >= 7) return;
-  kpStr += d;
-  cashRaw = parseInt(kpStr) || 0;
-  document.getElementById('recvDisplay').textContent = cashRaw.toLocaleString();
-  calcChange();
+// ── 分割払い 전환 ──
+function toggleSplit() {
+  isSplit = !isSplit;
+  document.getElementById('splitToggleBtn').classList.toggle('active', isSplit);
+  document.getElementById('methodGrid').style.opacity = isSplit ? '.4' : '1';
+  document.getElementById('methodGrid').style.pointerEvents = isSplit ? 'none' : '';
+  document.getElementById('splitZone').style.display  = isSplit ? '' : 'none';
+  document.getElementById('cashZone').style.display   = isSplit ? 'none' : (currentMethod === 'cash' ? '' : 'none');
+  document.getElementById('cardZone').style.display   = 'none';
+  document.getElementById('qrZone').style.display     = 'none';
 }
-function kpDel() {
-  kpStr = kpStr.slice(0, -1) || '0';
-  cashRaw = parseInt(kpStr) || 0;
-  document.getElementById('recvDisplay').textContent = cashRaw.toLocaleString();
-  calcChange();
-}
-function setCash(val) {
-  const tip = parseInt(document.getElementById('tipInp').value) || 0;
-  const total = subtotal - ptsUsed + tip;
-  cashRaw = val === 'exact' ? total : val;
-  kpStr = String(cashRaw);
-  document.getElementById('recvDisplay').textContent = cashRaw.toLocaleString();
-  calcChange();
-}
-
 function addSplitRow() {
   const row = document.createElement('div');
-  row.className = 'sp-row';
+  row.className = 'split-row';
   row.innerHTML = `
-    <div class="sp-method"><select class="sp-method"><option>💴 現金</option><option>💳 カード</option><option>📱 PayPay</option></select></div>
-    <div class="sp-divider"></div>
-    <div class="sp-amt-wrap"><span class="sp-yen">¥</span><input class="sp-amt" placeholder="0"></div>
-    <span class="sp-del" onclick="this.closest('.sp-row').remove()">✕</span>
-  `;
+    <select class="sp-sel"><option>💴 現金</option><option>💳 カード</option><option>📱 PayPay</option></select>
+    <div class="sp-sep"></div><span class="sp-yen">¥</span>
+    <input class="sp-amt" placeholder="0">
+    <span class="sp-del" onclick="this.closest('.split-row').remove()">✕</span>`;
   document.getElementById('splitRows').appendChild(row);
 }
 
-function execPayment() {
-  showToast('→ 会計完了！ (04_pos_complete)');
+// ── 고객/포인트/메모 모달 ──
+function openCpmModal()  { document.getElementById('cpmOverlay').classList.add('open'); }
+function closeCpmModal() { document.getElementById('cpmOverlay').classList.remove('open'); }
+function handleCpmOverlay(e) { if (e.target === document.getElementById('cpmOverlay')) closeCpmModal(); }
+function searchCustomer() { showToast('顧客検索はデモのため省略', 'blue'); }
+function removeCustomer() {
+  document.getElementById('custCardRow').style.display = 'none';
+  document.getElementById('custChip').className = 'chip';
+  document.getElementById('custChip').innerHTML = '<span class="chip-icon">👤</span>顧客を検索';
+  showToast('顧客情報を削除しました');
+}
+function applyCpmModal() {
+  closeCpmModal();
+  updateTotal();
+  showToast('顧客・ポイント・メモを適用しました', 'green');
 }
 
-let toastTimer;
-function showToast(msg) {
+// ── 쿠폰 모달 ──
+function openCouponModal() {
+  renderCouponList('');
+  document.getElementById('couponOverlay').classList.add('open');
+}
+function closeCouponModal() { document.getElementById('couponOverlay').classList.remove('open'); }
+function handleCouponOverlay(e) { if (e.target === document.getElementById('couponOverlay')) closeCouponModal(); }
+function renderCouponList(query) {
+  const filtered = COUPONS.filter(c => !query || c.name.includes(query));
+  if (filtered.length === 0) {
+    document.getElementById('couponList').innerHTML = '<div class="coupon-empty"><div style="font-size:28px">🎟</div><div>クーポンが見つかりません</div></div>';
+    return;
+  }
+  document.getElementById('couponList').innerHTML = filtered.map(c => `
+    <div class="coupon-item${selectedCoupon?.id === c.id ? ' selected' : ''}" onclick="selectCoupon(${c.id})">
+      <div class="coupon-badge">${c.icon}</div>
+      <div class="coupon-info">
+        <div class="coupon-name">${c.name}</div>
+        <div class="coupon-desc">${c.desc}</div>
+      </div>
+      <div class="coupon-disc">${c.disc}</div>
+      <div class="coupon-radio${selectedCoupon?.id === c.id ? ' on' : ''}"></div>
+    </div>`).join('');
+}
+function selectCoupon(id) {
+  selectedCoupon = selectedCoupon?.id === id ? null : COUPONS.find(c => c.id === id);
+  renderCouponList(document.getElementById('couponInp').value);
+}
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('couponInp').addEventListener('input', e => renderCouponList(e.target.value));
+});
+function applyCouponCode() {
+  showToast('クーポンコードを確認中...', 'purple');
+  setTimeout(closeCouponModal, 600);
+}
+function confirmCoupon() {
+  if (!selectedCoupon) { showToast('クーポンを選択してください'); return; }
+  document.getElementById('couponChip').className = 'chip applied';
+  document.getElementById('couponChip').innerHTML = `<span class="chip-icon">🎟</span>${selectedCoupon.disc} 適用中`;
+  closeCouponModal();
+  showToast(`「${selectedCoupon.name}」を適用しました`, 'purple');
+}
+
+// ── 결제 실행 ──
+function execPayment() { showToast('→ 会計完了！ (04_pos_complete)', 'green'); }
+
+// ── 토스트 ──
+function showToast(msg, type='blue') {
   const t = document.getElementById('toast');
   t.textContent = msg;
+  t.className = 'toast' + (type !== 'blue' ? ' ' + type : '');
   t.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
 }
 
+// ── 사이드바 ──
 function toggleSidebar() {
   document.getElementById('sidebar').classList.toggle('open');
   document.getElementById('sidebarOverlay').classList.toggle('open');
@@ -585,6 +818,7 @@ function closeSidebar() {
   document.getElementById('sidebarOverlay').classList.remove('open');
 }
 
+// ── 초기화 ──
 updateTotal();
 </script>
 </body>
