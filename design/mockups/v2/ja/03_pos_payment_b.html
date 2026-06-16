@@ -79,7 +79,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 /* 결제수단 */
 .method-zone{padding:14px 24px 12px;flex-shrink:0;}
 .method-zone-label{font-size:12px;font-weight:600;color:#1A1A1A;margin-bottom:10px;}
-.method-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;}
+.method-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;}
 .mcard{padding:12px 8px 10px;border-radius:10px;border:1.5px solid #EAEAE6;background:white;cursor:pointer;text-align:center;transition:all .12s;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:4px;}
 .mcard:hover{border-color:#2E86C1;background:#EBF5FB;}
 .mcard.paid{border-color:#1E8449;background:#EAFAF1;}
@@ -406,8 +406,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
         </div>
       </div>
       <div class="modal-section">
-        <div class="ms-label">会計メモ</div>
-        <textarea class="memo-ta" id="memoTa" placeholder="会計メモを入力...">カラーはマニキュア施術。次回はトリートメント強化を推奨。</textarea>
+        <div class="ms-label">顧客メモ</div>
+        <div style="font-size:10px;color:#AAA;margin-bottom:6px;">顧客管理に記録されます。来店時の特記事項など</div>
+        <textarea class="memo-ta" id="memoTa" placeholder="顧客メモを入力...">カラーはマニキュア施術。次回はトリートメント強化を推奨。</textarea>
       </div>
       <div class="modal-section">
         <div class="ms-label">オプション</div>
@@ -627,10 +628,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
       <div class="pay-left-header">
         <button class="plh-back" onclick="goBackToOrder()">← 注文に戻る</button>
         <span class="plh-title">会計</span>
-        <button class="plh-exec" id="execBtn" onclick="execPayment()">
-          <span class="plh-exec-amt" id="plhExecAmt">¥17,160</span>
-          &nbsp;を決済する →
-        </button>
       </div>
 
       <!-- 금액 존 -->
@@ -692,28 +689,26 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
             <div class="mcard-name">後払い</div>
             <div class="mcard-sub">未収金処理</div>
           </div>
+          <div class="mcard" id="m-kake" onclick="openMethodPay('kake')">
+            <div class="mcard-icon">📒</div>
+            <div class="mcard-name">掛け売り</div>
+            <div class="mcard-sub">売掛計上</div>
+          </div>
+          <div class="mcard" id="m-ticket" onclick="openMethodPay('ticket')">
+            <div class="mcard-icon">🎫</div>
+            <div class="mcard-name">回数券</div>
+            <div class="mcard-sub">チケット使用</div>
+          </div>
+          <div class="mcard" id="m-voucher" onclick="openMethodPay('voucher')">
+            <div class="mcard-icon">🎁</div>
+            <div class="mcard-name">利用券</div>
+            <div class="mcard-sub">ギフト券・金券</div>
+          </div>
         </div>
       </div>
 
-      <!-- 포인트/쿠폰 요약 -->
-      <div class="left-summary">
-        <div class="ls-row" id="lsDisc" style="display:none;">
-          <span class="ls-label">割引</span>
-          <span class="ls-val" style="color:#E74C3C;">－¥440</span>
-        </div>
-        <div class="ls-row" id="lsPts" style="display:none;">
-          <span class="ls-label">ポイント使用</span>
-          <span class="ls-val blue" id="lsPtsVal">－¥0</span>
-        </div>
-        <div class="ls-row" id="lsCoupon" style="display:none;">
-          <span class="ls-label">クーポン</span>
-          <span class="ls-val" style="color:#8E44AD;" id="lsCouponVal">−</span>
-        </div>
-        <div class="ls-row" id="lsMemo" style="display:none;">
-          <span class="ls-label">📝 メモ</span>
-          <span class="ls-val" id="lsMemoVal" style="text-overflow:ellipsis;overflow:hidden;white-space:nowrap;max-width:260px;"></span>
-        </div>
-      </div>
+      <!-- 하단 요약 (동的レンダリング) -->
+      <div class="left-summary" id="leftSummary"></div>
 
     </div>
 
@@ -755,8 +750,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
           <span class="rf-total-label">お支払金額</span>
           <span class="rf-total-val" id="rfTotal">¥17,160</span>
         </div>
-        <div class="rf-tax" id="rfTax">消費税込み ¥1,560</div>
-        <div class="rf-earn"><span>⭐</span><span id="rfEarn">+171pt 獲得予定</span></div>
       </div>
     </div>
 
@@ -788,6 +781,9 @@ const METHOD_META = {
   paypay:  {icon:'📱', name:'PayPay',  sub:'QRコードをお客様に提示',       bg:'#FDEDEC'},
   linepay: {icon:'💬', name:'LINE Pay',sub:'QRコードをお客様に提示',       bg:'#EAFAF1'},
   credit:  {icon:'📋', name:'後払い',  sub:'未収金として記録されます',      bg:'#FEF9EC'},
+  kake:    {icon:'📒', name:'掛け売り',sub:'売掛として売上計上されます',    bg:'#FEF9EC'},
+  ticket:  {icon:'🎫', name:'回数券',  sub:'チケット残数から差し引きます',  bg:'#F4ECF7'},
+  voucher: {icon:'🎁', name:'利用券',  sub:'ギフト券・商品券・金券',        bg:'#EAFAF1'},
 };
 
 let ptsUsed = 0;
@@ -805,35 +801,57 @@ function updateTotal() {
   ptsUsed = Math.min(320, Math.max(0, parseInt(document.getElementById('ptsInp').value) || 0));
   const total = getTotal();
   const tax   = Math.round(total * 10 / 110);
-  const earn  = Math.floor(total / 100);
 
   document.getElementById('amountMain').textContent = total.toLocaleString();
   document.getElementById('amountTax').textContent  = '消費税込み ¥' + tax.toLocaleString();
-  document.getElementById('earnPts').textContent    = '+' + earn + 'pt 獲得予定';
-  document.getElementById('plhExecAmt').textContent = '¥' + total.toLocaleString();
 
-  let rowsHtml = `<div class="rf-row"><span class="rf-label">小計</span><span class="rf-val">¥${subtotalRaw.toLocaleString()}</span></div>`;
-  rowsHtml += `<div class="rf-row"><span class="rf-label">割引合計</span><span class="rf-disc">－¥${discountTotal.toLocaleString()}</span></div>`;
-  if (ptsUsed > 0) rowsHtml += `<div class="rf-row"><span class="rf-label">ポイント使用</span><span class="rf-pts">－¥${ptsUsed.toLocaleString()}</span></div>`;
+  // 右パネル合計フッター: 小計=税抜き
+  const subtotalExTax  = Math.round(subtotalRaw / 1.1);        // 16,000
+  const discountExTax  = Math.round(discountTotal / 1.1);      // 400
+  const taxAmount      = Math.round(total * 10 / 110);
   const tip = parseInt(document.getElementById('tipInp')?.value) || 0;
+
+  let rowsHtml = `<div class="rf-row"><span class="rf-label">小計 <span style="font-size:9px;color:#CCC;">(税抜)</span></span><span class="rf-val">¥${subtotalExTax.toLocaleString()}</span></div>`;
+  if (discountExTax > 0) {
+    rowsHtml += `<div class="rf-row"><span class="rf-label">割引合計</span><span class="rf-disc">－¥${discountExTax.toLocaleString()}</span></div>`;
+  }
+  rowsHtml += `<div class="rf-row"><span class="rf-label">外税 10%</span><span class="rf-val">¥${taxAmount.toLocaleString()}</span></div>`;
+  if (ptsUsed > 0) rowsHtml += `<div class="rf-row"><span class="rf-label">ポイント使用</span><span class="rf-pts">－¥${ptsUsed.toLocaleString()}</span></div>`;
   if (tip > 0) rowsHtml += `<div class="rf-row"><span class="rf-label">チップ</span><span class="rf-val">¥${tip.toLocaleString()}</span></div>`;
   document.getElementById('rfRows').innerHTML = rowsHtml;
   document.getElementById('rfTotal').textContent = '¥' + total.toLocaleString();
-  document.getElementById('rfTax').textContent   = '消費税込み ¥' + tax.toLocaleString();
-  document.getElementById('rfEarn').textContent  = '+' + earn + 'pt 獲得予定';
 
-  // 좌측 요약 업데이트
-  document.getElementById('lsDisc').style.display = discountTotal > 0 ? '' : 'none';
-  const lsPtsEl = document.getElementById('lsPts');
-  if (ptsUsed > 0) {
-    lsPtsEl.style.display = '';
-    document.getElementById('lsPtsVal').textContent = '－¥' + ptsUsed.toLocaleString();
-  } else {
-    lsPtsEl.style.display = 'none';
-  }
+  // 左パネル下段要約
+  updateLeftSummary();
 
-  // 분할 모달 잔액도 동기화
+  // 分割モーダル残高同期
   updateSplitRemaining();
+}
+
+function updateLeftSummary() {
+  let rows = [];
+  // アイテム別割引
+  ORDER_ITEMS.forEach(item => {
+    if (item.disc) {
+      const discAmt = item.origPrice - item.price;
+      rows.push(`<div class="ls-row"><span class="ls-label">${item.name} ${item.disc}</span><span class="ls-val" style="color:#E74C3C;">－¥${discAmt.toLocaleString()}</span></div>`);
+    }
+  });
+  // ポイント
+  if (ptsUsed > 0) {
+    rows.push(`<div class="ls-row"><span class="ls-label">ポイント使用 ${ptsUsed}pt</span><span class="ls-val" style="color:#2E86C1;">－¥${ptsUsed.toLocaleString()}</span></div>`);
+  }
+  // クーポン
+  if (selectedCoupon) {
+    rows.push(`<div class="ls-row"><span class="ls-label">🎟 ${selectedCoupon.name}</span><span class="ls-val" style="color:#8E44AD;">${selectedCoupon.disc}</span></div>`);
+  }
+  // メモ
+  const memo = document.getElementById('memoTa')?.value.trim();
+  if (memo) {
+    const short = memo.slice(0, 25) + (memo.length > 25 ? '…' : '');
+    rows.push(`<div class="ls-row"><span class="ls-label">📝 顧客メモ</span><span class="ls-val" style="color:#888;font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:220px;">${short}</span></div>`);
+  }
+  document.getElementById('leftSummary').innerHTML = rows.join('');
 }
 
 function useAllPts() {
@@ -904,6 +922,78 @@ function openMethodPay(m) {
         <div class="credit-desc">この金額は未収金として記録されます。<br>後日お客様からお支払いいただく際に、決済内容から消込処理を行ってください。</div>
       </div>
       <button class="mph-exec-btn" style="background:#E67E22;" onclick="confirmMethodPay('credit')">¥${total.toLocaleString()} を後払いで処理する</button>`;
+  } else if (m === 'kake') {
+    body.innerHTML = `
+      <div class="credit-box" style="background:#FEF9F0;border-color:#F0A96E;">
+        <div class="credit-warn" style="color:#D35400;">📒 掛け売り（売掛計上）</div>
+        <div class="credit-desc">現金授受は行いません。売上として計上され、お客様への売掛金が発生します。<br>後日入金確認後、消込処理を行ってください。</div>
+      </div>
+      <div style="margin-top:12px;padding:10px 14px;border-radius:8px;background:#F9F9F7;display:flex;justify-content:space-between;">
+        <span style="font-size:12px;color:#888;">売掛計上額</span>
+        <span style="font-size:16px;font-weight:700;color:#D35400;">¥${total.toLocaleString()}</span>
+      </div>
+      <button class="mph-exec-btn" style="background:#D35400;" onclick="confirmMethodPay('kake')">¥${total.toLocaleString()} を掛け売りで計上する</button>`;
+  } else if (m === 'ticket') {
+    body.innerHTML = `
+      <div style="margin-bottom:12px;">
+        <div style="font-size:10px;font-weight:600;color:#AAA;letter-spacing:.06em;margin-bottom:8px;">保有チケット</div>
+        <div style="display:flex;flex-direction:column;gap:6px;" id="ticketList">
+          ${[
+            {name:'カット回数券', remain:3, unit:'回'},
+            {name:'カラー回数券', remain:1, unit:'回'},
+            {name:'フルコース10回券', remain:8, unit:'回'},
+          ].map((t,i) => `
+            <div onclick="selectTicket(${i})" id="tkt-${i}" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;border:1.5px solid #E0E0DC;cursor:pointer;background:white;transition:all .12s;">
+              <div style="font-size:18px;">🎫</div>
+              <div style="flex:1;">
+                <div style="font-size:12px;font-weight:600;color:#1A1A1A;">${t.name}</div>
+                <div style="font-size:11px;color:#AAA;">残り ${t.remain}${t.unit}</div>
+              </div>
+              <div style="width:18px;height:18px;border-radius:50%;border:1.5px solid #D0D0CC;" id="tkt-radio-${i}"></div>
+            </div>`).join('')}
+        </div>
+      </div>
+      <button class="mph-exec-btn" style="background:#8E44AD;" id="ticketExecBtn" onclick="confirmMethodPay('ticket')" disabled>チケットを選択してください</button>`;
+    window._selectedTicket = null;
+    window.selectTicket = function(i) {
+      window._selectedTicket = i;
+      document.querySelectorAll('[id^=tkt-]').forEach(el => { if(!el.id.includes('radio')) el.style.borderColor='#E0E0DC'; });
+      document.querySelectorAll('[id^=tkt-radio-]').forEach(el => { el.style.background=''; el.style.borderColor='#D0D0CC'; });
+      document.getElementById('tkt-'+i).style.borderColor = '#8E44AD';
+      const r = document.getElementById('tkt-radio-'+i);
+      r.style.background = '#8E44AD'; r.style.borderColor = '#8E44AD';
+      const btn = document.getElementById('ticketExecBtn');
+      btn.disabled = false;
+      btn.textContent = `チケットを使用して決済する`;
+    };
+  } else if (m === 'voucher') {
+    body.innerHTML = `
+      <div style="margin-bottom:12px;">
+        <div style="font-size:10px;font-weight:600;color:#AAA;letter-spacing:.06em;margin-bottom:8px;">利用可能な券</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          ${[
+            {name:'¥3,000 ギフト券', val:3000, label:'¥3,000'},
+            {name:'¥5,000 商品券',   val:5000, label:'¥5,000'},
+            {name:'¥10,000 金券',    val:10000,label:'¥10,000'},
+          ].map((v,i) => `
+            <div onclick="selectVoucher(${i},${v.val},'${v.name}')" id="vch-${i}" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;border:1.5px solid #E0E0DC;cursor:pointer;background:white;">
+              <div style="font-size:18px;">🎁</div>
+              <div style="flex:1;"><div style="font-size:12px;font-weight:600;color:#1A1A1A;">${v.name}</div></div>
+              <div style="font-size:13px;font-weight:700;color:#1E8449;">${v.label}</div>
+              <div style="width:18px;height:18px;border-radius:50%;border:1.5px solid #D0D0CC;" id="vch-radio-${i}"></div>
+            </div>`).join('')}
+        </div>
+      </div>
+      <button class="mph-exec-btn" style="background:#1E8449;" id="voucherExecBtn" onclick="confirmMethodPay('voucher')" disabled>券を選択してください</button>`;
+    window.selectVoucher = function(i, val, name) {
+      document.querySelectorAll('[id^=vch-]').forEach(el => { if(!el.id.includes('radio')) el.style.borderColor='#E0E0DC'; });
+      document.querySelectorAll('[id^=vch-radio-]').forEach(el => { el.style.background=''; el.style.borderColor='#D0D0CC'; });
+      document.getElementById('vch-'+i).style.borderColor = '#1E8449';
+      const r = document.getElementById('vch-radio-'+i);
+      r.style.background = '#1E8449'; r.style.borderColor = '#1E8449';
+      const btn = document.getElementById('voucherExecBtn');
+      btn.disabled = false; btn.textContent = `${name}で決済する`;
+    };
   }
 
   document.getElementById('methodPayOverlay').classList.add('open');
@@ -1180,16 +1270,6 @@ function removeCustomer() {
 function applyCpmModal() {
   closeCpmModal();
   updateTotal();
-  // 메모 요약 갱신
-  const memo = document.getElementById('memoTa').value.trim();
-  const lsMemo = document.getElementById('lsMemo');
-  const lsMemoVal = document.getElementById('lsMemoVal');
-  if (memo) {
-    lsMemo.style.display = '';
-    lsMemoVal.textContent = memo.slice(0, 30) + (memo.length > 30 ? '…' : '');
-  } else {
-    lsMemo.style.display = 'none';
-  }
   showToast('顧客・ポイント・メモを適用しました', 'green');
 }
 
@@ -1226,9 +1306,8 @@ function confirmCoupon() {
   if (!selectedCoupon) { showToast('クーポンを選択してください'); return; }
   document.getElementById('couponChip').className = 'chip applied';
   document.getElementById('couponChip').innerHTML = `<span class="chip-icon">🎟</span>${selectedCoupon.disc} 適用中`;
-  document.getElementById('lsCoupon').style.display = '';
-  document.getElementById('lsCouponVal').textContent = selectedCoupon.disc + ' — ' + selectedCoupon.name;
   closeCouponModal();
+  updateLeftSummary();
   showToast(`「${selectedCoupon.name}」を適用しました`, 'purple');
 }
 
@@ -1256,7 +1335,6 @@ function closeSidebar() {
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('couponInp').addEventListener('input', e => renderCouponList(e.target.value));
   updateTotal();
-  document.getElementById('lsDisc').style.display = '';
 });
 </script>
 </body>
