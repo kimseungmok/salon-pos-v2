@@ -344,6 +344,113 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 .cd-ra-text{font-size:12px;font-weight:500;color:#1A1A1A;}
 .cd-new-cust-btn{margin:0 12px 12px;padding:12px;border-radius:11px;background:#1C2833;color:white;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:inherit;flex-shrink:0;}
 
+/* ════════════════════════
+   CONCEPT E — B개조 · 03스타일
+════════════════════════ */
+#conceptE{flex-direction:row;}
+
+/* 왼쪽 */
+.ce-left{flex:1;display:flex;flex-direction:column;background:white;overflow:hidden;}
+
+/* 헤더 — 03 pay-left-header 스타일 */
+.ce-lhead{height:52px;background:white;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 16px;gap:10px;flex-shrink:0;}
+.ce-lhead-back{display:flex;align-items:center;gap:4px;padding:7px 13px;border-radius:9px;border:.5px solid #D0D0CC;background:#F4F4F0;color:#555;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;transition:all .12s;}
+.ce-lhead-back:hover{background:#EAEAE6;}
+.ce-lhead-check{width:22px;height:22px;border-radius:50%;background:#EAFAF1;border:1.5px solid #27AE60;display:flex;align-items:center;justify-content:center;font-size:11px;margin-left:6px;}
+.ce-lhead-title{font-size:14px;font-weight:700;color:#1A1A1A;}
+.ce-lhead-time{margin-left:auto;font-size:11px;color:#AAA;}
+
+/* 고객 배너 — 03 chips-row 느낌 */
+.ce-cust-strip{padding:10px 20px;border-bottom:.5px solid #F0F0EC;display:flex;align-items:center;gap:10px;flex-shrink:0;background:#FAFAF8;}
+.ce-av{width:28px;height:28px;border-radius:50%;background:#8E44AD;display:flex;align-items:center;justify-content:center;font-size:11px;color:white;font-weight:600;flex-shrink:0;}
+.ce-cust-name{font-size:12px;font-weight:600;color:#1A1A1A;}
+.ce-cust-sub{font-size:10px;color:#AAA;margin-left:2px;}
+.ce-cust-right{margin-left:auto;display:flex;align-items:center;gap:8px;}
+.ce-pts-chip{font-size:10px;color:#1E8449;background:#EAFAF1;border-radius:12px;padding:3px 9px;font-weight:600;border:.5px solid #C8E6C9;}
+.ce-visit-chip{font-size:10px;color:#555;background:#F4F4F0;border-radius:12px;padding:3px 9px;border:.5px solid #E0E0DC;}
+
+/* 영수증 본문 스크롤 */
+.ce-body{flex:1;overflow-y:auto;padding:0;}
+.ce-body::-webkit-scrollbar{width:3px;}
+.ce-body::-webkit-scrollbar-thumb{background:#E0E0DC;border-radius:2px;}
+
+/* 섹션 */
+.ce-section{padding:10px 20px;border-bottom:.5px solid #F5F5F3;}
+.ce-sec-title{font-size:9px;font-weight:700;color:#CCC;letter-spacing:.07em;text-transform:uppercase;margin-bottom:8px;}
+
+/* 메뉴 항목 — oi 스타일 */
+.ce-item{display:flex;justify-content:space-between;align-items:flex-start;padding:6px 0;border-bottom:.5px solid #F8F8F6;}
+.ce-item:last-of-type{border-bottom:none;}
+.ce-item-name{font-size:12px;font-weight:500;color:#1A1A1A;flex:1;line-height:1.4;}
+.ce-item-disc-tag{display:inline-block;font-size:9px;color:#E74C3C;background:#FDEDEC;border-radius:3px;padding:1px 4px;margin-left:4px;font-weight:600;vertical-align:middle;}
+.ce-item-right{text-align:right;flex-shrink:0;}
+.ce-item-orig{font-size:10px;color:#CCC;text-decoration:line-through;display:block;}
+.ce-item-price{font-size:12px;font-weight:600;color:#1A1A1A;}
+
+/* 금액 내역 행 */
+.ce-row{display:flex;justify-content:space-between;font-size:11px;padding:3px 0;}
+.ce-row-label{color:#999;}
+.ce-row-val{font-weight:500;color:#1A1A1A;}
+.ce-row-disc{color:#E74C3C;font-weight:500;}
+.ce-row-change{color:#E67E22;font-weight:600;}
+.ce-coupon-row{display:flex;justify-content:space-between;font-size:10px;padding:3px 0;}
+.ce-coupon-label{color:#1E8449;}
+.ce-coupon-val{color:#1E8449;font-weight:600;}
+.ce-method-row{display:flex;align-items:center;gap:8px;padding:4px 0;font-size:11px;}
+.ce-method-icon{font-size:14px;}
+.ce-method-name{color:#555;flex:1;font-weight:500;}
+.ce-method-amt{color:#1A1A1A;font-weight:600;}
+
+/* 합계 푸터 — rf-footer 스타일 */
+.ce-footer{flex-shrink:0;border-top:.5px solid #E5E5E0;padding:11px 20px;background:white;}
+.ce-rf-row{display:flex;justify-content:space-between;font-size:11px;padding:2px 0;}
+.ce-rf-label{color:#999;}
+.ce-rf-val{font-weight:500;color:#1A1A1A;}
+.ce-rf-disc{color:#E74C3C;font-weight:500;}
+.ce-rf-divider{height:.5px;background:#E5E5E0;margin:7px 0;}
+.ce-rf-total{display:flex;justify-content:space-between;align-items:baseline;}
+.ce-rf-total-label{font-size:13px;font-weight:600;color:#1A1A1A;}
+.ce-rf-total-val{font-size:24px;font-weight:700;color:#1A1A1A;letter-spacing:-.02em;}
+.ce-rf-earn{font-size:10px;color:#1E8449;font-weight:500;margin-top:4px;text-align:right;}
+
+/* 하단 액션 버튼 */
+.ce-action-bar{display:flex;gap:8px;padding:10px 20px;border-top:.5px solid #F0F0EC;flex-shrink:0;background:white;}
+.ce-btn-sec{flex:1;padding:11px;border-radius:10px;border:.5px solid #D0D0CC;background:#F4F4F0;color:#555;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;transition:all .12s;}
+.ce-btn-sec:hover{background:#EAEAE6;border-color:#C0C0BC;}
+.ce-btn-pri{flex:2;padding:11px;border-radius:10px;background:#1C2833;color:white;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:background .12s;}
+.ce-btn-pri:hover{background:#2E4053;}
+
+/* 오른쪽 패널 */
+.ce-right{width:300px;flex-shrink:0;border-left:.5px solid #E5E5E0;display:flex;flex-direction:column;background:white;overflow:hidden;}
+.ce-r-header{background:#1C2833;padding:11px 16px;display:flex;align-items:center;flex-shrink:0;}
+.ce-r-header-title{font-size:12px;font-weight:600;color:white;display:flex;align-items:center;gap:6px;}
+
+/* 다음 예약 */
+.ce-booking{margin:12px 12px 0;border-radius:12px;border:1px solid #D0D0CC;background:#F4F4F0;padding:13px;flex-shrink:0;}
+.ce-bk-label{font-size:9px;font-weight:700;color:#888;letter-spacing:.05em;margin-bottom:6px;}
+.ce-bk-date{font-size:15px;font-weight:700;color:#1A1A1A;margin-bottom:2px;}
+.ce-bk-detail{font-size:10px;color:#555;}
+.ce-bk-btn{margin-top:9px;width:100%;padding:9px;border-radius:8px;background:#1C2833;color:white;font-size:12px;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:background .12s;}
+.ce-bk-btn:hover{background:#2E4053;}
+
+/* 포인트 */
+.ce-pts-card{margin:9px 12px;border-radius:12px;border:.5px solid #E0E0DC;background:#FAFAF8;padding:12px;flex-shrink:0;}
+.ce-pc-label{font-size:9px;font-weight:700;color:#888;letter-spacing:.05em;margin-bottom:7px;}
+.ce-pc-row{display:flex;justify-content:space-between;font-size:12px;}
+.ce-pc-key{color:#999;}
+.ce-pc-val{color:#1A1A1A;font-weight:600;}
+.ce-pc-earn{color:#1E8449;font-weight:700;}
+
+/* 오른쪽 액션 버튼 — oi 스타일 */
+.ce-r-actions{flex:1;overflow-y:auto;padding:8px 0;}
+.ce-ra-btn{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:.5px solid #F5F5F3;cursor:pointer;font-family:inherit;background:white;border-left:none;border-right:none;border-top:none;width:100%;transition:background .12s;}
+.ce-ra-btn:hover{background:#F4F4F0;}
+.ce-ra-icon{font-size:16px;flex-shrink:0;}
+.ce-ra-text{font-size:12px;font-weight:500;color:#1A1A1A;text-align:left;}
+.ce-ra-arrow{margin-left:auto;font-size:11px;color:#CCC;}
+.ce-new-cust-btn{margin:0;padding:13px 16px;border-top:.5px solid #E5E5E0;background:#1C2833;color:white;font-size:13px;font-weight:700;border-left:none;border-right:none;border-bottom:none;cursor:pointer;font-family:inherit;flex-shrink:0;transition:background .12s;width:100%;}
+.ce-new-cust-btn:hover{background:#2E4053;}
+
 </style>
 </head>
 <body>
@@ -355,6 +462,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
   <button class="cs-btn"        onclick="switchConcept('B',this)">B · フル領収書</button>
   <button class="cs-btn"        onclick="switchConcept('C',this)">C · アクションハブ</button>
   <button class="cs-btn"        onclick="switchConcept('D',this)">D · A＋B ミックス</button>
+  <button class="cs-btn"        onclick="switchConcept('E',this)">E · B改造 · 03スタイル</button>
 </div>
 
 <div class="ipad">
@@ -730,6 +838,129 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
         <button class="cb-ra-btn"><span class="cb-ra-icon">👤</span><span class="cb-ra-text">顧客情報を確認する</span></button>
       </div>
       <button class="cb-new-cust-btn">次のお客様へ →</button>
+    </div>
+  </div>
+
+  <!-- ══ CONCEPT E — B개조 · 03스타일 ══ -->
+  <div class="concept" id="conceptE">
+    <!-- 왼쪽 -->
+    <div class="ce-left">
+      <!-- 헤더 -->
+      <div class="ce-lhead">
+        <button class="ce-lhead-back">← 注文に戻る</button>
+        <div class="ce-lhead-check">✓</div>
+        <span class="ce-lhead-title">お会計完了</span>
+        <span class="ce-lhead-time">06.17 火 10:22</span>
+      </div>
+
+      <!-- 고객 배너 -->
+      <div class="ce-cust-strip">
+        <div class="ce-av">田</div>
+        <span class="ce-cust-name">田中 美咲 様</span>
+        <span class="ce-cust-sub">· 来店 25回目</span>
+        <div class="ce-cust-right">
+          <span class="ce-pts-chip">＋171pt 獲得</span>
+          <span class="ce-visit-chip">現金でお支払い</span>
+        </div>
+      </div>
+
+      <!-- 영수증 본문 -->
+      <div class="ce-body">
+        <div class="ce-section">
+          <div class="ce-sec-title">メニュー</div>
+          <div class="ce-item">
+            <span class="ce-item-name">カット<span class="ce-item-disc-tag">10%割引</span></span>
+            <div class="ce-item-right">
+              <span class="ce-item-orig">¥4,400</span>
+              <span class="ce-item-price">¥3,960</span>
+            </div>
+          </div>
+          <div class="ce-item">
+            <span class="ce-item-name">ワンカラー</span>
+            <div class="ce-item-right"><span class="ce-item-price">¥8,800</span></div>
+          </div>
+          <div class="ce-item">
+            <span class="ce-item-name">トリートメント M</span>
+            <div class="ce-item-right"><span class="ce-item-price">¥4,400</span></div>
+          </div>
+        </div>
+
+        <div class="ce-section">
+          <div class="ce-sec-title">金額内訳</div>
+          <div class="ce-row"><span class="ce-row-label">小計 (税抜)</span><span class="ce-row-val">¥15,600</span></div>
+          <div class="ce-row"><span class="ce-row-label">割引合計</span><span class="ce-row-disc">－¥400</span></div>
+          <div class="ce-coupon-row"><span class="ce-coupon-label">🌸 春の感謝クーポン (10%OFF)</span><span class="ce-coupon-val">適用済</span></div>
+          <div class="ce-row"><span class="ce-row-label">外税 10%</span><span class="ce-row-val">¥1,560</span></div>
+          <div style="height:6px;"></div>
+          <div class="ce-method-row"><span class="ce-method-icon">💴</span><span class="ce-method-name">現金</span><span class="ce-method-amt">¥17,160</span></div>
+          <div class="ce-row"><span class="ce-row-label">お預かり</span><span class="ce-row-val">¥20,000</span></div>
+          <div class="ce-row"><span class="ce-row-label">お釣り</span><span class="ce-row-change">¥2,840</span></div>
+        </div>
+      </div>
+
+      <!-- 합계 푸터 -->
+      <div class="ce-footer">
+        <div class="ce-rf-total">
+          <span class="ce-rf-total-label">お支払い合計</span>
+          <span class="ce-rf-total-val">¥17,160</span>
+        </div>
+        <div class="ce-rf-earn">⭐ ＋171pt 獲得 · 累計 491pt</div>
+      </div>
+
+      <!-- 액션 바 -->
+      <div class="ce-action-bar">
+        <button class="ce-btn-sec">🖨 印刷</button>
+        <button class="ce-btn-sec">📱 LINE</button>
+        <button class="ce-btn-pri">次のお客様へ →</button>
+      </div>
+    </div>
+
+    <!-- 오른쪽 -->
+    <div class="ce-right">
+      <div class="ce-r-header">
+        <div class="ce-r-header-title">📋 次のアクション</div>
+      </div>
+
+      <!-- 다음 예약 -->
+      <div class="ce-booking">
+        <div class="ce-bk-label">次回おすすめ来店</div>
+        <div class="ce-bk-date">2026年7月17日（木）</div>
+        <div class="ce-bk-detail">前回から30日後 · カット＋カラー</div>
+        <button class="ce-bk-btn">この日で予約を取る</button>
+      </div>
+
+      <!-- 포인트 -->
+      <div class="ce-pts-card">
+        <div class="ce-pc-label">ポイント</div>
+        <div class="ce-pc-row"><span class="ce-pc-key">今回獲得</span><span class="ce-pc-earn">＋171pt</span></div>
+        <div class="ce-pc-row" style="margin-top:5px;"><span class="ce-pc-key">累計ポイント</span><span class="ce-pc-val">491pt</span></div>
+      </div>
+
+      <!-- 액션 버튼 리스트 -->
+      <div class="ce-r-actions">
+        <button class="ce-ra-btn">
+          <span class="ce-ra-icon">🖨</span>
+          <span class="ce-ra-text">領収書を印刷する</span>
+          <span class="ce-ra-arrow">›</span>
+        </button>
+        <button class="ce-ra-btn">
+          <span class="ce-ra-icon">📱</span>
+          <span class="ce-ra-text">LINEで領収書送信</span>
+          <span class="ce-ra-arrow">›</span>
+        </button>
+        <button class="ce-ra-btn">
+          <span class="ce-ra-icon">👤</span>
+          <span class="ce-ra-text">顧客情報を確認する</span>
+          <span class="ce-ra-arrow">›</span>
+        </button>
+        <button class="ce-ra-btn">
+          <span class="ce-ra-icon">✏️</span>
+          <span class="ce-ra-text">施術メモを追加する</span>
+          <span class="ce-ra-arrow">›</span>
+        </button>
+      </div>
+
+      <button class="ce-new-cust-btn">次のお客様へ →</button>
     </div>
   </div>
 
