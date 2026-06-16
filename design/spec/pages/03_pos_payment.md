@@ -1,11 +1,11 @@
-# 03 · 会計(결제수단 선택) 화면 정의서 (v2)
+# 03 · 会計(결제수단 선택) 화면 정의서 (v3)
 
 > **파일**: `design/mockups/v2/ja/03_pos_payment_b.html`
-> **목적**: 결제 플로우 2단계. 주문 금액 확인 → 고객/포인트/쿠폰 설정 → 결제수단 선택 → 会計を実行
-> **진입 경로**: `02_pos_order` → 「会計する」 버튼
-> **다음 화면**: 「会計を実行」 클릭 → `04_pos_complete`
-> **이전 화면**: 「← 注文に戻る」 클릭 → `02_pos_order`
-> **레이아웃**: 좌(flex:1 결제조작) / 우(320px 주문내역 패널)
+> **목적**: 결제 플로우 2단계. 주문 금액 확인 → 고객/포인트/쿠폰 설정 → 결제수단 선택 → 決済実行
+> **진입 경로**: `02_pos_order` → 「会計する」버튼
+> **다음 화면**: 「を決済する」클릭 → `04_pos_complete`
+> **이전 화면**: 「← 注文に戻る」클릭 → `02_pos_order`
+> **레이아웃**: 좌(flex:1 결제조작) / 우(320px 주문내역)
 > **기준 해상도**: iPad Air 2 — 1024×768px (논리)
 
 ---
@@ -14,30 +14,23 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────┐
-│  글로벌 탑바 44px                                                          │
-├──────────────────────────────────────────────────────────────────────────┤
-│  스텝바 36px: ✓注文 › ②会計 › ③完了                        担当:Yuki 田中美咲│
+│  글로벌 탑바 44px  ☰ · ✂ salon pos          由 Yuki · 06.16 月 10:24 🔒 │
 ├────────────────────────────────────────────┬─────────────────────────────┤
-│ [좌측 결제조작 패널 flex:1]                │ [우측 주문내역 320px]        │
-│                                            │ ■ 注文内容          ← 編集  │
-│  お支払金額                   [分割払い]   │─────────────────────────────│
-│  ¥ 17,160                                  │ カット 10%割引       ¥3,960 │
-│  消費税込み ¥1,560                          │ ワンカラー          ¥8,800  │
-│                                            │ トリートメント M    ¥4,400  │
-│  [👤 田中 美咲·320pt]  [🎟 クーポン適用]  │ (스크롤 가능)                │
-│  ⭐ +171pt 獲得予定                        │─────────────────────────────│
-│ ─────────────────────────────────────────  │  小計           ¥17,600     │
-│  支払方法                                  │  割引合計        -¥440      │
-│  [💴 現金]  [💳 カード]  [📱 PayPay]      │                             │
-│  [💬 LINE Pay]   [📋 後払い]              │  お支払金額    ¥17,160      │
-│                                            │  消費税込み ¥1,560          │
-│  ┌─ 現金 섹션 (현금 선택 시) ────────────┐ │  ⭐ +171pt 獲得予定          │
-│  │ 受取金額 ¥ [20,000       ]            │ │                             │
-│  │ [ちょうど][¥10,000][¥20,000][¥50,000] │ │                             │
-│  │ お釣り               ¥2,840           │ │                             │
-│  └───────────────────────────────────────┘ │                             │
-│                                            │                             │
-│  [  会計を実行  ]     [← 注文に戻る]       │                             │
+│ [좌측 결제조작 패널]                        │ [우측 주문내역 320px]        │
+│ ← 注文に戻る   会計   [¥17,160 を決済する→] │ ■ 注文内容                  │
+│────────────────────────────────────────────│─────────────────────────────│
+│  お支払金額                 [⚡ 分割払い]   │ カット 10%割引      ¥3,960  │
+│  ¥17,160                                   │ ワンカラー          ¥8,800  │
+│  消費税込み ¥1,560                          │ トリートメント M    ¥4,400  │
+│                                            │ (스크롤 가능)                │
+│  [👤 田中美咲·320pt] [🎟クーポン適用] ⭐    │─────────────────────────────│
+│─────────────────────────────────────────── │  小計           ¥17,600     │
+│  支払方法                                  │  割引合計         -¥440     │
+│  [💴現金] [💳カード] [📱PayPay]            │  お支払金額     ¥17,160     │
+│  [💬LINE Pay]       [📋後払い]             │  消費税込み ¥1,560          │
+│                                            │  ⭐ +171pt 獲得予定          │
+│  ─ 하단 요약 (할인·포인트·메모) ────────   │                             │
+│  割引: -¥440                               │                             │
 └────────────────────────────────────────────┴─────────────────────────────┘
 ```
 
@@ -45,440 +38,465 @@
 
 ## A. 글로벌 탑바
 
-02_pos_order와 동일 구조. 자세한 정의는 `02_pos_order.md § A` 참조.
+`02_pos_order.md § A`와 동일 구조.
 
 | 항목 | 값 |
 |------|----|
 | 높이 | 44px |
-| 배경 | `white`, 하단 `.5px solid #E5E5E0` |
-| 좌측 | ☰ 햄버거 → 슬라이드 사이드바 |
+| 배경 | white, 하단 `.5px solid #E5E5E0` |
+| 좌측 | ☰ → 슬라이드 사이드바 |
 | 우측 | 아바타 · 스태프명 · 날짜시간 · 🔒 |
 
----
-
-## B. 스텝바
-
-| 항목 | 값 |
-|------|----|
-| 높이 | 36px |
-| 배경 | `white`, 하단 `.5px solid #E5E5E0` |
-
-| # | 스텝명 | 상태 | 아이콘 | 색상 |
-|---|--------|------|--------|------|
-| 1 | 注文 | done | ✓ | `#1E8449` |
-| 2 | 会計 | active | 2 | `#2E86C1` |
-| 3 | 完了 | pending | 3 | `#bbb` |
-
-**우측 정보**: `担当: Yuki` (11px/`#888`) + `田中 美咲` (11px/`#2E86C1`/500) — 결제 맥락 항상 표시
+> ⚠️ **스텝바 없음** — 이전 버전의 「注文 › 会計 › 完了」스텝바는 삭제됨.
 
 ---
 
-## C. 좌측 결제조작 패널 (`.pay-left`, `flex:1`, `background:white`)
-
-### C-01 · 금액 존 (`.amount-zone`)
+## B. 좌측 패널 상단바 (`.pay-left-header`)
 
 | 항목 | 값 |
 |------|----|
-| 패딩 | `22px 28px 18px` |
-| 레이블 | `お支払金額`, 11px / `#999` / `letter-spacing:.05em` |
+| 높이 | 52px |
+| 배경 | white, 하단 `.5px solid #E5E5E0` |
+| 레이아웃 | flex, `align-items:center`, `gap:10px`, `padding:0 16px` |
 
-**금액 표시**:
+| 요소 | 위치 | 스타일 | 동작 |
+|------|------|--------|------|
+| `← 注文に戻る` | 좌측 | 테두리 버튼 `#F4F4F0` 배경, 12px/500 | `goBackToOrder()` → 02 이동 |
+| `会計` | 중앙 | 14px/700/`#1A1A1A` | 고정 타이틀 |
+| `¥N,NNN を決済する →` | 우측 (`margin-left:auto`) | `#2E86C1` 파란 버튼, 13px/700 | `execPayment()` → 04 이동 |
 
-| 요소 | 스타일 |
-|------|--------|
-| `¥` 접두 | 20px / `#888` / 500 |
-| 금액 숫자 | 34px / 700 / `#1A1A1A`, `letter-spacing:-.02em` |
-| 소비세 | `消費税込み ¥N,NNN`, 11px / `#BBB`, 아래 배치 |
-| ID | `#amountMain`, `#amountTax` |
-| 갱신 | `updateTotal()` 호출 시 실시간 반영 |
+**決済ボタン 금액 갱신**: `updateTotal()` 호출 시 `#plhExecAmt` 실시간 갱신.
 
-#### C-01-1 · 分割払い 버튼
+---
+
+## C. 금액 존 (`.amount-zone`)
+
+| 항목 | 값 |
+|------|----|
+| 패딩 | `18px 24px 14px` |
+| 레이블 | `お支払金額`, 11px/`#999`/500 |
+
+| 요소 | ID | 스타일 |
+|------|----|--------|
+| ¥ 접두 | — | 18px/`#888` |
+| 금액 숫자 | `#amountMain` | 32px/700/`#1A1A1A` |
+| 소비세 | `#amountTax` | `消費税込み ¥N,NNN`, 11px/`#BBB` |
+
+#### C-01 · ⚡ 分割払い 버튼
 
 | 항목 | 값 |
 |------|----|
 | 위치 | 금액 행 우측 끝 |
-| 기본 | `border: 1.5px solid #D0D0CC`, `color: #555`, 배경 white |
-| 활성 | `border-color: #2E86C1`, `color: #2E86C1`, `background: #EBF5FB` |
-| 클릭 | `toggleSplit()` — 분할 모드 ON/OFF |
+| 기본 | `border: 1.5px dashed #E0A86E`, `color: #E67E22`, `background: #FEF9F0` |
+| 완료 후 (`.active`) | `border-style: solid` |
+| 클릭 | `openSplitModal()` → [F. 분할결제 모달] 열기 |
 
 ---
 
-### C-02 · 칩 행 (`.chips-row`)
+## D. 칩 행 (`.chips-row`)
 
 | 항목 | 값 |
 |------|----|
-| 패딩 | `0 28px 14px` |
-| 스타일 | 가로 배열, `gap:7px` |
-| 칩 기본 | `border: 1px solid #E0E0DC`, 배경 `#FAFAF8`, border-radius 20px |
-| 칩 적용됨 | `border-color: #1E8449`, `color: #1E8449`, 배경 `#EAFAF1` |
-| 칩 hover | `border-color: #2E86C1`, `color: #2E86C1`, 배경 `#EBF5FB` |
+| 패딩 | `0 24px 12px` |
+| 기본 칩 | `border: 1px solid #E0E0DC`, `background: #FAFAF8` |
+| 적용됨 (`.applied`) | `border-color: #1E8449`, `color: #1E8449`, `background: #EAFAF1` |
 
-| # | ID | 아이콘 | 기본 레이블 | 적용 후 레이블 | 클릭 |
-|---|-----|--------|------------|--------------|------|
-| C-02-1 | `#custChip` | 👤 | `顧客を検索` | `田中 美咲 · 320pt` | `openCpmModal()` |
-| C-02-2 | `#couponChip` | 🎟 | `クーポン適用` | `10%OFF 適用中` 등 | `openCouponModal()` |
-| C-02-3 | `#earnChip` | ⭐ | `+171pt 獲得予定` | 실시간 갱신 | 클릭 없음 (정보 표시) |
+| # | ID | 아이콘 | 기본 레이블 | 적용 후 | 클릭 |
+|---|----|--------|------------|---------|------|
+| D-01 | `#custChip` | 👤 | `顧客を検索` | `田中 美咲 · 320pt` | `openCpmModal()` |
+| D-02 | `#couponChip` | 🎟 | `クーポン適用` | `10%OFF 適用中` | `openCouponModal()` |
+| D-03 | — | ⭐ | `+171pt 獲得予定` | 실시간 갱신 | 없음 (정보 표시) |
 
 ---
 
-### C-03 · 결제수단 그리드 (`.method-zone`)
+## E. 결제수단 그리드 (`.method-zone`)
 
 | 항목 | 값 |
 |------|----|
-| 패딩 | `16px 28px 14px` |
-| 섹션 레이블 | `支払方法`, 12px / 600 |
-| 그리드 | `repeat(3, 1fr)`, `gap:8px` |
+| 패딩 | `14px 24px 12px` |
+| 섹션 레이블 | `支払方法`, 12px/600 |
+| 그리드 | `repeat(5, 1fr)`, `gap: 7px` |
 
-#### C-03-1 · 결제수단 버튼 (`.mcard`)
+#### E-01 · 결제수단 카드 (`.mcard`)
 
-| 항목 | 값 |
-|------|----|
-| 패딩 | `14px 10px 12px` |
-| 보더 레이디어스 | 10px |
-| 기본 | `border: 1.5px solid #EAEAE6`, 배경 white |
-| hover | `border-color: #C8C8C4`, 배경 `#FAFAF8` |
-| 선택 | `border: 2px solid #2E86C1`, 배경 `#EBF5FB` |
-| 내부 구성 | 아이콘(22px) + 이름(12px/500) + 부제(10px/`#AAA`) |
+| 상태 | 스타일 |
+|------|--------|
+| 기본 | `border: 1.5px solid #EAEAE6`, white 배경 |
+| hover | `border-color: #2E86C1`, `background: #EBF5FB` |
+| 결제 완료 (`.paid`) | `border-color: #1E8449`, `background: #EAFAF1` |
 
-| # | ID | 이름 | 아이콘 | 부제 | 선택 시 표시 |
-|---|-----|------|--------|------|------------|
-| C-03-1 | `m-cash` | 現金 | 💴 | お釣り自動計算 | cashZone |
-| C-03-2 | `m-card` | カード | 💳 | 端末連携 | cardZone |
-| C-03-3 | `m-paypay` | PayPay | 📱 | QR決済 | qrZone (PayPay) |
-| C-03-4 | `m-linepay` | LINE Pay | 💬 | QR決済 | qrZone (LINE Pay) |
-| C-03-5 | `m-credit` | 後払い | 📋 | 未収金処理 | creditZone |
+| # | ID | 이름 | 아이콘 | 부제 | 클릭 |
+|---|----|------|--------|------|------|
+| E-01-1 | `m-cash` | 現金 | 💴 | お釣り計算 | `openMethodPay('cash')` |
+| E-01-2 | `m-card` | カード | 💳 | 端末連携 | `openMethodPay('card')` |
+| E-01-3 | `m-paypay` | PayPay | 📱 | QR決済 | `openMethodPay('paypay')` |
+| E-01-4 | `m-linepay` | LINE Pay | 💬 | QR決済 | `openMethodPay('linepay')` |
+| E-01-5 | `m-credit` | 後払い | 📋 | 未収金処理 | `openMethodPay('credit')` |
 
-> ⚠️ 分割払い 모드 ON 시 그리드 `opacity:0.4`, `pointer-events:none` — 수단 선택 비활성
+> 결제수단 카드 클릭 → 인라인 섹션 없음 → **전용 모달(G)** 이 열린다.
 
 ---
 
-### C-04 · 현금 섹션 (`.cash-zone`, id: `cashZone`)
+## F. 좌측 하단 요약 (`.left-summary`)
 
-現金 선택 시에만 표시.
+| 항목 | 값 |
+|------|----|
+| 위치 | `margin-top:auto` (좌측 패널 최하단) |
+| 테두리 | 상단 `.5px solid #F0F0EC` |
+| 패딩 | `10px 24px 14px` |
+
+| 행 ID | 표시 조건 | 레이블 | 값 스타일 |
+|-------|-----------|--------|----------|
+| `#lsDisc` | 항상 (할인 > 0) | 割引 | `#E74C3C` 빨강 |
+| `#lsPts` | `ptsUsed > 0` | ポイント使用 | `#2E86C1` |
+| `#lsCoupon` | 쿠폰 적용됨 | クーポン | `#8E44AD` |
+| `#lsMemo` | 메모 입력됨 | 📝 メモ | `#555`, 30자 말줄임 |
+
+---
+
+## G. 결제수단 결제 모달 (`.method-pay-modal`)
+
+결제수단 카드 클릭 시 열림. 수단에 따라 본문 HTML 동적 렌더링.
+
+| 항목 | 값 |
+|------|----|
+| 너비 | 460px |
+| 오버레이 ID | `#methodPayOverlay` |
+| z-index | 80 |
+| 닫기 | ✕ 버튼 또는 오버레이 바깥 클릭 |
+
+#### G-01 · 헤더 (`.mph-icon-header`)
 
 | 요소 | 내용 |
 |------|------|
-| 컨테이너 | `background:#F9F9F7`, border-radius 10px, 내부 padding 12px 14px |
-| 수취금액 행 | 레이블 `受取金額` + `¥` + TextField (`#cashInp`, 18px/600/오른쪽정렬) |
-| 빠른 금액 버튼 | `ちょうど` / `¥10,000` / `¥20,000` / `¥50,000` (1:1:1:1 분배) |
-| 거스름돈 바 | 레이블 + 금액 (하단 고정) |
+| 아이콘 박스 (`#mphIcon`) | 52×52px, 수단별 배경색, 이모지 |
+| 수단명 (`#mphName`) | 16px/700 |
+| 부제 (`#mphSub`) | 11px/`#AAA` |
+| ✕ | `closeMethodPayModal()` |
 
-**거스름돈 바 상태**:
+#### G-02 · 現金 본문
 
-| 상태 | 조건 | 배경 | 색상 | 레이블 |
-|------|------|------|------|--------|
-| 정상 | `cashRaw ≥ 합계` | `#EAFAF1` | `#1E8449` | `お釣り ¥N,NNN` |
-| 부족 | `cashRaw < 합계` | `#FDEDEC` | `#E74C3C` | `不足 ¥N,NNN` |
+| 요소 | 내용 |
+|------|------|
+| 수취금액 행 | `受取金額 ¥` + input (`#cashInp`, 24px/700, 하단 border) |
+| 빠른 금액 버튼 | `ちょうど` / `¥10,000` / `¥20,000` / `¥50,000` |
+| 거스름돈 바 (`#changeBar`) | 정상: `#EAFAF1` 녹색 / 부족: `#FDEDEC` 빨강 |
+| 실행 버튼 | `¥N,NNN を現金で決済する` (파란 전체너비) → `confirmMethodPay('cash')` |
 
 **빠른 금액 동작**:
 
-| 버튼 | `setCash()` 인수 | 결과 |
-|------|-----------------|------|
-| ちょうど | `'exact'` | `cashRaw = 합계금액` |
-| ¥10,000 | `10000` | `cashRaw = 10000` |
-| ¥20,000 | `20000` | `cashRaw = 20000` |
-| ¥50,000 | `50000` | `cashRaw = 50000` |
+| 버튼 | 동작 |
+|------|------|
+| ちょうど | `cashRaw = getTotal()` |
+| 금액 버튼 | `cashRaw = 해당 금액` |
 
-> 💡 **Concept B는 숫자 키패드 없음** — iPad OS 소프트 키보드 또는 외부 입력 장치 사용. Concept A(`03_pos_payment.html`)에 풀 키패드 있음.
+#### G-03 · カード 본문
+
+- 단말기 아이콘 (💳, `#EBF5FB`)
+- `スタンバイ中 — カードをタッチまたは挿入してください` (녹색 pulse 점)
+- `¥N,NNN をカードで決済する` 버튼 → `confirmMethodPay('card')`
+
+#### G-04 · PayPay / LINE Pay 본문
+
+- 4×4 의사 QR 썸네일
+- `お客様のスマートフォンでQRコードを読み取ってください` 안내
+- PayPay: `background: #E84142`, LINE Pay: `background: #00B900` 버튼
+
+#### G-05 · 後払い 본문
+
+- `#FEF9EC` 경고 박스 (`border: 1.5px solid #F5CBA7`)
+- `⚠ 後払い（未収金処理）` + 안내 문구
+- `¥N,NNN を後払いで処理する` 오렌지 버튼 → `confirmMethodPay('credit')`
+
+#### G-06 · `confirmMethodPay(m)` 동작
+
+1. 해당 수단 카드에 `.paid` 클래스 추가 (녹색 테두리/배경)
+2. `closeMethodPayModal()` 모달 닫기
+3. `showToast('¥N,NNN を{수단}で決済しました', 'green')`
 
 ---
 
-### C-05 · 카드 단말기 섹션 (`.card-zone`, id: `cardZone`)
+## H. 분할결제 모달 (`.split-modal`)
 
-カード 선택 시에만 표시.
-
-| 요소 | 내용 |
-|------|------|
-| 컨테이너 | `background:#F9F9F7`, border-radius 10px |
-| 아이콘 | 💳, 44×44px, `#EBF5FB` 배경 |
-| 단말기명 | `カード端末`, 13px/600 |
-| 상태 표시 | 🟢 애니메이션 점 + `スタンバイ中 — カードをタッチまたは挿入してください` |
-
----
-
-### C-06 · QR 섹션 (`.qr-zone`, id: `qrZone`)
-
-PayPay 또는 LINE Pay 선택 시 표시. `#qrName`으로 브랜드명 전환.
-
-| 요소 | 내용 |
-|------|------|
-| QR 썸네일 | 70×70px 의사 QR 그리드, 선택 수단 색상 테두리 |
-| 안내 | `お客様のスマートフォンでQRコードを読み取ってください` |
-
----
-
-### C-07 · 後払い 섹션 (`.credit-zone` 또는 inline)
-
-後払い 선택 시 표시.
-
-| 요소 | 내용 |
-|------|------|
-| 아이콘 | 📋, `#FEF9EC` 배경 |
-| 안내 | `お客様の後払い情報を登録します。「会計を実行」で未収金として記録されます。` |
-| 경고 배지 | `⚠ 未収金として処理されます`, `#D4AC0D` 텍스트 |
-
----
-
-### C-08 · 分割払い 섹션 (`.split-zone`, id: `splitZone`)
-
-`toggleSplit()` 로 ON 시 표시. 결제수단 그리드는 비활성화됨.
-
-#### C-08-1 · 분할 행 (`.split-row`, 반복)
-
-| 요소 | 내용 |
-|------|------|
-| 수단 선택 | `<select>`: 💴 現金 / 💳 カード / 📱 PayPay |
-| 구분선 | `.5px solid #E0E0DC` |
-| 금액 입력 | `¥` 접두 + TextField (80px, 오른쪽 정렬) |
-| 행 삭제 | `✕` 버튼, hover 시 `#E74C3C` |
-| 배경 | `#F9F9F7`, border-radius 8px |
-
-#### C-08-2 · 수단 추가 버튼
+「⚡ 分割払い」버튼 클릭 시 표시.
 
 | 항목 | 값 |
 |------|----|
-| 내용 | `＋ 支払方法を追加` |
-| 스타일 | dashed border `#AED6F1`, `color: #2E86C1`, hover 시 배경 `#EBF5FB` |
-| 클릭 | `addSplitRow()` → 새 행 DOM 추가 |
+| 너비 | 680px |
+| 최대 높이 | 700px |
+| 레이아웃 | 좌(입력 flex:1) / 우(이력 240px) |
+| 오버레이 ID | `#splitOverlay` |
+
+#### H-01 · 헤더
+
+| 요소 | 내용 |
+|------|------|
+| 타이틀 | ⚡ 分割払い |
+| 잔액 배지 (`#splitBadge`) | `残高 ¥N,NNN` — 진행 중: `#FEF3E2` 주황 / 완료: `#EAFAF1` 녹색 |
+| ✕ | `closeSplitModal()` |
+
+#### H-02 · 3탭
+
+| 탭 | 콘텐츠 ID | 함수 |
+|----|----------|------|
+| 💰 金額で分割 | `#tabAmount` | `switchSplitTab('amount')` |
+| 👥 人数で分割 | `#tabDutch` | `switchSplitTab('dutch')` |
+| 📋 メニュー別 | `#tabMenu` | `switchSplitTab('menu')` |
+
+**활성 탭 스타일**: `background: #E67E22`, `color: white`
 
 ---
 
-### C-09 · 실행 버튼 영역 (`.exec-zone`)
+#### H-03 · 金額で分割 탭
 
-| 항목 | 값 |
-|------|----|
-| 위치 | 좌측 패널 하단 (`margin-top:auto`) |
-| 테두리 | 상단 `.5px solid #F0F0EC` |
-| 패딩 | `12px 28px 16px` |
+| 요소 | 내용 |
+|------|------|
+| 금액 입력 (`#splitAmtInp`) | 28px/700, `border-bottom: 2px solid #E67E22` |
+| 빠른 버튼 | 残額全額 / ¥5,000 / ¥10,000 / ¥3,000 / ¥8,000 / ¥15,000 (3열) |
+
+**`setSplitAmt(val)`**: `'remaining'` → 잔액 전액 / 숫자 → `min(val, splitRemaining)`
+
+---
+
+#### H-04 · 人数で分割 탭 (더치페이)
+
+| 요소 | 내용 |
+|------|------|
+| 인원 조절 | `−` / 숫자 (`#dutchNum`) / `＋` 버튼, 범위: 2 ~ 10 |
+| 1인당 금액 | `Math.ceil(splitRemaining / dutchCount)` → `#dutchPerVal`, 오렌지 강조 |
+
+---
+
+#### H-05 · メニュー別 탭
+
+| 요소 | 내용 |
+|------|------|
+| 체크리스트 (`#menuCheckList`) | `ORDER_ITEMS` 배열 기반 렌더링 |
+| 선택 스타일 | `border-color: #E67E22`, `background: #FEF9F0`, 체크박스 오렌지 |
+| 선택 합계 (`#menuTotal`) | Σ 선택 아이템 가격 |
+
+**`toggleMenuCheck(i)`**: `menuChecked` Set에 index 토글 → 리렌더링 → `updateSplitPayBtn()`
+
+---
+
+#### H-06 · 결제수단 선택 (분할 모달 내)
+
+| 상태 | 스타일 |
+|------|--------|
+| 기본 (`.smc`) | `border: 1px solid #E0E0DC` |
+| hover | `border-color: #E67E22`, `background: #FEF9F0` |
+| 선택 (`.smc.selected`) | `border: 1.5px solid #E67E22`, `background: #FEF3E2` |
+
+**`selectSplitMethod(m)`**: 카드 `.selected` 토글 → 現金 선택 시 `#splitCashInline` 표시
+
+#### H-07 · 현금 인라인 (`#splitCashInline`, 現金 선택 시만 표시)
+
+| 요소 | 내용 |
+|------|------|
+| 수취금액 입력 | `#sciCashInp` |
+| 빠른 버튼 | ちょうど / ¥10,000 / ¥20,000 / ¥50,000 |
+| 거스름돈 | `#sciChangeBar` — 정상 녹색 / 부족 빨강 |
+
+#### H-08 · 결제 실행 버튼 (`#splitPayBtn`)
+
+| 상태 | 조건 | 텍스트 |
+|------|------|--------|
+| disabled | 수단 미선택 | `支払方法を選択してください` |
+| disabled | 금액 = 0 | `金額を入力してください` |
+| 활성 | 수단 + 금액 유효 | `¥N,NNN を{수단}で決済する` |
+
+**`execSplitPay()` 동작 순서**:
+
+1. `splitHistory.push({method, icon, amount, tab})` 이력 추가
+2. `splitRemaining = max(0, splitRemaining - amt)` 잔액 차감
+3. UI 리셋 (수단/현금 인라인/메뉴 체크 초기화)
+4. `splitAmtInp` → 잔액으로 갱신
+5. `renderSplitHistory()`, `updateSplitRemaining()` 호출
+6. `showToast('¥N,NNN を{수단}で決済しました', 'orange')`
+7. 잔액 = 0 시 → `#splitDoneBtn` 활성, 배지 녹색 `残高 ¥0 — 完了！`
+
+---
+
+#### H-09 · 우측 이력 패널 (`.split-right`, 240px, `background: #FAFAF8`)
+
+| 요소 | 내용 |
+|------|------|
+| 빈 상태 | `まだ決済がありません` |
+| 이력 아이템 (`.split-hist-item`) | `{icon} {method}` 이름 + 금액 (녹색) + 「決済N · {탭명}」 부제 |
+| 프로그레스 바 (`#spBarFill`) | 결제 진행률 % (녹색, 트랜지션 `.3s`) |
+| 잔액 (`#spRemVal`) | 현재 잔액 중앙 표시 |
+
+#### H-10 · 모달 하단
 
 | 버튼 | 스타일 | 동작 |
 |------|--------|------|
-| 会計を実行 | `flex:1`, 파란 Primary, 15px/600 | `execPayment()` → 04 이동 |
-| ← 注文に戻る | Secondary, `#F4F4F0` 배경 | `02_pos_order`로 복귀 |
+| キャンセル | `#F4F4F0`, 100px 고정 | `closeSplitModal()` |
+| 分割払いを完了する (`#splitDoneBtn`) | `#1E8449` 녹색, 잔액 > 0 시 disabled | `execSplitDone()` |
+
+**`execSplitDone()`**: 모달 닫기 → `splitToggleBtn.classList.add('active')` → `showToast('分割払いが完了しました → 04_pos_complete', 'green')`
 
 ---
 
-## D. 우측 주문내역 패널 (`.pay-right`, `width:320px`)
-
-### D-01 · 헤더
-
-| 항목 | 값 |
-|------|----|
-| 배경 | `#1C2833` (네이비 다크) |
-| 높이 | `~42px` |
-| 좌측 | ✏ `注文内容`, 12px / 600 / white |
-| 우측 | `← 編集` (11px / `rgba(255,255,255,.45)`) → `02_pos_order` 이동 |
-
----
-
-### D-02 · 주문 아이템 목록 (`.right-list`, `flex:1`, `overflow-y:auto`)
-
-스크롤 가능. 항목이 많을수록 세로로 늘어남.
-
-#### D-02-1 · 아이템 행 (`.oi`, 반복)
-
-| 요소 | 내용 |
-|------|------|
-| 상품명 (`.oi-name`) | 12px / 500 / `#1A1A1A` |
-| 할인 배지 (`.oi-badge`) | `10%割引` 등, 9px / 빨강 (`#FDEDEC` 배경) |
-| 수량 (`.oi-qty`) | `×N`, 10px / `#AAA` |
-| 원가 (`.oi-orig`) | 10px / `#CCC`, 취소선, 할인 있을 때만 |
-| 가격 (`.oi-price`) | 12px / 600 |
-| 할인가 (`.oi-price.disc`) | `color: #E74C3C` |
-| 구분선 | `.5px solid #F5F5F3`, 마지막 항목 제외 |
-
-**파라미터**: `orderItems: [{name, qty, price, discount: {type, value}|null}]`
-
----
-
-### D-03 · 합계 푸터 (`.right-footer`)
-
-| 행 | 표시 조건 | 색상 |
-|----|-----------|------|
-| 小計 | 항상 | `#1A1A1A` |
-| 割引合計 | 항상 | `#E74C3C` |
-| ポイント使用 | `ptsUsed > 0` | `#2E86C1` |
-| チップ | `tip > 0` | `#1A1A1A` |
-| — 구분선 — | — | — |
-| お支払金額 (최종) | 항상 | 24px / 700 / `#1A1A1A` |
-| 消費税込み | 항상 | 10px / `#BBB` |
-| ⭐ ポイント獲得予定 | 항상 | 11px / `#2E86C1` |
-
----
-
-## E. 고객·포인트·메모 모달 (`.cpm-modal`)
+## I. 고객·포인트·메모 모달 (`.cpm-modal`)
 
 👤 칩 클릭 시 표시.
 
 | 항목 | 값 |
 |------|----|
-| 너비 | 520px |
-| 최대 높이 | 640px (`overflow-y:auto`) |
-| 오버레이 | `position:absolute;inset:0`, `rgba(0,0,0,.5)`, z-index 80 |
-| 닫기 | ✕ 버튼 또는 오버레이 바깥 클릭 |
+| 너비 | 520px, 최대 높이 640px |
 
-### E-01 · 고객 섹션
+| 섹션 | 주요 요소 |
+|------|-----------|
+| 顧客 | 검색 input + `検索` 버튼 + 고객 카드 (아바타/이름/전화/태그/내방횟수/포인트) + `削除` |
+| ポイント使用 | 보유 pt 표시 + 수량 input + `pt` 단위 + `全額使用` 버튼 |
+| 会計メモ | `#memoTa` textarea, 72px |
+| オプション | チップ (숫자 input + 円) / 領収書発行 (토글, 기본 ON) |
 
-| 요소 | 내용 |
-|------|------|
-| 검색 입력 | placeholder `名前・電話番号で検索...` |
-| 검색 버튼 | `検索`, `#2E86C1` 배경 |
-| 고객 카드 | 아바타 36px + 이름/전화/태그/방문횟수 + 보유 pt + `削除` 버튼 |
-| 고객 삭제 | `removeCustomer()` → 카드 숨김, 칩 초기화 |
-
-### E-02 · 포인트 사용 섹션
-
-| 요소 | 내용 |
-|------|------|
-| 보유 pt 표시 | `保有ポイント: 320pt`, `#2E86C1` 강조 |
-| 입력 | TextField 80px + `pt` 단위 + `全額使用` 버튼 |
-| 연동 | `oninput="updateTotal()"` → 합계·우측 패널 실시간 갱신 |
-| 파라미터 | `ptsUsed: number (0 ~ 320)` |
-
-### E-03 · 회계 메모 섹션
-
-| 요소 | 내용 |
-|------|------|
-| textarea | 72px 높이, `font-size:12px`, focus 시 파란 테두리 |
-| ID | `#memoTa` |
-| 파라미터 | `memo: string` |
-
-### E-04 · 옵션 섹션
-
-| 옵션 | 타입 | 파라미터 |
-|------|------|---------|
-| チップ | TextField 70px + `円` | `tipAmount: number` |
-| 領収書 | 토글 스위치 (기본 ON) | `issueReceipt: boolean` |
-
-### E-05 · 하단 버튼
-
-| 버튼 | 스타일 | 동작 |
-|------|--------|------|
-| キャンセル | `#F4F4F0` / `#666` | `closeCpmModal()` |
-| 適用する | `#2E86C1` / white | `applyCpmModal()` → 합계 갱신 + 칩 상태 반영 + green toast |
+**`applyCpmModal()`**: 모달 닫기 → `updateTotal()` → 메모 있으면 `#lsMemo` 표시 → `showToast(..., 'green')`
 
 ---
 
-## F. 쿠폰 모달 (`.coupon-modal`)
+## J. 쿠폰 모달 (`.coupon-modal`)
 
 🎟 칩 클릭 시 표시.
 
 | 항목 | 값 |
 |------|----|
-| 너비 | 460px |
-| 최대 높이 | 540px |
+| 너비 | 460px, 최대 높이 540px |
+| 강조색 | `#8E44AD` (보라) |
 
-### F-01 · 코드 입력 행
-
-| 요소 | 내용 |
+| 섹션 | 내용 |
 |------|------|
-| 입력 | `クーポンコードを入力...`, focus 시 `#8E44AD` 테두리 |
-| 버튼 | `適用`, `#8E44AD` 배경 → `applyCouponCode()` |
+| 코드 입력 | input (focus: 보라 테두리) + `適用` 버튼 → `applyCouponCode()` |
+| 쿠폰 리스트 | 스크롤, 실시간 검색 필터, 라디오 선택 |
 
-### F-02 · 쿠폰 리스트 (`.coupon-list`, 스크롤)
-
-실시간 검색 필터링 (코드 입력값 포함 여부).
-
-#### F-02-1 · 쿠폰 아이템 (`.coupon-item`)
-
-| 요소 | 내용 |
-|------|------|
-| 아이콘 배지 | 44×44px, `#F4ECF7` 배경, 이모지 |
-| 쿠폰명 | 12px / 600 |
-| 설명 | 11px / `#888` (대상 · 기한) |
-| 할인 표시 | 13px / 700 / `#8E44AD` |
-| 라디오 버튼 | 선택 시 `#8E44AD` 채움 |
-| 클릭 | `selectCoupon(id)` → 선택/해제 토글 |
-
-**데이터**: `COUPONS: [{id, icon, name, desc, disc}]`
-
-### F-03 · 하단 버튼
-
-| 버튼 | 동작 |
-|------|------|
-| キャンセル | `closeCouponModal()` |
-| 適用する | `confirmCoupon()` → 쿠폰 적용, 칩 상태 갱신, purple toast |
+**쿠폰 아이템**: 44px 배지 + 이름/설명 + 할인 표시 + 라디오  
+**`confirmCoupon()`**: 쿠폰 칩 `.applied` 갱신 → `#lsCoupon` 요약 표시 → `showToast(..., 'purple')`
 
 ---
 
-## G. JS 상태 관리
+## K. 우측 주문내역 패널 (`.pay-right`, 320px)
 
-### 변수
+| 항목 | 값 |
+|------|----|
+| 헤더 (`right-header`) | `background: #1C2833` 네이비, `✏ 注文内容` 흰색 12px/600 |
+| ← 編集 | **없음** (v3에서 삭제) |
+| 아이템 목록 (`right-list`) | 스크롤, 할인 배지 + 취소선 원가 + 현재가 |
+
+**합계 푸터 (`right-footer`) 행**:
+
+| 행 | 표시 조건 |
+|----|-----------|
+| 小計 | 항상 |
+| 割引合計 | 항상 |
+| ポイント使用 | `ptsUsed > 0` |
+| チップ | `tip > 0` |
+| — 구분선 — | — |
+| お支払金額 (24px/700) | 항상 |
+| 消費税込み | 항상 |
+| ⭐ ポイント獲得予定 | 항상 |
+
+---
+
+## L. JS 상태 관리
+
+### L-01 · 전역 변수
 
 | 변수 | 타입 | 초기값 | 설명 |
 |------|------|--------|------|
-| `subtotalRaw` | number | 17600 | 할인 전 소계 (02에서 전달) |
-| `discountTotal` | number | 440 | 상품별 할인 합계 (02에서 전달) |
+| `subtotalRaw` | number | 17600 | 할인 전 소계 |
+| `discountTotal` | number | 440 | 상품별 할인 합계 |
 | `subtotal` | number | 17160 | `subtotalRaw - discountTotal` |
-| `ptsUsed` | number | 0 | 사용 포인트 수 |
-| `cashRaw` | number | 20000 | 수취 현금 |
-| `currentMethod` | string | `'cash'` | 현재 선택된 결제수단 |
-| `isSplit` | boolean | false | 分割払い 모드 여부 |
-| `selectedCoupon` | object\|null | null | 선택된 쿠폰 객체 |
-| `COUPONS` | Array | — | 쿠폰 마스터 목록 |
+| `ptsUsed` | number | 0 | 사용 포인트 |
+| `cashRaw` | number | — | 수취 현금 (단독 결제 모달) |
+| `selectedCoupon` | object\|null | null | 선택된 쿠폰 |
+| `ORDER_ITEMS` | Array | — | 주문 아이템 (분할 메뉴 탭용) |
+| `METHOD_META` | Object | — | 수단별 메타 (icon/name/sub/bg) |
 
-### 주요 함수
+### L-02 · 분할결제 전용 변수
+
+| 변수 | 타입 | 초기값 | 설명 |
+|------|------|--------|------|
+| `splitTab` | string | `'amount'` | 현재 탭 |
+| `splitHistory` | Array | `[]` | 결제 이력 |
+| `splitRemaining` | number | `getTotal()` | 잔여 결제액 |
+| `splitCurMethod` | string\|null | null | 현재 선택 수단 |
+| `dutchCount` | number | 2 | 더치페이 인원 수 |
+| `menuChecked` | Set\<number\> | empty | 선택된 메뉴 index |
+| `sciCashRaw` | number | 20000 | 분할 현금 수취액 |
+
+### L-03 · 주요 함수
 
 | 함수 | 역할 |
 |------|------|
-| `getTotal()` | `subtotal - ptsUsed + tip` 계산 반환 |
-| `updateTotal()` | 금액존·우측 패널 합계·포인트획득 전체 갱신 |
-| `calcChange()` | 현금 거스름돈 계산 및 거스름돈 바 색상 갱신 |
-| `setCash(val)` | 빠른 금액 버튼 처리 (`'exact'` 또는 숫자) |
-| `onCashInput()` | 수취금액 직접 입력 처리 |
-| `useAllPts()` | 전액 포인트 입력 후 `updateTotal()` |
-| `selectMethod(m)` | 결제수단 선택, 관련 섹션 표시/숨김 |
-| `toggleSplit()` | 分割払い 모드 ON/OFF, 그리드 비활성화 |
-| `addSplitRow()` | 분할 행 DOM 추가 |
-| `openCpmModal()` / `closeCpmModal()` | 고객·포인트·메모 모달 열기/닫기 |
-| `applyCpmModal()` | 포인트·팁 반영, 칩 상태 갱신, 모달 닫기 |
-| `removeCustomer()` | 고객 정보 초기화 |
-| `openCouponModal()` / `closeCouponModal()` | 쿠폰 모달 열기/닫기 |
-| `renderCouponList(query)` | 검색어 기준 쿠폰 리스트 렌더링 |
-| `selectCoupon(id)` | 쿠폰 선택/해제 토글 |
-| `confirmCoupon()` | 쿠폰 적용, 칩 상태 갱신 |
-| `execPayment()` | 결제 실행 (→ 04_pos_complete) |
-| `showToast(msg, type)` | 토스트 알림 (blue/purple/green) |
+| `getTotal()` | `subtotal - ptsUsed + tip` 반환 |
+| `updateTotal()` | 금액·탑바버튼·우측패널·좌측요약 전체 갱신 |
+| `openMethodPay(m)` | 수단별 모달 열기 + 본문 HTML 동적 렌더링 |
+| `confirmMethodPay(m)` | 카드 `.paid` 처리 + 모달 닫기 + 토스트 |
+| `setCash(val)` / `calcChange()` | 현금 거스름돈 계산 |
+| `openSplitModal()` | 분할 모달 열기 + 상태 전체 초기화 |
+| `switchSplitTab(tab)` | 탭 전환 + 콘텐츠 표시/숨김 |
+| `getSplitCurrentAmt()` | 현재 탭 기준 결제액 계산 |
+| `setSplitAmt(val)` | 금액 탭 빠른 금액 설정 |
+| `changeDutch(d)` | 더치페이 인원 증감 |
+| `toggleMenuCheck(i)` | 메뉴 체크 토글 |
+| `selectSplitMethod(m)` | 분할 수단 선택 + 현금 인라인 토글 |
+| `execSplitPay()` | 분할 1건 결제 처리 |
+| `renderSplitHistory()` | 이력 패널 재렌더링 |
+| `updateSplitRemaining()` | 배지·프로그레스바·잔액 갱신 |
+| `updateSplitPayBtn()` | 결제 버튼 활성화 여부 판단 |
+| `execSplitDone()` | 분할결제 완료 처리 |
+| `openCpmModal()` / `applyCpmModal()` | 고객·포인트·메모 모달 |
+| `openCouponModal()` / `confirmCoupon()` | 쿠폰 모달 |
+| `showToast(msg, type)` | 토스트 (`blue`/`green`/`orange`/`purple`) |
+| `execPayment()` | 단독 결제 실행 → 04 이동 |
+| `goBackToOrder()` | 02 이동 |
 
 ---
 
-## H. 데이터 흐름 (02 → 03)
+## M. 데이터 흐름 (02 → 03)
 
 ```
-02_pos_order (cart) ──전달──▶ 03_pos_payment
-  cart: [{id, name, price, qty, discount}]
+02_pos_order (cart)
+  cart: [{id, name, price, origPrice, disc, qty}]
   ──계산──▶
-  subtotalRaw  = Σ(price × qty)
-  discountTotal = Σ(effectiveDiscount per item)
-  subtotal     = subtotalRaw - discountTotal
+  subtotalRaw   = Σ(origPrice × qty)
+  discountTotal = Σ(origPrice - price per item)
+  subtotal      = subtotalRaw - discountTotal
+  ORDER_ITEMS   = cart   ← 분할 메뉴 탭에서 직접 참조
 ```
 
-> Flutter 구현 시 `Navigator.push(arguments: cartData)`로 전달. 03 화면은 cartData를 읽기 전용으로 사용.
+> Flutter 구현 시 `Navigator.push(arguments: cartData)` 로 전달.
 
 ---
 
-## I. DB 스키마 예고 (Flutter 구현 시)
+## N. DB 스키마 예고 (Flutter 구현 시)
 
-```
+```sql
 payment_session (
-  id, order_session_id, method,    -- 결제수단: cash|card|paypay|linepay|credit|split
-  amount_paid, cash_received, change_given,
+  id, order_session_id,
+  total_amount, discount_total,
   points_used, points_earned,
-  coupon_id, tip_amount,
-  issue_receipt, memo,
-  created_at
+  coupon_id, tip_amount, memo, issue_receipt,
+  is_split, created_at
 )
 
-split_payment (
-  id, payment_session_id, method, amount
+payment_item (
+  id, payment_session_id,
+  method,       -- cash|card|paypay|linepay|credit
+  amount,
+  split_type,   -- null|amount|dutch|menu
+  dutch_count,  -- 人数分割 시 인원수
+  seq           -- 분할 결제 순서
 )
 
-coupon (
-  id, name, discount_type, discount_value,
-  target, expires_at, is_active
+split_menu_item (
+  id, payment_item_id, order_item_id
 )
 ```
 
 ---
 
-*최종 수정: 2026-06-16 (v2 전면 재작성 — Concept B 기준) | 기준 모크업: `design/mockups/v2/ja/03_pos_payment_b.html`*
+*최종 수정: 2026-06-16 (v3 전면 재작성)*
+*변경 내용: 스텝바 삭제, 좌측 상단바 신설, 결제수단 모달화, 分割払い 3탭 모달 (金額/人数/メニュー別), 하단 실행버튼 삭제, 우측 ← 編集 삭제*
+*기준 모크업: `design/mockups/v2/ja/03_pos_payment_b.html`*
