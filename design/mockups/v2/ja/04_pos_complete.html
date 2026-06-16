@@ -238,6 +238,105 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 .cc-mf-total-label{font-size:12px;font-weight:700;color:#1A1A1A;}
 .cc-mf-total-val{font-size:17px;font-weight:700;color:#1A1A1A;}
 
+/* ════════════════════════
+   CONCEPT D — A디자인 + B콘텐츠
+════════════════════════ */
+#conceptD{flex-direction:row;}
+
+/* 왼쪽 */
+.cd-left{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 36px;background:white;gap:0;}
+
+.cd-check-wrap{width:72px;height:72px;border-radius:50%;background:#EAFAF1;border:3px solid #27AE60;display:flex;align-items:center;justify-content:center;font-size:32px;margin-bottom:14px;flex-shrink:0;}
+.cd-title{font-size:20px;font-weight:700;color:#1A1A1A;margin-bottom:4px;}
+
+/* 고객 배너 (B에서) */
+.cd-cust-row{display:flex;align-items:center;gap:10px;margin-bottom:18px;}
+.cd-av{width:28px;height:28px;border-radius:50%;background:#8E44AD;display:flex;align-items:center;justify-content:center;font-size:11px;color:white;font-weight:600;flex-shrink:0;}
+.cd-cust-name{font-size:13px;color:#555;}
+.cd-cust-sub{font-size:10px;color:#AAA;margin-left:4px;}
+.cd-pts-earn-inline{font-size:11px;color:#27AE60;font-weight:700;margin-left:auto;background:#EAFAF1;border-radius:6px;padding:3px 8px;}
+
+/* 영수증 카드 (A 스타일, B 콘텐츠) */
+.cd-receipt{width:100%;max-width:400px;border-radius:14px;border:1px solid #EAEAE6;background:#FAFAF8;overflow:hidden;flex-shrink:0;}
+.cd-r-header{background:#1C2833;padding:11px 18px;display:flex;justify-content:space-between;align-items:center;}
+.cd-r-hname{font-size:11px;color:rgba(255,255,255,.6);}
+.cd-r-hval{font-size:11px;color:white;font-weight:500;}
+.cd-r-body{padding:12px 18px;display:flex;flex-direction:column;gap:0;}
+
+/* 메뉴 섹션 */
+.cd-section-label{font-size:9px;font-weight:700;color:#CCC;letter-spacing:.06em;text-transform:uppercase;padding:6px 0 5px;}
+.cd-item{display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-size:12px;border-bottom:.5px solid #F5F5F3;}
+.cd-item:last-of-type{border-bottom:none;}
+.cd-item-name{color:#1A1A1A;flex:1;}
+.cd-item-disc-tag{font-size:9px;color:#E74C3C;background:#FDEDEC;border-radius:3px;padding:1px 4px;margin-left:5px;font-weight:600;}
+.cd-item-orig{font-size:10px;color:#CCC;text-decoration:line-through;margin-right:6px;}
+.cd-item-price{color:#1A1A1A;font-weight:500;white-space:nowrap;}
+
+/* 구분선 */
+.cd-divider{height:.5px;background:#EAEAE6;margin:8px 0;}
+
+/* 금액 내역 */
+.cd-row{display:flex;justify-content:space-between;font-size:11px;padding:3px 0;}
+.cd-row-label{color:#AAA;}
+.cd-row-val{color:#555;font-weight:500;}
+.cd-row-disc{color:#E74C3C;font-weight:500;}
+.cd-row-change{color:#E67E22;font-weight:700;}
+.cd-coupon-row{display:flex;justify-content:space-between;font-size:11px;padding:3px 0;}
+.cd-coupon-label{color:#27AE60;}
+.cd-coupon-val{color:#27AE60;font-weight:600;}
+
+/* 합계 */
+.cd-total-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0 2px;}
+.cd-total-label{font-size:13px;font-weight:700;color:#1A1A1A;}
+.cd-total-val{font-size:22px;font-weight:700;color:#1A1A1A;}
+
+/* 결제수단 */
+.cd-method-row{display:flex;align-items:center;gap:8px;padding:3px 0;font-size:12px;}
+.cd-method-icon{font-size:15px;}
+.cd-method-name{color:#555;flex:1;}
+.cd-method-amt{color:#1A1A1A;font-weight:600;}
+
+/* 푸터 */
+.cd-r-footer{padding:10px 18px;background:#F5FBF7;border-top:.5px solid #E0F0E6;display:flex;justify-content:space-between;align-items:center;}
+.cd-r-pts-earn{font-size:11px;color:#27AE60;font-weight:700;}
+.cd-r-pts-total{font-size:10px;color:#AAA;}
+
+/* 하단 버튼 */
+.cd-actions{display:flex;gap:10px;margin-top:16px;width:100%;max-width:400px;flex-shrink:0;}
+.cd-btn-sec{flex:1;padding:12px;border-radius:11px;border:1.5px solid #D0D0CC;background:white;color:#555;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .12s;}
+.cd-btn-sec:hover{border-color:#1C2833;color:#1C2833;}
+.cd-btn-pri{flex:2;padding:12px;border-radius:11px;background:#1C2833;color:white;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:background .12s;}
+.cd-btn-pri:hover{background:#2E4053;}
+
+/* 오른쪽 패널 (A 스타일, B 콘텐츠) */
+.cd-right{width:290px;flex-shrink:0;border-left:.5px solid #E5E5E0;background:white;display:flex;flex-direction:column;overflow:hidden;}
+.cd-r-head{padding:14px 16px;border-bottom:.5px solid #EAEAE6;flex-shrink:0;}
+.cd-r-title{font-size:12px;font-weight:700;color:#1A1A1A;margin-bottom:2px;}
+.cd-r-sub{font-size:10px;color:#AAA;}
+
+/* 다음 예약 카드 */
+.cd-booking{margin:12px 12px 0;border-radius:12px;border:1.5px solid #2E86C1;background:#EBF5FB;padding:13px;flex-shrink:0;}
+.cd-bk-label{font-size:9px;font-weight:700;color:#2E86C1;letter-spacing:.05em;margin-bottom:6px;}
+.cd-bk-date{font-size:15px;font-weight:700;color:#1A1A1A;margin-bottom:2px;}
+.cd-bk-detail{font-size:10px;color:#555;}
+.cd-bk-btn{margin-top:9px;width:100%;padding:9px;border-radius:8px;background:#2E86C1;color:white;font-size:12px;font-weight:700;border:none;cursor:pointer;font-family:inherit;}
+
+/* 포인트 카드 */
+.cd-pts-card{margin:9px 12px;border-radius:12px;border:1px solid #D5EFE0;background:#F5FBF7;padding:12px;flex-shrink:0;}
+.cd-pc-label{font-size:9px;font-weight:700;color:#27AE60;letter-spacing:.05em;margin-bottom:7px;}
+.cd-pc-row{display:flex;justify-content:space-between;font-size:12px;}
+.cd-pc-key{color:#888;}
+.cd-pc-val{color:#1A1A1A;font-weight:600;}
+.cd-pc-earn{color:#27AE60;font-weight:700;}
+
+/* 액션 버튼 */
+.cd-r-actions{padding:9px 12px;display:flex;flex-direction:column;gap:7px;flex:1;}
+.cd-ra-btn{display:flex;align-items:center;gap:10px;padding:11px 13px;border-radius:10px;border:1px solid #EAEAE6;background:#FAFAF8;cursor:pointer;font-family:inherit;transition:all .12s;}
+.cd-ra-btn:hover{border-color:#2E86C1;background:#EBF5FB;}
+.cd-ra-icon{font-size:16px;}
+.cd-ra-text{font-size:12px;font-weight:500;color:#1A1A1A;}
+.cd-new-cust-btn{margin:0 12px 12px;padding:12px;border-radius:11px;background:#1C2833;color:white;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:inherit;flex-shrink:0;}
+
 </style>
 </head>
 <body>
@@ -248,6 +347,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
   <button class="cs-btn active" onclick="switchConcept('A',this)">A · シンプル確認</button>
   <button class="cs-btn"        onclick="switchConcept('B',this)">B · フル領収書</button>
   <button class="cs-btn"        onclick="switchConcept('C',this)">C · アクションハブ</button>
+  <button class="cs-btn"        onclick="switchConcept('D',this)">D · A＋B ミックス</button>
 </div>
 
 <div class="ipad">
@@ -526,6 +626,96 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
           </div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- ══ CONCEPT D — A디자인 + B콘텐츠 ══ -->
+  <div class="concept" id="conceptD">
+    <!-- 왼쪽: A 스타일 + B 내용 -->
+    <div class="cd-left">
+      <div class="cd-check-wrap">✓</div>
+      <div class="cd-title">お会計が完了しました</div>
+      <div class="cd-cust-row">
+        <div class="cd-av">田</div>
+        <span class="cd-cust-name">田中 美咲 様</span>
+        <span class="cd-cust-sub">VIP · 来店 25回目 · 現金でお支払い</span>
+        <span class="cd-pts-earn-inline">＋171pt 獲得</span>
+      </div>
+
+      <div class="cd-receipt">
+        <div class="cd-r-header">
+          <span class="cd-r-hname">Hair Salon Yuki · 渋谷店</span>
+          <span class="cd-r-hval">06.17 火 10:22</span>
+        </div>
+        <div class="cd-r-body">
+          <div class="cd-section-label">メニュー</div>
+          <div class="cd-item">
+            <span class="cd-item-name">カット<span class="cd-item-disc-tag">10%割引</span></span>
+            <span class="cd-item-orig">¥4,400</span><span class="cd-item-price">¥3,960</span>
+          </div>
+          <div class="cd-item">
+            <span class="cd-item-name">ワンカラー</span>
+            <span class="cd-item-price">¥8,800</span>
+          </div>
+          <div class="cd-item">
+            <span class="cd-item-name">トリートメント M</span>
+            <span class="cd-item-price">¥4,400</span>
+          </div>
+
+          <div class="cd-divider"></div>
+          <div class="cd-row"><span class="cd-row-label">小計 (税抜)</span><span class="cd-row-val">¥15,600</span></div>
+          <div class="cd-row"><span class="cd-row-label">割引合計</span><span class="cd-row-disc">－¥400</span></div>
+          <div class="cd-coupon-row"><span class="cd-coupon-label">🌸 春の感謝クーポン (10%OFF)</span><span class="cd-coupon-val">適用済</span></div>
+          <div class="cd-row"><span class="cd-row-label">外税 10%</span><span class="cd-row-val">¥1,560</span></div>
+
+          <div class="cd-divider"></div>
+          <div class="cd-total-row">
+            <span class="cd-total-label">お支払い合計</span>
+            <span class="cd-total-val">¥17,160</span>
+          </div>
+
+          <div class="cd-divider"></div>
+          <div class="cd-method-row"><span class="cd-method-icon">💴</span><span class="cd-method-name">現金</span><span class="cd-method-amt">¥17,160</span></div>
+          <div class="cd-row"><span class="cd-row-label">お預かり</span><span class="cd-row-val">¥20,000</span></div>
+          <div class="cd-row"><span class="cd-row-label">お釣り</span><span class="cd-row-change">¥2,840</span></div>
+        </div>
+        <div class="cd-r-footer">
+          <span class="cd-r-pts-earn">＋171pt 獲得</span>
+          <span class="cd-r-pts-total">累計 491pt</span>
+        </div>
+      </div>
+
+      <div class="cd-actions">
+        <button class="cd-btn-sec">🖨 印刷</button>
+        <button class="cd-btn-sec">📱 LINE送信</button>
+        <button class="cd-btn-pri">次のお客様へ →</button>
+      </div>
+    </div>
+
+    <!-- 오른쪽: A 스타일 + B 콘텐츠 -->
+    <div class="cd-right">
+      <div class="cd-r-head">
+        <div class="cd-r-title">次のアクション</div>
+        <div class="cd-r-sub">田中様の次回来店を登録できます</div>
+      </div>
+      <div class="cd-booking">
+        <div class="cd-bk-label">次回おすすめ来店</div>
+        <div class="cd-bk-date">2026年7月17日（木）</div>
+        <div class="cd-bk-detail">前回から30日後 · カット＋カラー</div>
+        <button class="cd-bk-btn">この日で予約を取る</button>
+      </div>
+      <div class="cd-pts-card">
+        <div class="cd-pc-label">ポイント</div>
+        <div class="cd-pc-row"><span class="cd-pc-key">今回獲得</span><span class="cd-pc-earn">＋171pt</span></div>
+        <div class="cd-pc-row" style="margin-top:5px;"><span class="cd-pc-key">累計ポイント</span><span class="cd-pc-val">491pt</span></div>
+      </div>
+      <div class="cd-r-actions">
+        <button class="cd-ra-btn"><span class="cd-ra-icon">🖨</span><span class="cd-ra-text">領収書を印刷する</span></button>
+        <button class="cd-ra-btn"><span class="cd-ra-icon">📱</span><span class="cd-ra-text">LINEで領収書送信</span></button>
+        <button class="cd-ra-btn"><span class="cd-ra-icon">👤</span><span class="cd-ra-text">顧客情報を確認する</span></button>
+        <button class="cd-ra-btn"><span class="cd-ra-icon">✏️</span><span class="cd-ra-text">施術メモを追加する</span></button>
+      </div>
+      <button class="cd-new-cust-btn">次のお客様へ →</button>
     </div>
   </div>
 
