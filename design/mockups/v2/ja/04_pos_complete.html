@@ -6,13 +6,13 @@
 <title>04 · 決済完了 — salon-pos-v2 JA</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino Sans',sans-serif;background:#1C2833;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;min-height:100vh;padding:20px;gap:16px;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino Sans',sans-serif;background:#0F1D5C;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;min-height:100vh;padding:20px;gap:16px;}
 
 /* ── 컨셉 전환 버튼 ── */
 .concept-switcher{display:flex;gap:8px;}
 .cs-btn{padding:8px 20px;border-radius:8px;border:1.5px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:rgba(255,255,255,.6);font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;transition:all .15s;}
 .cs-btn:hover{background:rgba(255,255,255,.14);color:white;}
-.cs-btn.active{background:white;color:#1C2833;border-color:white;font-weight:700;}
+.cs-btn.active{background:white;color:#1E3A8A;border-color:white;font-weight:700;}
 .cs-label{color:rgba(255,255,255,.35);font-size:11px;display:flex;align-items:center;}
 
 /* ── iPad Frame ── */
@@ -20,9 +20,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 
 /* ── Topbar ── */
 .topbar{background:white;height:44px;display:flex;align-items:center;padding:0 16px;gap:10px;flex-shrink:0;border-bottom:.5px solid #E5E5E0;z-index:10;}
-.tb-menu{font-size:18px;color:#1C2833;cursor:pointer;padding:4px 6px;border-radius:6px;line-height:1;flex-shrink:0;user-select:none;}
+.tb-menu{font-size:18px;color:#1E3A8A;cursor:pointer;padding:4px 6px;border-radius:6px;line-height:1;flex-shrink:0;user-select:none;}
 .tb-menu:hover{background:#F4F4F0;}
-.tb-logo{font-size:13px;color:#1C2833;font-weight:500;letter-spacing:.08em;}
+.tb-logo{font-size:13px;color:#1E3A8A;font-weight:500;letter-spacing:.08em;}
 .tb-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
 .tb-sep{width:.5px;height:14px;background:#D0D0CC;}
 .tb-avatar{width:24px;height:24px;border-radius:50%;background:#8E44AD;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:500;color:white;}
@@ -34,7 +34,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 /* ── Sidebar ── */
 .sidebar-overlay{position:absolute;inset:0;background:rgba(0,0,0,.35);z-index:100;opacity:0;pointer-events:none;transition:opacity .2s;}
 .sidebar-overlay.open{opacity:1;pointer-events:all;}
-.sidebar{position:absolute;left:0;top:0;bottom:0;width:220px;background:#1C2833;z-index:101;transform:translateX(-100%);transition:transform .22s cubic-bezier(.25,.46,.45,.94);display:flex;flex-direction:column;box-shadow:4px 0 24px rgba(0,0,0,.3);}
+.sidebar{position:absolute;left:0;top:0;bottom:0;width:220px;background:#1E3A8A;z-index:101;transform:translateX(-100%);transition:transform .22s cubic-bezier(.25,.46,.45,.94);display:flex;flex-direction:column;box-shadow:4px 0 24px rgba(0,0,0,.3);}
 .sidebar.open{transform:translateX(0);}
 .sidebar-header{padding:20px 16px 14px;border-bottom:.5px solid rgba(255,255,255,.1);}
 .sidebar-logo{font-size:14px;color:white;font-weight:500;letter-spacing:.08em;}
@@ -58,13 +58,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 ════════════════════════ */
 #conceptA{flex-direction:row;}
 .ca-left{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;padding:32px 40px;background:white;}
-.ca-check-wrap{width:80px;height:80px;border-radius:50%;background:#EAFAF1;border:3px solid #27AE60;display:flex;align-items:center;justify-content:center;font-size:36px;margin-bottom:20px;}
+.ca-check-wrap{width:80px;height:80px;border-radius:50%;background:#ECFDF5;border:3px solid #10B981;display:flex;align-items:center;justify-content:center;font-size:36px;margin-bottom:20px;}
 .ca-title{font-size:22px;font-weight:700;color:#1A1A1A;margin-bottom:6px;}
 .ca-sub{font-size:13px;color:#AAA;margin-bottom:28px;}
 
 /* 영수증 카드 */
 .ca-receipt{width:100%;max-width:380px;border-radius:14px;border:1px solid #EAEAE6;background:#FAFAF8;overflow:hidden;}
-.ca-r-header{background:#1C2833;padding:12px 18px;display:flex;justify-content:space-between;align-items:center;}
+.ca-r-header{background:#1E3A8A;padding:12px 18px;display:flex;justify-content:space-between;align-items:center;}
 .ca-r-hname{font-size:12px;color:rgba(255,255,255,.6);}
 .ca-r-hval{font-size:12px;color:white;font-weight:500;}
 .ca-r-body{padding:14px 18px;display:flex;flex-direction:column;gap:7px;}
@@ -76,16 +76,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 .ca-r-total-row{display:flex;justify-content:space-between;align-items:center;}
 .ca-r-total-label{font-size:13px;font-weight:700;color:#1A1A1A;}
 .ca-r-total-val{font-size:20px;font-weight:700;color:#1A1A1A;}
-.ca-r-footer{padding:12px 18px;background:#F5FBF7;border-top:.5px solid #E0F0E6;display:flex;justify-content:space-between;align-items:center;}
-.ca-r-pts-earn{font-size:11px;color:#27AE60;font-weight:600;}
+.ca-r-footer{padding:12px 18px;background:#F0FDF4;border-top:.5px solid #E0F0E6;display:flex;justify-content:space-between;align-items:center;}
+.ca-r-pts-earn{font-size:11px;color:#10B981;font-weight:600;}
 .ca-r-pts-total{font-size:10px;color:#AAA;}
 
 /* 버튼 */
 .ca-actions{display:flex;gap:10px;margin-top:24px;width:100%;max-width:380px;}
 .ca-btn-sec{flex:1;padding:13px;border-radius:11px;border:1.5px solid #D0D0CC;background:white;color:#555;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .12s;}
-.ca-btn-sec:hover{border-color:#1C2833;color:#1C2833;}
-.ca-btn-pri{flex:2;padding:13px;border-radius:11px;background:#1C2833;color:white;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .12s;}
-.ca-btn-pri:hover{background:#2E4053;}
+.ca-btn-sec:hover{border-color:#1E3A8A;color:#1E3A8A;}
+.ca-btn-pri{flex:2;padding:13px;border-radius:11px;background:#1E3A8A;color:white;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .12s;}
+.ca-btn-pri:hover{background:#2D3A7A;}
 
 /* A 오른쪽 패널 */
 .ca-right{width:280px;flex-shrink:0;border-left:.5px solid #E5E5E0;background:white;display:flex;flex-direction:column;overflow:hidden;}
@@ -93,13 +93,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 .ca-r-panel-title{font-size:12px;font-weight:700;color:#1A1A1A;}
 .ca-panel-actions{flex:1;padding:12px 12px;display:flex;flex-direction:column;gap:8px;overflow-y:auto;}
 .cap-btn{display:flex;align-items:center;gap:12px;padding:13px 14px;border-radius:11px;border:1px solid #EAEAE6;background:#FAFAF8;cursor:pointer;transition:all .12s;font-family:inherit;}
-.cap-btn:hover{border-color:#2E86C1;background:#EBF5FB;}
+.cap-btn:hover{border-color:#3B5BDB;background:#EBF5FB;}
 .cap-icon{font-size:20px;flex-shrink:0;}
 .cap-text{text-align:left;}
 .cap-name{font-size:12px;font-weight:600;color:#1A1A1A;}
 .cap-desc{font-size:10px;color:#AAA;margin-top:1px;}
-.cap-btn.highlight{border-color:#2E86C1;background:#EBF5FB;}
-.cap-btn.highlight .cap-name{color:#2E86C1;}
+.cap-btn.highlight{border-color:#3B5BDB;background:#EBF5FB;}
+.cap-btn.highlight .cap-name{color:#3B5BDB;}
 
 
 /* ════════════════════════
@@ -107,19 +107,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 ════════════════════════ */
 #conceptB{flex-direction:row;}
 .cb-left{flex:1;display:flex;flex-direction:column;background:white;overflow:hidden;}
-.cb-lhead{height:52px;background:#27AE60;display:flex;align-items:center;padding:0 20px;gap:12px;flex-shrink:0;}
+.cb-lhead{height:52px;background:#10B981;display:flex;align-items:center;padding:0 20px;gap:12px;flex-shrink:0;}
 .cb-lhead-icon{font-size:20px;}
 .cb-lhead-title{font-size:14px;font-weight:700;color:white;}
 .cb-lhead-sub{font-size:11px;color:rgba(255,255,255,.7);margin-left:auto;}
 
 /* 고객 배너 */
-.cb-cust-banner{padding:14px 20px;background:#F5FBF7;border-bottom:.5px solid #D5EFE0;display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.cb-cust-banner{padding:14px 20px;background:#F0FDF4;border-bottom:.5px solid #D1FAE5;display:flex;align-items:center;gap:12px;flex-shrink:0;}
 .cb-av{width:36px;height:36px;border-radius:50%;background:#8E44AD;display:flex;align-items:center;justify-content:center;font-size:14px;color:white;font-weight:600;flex-shrink:0;}
 .cb-cust-info{flex:1;}
 .cb-cust-name{font-size:13px;font-weight:700;color:#1A1A1A;}
 .cb-cust-sub{font-size:10px;color:#888;margin-top:2px;}
 .cb-pts-badge{text-align:right;}
-.cb-pts-earn{font-size:11px;color:#27AE60;font-weight:700;}
+.cb-pts-earn{font-size:11px;color:#10B981;font-weight:700;}
 .cb-pts-after{font-size:10px;color:#AAA;margin-top:2px;}
 
 /* 영수증 본문 */
@@ -139,15 +139,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 .cb-tax-label{color:#AAA;}
 .cb-tax-val{color:#555;}
 .cb-coupon-row{display:flex;justify-content:space-between;font-size:11px;padding:4px 0;}
-.cb-coupon-label{color:#27AE60;display:flex;align-items:center;gap:4px;}
-.cb-coupon-val{color:#27AE60;font-weight:600;}
+.cb-coupon-label{color:#10B981;display:flex;align-items:center;gap:4px;}
+.cb-coupon-val{color:#10B981;font-weight:600;}
 
 .cb-method-row{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:12px;}
 .cb-method-icon{font-size:16px;}
 .cb-method-name{color:#1A1A1A;font-weight:500;flex:1;}
 .cb-method-amt{color:#1A1A1A;font-weight:600;}
 
-.cb-total-section{padding:14px 20px;background:#1C2833;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
+.cb-total-section{padding:14px 20px;background:#1E3A8A;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
 .cb-total-label{font-size:12px;color:rgba(255,255,255,.6);}
 .cb-total-val{font-size:24px;font-weight:700;color:white;}
 
@@ -158,34 +158,34 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 .cb-r-sub{font-size:10px;color:#AAA;}
 
 /* 다음 예약 카드 */
-.cb-next-booking{margin:12px 12px 0;border-radius:12px;border:1.5px solid #2E86C1;background:#EBF5FB;padding:14px;flex-shrink:0;}
-.cb-nb-label{font-size:10px;font-weight:700;color:#2E86C1;letter-spacing:.05em;margin-bottom:8px;}
+.cb-next-booking{margin:12px 12px 0;border-radius:12px;border:1.5px solid #3B5BDB;background:#EBF5FB;padding:14px;flex-shrink:0;}
+.cb-nb-label{font-size:10px;font-weight:700;color:#3B5BDB;letter-spacing:.05em;margin-bottom:8px;}
 .cb-nb-date{font-size:16px;font-weight:700;color:#1A1A1A;margin-bottom:2px;}
 .cb-nb-detail{font-size:11px;color:#555;}
-.cb-nb-action{margin-top:10px;width:100%;padding:9px;border-radius:8px;background:#2E86C1;color:white;font-size:12px;font-weight:700;border:none;cursor:pointer;font-family:inherit;}
+.cb-nb-action{margin-top:10px;width:100%;padding:9px;border-radius:8px;background:#3B5BDB;color:white;font-size:12px;font-weight:700;border:none;cursor:pointer;font-family:inherit;}
 
 /* 포인트 카드 */
-.cb-pts-card{margin:10px 12px;border-radius:12px;border:1px solid #D5EFE0;background:#F5FBF7;padding:14px;flex-shrink:0;}
-.cb-pc-label{font-size:10px;font-weight:700;color:#27AE60;letter-spacing:.05em;margin-bottom:8px;}
+.cb-pts-card{margin:10px 12px;border-radius:12px;border:1px solid #D1FAE5;background:#F0FDF4;padding:14px;flex-shrink:0;}
+.cb-pc-label{font-size:10px;font-weight:700;color:#10B981;letter-spacing:.05em;margin-bottom:8px;}
 .cb-pc-row{display:flex;justify-content:space-between;align-items:center;font-size:12px;}
 .cb-pc-key{color:#888;}
 .cb-pc-val{color:#1A1A1A;font-weight:600;}
-.cb-pc-earn{color:#27AE60;font-weight:700;}
+.cb-pc-earn{color:#10B981;font-weight:700;}
 
 /* 액션 버튼들 */
 .cb-r-actions{padding:10px 12px;display:flex;flex-direction:column;gap:7px;flex:1;}
 .cb-ra-btn{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:10px;border:1px solid #EAEAE6;background:#FAFAF8;cursor:pointer;font-family:inherit;transition:all .12s;}
-.cb-ra-btn:hover{border-color:#2E86C1;background:#EBF5FB;}
+.cb-ra-btn:hover{border-color:#3B5BDB;background:#EBF5FB;}
 .cb-ra-icon{font-size:17px;}
 .cb-ra-text{font-size:12px;font-weight:500;color:#1A1A1A;}
-.cb-new-cust-btn{margin:0 12px 12px;padding:12px;border-radius:11px;background:#1C2833;color:white;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:inherit;flex-shrink:0;}
+.cb-new-cust-btn{margin:0 12px 12px;padding:12px;border-radius:11px;background:#1E3A8A;color:white;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:inherit;flex-shrink:0;}
 
 
 /* ════════════════════════
    CONCEPT C — 액션 허브형
 ════════════════════════ */
 #conceptC{flex-direction:column;}
-.cc-top-bar{background:#27AE60;padding:12px 24px;display:flex;align-items:center;gap:16px;flex-shrink:0;}
+.cc-top-bar{background:#10B981;padding:12px 24px;display:flex;align-items:center;gap:16px;flex-shrink:0;}
 .cc-check{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
 .cc-top-info{flex:1;}
 .cc-top-title{font-size:14px;font-weight:700;color:white;}
@@ -196,9 +196,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 .cc-top-change{font-size:11px;color:rgba(255,255,255,.8);margin-top:1px;}
 
 /* 포인트 배너 */
-.cc-pts-banner{background:#EAFAF1;border-bottom:.5px solid #C8E6C9;padding:9px 24px;display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.cc-pts-banner{background:#ECFDF5;border-bottom:.5px solid #C8E6C9;padding:9px 24px;display:flex;align-items:center;gap:10px;flex-shrink:0;}
 .cc-pts-icon{font-size:16px;}
-.cc-pts-text{font-size:12px;color:#1E8449;font-weight:500;}
+.cc-pts-text{font-size:12px;color:#10B981;font-weight:500;}
 .cc-pts-bold{font-weight:700;}
 .cc-pts-after{margin-left:auto;font-size:11px;color:#AAA;}
 
@@ -210,9 +210,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 .cc-hub-section-title{font-size:11px;font-weight:700;color:#BBB;letter-spacing:.06em;}
 .cc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
 .cc-action-card{border-radius:13px;border:1.5px solid #EAEAE6;background:#FAFAF8;padding:16px 12px 14px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;transition:all .15s;font-family:inherit;}
-.cc-action-card:hover{border-color:#2E86C1;background:#EBF5FB;transform:translateY(-1px);box-shadow:0 4px 12px rgba(46,134,193,.15);}
-.cc-action-card.primary{border-color:#1C2833;background:#1C2833;}
-.cc-action-card.primary:hover{background:#2E4053;}
+.cc-action-card:hover{border-color:#3B5BDB;background:#EBF5FB;transform:translateY(-1px);box-shadow:0 4px 12px rgba(46,134,193,.15);}
+.cc-action-card.primary{border-color:#1E3A8A;background:#1E3A8A;}
+.cc-action-card.primary:hover{background:#2D3A7A;}
 .cc-action-icon{font-size:28px;line-height:1;}
 .cc-action-name{font-size:12px;font-weight:600;color:#1A1A1A;text-align:center;}
 .cc-action-card.primary .cc-action-name{color:white;}
@@ -247,7 +247,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 .cd-left{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px 24px 14px;background:white;gap:0;}
 
 .cd-title-row{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
-.cd-check-wrap{width:36px;height:36px;border-radius:50%;background:#EAFAF1;border:2.5px solid #27AE60;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.cd-check-wrap{width:36px;height:36px;border-radius:50%;background:#ECFDF5;border:2.5px solid #10B981;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
 .cd-title{font-size:18px;font-weight:700;color:#1A1A1A;}
 
 /* 고객 배너 (B에서) */
@@ -255,11 +255,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 .cd-av{width:24px;height:24px;border-radius:50%;background:#8E44AD;display:flex;align-items:center;justify-content:center;font-size:10px;color:white;font-weight:600;flex-shrink:0;}
 .cd-cust-name{font-size:12px;color:#555;}
 .cd-cust-sub{font-size:10px;color:#AAA;margin-left:3px;}
-.cd-pts-earn-inline{font-size:10px;color:#27AE60;font-weight:700;margin-left:auto;background:#EAFAF1;border-radius:6px;padding:2px 7px;}
+.cd-pts-earn-inline{font-size:10px;color:#10B981;font-weight:700;margin-left:auto;background:#ECFDF5;border-radius:6px;padding:2px 7px;}
 
 /* 영수증 카드 (A 스타일, B 콘텐츠) */
 .cd-receipt{width:100%;border-radius:14px;border:1px solid #EAEAE6;background:#FAFAF8;overflow:hidden;flex:1;display:flex;flex-direction:column;}
-.cd-r-header{background:#1C2833;padding:11px 18px;display:flex;justify-content:space-between;align-items:center;}
+.cd-r-header{background:#1E3A8A;padding:11px 18px;display:flex;justify-content:space-between;align-items:center;}
 .cd-r-hname{font-size:11px;color:rgba(255,255,255,.6);}
 .cd-r-hval{font-size:11px;color:white;font-weight:500;}
 /* 영수증 본문 — 2열 */
@@ -289,8 +289,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 .cd-row-disc{color:#E74C3C;font-weight:500;}
 .cd-row-change{color:#E67E22;font-weight:700;}
 .cd-coupon-row{display:flex;justify-content:space-between;font-size:10px;padding:3px 0;}
-.cd-coupon-label{color:#27AE60;}
-.cd-coupon-val{color:#27AE60;font-weight:600;}
+.cd-coupon-label{color:#10B981;}
+.cd-coupon-val{color:#10B981;font-weight:600;}
 
 /* 합계 */
 .cd-total-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0 4px;}
@@ -304,16 +304,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 .cd-method-amt{color:#1A1A1A;font-weight:600;}
 
 /* 푸터 */
-.cd-r-footer{padding:10px 18px;background:#F5FBF7;border-top:.5px solid #E0F0E6;display:flex;justify-content:space-between;align-items:center;}
-.cd-r-pts-earn{font-size:11px;color:#27AE60;font-weight:700;}
+.cd-r-footer{padding:10px 18px;background:#F0FDF4;border-top:.5px solid #E0F0E6;display:flex;justify-content:space-between;align-items:center;}
+.cd-r-pts-earn{font-size:11px;color:#10B981;font-weight:700;}
 .cd-r-pts-total{font-size:10px;color:#AAA;}
 
 /* 하단 버튼 */
 .cd-actions{display:flex;gap:10px;margin-top:12px;width:100%;max-width:520px;flex-shrink:0;}
 .cd-btn-sec{flex:1;padding:12px;border-radius:11px;border:1.5px solid #D0D0CC;background:white;color:#555;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .12s;}
-.cd-btn-sec:hover{border-color:#1C2833;color:#1C2833;}
-.cd-btn-pri{flex:2;padding:12px;border-radius:11px;background:#1C2833;color:white;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:background .12s;}
-.cd-btn-pri:hover{background:#2E4053;}
+.cd-btn-sec:hover{border-color:#1E3A8A;color:#1E3A8A;}
+.cd-btn-pri{flex:2;padding:12px;border-radius:11px;background:#1E3A8A;color:white;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:background .12s;}
+.cd-btn-pri:hover{background:#2D3A7A;}
 
 /* 오른쪽 패널 (A 스타일, B 콘텐츠) */
 .cd-right{width:290px;flex-shrink:0;border-left:.5px solid #E5E5E0;background:white;display:flex;flex-direction:column;overflow:hidden;}
@@ -322,27 +322,27 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 .cd-r-sub{font-size:10px;color:#AAA;}
 
 /* 다음 예약 카드 */
-.cd-booking{margin:12px 12px 0;border-radius:12px;border:1.5px solid #2E86C1;background:#EBF5FB;padding:13px;flex-shrink:0;}
-.cd-bk-label{font-size:9px;font-weight:700;color:#2E86C1;letter-spacing:.05em;margin-bottom:6px;}
+.cd-booking{margin:12px 12px 0;border-radius:12px;border:1.5px solid #3B5BDB;background:#EBF5FB;padding:13px;flex-shrink:0;}
+.cd-bk-label{font-size:9px;font-weight:700;color:#3B5BDB;letter-spacing:.05em;margin-bottom:6px;}
 .cd-bk-date{font-size:15px;font-weight:700;color:#1A1A1A;margin-bottom:2px;}
 .cd-bk-detail{font-size:10px;color:#555;}
-.cd-bk-btn{margin-top:9px;width:100%;padding:9px;border-radius:8px;background:#2E86C1;color:white;font-size:12px;font-weight:700;border:none;cursor:pointer;font-family:inherit;}
+.cd-bk-btn{margin-top:9px;width:100%;padding:9px;border-radius:8px;background:#3B5BDB;color:white;font-size:12px;font-weight:700;border:none;cursor:pointer;font-family:inherit;}
 
 /* 포인트 카드 */
-.cd-pts-card{margin:9px 12px;border-radius:12px;border:1px solid #D5EFE0;background:#F5FBF7;padding:12px;flex-shrink:0;}
-.cd-pc-label{font-size:9px;font-weight:700;color:#27AE60;letter-spacing:.05em;margin-bottom:7px;}
+.cd-pts-card{margin:9px 12px;border-radius:12px;border:1px solid #D1FAE5;background:#F0FDF4;padding:12px;flex-shrink:0;}
+.cd-pc-label{font-size:9px;font-weight:700;color:#10B981;letter-spacing:.05em;margin-bottom:7px;}
 .cd-pc-row{display:flex;justify-content:space-between;font-size:12px;}
 .cd-pc-key{color:#888;}
 .cd-pc-val{color:#1A1A1A;font-weight:600;}
-.cd-pc-earn{color:#27AE60;font-weight:700;}
+.cd-pc-earn{color:#10B981;font-weight:700;}
 
 /* 액션 버튼 */
 .cd-r-actions{padding:9px 12px;display:flex;flex-direction:column;gap:0;flex:1;justify-content:space-between;}
 .cd-ra-btn{display:flex;align-items:center;gap:10px;padding:11px 13px;border-radius:10px;border:1px solid #EAEAE6;background:#FAFAF8;cursor:pointer;font-family:inherit;transition:all .12s;}
-.cd-ra-btn:hover{border-color:#2E86C1;background:#EBF5FB;}
+.cd-ra-btn:hover{border-color:#3B5BDB;background:#EBF5FB;}
 .cd-ra-icon{font-size:16px;}
 .cd-ra-text{font-size:12px;font-weight:500;color:#1A1A1A;}
-.cd-new-cust-btn{margin:0 12px 12px;padding:12px;border-radius:11px;background:#1C2833;color:white;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:inherit;flex-shrink:0;}
+.cd-new-cust-btn{margin:0 12px 12px;padding:12px;border-radius:11px;background:#1E3A8A;color:white;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:inherit;flex-shrink:0;}
 
 /* ════════════════════════
    CONCEPT E — B개조 · 03스타일
@@ -356,7 +356,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 .ce-lhead{height:52px;background:white;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 16px;gap:10px;flex-shrink:0;}
 .ce-lhead-back{display:flex;align-items:center;gap:4px;padding:7px 13px;border-radius:9px;border:.5px solid #D0D0CC;background:#F4F4F0;color:#555;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;transition:all .12s;}
 .ce-lhead-back:hover{background:#EAEAE6;}
-.ce-lhead-check{width:22px;height:22px;border-radius:50%;background:#EAFAF1;border:1.5px solid #27AE60;display:flex;align-items:center;justify-content:center;font-size:11px;margin-left:6px;}
+.ce-lhead-check{width:22px;height:22px;border-radius:50%;background:#ECFDF5;border:1.5px solid #10B981;display:flex;align-items:center;justify-content:center;font-size:11px;margin-left:6px;}
 .ce-lhead-title{font-size:14px;font-weight:700;color:#1A1A1A;}
 .ce-lhead-time{margin-left:auto;font-size:11px;color:#AAA;}
 
@@ -366,7 +366,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 .ce-cust-name{font-size:12px;font-weight:600;color:#1A1A1A;}
 .ce-cust-sub{font-size:10px;color:#AAA;margin-left:2px;}
 .ce-cust-right{margin-left:auto;display:flex;align-items:center;gap:8px;}
-.ce-pts-chip{font-size:10px;color:#1E8449;background:#EAFAF1;border-radius:12px;padding:3px 9px;font-weight:600;border:.5px solid #C8E6C9;}
+.ce-pts-chip{font-size:10px;color:#10B981;background:#ECFDF5;border-radius:12px;padding:3px 9px;font-weight:600;border:.5px solid #C8E6C9;}
 .ce-visit-chip{font-size:10px;color:#555;background:#F4F4F0;border-radius:12px;padding:3px 9px;border:.5px solid #E0E0DC;}
 
 /* 영수증 본문 스크롤 */
@@ -394,8 +394,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 .ce-row-disc{color:#E74C3C;font-weight:500;}
 .ce-row-change{color:#E67E22;font-weight:600;}
 .ce-coupon-row{display:flex;justify-content:space-between;font-size:10px;padding:3px 0;}
-.ce-coupon-label{color:#1E8449;}
-.ce-coupon-val{color:#1E8449;font-weight:600;}
+.ce-coupon-label{color:#10B981;}
+.ce-coupon-val{color:#10B981;font-weight:600;}
 .ce-method-row{display:flex;align-items:center;gap:8px;padding:4px 0;font-size:11px;}
 .ce-method-icon{font-size:14px;}
 .ce-method-name{color:#555;flex:1;font-weight:500;}
@@ -411,18 +411,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 .ce-rf-total{display:flex;justify-content:space-between;align-items:baseline;}
 .ce-rf-total-label{font-size:13px;font-weight:600;color:#1A1A1A;}
 .ce-rf-total-val{font-size:24px;font-weight:700;color:#1A1A1A;letter-spacing:-.02em;}
-.ce-rf-earn{font-size:10px;color:#1E8449;font-weight:500;margin-top:4px;text-align:right;}
+.ce-rf-earn{font-size:10px;color:#10B981;font-weight:500;margin-top:4px;text-align:right;}
 
 /* 하단 액션 버튼 */
 .ce-action-bar{display:flex;gap:8px;padding:10px 20px;border-top:.5px solid #F0F0EC;flex-shrink:0;background:white;}
 .ce-btn-sec{flex:1;padding:11px;border-radius:10px;border:.5px solid #D0D0CC;background:#F4F4F0;color:#555;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;transition:all .12s;}
 .ce-btn-sec:hover{background:#EAEAE6;border-color:#C0C0BC;}
-.ce-btn-pri{flex:2;padding:11px;border-radius:10px;background:#1C2833;color:white;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:background .12s;}
-.ce-btn-pri:hover{background:#2E4053;}
+.ce-btn-pri{flex:2;padding:11px;border-radius:10px;background:#1E3A8A;color:white;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:background .12s;}
+.ce-btn-pri:hover{background:#2D3A7A;}
 
 /* 오른쪽 패널 */
 .ce-right{width:300px;flex-shrink:0;border-left:.5px solid #E5E5E0;display:flex;flex-direction:column;background:white;overflow:hidden;}
-.ce-r-header{background:#1C2833;padding:11px 16px;display:flex;align-items:center;flex-shrink:0;}
+.ce-r-header{background:#1E3A8A;padding:11px 16px;display:flex;align-items:center;flex-shrink:0;}
 .ce-r-header-title{font-size:12px;font-weight:600;color:white;display:flex;align-items:center;gap:6px;}
 
 /* 다음 예약 */
@@ -430,8 +430,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 .ce-bk-label{font-size:9px;font-weight:700;color:#888;letter-spacing:.05em;margin-bottom:6px;}
 .ce-bk-date{font-size:15px;font-weight:700;color:#1A1A1A;margin-bottom:2px;}
 .ce-bk-detail{font-size:10px;color:#555;}
-.ce-bk-btn{margin-top:9px;width:100%;padding:9px;border-radius:8px;background:#1C2833;color:white;font-size:12px;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:background .12s;}
-.ce-bk-btn:hover{background:#2E4053;}
+.ce-bk-btn{margin-top:9px;width:100%;padding:9px;border-radius:8px;background:#1E3A8A;color:white;font-size:12px;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:background .12s;}
+.ce-bk-btn:hover{background:#2D3A7A;}
 
 /* 포인트 */
 .ce-pts-card{margin:9px 12px;border-radius:12px;border:.5px solid #E0E0DC;background:#FAFAF8;padding:12px;flex-shrink:0;}
@@ -439,7 +439,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 .ce-pc-row{display:flex;justify-content:space-between;font-size:12px;}
 .ce-pc-key{color:#999;}
 .ce-pc-val{color:#1A1A1A;font-weight:600;}
-.ce-pc-earn{color:#1E8449;font-weight:700;}
+.ce-pc-earn{color:#10B981;font-weight:700;}
 
 /* 오른쪽 액션 버튼 — oi 스타일 */
 .ce-r-actions{flex:1;overflow-y:auto;padding:8px 0;}
@@ -448,8 +448,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 .ce-ra-icon{font-size:16px;flex-shrink:0;}
 .ce-ra-text{font-size:12px;font-weight:500;color:#1A1A1A;text-align:left;}
 .ce-ra-arrow{margin-left:auto;font-size:11px;color:#CCC;}
-.ce-new-cust-btn{margin:0;padding:13px 16px;border-top:.5px solid #E5E5E0;background:#1C2833;color:white;font-size:13px;font-weight:700;border-left:none;border-right:none;border-bottom:none;cursor:pointer;font-family:inherit;flex-shrink:0;transition:background .12s;width:100%;}
-.ce-new-cust-btn:hover{background:#2E4053;}
+.ce-new-cust-btn{margin:0;padding:13px 16px;border-top:.5px solid #E5E5E0;background:#1E3A8A;color:white;font-size:13px;font-weight:700;border-left:none;border-right:none;border-bottom:none;cursor:pointer;font-family:inherit;flex-shrink:0;transition:background .12s;width:100%;}
+.ce-new-cust-btn:hover{background:#2D3A7A;}
 
 </style>
 </head>
@@ -567,7 +567,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
           </div>
         </button>
         <div style="margin-top:auto;padding-top:8px;border-top:.5px solid #F0F0EC;">
-          <button style="width:100%;padding:13px;border-radius:11px;background:#1C2833;color:white;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:inherit;">
+          <button style="width:100%;padding:13px;border-radius:11px;background:#1E3A8A;color:white;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:inherit;">
             次のお客様へ →
           </button>
         </div>
@@ -972,9 +972,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
       <div class="sidebar-sub">Hair Salon Yuki · 渋谷区</div>
     </div>
     <div class="sidebar-menu">
-      <div class="sb-item on"  onclick="closeSidebar()"><div class="sb-dot" style="background:#2E86C1"></div><span class="sb-label">会計</span></div>
+      <div class="sb-item on"  onclick="closeSidebar()"><div class="sb-dot" style="background:#3B5BDB"></div><span class="sb-label">会計</span></div>
       <div class="sb-item"    onclick="closeSidebar()"><div class="sb-dot" style="background:#8E44AD"></div><span class="sb-label">予約</span></div>
-      <div class="sb-item"    onclick="closeSidebar()"><div class="sb-dot" style="background:#1E8449"></div><span class="sb-label">顧客</span></div>
+      <div class="sb-item"    onclick="closeSidebar()"><div class="sb-dot" style="background:#10B981"></div><span class="sb-label">顧客</span></div>
       <div class="sb-item"    onclick="closeSidebar()"><div class="sb-dot" style="background:#C0392B"></div><span class="sb-label">スタッフ</span></div>
       <div class="sb-item"    onclick="closeSidebar()"><div class="sb-dot" style="background:#7D3C98"></div><span class="sb-label">在庫</span></div>
       <div class="sb-item"    onclick="closeSidebar()"><div class="sb-dot" style="background:#D4AC0D"></div><span class="sb-label">売上</span></div>

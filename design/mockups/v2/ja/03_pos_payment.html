@@ -6,14 +6,14 @@
 <title>03B · 会計 — salon-pos-v2 JA (Concept B)</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino Sans',sans-serif;background:#1C2833;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino Sans',sans-serif;background:#0F1D5C;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;}
 .ipad{width:1024px;height:768px;background:#F4F4F0;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.5);position:relative;}
 
 /* ── Topbar ── */
 .topbar{background:white;height:44px;display:flex;align-items:center;padding:0 16px;gap:10px;flex-shrink:0;border-bottom:.5px solid #E5E5E0;z-index:10;}
-.tb-menu{font-size:18px;color:#1C2833;cursor:pointer;padding:4px 6px;border-radius:6px;line-height:1;flex-shrink:0;user-select:none;}
+.tb-menu{font-size:18px;color:#1E3A8A;cursor:pointer;padding:4px 6px;border-radius:6px;line-height:1;flex-shrink:0;user-select:none;}
 .tb-menu:hover{background:#F4F4F0;}
-.tb-logo{font-size:13px;color:#1C2833;font-weight:500;letter-spacing:.08em;}
+.tb-logo{font-size:13px;color:#1E3A8A;font-weight:500;letter-spacing:.08em;}
 .tb-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
 .tb-sep{width:.5px;height:14px;background:#D0D0CC;}
 .tb-avatar{width:24px;height:24px;border-radius:50%;background:#8E44AD;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:500;color:white;}
@@ -25,7 +25,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 /* ── Sidebar ── */
 .sidebar-overlay{position:absolute;inset:0;background:rgba(0,0,0,.35);z-index:100;opacity:0;pointer-events:none;transition:opacity .2s;}
 .sidebar-overlay.open{opacity:1;pointer-events:all;}
-.sidebar{position:absolute;left:0;top:0;bottom:0;width:220px;background:#1C2833;z-index:101;transform:translateX(-100%);transition:transform .22s cubic-bezier(.25,.46,.45,.94);display:flex;flex-direction:column;box-shadow:4px 0 24px rgba(0,0,0,.3);}
+.sidebar{position:absolute;left:0;top:0;bottom:0;width:220px;background:#1E3A8A;z-index:101;transform:translateX(-100%);transition:transform .22s cubic-bezier(.25,.46,.45,.94);display:flex;flex-direction:column;box-shadow:4px 0 24px rgba(0,0,0,.3);}
 .sidebar.open{transform:translateX(0);}
 .sidebar-header{padding:20px 16px 14px;border-bottom:.5px solid rgba(255,255,255,.1);}
 .sidebar-logo{font-size:14px;color:white;font-weight:500;letter-spacing:.08em;}
@@ -53,8 +53,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 .plh-back{display:flex;align-items:center;gap:4px;padding:8px 14px;border-radius:9px;border:.5px solid #D0D0CC;background:#F4F4F0;color:#555;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .12s;}
 .plh-back:hover{background:#EAEAE6;border-color:#C0C0BC;}
 .plh-title{font-size:14px;font-weight:700;color:#1A1A1A;margin-left:4px;}
-.plh-exec{margin-left:auto;display:flex;align-items:center;gap:8px;padding:10px 20px;border-radius:10px;background:#2E86C1;color:white;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:background .12s;white-space:nowrap;}
-.plh-exec:hover{background:#2471A3;}
+.plh-exec{margin-left:auto;display:flex;align-items:center;gap:8px;padding:10px 20px;border-radius:10px;background:#3B5BDB;color:white;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:background .12s;white-space:nowrap;}
+.plh-exec:hover{background:#3451C7;}
 .plh-exec:active{transform:scale(.98);}
 .plh-exec-amt{font-size:15px;}
 
@@ -72,8 +72,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 /* 고객/쿠폰 칩 */
 .chips-row{display:flex;gap:7px;padding:0 24px 12px;flex-shrink:0;}
 .chip{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;border:1px solid #E0E0DC;background:#FAFAF8;font-size:11px;color:#555;cursor:pointer;font-family:inherit;transition:all .12s;user-select:none;}
-.chip:hover{border-color:#2E86C1;color:#2E86C1;background:#EBF5FB;}
-.chip.applied{border-color:#1E8449;color:#1E8449;background:#EAFAF1;}
+.chip:hover{border-color:#3B5BDB;color:#3B5BDB;background:#EEF2FF;}
+.chip.applied{border-color:#10B981;color:#10B981;background:#ECFDF5;}
 .chip-icon{font-size:13px;}
 .left-divider{height:.5px;background:#F0F0EC;margin:0 24px;flex-shrink:0;}
 
@@ -82,12 +82,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 .method-zone-label{font-size:12px;font-weight:600;color:#1A1A1A;margin-bottom:10px;}
 .method-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;}
 .mcard{padding:12px 8px 10px;border-radius:10px;border:1.5px solid #EAEAE6;background:white;cursor:pointer;text-align:center;transition:all .12s;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:4px;}
-.mcard:hover{border-color:#2E86C1;background:#EBF5FB;}
-.mcard.paid{border-color:#1E8449;background:#EAFAF1;}
+.mcard:hover{border-color:#3B5BDB;background:#EEF2FF;}
+.mcard.paid{border-color:#10B981;background:#ECFDF5;}
 .mcard-icon{font-size:20px;line-height:1;}
 .mcard-name{font-size:11px;font-weight:500;color:#1A1A1A;}
 .mcard-sub{font-size:9px;color:#AAA;margin-top:-1px;}
-.mcard.paid .mcard-name{color:#1E8449;font-weight:600;}
+.mcard.paid .mcard-name{color:#10B981;font-weight:600;}
 
 /* 분할払い 버튼 행 */
 .split-action-row{padding:0 24px 14px;flex-shrink:0;}
@@ -100,13 +100,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 .ls-row{display:flex;justify-content:space-between;font-size:11px;padding:2px 0;}
 .ls-label{color:#AAA;}
 .ls-val{color:#555;font-weight:500;}
-.ls-val.blue{color:#2E86C1;}
+.ls-val.blue{color:#3B5BDB;}
 
 /* ════════════════════════════════
    RIGHT PANEL — 주문내역
 ════════════════════════════════ */
 .pay-right{width:320px;flex-shrink:0;display:flex;flex-direction:column;border-left:.5px solid #E5E5E0;background:white;overflow:hidden;}
-.right-header{background:#1C2833;padding:11px 16px;display:flex;align-items:center;flex-shrink:0;}
+.right-header{background:#1E3A8A;padding:11px 16px;display:flex;align-items:center;flex-shrink:0;}
 .right-header-title{font-size:12px;font-weight:600;color:white;display:flex;align-items:center;gap:6px;}
 .right-list{flex:1;overflow-y:auto;padding:0;}
 .right-list::-webkit-scrollbar{width:3px;}
@@ -127,13 +127,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 .rf-label{color:#999;}
 .rf-val{font-weight:500;color:#1A1A1A;}
 .rf-disc{color:#E74C3C;font-weight:500;}
-.rf-pts{color:#2E86C1;font-weight:500;}
+.rf-pts{color:#3B5BDB;font-weight:500;}
 .rf-divider{height:.5px;background:#E5E5E0;margin:8px 0;}
 .rf-total{display:flex;justify-content:space-between;align-items:baseline;}
 .rf-total-label{font-size:13px;font-weight:600;}
 .rf-total-val{font-size:24px;font-weight:700;color:#1A1A1A;letter-spacing:-.02em;}
 .rf-tax{font-size:10px;color:#BBB;text-align:right;margin-top:2px;}
-.rf-earn{display:flex;align-items:center;justify-content:flex-end;gap:4px;margin-top:6px;font-size:11px;color:#2E86C1;font-weight:500;}
+.rf-earn{display:flex;align-items:center;justify-content:flex-end;gap:4px;margin-top:6px;font-size:11px;color:#3B5BDB;font-weight:500;}
 
 /* ════════════════════════════════
    MODALS — base
@@ -154,8 +154,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 .modal-btn{flex:1;padding:11px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;border:none;font-family:inherit;transition:all .12s;}
 .modal-btn-cancel{background:#F4F4F0;color:#666;}
 .modal-btn-cancel:hover{background:#EAEAE6;}
-.modal-btn-apply{background:#2E86C1;color:white;}
-.modal-btn-apply:hover{background:#2471A3;}
+.modal-btn-apply{background:#3B5BDB;color:white;}
+.modal-btn-apply:hover{background:#3451C7;}
 
 /* ── 결제수단 결제 모달 (NEW) ── */
 .method-pay-modal{width:460px;background:white;border-radius:16px;box-shadow:0 24px 80px rgba(0,0,0,.3);display:flex;flex-direction:column;overflow:hidden;}
@@ -169,21 +169,21 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 .cash-recv-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
 .cash-recv-label{font-size:12px;color:#999;white-space:nowrap;}
 .cash-recv-yen{font-size:16px;color:#888;}
-.cash-recv-inp{flex:1;border:none;border-bottom:2px solid #2E86C1;background:transparent;font-size:24px;font-weight:700;font-family:inherit;color:#1A1A1A;text-align:right;outline:none;padding-bottom:3px;}
+.cash-recv-inp{flex:1;border:none;border-bottom:2px solid #3B5BDB;background:transparent;font-size:24px;font-weight:700;font-family:inherit;color:#1A1A1A;text-align:right;outline:none;padding-bottom:3px;}
 .cash-quick{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px;}
 .cash-qbtn{padding:8px 6px;border-radius:8px;border:1px solid #E0E0DC;background:white;font-size:11px;font-weight:500;color:#555;cursor:pointer;font-family:inherit;text-align:center;transition:all .1s;}
-.cash-qbtn:hover{background:#EBF5FB;border-color:#2E86C1;color:#2E86C1;}
-.cash-change{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-radius:10px;background:#EAFAF1;}
+.cash-qbtn:hover{background:#EEF2FF;border-color:#3B5BDB;color:#3B5BDB;}
+.cash-change{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-radius:10px;background:#ECFDF5;}
 .cash-change.short{background:#FDEDEC;}
-.cc-label{font-size:12px;color:#1E8449;font-weight:500;}
-.cc-val{font-size:18px;font-weight:700;color:#1E8449;}
+.cc-label{font-size:12px;color:#10B981;font-weight:500;}
+.cc-val{font-size:18px;font-weight:700;color:#10B981;}
 .cash-change.short .cc-label,.cash-change.short .cc-val{color:#E74C3C;}
 /* 카드/QR/후불 섹션 */
 .terminal-box{background:#F9F9F7;border-radius:12px;padding:20px;display:flex;align-items:center;gap:14px;}
-.terminal-icon{width:50px;height:50px;border-radius:12px;background:#EBF5FB;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+.terminal-icon{width:50px;height:50px;border-radius:12px;background:#EEF2FF;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
 .terminal-info-name{font-size:13px;font-weight:600;color:#1A1A1A;margin-bottom:4px;}
-.terminal-ready{display:flex;align-items:center;gap:6px;font-size:11px;color:#1E8449;}
-.card-pulse{width:7px;height:7px;border-radius:50%;background:#1E8449;animation:pulse 1.4s ease-in-out infinite;flex-shrink:0;}
+.terminal-ready{display:flex;align-items:center;gap:6px;font-size:11px;color:#10B981;}
+.card-pulse{width:7px;height:7px;border-radius:50%;background:#10B981;animation:pulse 1.4s ease-in-out infinite;flex-shrink:0;}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.2;}}
 .qr-box{background:#F9F9F7;border-radius:12px;padding:18px;display:flex;align-items:center;gap:16px;}
 .qr-thumb{width:72px;height:72px;border:2px solid #1A1A1A;border-radius:8px;display:grid;grid-template-columns:repeat(4,1fr);gap:2px;padding:7px;flex-shrink:0;}
@@ -194,8 +194,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 .credit-box{background:#FEF9EC;border-radius:12px;padding:18px;border:1.5px solid #F5CBA7;}
 .credit-warn{display:flex;align-items:center;gap:8px;font-size:12px;color:#D35400;font-weight:600;margin-bottom:8px;}
 .credit-desc{font-size:11px;color:#888;line-height:1.6;}
-.mph-exec-btn{width:100%;margin-top:16px;padding:14px;border-radius:12px;background:#2E86C1;color:white;font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:background .12s;}
-.mph-exec-btn:hover{background:#2471A3;}
+.mph-exec-btn{width:100%;margin-top:16px;padding:14px;border-radius:12px;background:#3B5BDB;color:white;font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:background .12s;}
+.mph-exec-btn:hover{background:#3451C7;}
 .mph-exec-btn:active{transform:scale(.98);}
 
 /* ── 分割払い 모달 (NEW) ── */
@@ -203,7 +203,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 .split-modal-head{padding:14px 20px;border-bottom:.5px solid #F0F0EC;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
 .split-modal-title{font-size:14px;font-weight:700;color:#1A1A1A;display:flex;align-items:center;gap:8px;}
 .split-remaining-badge{padding:4px 12px;border-radius:20px;background:#FEF3E2;border:1px solid #F0A96E;font-size:12px;font-weight:700;color:#E67E22;}
-.split-remaining-badge.done{background:#EAFAF1;border-color:#82E0AA;color:#1E8449;}
+.split-remaining-badge.done{background:#ECFDF5;border-color:#82E0AA;color:#10B981;}
 .split-modal-body{display:flex;flex:1;overflow:hidden;min-height:0;}
 /* 좌 - 입력 영역 */
 .split-left{flex:1;display:flex;flex-direction:column;padding:16px 20px;border-right:.5px solid #F0F0EC;overflow-y:auto;min-height:0;}
@@ -260,11 +260,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 .sci-inp{flex:1;border:none;background:transparent;font-size:16px;font-weight:600;font-family:inherit;color:#1A1A1A;text-align:right;outline:none;}
 .sci-quick{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;}
 .sci-qbtn{padding:5px 2px;border-radius:6px;border:1px solid #E0E0DC;background:white;font-size:10px;color:#555;cursor:pointer;font-family:inherit;text-align:center;}
-.sci-qbtn:hover{background:#EBF5FB;border-color:#2E86C1;color:#2E86C1;}
-.sci-change{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;border-radius:7px;background:#EAFAF1;}
+.sci-qbtn:hover{background:#EEF2FF;border-color:#3B5BDB;color:#3B5BDB;}
+.sci-change{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;border-radius:7px;background:#ECFDF5;}
 .sci-change.short{background:#FDEDEC;}
-.sci-cc-label{font-size:10px;color:#1E8449;font-weight:500;}
-.sci-cc-val{font-size:13px;font-weight:700;color:#1E8449;}
+.sci-cc-label{font-size:10px;color:#10B981;font-weight:500;}
+.sci-cc-val{font-size:13px;font-weight:700;color:#10B981;}
 .sci-change.short .sci-cc-label,.sci-change.short .sci-cc-val{color:#E74C3C;}
 /* 분할 실행 버튼 */
 .split-pay-btn{width:100%;padding:12px;border-radius:10px;background:#E67E22;color:white;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:background .12s;flex-shrink:0;margin-top:8px;}
@@ -277,19 +277,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 .split-hist-item{background:white;border-radius:9px;border:1px solid #E0E0DC;padding:9px 12px;}
 .shi-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;}
 .shi-method{font-size:11px;font-weight:600;color:#1A1A1A;}
-.shi-amt{font-size:13px;font-weight:700;color:#1E8449;}
+.shi-amt{font-size:13px;font-weight:700;color:#10B981;}
 .shi-sub{font-size:10px;color:#AAA;}
 .split-hist-empty{font-size:11px;color:#CCC;text-align:center;padding:20px 0;}
 .split-progress{margin-top:auto;padding-top:12px;border-top:.5px solid #E5E5E0;}
 .sp-bar-label{display:flex;justify-content:space-between;font-size:10px;color:#888;margin-bottom:5px;}
 .sp-bar-wrap{height:6px;background:#E5E5E0;border-radius:3px;overflow:hidden;}
-.sp-bar-fill{height:100%;background:#1E8449;border-radius:3px;transition:width .3s;}
+.sp-bar-fill{height:100%;background:#10B981;border-radius:3px;transition:width .3s;}
 .sp-remaining{text-align:center;margin-top:8px;}
 .sp-rem-label{font-size:10px;color:#888;}
 .sp-rem-val{font-size:16px;font-weight:700;color:#1A1A1A;margin-top:2px;}
 /* split 모달 하단 */
 .split-modal-footer{padding:12px 20px;border-top:.5px solid #F0F0EC;display:flex;gap:8px;flex-shrink:0;}
-.split-done-btn{flex:1;padding:12px;border-radius:10px;background:#1E8449;color:white;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:background .12s;}
+.split-done-btn{flex:1;padding:12px;border-radius:10px;background:#10B981;color:white;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:background .12s;}
 .split-done-btn:hover{background:#196F3D;}
 .split-done-btn:disabled{background:#D0D0CC;cursor:default;}
 
@@ -297,28 +297,28 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 .cpm-modal{width:520px;background:white;border-radius:16px;box-shadow:0 24px 80px rgba(0,0,0,.3);overflow:hidden;display:flex;flex-direction:column;max-height:640px;}
 .cust-search-row{display:flex;gap:6px;}
 .cust-search-inp{flex:1;padding:8px 12px;border:.5px solid #E0E0DC;border-radius:8px;font-size:13px;font-family:inherit;outline:none;color:#1A1A1A;}
-.cust-search-inp:focus{border-color:#2E86C1;}
-.cust-search-btn{padding:8px 14px;border-radius:8px;background:#2E86C1;color:white;font-size:12px;font-weight:600;border:none;cursor:pointer;font-family:inherit;white-space:nowrap;}
-.cust-card-row{display:flex;align-items:center;gap:10px;margin-top:10px;padding:10px 12px;background:#F4F9FE;border-radius:10px;}
-.cust-av{width:36px;height:36px;border-radius:50%;background:#2E86C1;display:flex;align-items:center;justify-content:center;font-size:14px;color:white;font-weight:500;flex-shrink:0;}
+.cust-search-inp:focus{border-color:#3B5BDB;}
+.cust-search-btn{padding:8px 14px;border-radius:8px;background:#3B5BDB;color:white;font-size:12px;font-weight:600;border:none;cursor:pointer;font-family:inherit;white-space:nowrap;}
+.cust-card-row{display:flex;align-items:center;gap:10px;margin-top:10px;padding:10px 12px;background:#EEF2FF;border-radius:10px;}
+.cust-av{width:36px;height:36px;border-radius:50%;background:#3B5BDB;display:flex;align-items:center;justify-content:center;font-size:14px;color:white;font-weight:500;flex-shrink:0;}
 .cust-info{flex:1;}
 .cust-name{font-size:13px;font-weight:600;color:#1A1A1A;}
 .cust-sub{font-size:11px;color:#888;margin-top:1px;}
-.cust-pts-badge{font-size:13px;font-weight:700;color:#2E86C1;}
+.cust-pts-badge{font-size:13px;font-weight:700;color:#3B5BDB;}
 .cust-remove{font-size:11px;color:#E74C3C;cursor:pointer;padding:4px 8px;border-radius:6px;border:.5px solid #F5B7B1;background:#FEF0F0;}
 .cust-remove:hover{background:#FDEDEC;}
 .pts-row{display:flex;align-items:center;gap:8px;}
 .pts-balance{font-size:11px;color:#888;flex:1;}
-.pts-balance strong{color:#2E86C1;}
+.pts-balance strong{color:#3B5BDB;}
 .pts-inp{width:80px;padding:6px 10px;border:.5px solid #E0E0DC;border-radius:7px;font-size:13px;font-family:inherit;outline:none;text-align:right;}
 .pts-unit{font-size:12px;color:#888;}
-.pts-all-btn{font-size:11px;color:#2E86C1;border:.5px solid #AED6F1;border-radius:6px;padding:5px 10px;cursor:pointer;background:#EBF5FB;font-family:inherit;white-space:nowrap;}
+.pts-all-btn{font-size:11px;color:#3B5BDB;border:.5px solid #C5D0FC;border-radius:6px;padding:5px 10px;cursor:pointer;background:#EEF2FF;font-family:inherit;white-space:nowrap;}
 .memo-ta{width:100%;height:72px;border:.5px solid #E0E0DC;border-radius:8px;font-size:12px;font-family:inherit;padding:9px 12px;resize:none;outline:none;color:#555;line-height:1.6;}
-.memo-ta:focus{border-color:#2E86C1;}
+.memo-ta:focus{border-color:#3B5BDB;}
 .toggle-row{display:flex;align-items:center;justify-content:space-between;}
 .toggle-label{font-size:12px;color:#555;}
 .toggle-switch{width:36px;height:20px;border-radius:10px;background:#E0E0DC;position:relative;cursor:pointer;transition:.2s;flex-shrink:0;}
-.toggle-switch.on{background:#2E86C1;}
+.toggle-switch.on{background:#3B5BDB;}
 .toggle-knob{position:absolute;width:16px;height:16px;border-radius:50%;background:white;top:2px;left:2px;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2);}
 .toggle-switch.on .toggle-knob{left:18px;}
 
@@ -368,10 +368,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 
 /* Toast */
 .toast{position:fixed;top:18px;left:50%;transform:translateX(-50%) translateY(-16px);background:white;color:#1A1A1A;font-size:12px;font-weight:500;padding:10px 20px 10px 16px;border-radius:12px;z-index:9999;white-space:nowrap;opacity:0;pointer-events:none;transition:transform .22s,opacity .22s;box-shadow:0 6px 28px rgba(0,0,0,.18);border:.5px solid rgba(0,0,0,.08);display:flex;align-items:center;gap:8px;}
-.toast::before{content:'';width:3px;height:100%;background:#2E86C1;border-radius:2px;align-self:stretch;flex-shrink:0;}
+.toast::before{content:'';width:3px;height:100%;background:#3B5BDB;border-radius:2px;align-self:stretch;flex-shrink:0;}
 .toast.orange::before{background:#E67E22;}
 .toast.purple::before{background:#8E44AD;}
-.toast.green::before{background:#1E8449;}
+.toast.green::before{background:#10B981;}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
 </style>
 </head>
@@ -387,9 +387,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
     <div class="sidebar-sub">Hair Salon Yuki · 渋谷区</div>
   </div>
   <div class="sidebar-menu">
-    <div class="sidebar-item on"  onclick="closeSidebar()"><div class="sidebar-dot" style="background:#2E86C1"></div><span class="sidebar-label">会計</span></div>
+    <div class="sidebar-item on"  onclick="closeSidebar()"><div class="sidebar-dot" style="background:#3B5BDB"></div><span class="sidebar-label">会計</span></div>
     <div class="sidebar-item"    onclick="closeSidebar()"><div class="sidebar-dot" style="background:#8E44AD"></div><span class="sidebar-label">予約</span></div>
-    <div class="sidebar-item"    onclick="closeSidebar()"><div class="sidebar-dot" style="background:#1E8449"></div><span class="sidebar-label">顧客</span></div>
+    <div class="sidebar-item"    onclick="closeSidebar()"><div class="sidebar-dot" style="background:#10B981"></div><span class="sidebar-label">顧客</span></div>
     <div class="sidebar-item"    onclick="closeSidebar()"><div class="sidebar-dot" style="background:#C0392B"></div><span class="sidebar-label">スタッフ</span></div>
     <div class="sidebar-item"    onclick="closeSidebar()"><div class="sidebar-dot" style="background:#7D3C98"></div><span class="sidebar-label">在庫</span></div>
     <div class="sidebar-item"    onclick="closeSidebar()"><div class="sidebar-dot" style="background:#D4AC0D"></div><span class="sidebar-label">売上</span></div>
@@ -491,7 +491,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
 <div class="modal-overlay" id="methodPayOverlay" onclick="handleMethodPayOverlay(event)">
   <div class="method-pay-modal">
     <div class="mph-icon-header">
-      <div class="mph-icon" id="mphIcon" style="background:#EBF5FB;">💴</div>
+      <div class="mph-icon" id="mphIcon" style="background:#EEF2FF;">💴</div>
       <div class="mph-header-info">
         <div class="mph-header-name" id="mphName">現金</div>
         <div class="mph-header-sub" id="mphSub">お釣りを自動計算します</div>
@@ -695,7 +695,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
         <button class="chip" id="couponChip" onclick="openCouponModal()">
           <span class="chip-icon">🎟</span>クーポン適用
         </button>
-        <button class="chip" style="margin-left:auto;pointer-events:none;border-color:transparent;background:transparent;color:#2E86C1;">
+        <button class="chip" style="margin-left:auto;pointer-events:none;border-color:transparent;background:transparent;color:#3B5BDB;">
           <span class="chip-icon">⭐</span><span id="earnPts">+171pt 獲得予定</span>
         </button>
       </div>
@@ -825,14 +825,14 @@ const COUPONS = [
 const COUPON_CATS = ['全て','割引','特典','VIP','メニュー','期間限定'];
 
 const METHOD_META = {
-  cash:    {icon:'💴', name:'現金',    sub:'お釣りを自動計算します',      bg:'#EBF5FB'},
-  card:    {icon:'💳', name:'カード',  sub:'カード端末で決済してください', bg:'#EBF5FB'},
+  cash:    {icon:'💴', name:'現金',    sub:'お釣りを自動計算します',      bg:'#EEF2FF'},
+  card:    {icon:'💳', name:'カード',  sub:'カード端末で決済してください', bg:'#EEF2FF'},
   paypay:  {icon:'📱', name:'PayPay',  sub:'QRコードをお客様に提示',       bg:'#FDEDEC'},
-  linepay: {icon:'💬', name:'LINE Pay',sub:'QRコードをお客様に提示',       bg:'#EAFAF1'},
+  linepay: {icon:'💬', name:'LINE Pay',sub:'QRコードをお客様に提示',       bg:'#ECFDF5'},
   credit:  {icon:'📋', name:'後払い',  sub:'未収金として記録されます',      bg:'#FEF9EC'},
   kake:    {icon:'📒', name:'掛け売り',sub:'売掛として売上計上されます',    bg:'#FEF9EC'},
   ticket:  {icon:'🎫', name:'回数券',  sub:'チケット残数から差し引きます',  bg:'#F4ECF7'},
-  voucher: {icon:'🎁', name:'利用券',  sub:'ギフト券・商品券・金券',        bg:'#EAFAF1'},
+  voucher: {icon:'🎁', name:'利用券',  sub:'ギフト券・商品券・金券',        bg:'#ECFDF5'},
 };
 
 let ptsUsed = 0;
@@ -889,7 +889,7 @@ function updateLeftSummary() {
   });
   // ポイント
   if (ptsUsed > 0) {
-    rows.push(`<div class="ls-row"><span class="ls-label">ポイント使用 ${ptsUsed}pt</span><span class="ls-val" style="color:#2E86C1;">－¥${ptsUsed.toLocaleString()}</span></div>`);
+    rows.push(`<div class="ls-row"><span class="ls-label">ポイント使用 ${ptsUsed}pt</span><span class="ls-val" style="color:#3B5BDB;">－¥${ptsUsed.toLocaleString()}</span></div>`);
   }
   // クーポン (복수)
   selectedCoupons.forEach(c => {
@@ -1029,18 +1029,18 @@ function openMethodPay(m) {
             <div onclick="selectVoucher(${i},${v.val},'${v.name}')" id="vch-${i}" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;border:1.5px solid #E0E0DC;cursor:pointer;background:white;">
               <div style="font-size:18px;">🎁</div>
               <div style="flex:1;"><div style="font-size:12px;font-weight:600;color:#1A1A1A;">${v.name}</div></div>
-              <div style="font-size:13px;font-weight:700;color:#1E8449;">${v.label}</div>
+              <div style="font-size:13px;font-weight:700;color:#10B981;">${v.label}</div>
               <div style="width:18px;height:18px;border-radius:50%;border:1.5px solid #D0D0CC;" id="vch-radio-${i}"></div>
             </div>`).join('')}
         </div>
       </div>
-      <button class="mph-exec-btn" style="background:#1E8449;" id="voucherExecBtn" onclick="confirmMethodPay('voucher')" disabled>券を選択してください</button>`;
+      <button class="mph-exec-btn" style="background:#10B981;" id="voucherExecBtn" onclick="confirmMethodPay('voucher')" disabled>券を選択してください</button>`;
     window.selectVoucher = function(i, val, name) {
       document.querySelectorAll('[id^=vch-]').forEach(el => { if(!el.id.includes('radio')) el.style.borderColor='#E0E0DC'; });
       document.querySelectorAll('[id^=vch-radio-]').forEach(el => { el.style.background=''; el.style.borderColor='#D0D0CC'; });
-      document.getElementById('vch-'+i).style.borderColor = '#1E8449';
+      document.getElementById('vch-'+i).style.borderColor = '#10B981';
       const r = document.getElementById('vch-radio-'+i);
-      r.style.background = '#1E8449'; r.style.borderColor = '#1E8449';
+      r.style.background = '#10B981'; r.style.borderColor = '#10B981';
       const btn = document.getElementById('voucherExecBtn');
       btn.disabled = false; btn.textContent = `${name}で決済する`;
     };
