@@ -67,7 +67,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 /* ══════════════════════════════════════
    2열 래퍼: [cal-left] | [Zone F]
 ══════════════════════════════════════ */
-.cal-wrapper{flex:1;display:flex;overflow:hidden;}
+.cal-wrapper{flex:1;display:flex;overflow:hidden;position:relative;}
 
 /* ── 좌측 컬럼 ── */
 .cal-left{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
@@ -105,8 +105,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 .zb-vdd-item.active{color:#1E3A8A;background:#EEF2FF;}
 
 .zb-spacer{flex:1;}
-.zb-side-toggle{width:30px;height:30px;border-radius:7px;border:.5px solid #E0E0DC;background:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;flex-shrink:0;}
-.zb-side-toggle:hover{background:#EEF2FF;}
+/* zone-b 右端に tab 分の余白を確保 */
+.zone-b{padding-right:30px;}
 .zb-add-btn{display:flex;align-items:center;gap:4px;padding:7px 13px;border-radius:9px;background:#8E44AD;color:#fff;font-size:12px;font-weight:700;border:none;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0;box-shadow:0 2px 8px rgba(142,68,173,.3);transition:background .12s;}
 .zb-add-btn:hover{background:#7D3C98;}
 
@@ -265,6 +265,26 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
    役割: カレンダー補助情報 (ミニカレンダー・統計・ウェイティング)
    幅: 210px / 高さ: cal-wrapper 全高 (topbar の直下から)
 ══════════════════════════════════════ */
+/* スティッカータブ (Zone F 開閉トグル) — cal-wrapper 内の absolute 要素 */
+.zf-tab{
+  position:absolute;
+  right:210px;top:0;      /* Zone F が開いているときの位置 */
+  width:24px;height:46px;
+  background:#fff;
+  border:.5px solid #E5E5E0;
+  border-right:none;
+  border-radius:7px 0 0 7px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;color:#888;
+  cursor:pointer;
+  z-index:5;
+  box-shadow:-2px 2px 6px rgba(0,0,0,.06);
+  transition:right .2s, color .12s, background .12s;
+  user-select:none;
+}
+.zf-tab.closed{right:0;}  /* Zone F が閉じているときの位置 */
+.zf-tab:hover{background:#F8FAFF;color:#1E3A8A;}
+/* Zone F 本体 (元の動作を維持) */
 .zone-f{
   width:210px;flex-shrink:0;
   border-left:.5px solid #E5E5E0;
@@ -273,7 +293,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
   overflow:hidden;
   transition:width .2s,border-color .2s;
 }
-.zone-f.closed{width:0;border-left-color:transparent;overflow:hidden;}
+.zone-f.closed{width:0;border-left-color:transparent;}
 
 /* ── Zone F-1: ミニカレンダー ── */
 .zone-f1{padding:12px 10px 8px;border-bottom:.5px solid #F0F0EC;flex-shrink:0;}
@@ -513,7 +533,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
         </div>
 
         <div class="zb-spacer"></div>
-        <div class="zb-side-toggle" onclick="toggleSide()" title="サイドパネル">📊</div>
         <button class="zb-add-btn" onclick="toast('予約フォームへ → 07_booking_form')">＋ 予約追加</button>
       </div>
 
@@ -574,6 +593,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
       </div>
 
     </div><!-- /cal-left -->
+
+    <!-- Zone F トグルタブ (cal-wrapper 内で absolute 配置) -->
+    <div class="zf-tab" id="zfTab" onclick="toggleSide()">›</div>
 
     <!-- ══ ZONE F: サイドパネル ══ -->
     <div class="zone-f" id="zoneF">
@@ -981,6 +1003,8 @@ function jumpDate(d) {
 function toggleSide(){
   sideOpen=!sideOpen;
   document.getElementById('zoneF').classList.toggle('closed',!sideOpen);
+  document.getElementById('zfTab').classList.toggle('closed',!sideOpen);
+  document.getElementById('zfTab').textContent=sideOpen?'›':'‹';
 }
 function openSb(){ document.getElementById('sidebar').classList.add('open'); document.getElementById('sbOverlay').classList.add('open'); }
 function closeSb(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('sbOverlay').classList.remove('open'); }
