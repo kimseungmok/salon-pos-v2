@@ -91,10 +91,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 .zb-today-btn:hover{background:#F4F4F0;}
 .zb-date{font-size:14px;font-weight:700;color:#1A1A1A;min-width:150px;white-space:nowrap;}
 
-/* Concept B スタイルのセグメントタブ */
-.zb-view-tabs{display:flex;background:#F0F2F7;border-radius:9px;padding:3px;gap:2px;flex-shrink:0;}
-.zb-vt{padding:5px 12px;font-size:12px;font-weight:600;color:#999;cursor:pointer;border-radius:7px;background:transparent;border:none;font-family:inherit;white-space:nowrap;transition:all .15s;}
-.zb-vt.active{background:#fff;color:#1E3A8A;box-shadow:0 1px 4px rgba(0,0,0,.1);}
+/* ビュードロップダウン */
+.zb-view-dd{position:relative;flex-shrink:0;}
+.zb-vdd-btn{display:flex;align-items:center;gap:5px;padding:5px 11px;border-radius:8px;border:.5px solid #E0E0DC;background:#fff;cursor:pointer;font-family:inherit;font-size:12px;font-weight:700;color:#1E3A8A;white-space:nowrap;transition:all .12s;}
+.zb-vdd-btn:hover{border-color:#C5D0FC;background:#F8FAFF;}
+.zb-vdd-btn.open{border-color:#1E3A8A;background:#EEF2FF;}
+.zb-vdd-caret{font-size:10px;color:#aaa;transition:transform .15s;margin-left:2px;}
+.zb-vdd-btn.open .zb-vdd-caret{transform:rotate(180deg);}
+.zb-vdd-menu{position:absolute;top:calc(100% + 5px);left:0;background:#fff;border:.5px solid #E0E0DC;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:150;min-width:110px;overflow:hidden;display:none;}
+.zb-vdd-menu.open{display:block;}
+.zb-vdd-item{padding:8px 14px;font-size:12px;font-weight:600;color:#555;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;transition:background .1s;}
+.zb-vdd-item:hover{background:#F8FAFF;color:#1E3A8A;}
+.zb-vdd-item.active{color:#1E3A8A;background:#EEF2FF;}
 
 .zb-spacer{flex:1;}
 .zb-side-toggle{width:30px;height:30px;border-radius:7px;border:.5px solid #E0E0DC;background:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;flex-shrink:0;}
@@ -167,8 +175,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
   display:flex;
 }
 .zd-gutter{width:50px;flex-shrink:0;border-right:.5px solid #E5E5E0;background:#FAFAFA;}
-.zd-cols{flex:1;display:flex;}
-.zd-col{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;border-right:.5px solid #EBEBEB;font-size:11px;font-weight:700;color:#333;}
+.zd-cols-outer{flex:1;overflow:hidden;}
+.zd-cols{display:flex;}
+.zd-col{width:191px;flex-shrink:0;display:flex;align-items:center;justify-content:center;gap:5px;border-right:.5px solid #EBEBEB;font-size:11px;font-weight:700;color:#333;}
 .zd-col:last-child{border-right:none;}
 .zd-col.dim{opacity:.35;}
 .zd-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
@@ -193,8 +202,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 .ze-time-cell{height:40px;display:flex;align-items:flex-start;justify-content:flex-end;padding:3px 7px 0;font-size:10px;color:#bbb;border-bottom:.5px solid #EBEBEB;}
 
 /* スタッフ列 */
-.ze-staff-cols{flex:1;display:flex;}
-.ze-col{flex:1;position:relative;border-right:.5px solid #EBEBEB;}
+.ze-cols-outer{flex:1;overflow-x:auto;overflow-y:visible;cursor:grab;user-select:none;}
+.ze-cols-outer::-webkit-scrollbar{height:0;}
+.ze-cols-outer.dragging{cursor:grabbing;}
+.ze-staff-cols{display:flex;position:relative;}
+.ze-col{width:191px;flex-shrink:0;position:relative;border-right:.5px solid #EBEBEB;}
 .ze-col:last-child{border-right:none;}
 .ze-col.dim{background:repeating-linear-gradient(45deg,#F9F9F7,#F9F9F7 3px,#FAFAF8 3px,#FAFAF8 7px);}
 .ze-h-line{position:absolute;left:0;right:0;height:.5px;background:#EBEBEB;pointer-events:none;}
@@ -437,22 +449,21 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
         <div class="zb-nav-btn" onclick="navigate(1)">›</div>
         <span class="zb-date" id="calDate">2026年6月19日 (木)</span>
 
-        <div class="zb-view-tabs">
-          <div class="zb-vt active" onclick="switchView('day',this)">日</div>
-          <div class="zb-vt" onclick="switchView('week',this)">週</div>
-          <div class="zb-vt" onclick="switchView('month',this)">月</div>
-          <div class="zb-vt" onclick="switchView('list',this)">一覧</div>
+        <!-- ビュードロップダウン -->
+        <div class="zb-view-dd" id="viewDd">
+          <button class="zb-vdd-btn" id="vddBtn" onclick="toggleViewDd(event)">
+            <span id="vddLabel">日</span>
+            <span class="zb-vdd-caret">▼</span>
+          </button>
+          <div class="zb-vdd-menu" id="vddMenu">
+            <div class="zb-vdd-item active" id="vdd-day"   onclick="vddSelect('day')">日<span id="vdd-check-day" style="color:#1E3A8A">✓</span></div>
+            <div class="zb-vdd-item"        id="vdd-week"  onclick="vddSelect('week')">週<span id="vdd-check-week"></span></div>
+            <div class="zb-vdd-item"        id="vdd-month" onclick="vddSelect('month')">月<span id="vdd-check-month"></span></div>
+            <div class="zb-vdd-item"        id="vdd-list"  onclick="vddSelect('list')">一覧<span id="vdd-check-list"></span></div>
+          </div>
         </div>
 
-        <div class="zb-spacer"></div>
-        <div class="zb-side-toggle" onclick="toggleSide()" title="サイドパネル">📊</div>
-        <button class="zb-add-btn" onclick="toast('予約フォームへ → 07_booking_form')">＋ 予約追加</button>
-      </div>
-
-      <!-- ══ ZONE C: スタッフセレクター ══ -->
-      <div class="zone-c">
-        <span class="zc-label">スタッフ</span>
-
+        <!-- スタッフドロップダウン (Zone C から移動、ラベルなし) -->
         <div class="staff-dd" id="staffDd">
           <button class="sdd-btn" id="sddBtn" onclick="toggleDd(event)">
             <div class="sdd-preview" id="sddPreview">
@@ -460,7 +471,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
             </div>
             <span class="sdd-caret">▼</span>
           </button>
-
           <div class="sdd-menu" id="sddMenu">
             <div class="sdd-menu-header">表示スタッフ</div>
             <div class="sdd-item selected" id="sdd-all" onclick="sddSelect('all')">
@@ -487,6 +497,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
               <span class="sdd-item-count">4件</span>
               <span class="sdd-check" id="sdd-check-2">✓</span>
             </div>
+            <div class="sdd-item selected" id="sdd-4" onclick="sddSelect(4)">
+              <div class="sdd-item-dot" style="background:#10B981"></div>
+              <span class="sdd-item-name">Rio</span>
+              <span class="sdd-item-count">4件</span>
+              <span class="sdd-check" id="sdd-check-4">✓</span>
+            </div>
             <div class="sdd-item dim" onclick="toast('Hana は本日休日です')">
               <div class="sdd-item-dot" style="background:#ccc"></div>
               <span class="sdd-item-name">Hana</span>
@@ -496,8 +512,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
           </div>
         </div>
 
-        <!-- 選択中タグ (ドロップダウン外側に表示) -->
-        <div class="zc-selected-tags" id="zcTags"></div>
+        <div class="zb-spacer"></div>
+        <div class="zb-side-toggle" onclick="toggleSide()" title="サイドパネル">📊</div>
+        <button class="zb-add-btn" onclick="toast('予約フォームへ → 07_booking_form')">＋ 予約追加</button>
       </div>
 
       <!-- View panels -->
@@ -507,7 +524,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
         <!-- ZONE D -->
         <div class="zone-d">
           <div class="zd-gutter"></div>
-          <div class="zd-cols" id="zdCols"></div>
+          <div class="zd-cols-outer" id="zdColsOuter">
+            <div class="zd-cols" id="zdCols"></div>
+          </div>
         </div>
 
         <!-- ZONE E -->
@@ -515,7 +534,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
           <div class="ze-scroll">
             <div class="ze-grid">
               <div class="ze-time-gutter" id="zeTimeGutter"></div>
-              <div class="ze-staff-cols" id="zeStaffCols"></div>
+              <div class="ze-cols-outer" id="zeColsOuter">
+                <div class="ze-staff-cols" id="zeStaffCols"></div>
+              </div>
             </div>
           </div>
         </div>
@@ -603,7 +624,9 @@ const STAFF = [
   {name:'Mika',  color:'#3B5BDB', off:false},
   {name:'Kenji', color:'#E67E22', off:false},
   {name:'Hana',  color:'#888',    off:true},
+  {name:'Rio',   color:'#10B981', off:false},
 ];
+const COL_W = 191;
 const SC = {done:'#888',checkin:'#3B5BDB',confirmed:'#10B981',pending:'#D4AC0D',noshow:'#8E44AD',block:'#555'};
 const SL = {done:'完了',checkin:'チェックイン',confirmed:'確定',pending:'仮予約',noshow:'ノーショー',block:'ブロック'};
 const DOW = ['日','月','火','水','木','金','土'];
@@ -627,6 +650,11 @@ const BK = [
   {s:2,sh:11,sm:30, dur:120, name:'松本 えり',    svc:'デジタルパーマ',  price:33000, status:'checkin'},
   {s:2,sh:14,sm:0,  dur:60,  name:'井上 るか',    svc:'ヘアセット',      price:6600,  status:'confirmed'},
   {s:2,sh:15,sm:30, dur:90,  name:'木村 あや',    svc:'グラデーション',  price:19800, status:'pending'},
+  // Rio (s:4)
+  {s:4,sh:9, sm:30, dur:60,  name:'藤原 のの',   svc:'カット',          price:5500,  status:'done'},
+  {s:4,sh:11,sm:0,  dur:90,  name:'上田 さな',   svc:'カラー＋ケア',    price:13200, status:'confirmed'},
+  {s:4,sh:13,sm:30, dur:60,  name:'石井 みお',   svc:'トリートメント',  price:8800,  status:'confirmed'},
+  {s:4,sh:16,sm:0,  dur:60,  name:'丸山 るな',   svc:'カット＋ブロー',  price:8800,  status:'pending'},
 ];
 
 const WAITING = [
@@ -637,8 +665,8 @@ const WAITING = [
 
 // ── State ────────────────────────────────────────────────────────────────
 let curView='day', curDate=new Date(2026,5,19), sideOpen=true;
-let filters=new Set(['all',0,1,2]);
-let ddOpen=false;
+let filters=new Set(['all',0,1,2,4]);
+let ddOpen=false, vddOpen=false;
 
 // ── Helpers ──────────────────────────────────────────────────────────────
 const toTop  = (h,m)=>(h-9)*40+m*(40/60);
@@ -646,19 +674,22 @@ const fmtT   = (h,m)=>`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}
 const endT   = b=>{ const t=b.sh*60+b.sm+b.dur; return fmtT(Math.floor(t/60),t%60); };
 const fmtY   = n=>`¥${n.toLocaleString()}`;
 const filtBK = ()=>filters.has('all')?BK:BK.filter(b=>filters.has(b.s));
-const visStaff = ()=>STAFF.map((st,i)=>({...st,i})).filter(st=>!st.off&&(filters.has('all')||filters.has(st.i)));
+// off staff always shown (as dimmed column); active staff filtered by selection
+const visStaff = ()=>STAFF.map((st,i)=>({...st,i})).filter(st=>st.off||(filters.has('all')||filters.has(st.i)));
 
 // ── DAY VIEW ─────────────────────────────────────────────────────────────
 function buildDay() {
   const bks=filtBK();
   const vis=visStaff();
+  const totalW=vis.length*COL_W;
 
-  // Zone D: スタッフコラムヘッダー
+  // Zone D: スタッフコラムヘッダー (固定幅・スクロール同期)
+  document.getElementById('zdCols').style.width=totalW+'px';
   document.getElementById('zdCols').innerHTML = vis.map(st=>{
     const cnt=bks.filter(b=>b.s===st.i&&b.status!=='block').length;
-    return `<div class="zd-col">
+    return `<div class="zd-col${st.off?' dim':''}">
       <div class="zd-dot" style="background:${st.color}"></div>
-      ${st.name}<span class="zd-count">${cnt}件</span>
+      ${st.name}${st.off?'<span class="zd-count" style="color:#ccc;">休</span>':`<span class="zd-count">${cnt}件</span>`}
     </div>`;
   }).join('');
 
@@ -669,13 +700,17 @@ function buildDay() {
 
   // Zone E: スタッフ列 + 予約ブロック (Concept B スタイル)
   const nowTop=toTop(10,24);
-  document.getElementById('zeStaffCols').innerHTML = vis.map((st,ci)=>{
+  const colsEl=document.getElementById('zeStaffCols');
+  colsEl.style.width=totalW+'px';
+  // NOW ライン — ze-staff-cols 全幅に配置
+  const nowLineHtml=`<div class="ze-now-line" data-time="10:24" style="top:${nowTop}px;width:${totalW}px;position:absolute;left:0;z-index:20;"></div>`;
+  const colsHtml=vis.map(st=>{
     let lines='';
     for(let h=9;h<=19;h++){
       lines+=`<div class="ze-h-line" style="top:${toTop(h,0)}px"></div>`;
       if(h<19) lines+=`<div class="ze-h-line ze-h-half" style="top:${toTop(h,30)}px"></div>`;
     }
-    const blocks=bks.filter(b=>b.s===st.i).map(b=>{
+    const blocks=st.off?'':(bks.filter(b=>b.s===st.i).map(b=>{
       const top=toTop(b.sh,b.sm);
       const ht=Math.max(22, b.dur*(40/60)-2);
       const isBlock=b.status==='block';
@@ -699,11 +734,10 @@ function buildDay() {
           ${showBadge?`<div class="status-badge sb-${b.status}">${SL[b.status]}</div>`:''}
         </div>
       </div>`;
-    }).join('');
-    // NOW ライン (最初の列のみ)
-    const nowLine=ci===0?`<div class="ze-now-line" data-time="10:24" style="top:${nowTop}px"></div>`:'';
-    return `<div class="ze-col" style="height:${11*40+10}px;flex:1;">${lines}${blocks}${nowLine}</div>`;
+    }).join(''));
+    return `<div class="ze-col${st.off?' dim':''}" style="height:${11*40+10}px;">${lines}${blocks}</div>`;
   }).join('');
+  colsEl.innerHTML=nowLineHtml+colsHtml;
 }
 
 // ── WEEK VIEW ─────────────────────────────────────────────────────────────
@@ -833,6 +867,29 @@ function buildWaiting() {
     </div>`).join('');
 }
 
+// ── View Dropdown ─────────────────────────────────────────────────────────
+const VIEW_LABELS={'day':'日','week':'週','month':'月','list':'一覧'};
+function toggleViewDd(e) {
+  e.stopPropagation();
+  vddOpen=!vddOpen;
+  document.getElementById('vddMenu').classList.toggle('open',vddOpen);
+  document.getElementById('vddBtn').classList.toggle('open',vddOpen);
+}
+function vddSelect(v) {
+  vddOpen=false;
+  document.getElementById('vddMenu').classList.remove('open');
+  document.getElementById('vddBtn').classList.remove('open');
+  ['day','week','month','list'].forEach(k=>{
+    document.getElementById('vdd-'+k).classList.toggle('active',k===v);
+    document.getElementById('vdd-check-'+k).textContent=k===v?'✓':'';
+  });
+  document.getElementById('vddLabel').textContent=VIEW_LABELS[v];
+  curView=v;
+  document.querySelectorAll('.view-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('view-'+v).classList.add('active');
+  render();
+}
+
 // ── Staff Dropdown ────────────────────────────────────────────────────────
 function toggleDd(e) {
   e.stopPropagation();
@@ -842,16 +899,17 @@ function toggleDd(e) {
 }
 document.addEventListener('click',()=>{
   if(ddOpen){ ddOpen=false; document.getElementById('sddMenu').classList.remove('open'); document.getElementById('sddBtn').classList.remove('open'); }
+  if(vddOpen){ vddOpen=false; document.getElementById('vddMenu').classList.remove('open'); document.getElementById('vddBtn').classList.remove('open'); }
 });
 
 function sddSelect(key) {
   if(key==='all'){
-    filters=new Set(['all',0,1,2]);
+    filters=new Set(['all',0,1,2,4]);
   } else {
     filters.delete('all');
     if(filters.has(key)) filters.delete(key);
     else filters.add(key);
-    if(filters.size===0) filters=new Set(['all',0,1,2]);
+    if(filters.size===0) filters=new Set(['all',0,1,2,4]);
   }
   updateDdUI();
   render();
@@ -862,36 +920,25 @@ function updateDdUI() {
   // チェックマーク更新
   document.getElementById('sdd-all').classList.toggle('selected',isAll);
   document.getElementById('sdd-check-all').textContent=isAll?'✓':'';
-  [0,1,2].forEach(i=>{
+  [0,1,2,4].forEach(i=>{
     const on=isAll||filters.has(i);
     document.getElementById(`sdd-${i}`).classList.toggle('selected',on);
     document.getElementById(`sdd-check-${i}`).textContent=on?'✓':'';
   });
   // ボタンラベル更新
+  const activeCount=STAFF.filter(s=>!s.off).length;
   let label='';
-  if(isAll) label=`全スタッフ (3名)`;
+  if(isAll) label=`全スタッフ (${activeCount}名)`;
   else {
-    const names=STAFF.filter((_,i)=>filters.has(i)).map(s=>s.name);
+    const names=STAFF.filter((s,i)=>!s.off&&filters.has(i)).map(s=>s.name);
     label=names.join('、');
   }
   document.getElementById('sddLabel').textContent=label;
-  // タグ更新
-  const tags=isAll?[]:STAFF.filter((_,i)=>filters.has(i));
-  document.getElementById('zcTags').innerHTML=tags.map(st=>
-    `<div class="zc-tag" style="background:${st.color}18;color:${st.color};">
-      <div style="width:5px;height:5px;border-radius:50%;background:${st.color};flex-shrink:0;"></div>
-      ${st.name}
-    </div>`).join('');
 }
 
 // ── Navigation ────────────────────────────────────────────────────────────
-function switchView(v,el) {
-  curView=v;
-  document.querySelectorAll('.view-panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.zb-vt').forEach(t=>t.classList.remove('active'));
-  document.getElementById('view-'+v).classList.add('active');
-  if(el) el.classList.add('active');
-  render();
+function switchView(v) {
+  vddSelect(v);
 }
 
 function render() {
@@ -947,6 +994,60 @@ function tick(){
   const el=document.getElementById('tbTime');
   if(el) el.textContent=`${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} ${DOW[d.getDay()]}　${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
 }
+
+// ── Horizontal Drag Scroll (Zone E) ───────────────────────────────────────
+(function(){
+  let isDown=false, startX=0, scrollLeft=0;
+  function getOuter(){ return document.getElementById('zeColsOuter'); }
+  function getHead(){  return document.getElementById('zdColsOuter'); }
+
+  document.addEventListener('mousedown',e=>{
+    const el=getOuter(); if(!el||!el.contains(e.target)) return;
+    isDown=true; startX=e.pageX-el.offsetLeft; scrollLeft=el.scrollLeft;
+    el.classList.add('dragging'); e.preventDefault();
+  });
+  document.addEventListener('mouseup',()=>{
+    if(!isDown) return; isDown=false;
+    const el=getOuter(); if(el) el.classList.remove('dragging');
+    snapBack();
+  });
+  document.addEventListener('mousemove',e=>{
+    if(!isDown) return;
+    const el=getOuter(); if(!el) return;
+    const x=e.pageX-el.offsetLeft;
+    el.scrollLeft=scrollLeft-(x-startX);
+    syncHead(el.scrollLeft);
+  });
+  // touch
+  document.addEventListener('touchstart',e=>{
+    const el=getOuter(); if(!el||!el.contains(e.target)) return;
+    isDown=true; startX=e.touches[0].pageX-el.offsetLeft; scrollLeft=el.scrollLeft;
+  },{passive:true});
+  document.addEventListener('touchend',()=>{
+    if(!isDown) return; isDown=false; snapBack();
+  });
+  document.addEventListener('touchmove',e=>{
+    if(!isDown) return;
+    const el=getOuter(); if(!el) return;
+    const x=e.touches[0].pageX-el.offsetLeft;
+    el.scrollLeft=scrollLeft-(x-startX);
+    syncHead(el.scrollLeft);
+  },{passive:true});
+
+  function syncHead(sl){
+    const h=getHead(); if(h) h.scrollLeft=sl;
+  }
+  function snapBack(){
+    const el=getOuter(); if(!el) return;
+    const maxScroll=el.scrollWidth-el.clientWidth;
+    if(el.scrollLeft>=maxScroll){
+      // rubber-band: snap back to end
+      el.style.transition='scroll-behavior .3s';
+      el.scrollLeft=maxScroll;
+    }
+    // if over-scrolled past 0 (browsers handle this natively)
+  }
+})();
 
 // ── Init ──────────────────────────────────────────────────────────────────
 buildMiniCal();
