@@ -503,11 +503,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
               <span class="sdd-item-count">4件</span>
               <span class="sdd-check" id="sdd-check-4">✓</span>
             </div>
-            <div class="sdd-item dim" onclick="toast('Hana は本日休日です')">
-              <div class="sdd-item-dot" style="background:#ccc"></div>
+            <div class="sdd-item selected" id="sdd-3" onclick="sddSelect(3)">
+              <div class="sdd-item-dot" style="background:#888"></div>
               <span class="sdd-item-name">Hana</span>
-              <span class="sdd-item-off">本日休</span>
-              <span class="sdd-check"></span>
+              <span class="sdd-item-count">2件</span>
+              <span class="sdd-check" id="sdd-check-3">✓</span>
             </div>
           </div>
         </div>
@@ -623,7 +623,7 @@ const STAFF = [
   {name:'Yuki',  color:'#8E44AD', off:false},
   {name:'Mika',  color:'#3B5BDB', off:false},
   {name:'Kenji', color:'#E67E22', off:false},
-  {name:'Hana',  color:'#888',    off:true},
+  {name:'Hana',  color:'#E91E8C', off:false},
   {name:'Rio',   color:'#10B981', off:false},
 ];
 const COL_W = 191;
@@ -650,6 +650,9 @@ const BK = [
   {s:2,sh:11,sm:30, dur:120, name:'松本 えり',    svc:'デジタルパーマ',  price:33000, status:'checkin'},
   {s:2,sh:14,sm:0,  dur:60,  name:'井上 るか',    svc:'ヘアセット',      price:6600,  status:'confirmed'},
   {s:2,sh:15,sm:30, dur:90,  name:'木村 あや',    svc:'グラデーション',  price:19800, status:'pending'},
+  // Hana (s:3) — 休日なのに予約が入っている
+  {s:3,sh:10,sm:0,  dur:60,  name:'野口 あみ',   svc:'カット',          price:5500,  status:'confirmed'},
+  {s:3,sh:14,sm:0,  dur:90,  name:'長谷川 さき', svc:'カラー＋ケア',    price:13200, status:'pending'},
   // Rio (s:4)
   {s:4,sh:9, sm:30, dur:60,  name:'藤原 のの',   svc:'カット',          price:5500,  status:'done'},
   {s:4,sh:11,sm:0,  dur:90,  name:'上田 さな',   svc:'カラー＋ケア',    price:13200, status:'confirmed'},
@@ -665,7 +668,7 @@ const WAITING = [
 
 // ── State ────────────────────────────────────────────────────────────────
 let curView='day', curDate=new Date(2026,5,19), sideOpen=true;
-let filters=new Set(['all',0,1,2,4]);
+let filters=new Set(['all',0,1,2,3,4]);
 let ddOpen=false, vddOpen=false;
 
 // ── Helpers ──────────────────────────────────────────────────────────────
@@ -674,8 +677,7 @@ const fmtT   = (h,m)=>`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}
 const endT   = b=>{ const t=b.sh*60+b.sm+b.dur; return fmtT(Math.floor(t/60),t%60); };
 const fmtY   = n=>`¥${n.toLocaleString()}`;
 const filtBK = ()=>filters.has('all')?BK:BK.filter(b=>filters.has(b.s));
-// off staff always shown (as dimmed column); active staff filtered by selection
-const visStaff = ()=>STAFF.map((st,i)=>({...st,i})).filter(st=>st.off||(filters.has('all')||filters.has(st.i)));
+const visStaff = ()=>STAFF.map((st,i)=>({...st,i})).filter(st=>filters.has('all')||filters.has(st.i));
 
 // ── DAY VIEW ─────────────────────────────────────────────────────────────
 function buildDay() {
@@ -687,9 +689,9 @@ function buildDay() {
   document.getElementById('zdCols').style.width=totalW+'px';
   document.getElementById('zdCols').innerHTML = vis.map(st=>{
     const cnt=bks.filter(b=>b.s===st.i&&b.status!=='block').length;
-    return `<div class="zd-col${st.off?' dim':''}">
+    return `<div class="zd-col">
       <div class="zd-dot" style="background:${st.color}"></div>
-      ${st.name}${st.off?'<span class="zd-count" style="color:#ccc;">休</span>':`<span class="zd-count">${cnt}件</span>`}
+      ${st.name}<span class="zd-count">${cnt}件</span>
     </div>`;
   }).join('');
 
@@ -710,7 +712,7 @@ function buildDay() {
       lines+=`<div class="ze-h-line" style="top:${toTop(h,0)}px"></div>`;
       if(h<19) lines+=`<div class="ze-h-line ze-h-half" style="top:${toTop(h,30)}px"></div>`;
     }
-    const blocks=st.off?'':(bks.filter(b=>b.s===st.i).map(b=>{
+    const blocks=bks.filter(b=>b.s===st.i).map(b=>{
       const top=toTop(b.sh,b.sm);
       const ht=Math.max(22, b.dur*(40/60)-2);
       const isBlock=b.status==='block';
@@ -734,8 +736,8 @@ function buildDay() {
           ${showBadge?`<div class="status-badge sb-${b.status}">${SL[b.status]}</div>`:''}
         </div>
       </div>`;
-    }).join(''));
-    return `<div class="ze-col${st.off?' dim':''}" style="height:${11*40+10}px;">${lines}${blocks}</div>`;
+    }).join('');
+    return `<div class="ze-col" style="height:${11*40+10}px;">${lines}${blocks}</div>`;
   }).join('');
   colsEl.innerHTML=nowLineHtml+colsHtml;
 }
@@ -904,12 +906,12 @@ document.addEventListener('click',()=>{
 
 function sddSelect(key) {
   if(key==='all'){
-    filters=new Set(['all',0,1,2,4]);
+    filters=new Set(['all',0,1,2,3,4]);
   } else {
     filters.delete('all');
     if(filters.has(key)) filters.delete(key);
     else filters.add(key);
-    if(filters.size===0) filters=new Set(['all',0,1,2,4]);
+    if(filters.size===0) filters=new Set(['all',0,1,2,3,4]);
   }
   updateDdUI();
   render();
@@ -920,17 +922,16 @@ function updateDdUI() {
   // チェックマーク更新
   document.getElementById('sdd-all').classList.toggle('selected',isAll);
   document.getElementById('sdd-check-all').textContent=isAll?'✓':'';
-  [0,1,2,4].forEach(i=>{
+  [0,1,2,3,4].forEach(i=>{
     const on=isAll||filters.has(i);
     document.getElementById(`sdd-${i}`).classList.toggle('selected',on);
     document.getElementById(`sdd-check-${i}`).textContent=on?'✓':'';
   });
   // ボタンラベル更新
-  const activeCount=STAFF.filter(s=>!s.off).length;
   let label='';
-  if(isAll) label=`全スタッフ (${activeCount}名)`;
+  if(isAll) label=`全スタッフ (${STAFF.length}名)`;
   else {
-    const names=STAFF.filter((s,i)=>!s.off&&filters.has(i)).map(s=>s.name);
+    const names=STAFF.filter((s,i)=>filters.has(i)).map(s=>s.name);
     label=names.join('、');
   }
   document.getElementById('sddLabel').textContent=label;
