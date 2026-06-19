@@ -469,21 +469,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
         <div class="zb-nav-btn" onclick="navigate(1)">›</div>
         <span class="zb-date" id="calDate">2026年6月19日 (木)</span>
 
-        <!-- ビュードロップダウン -->
-        <div class="zb-view-dd" id="viewDd">
-          <button class="zb-vdd-btn" id="vddBtn" onclick="toggleViewDd(event)">
-            <span id="vddLabel">日</span>
-            <span class="zb-vdd-caret">▼</span>
-          </button>
-          <div class="zb-vdd-menu" id="vddMenu">
-            <div class="zb-vdd-item active" id="vdd-day"   onclick="vddSelect('day')">日<span id="vdd-check-day" style="color:#1E3A8A">✓</span></div>
-            <div class="zb-vdd-item"        id="vdd-week"  onclick="vddSelect('week')">週<span id="vdd-check-week"></span></div>
-            <div class="zb-vdd-item"        id="vdd-month" onclick="vddSelect('month')">月<span id="vdd-check-month"></span></div>
-            <div class="zb-vdd-item"        id="vdd-list"  onclick="vddSelect('list')">一覧<span id="vdd-check-list"></span></div>
-          </div>
-        </div>
+        <!-- ＋予約追加ボタン -->
+        <button class="zb-add-btn" onclick="toast('予約フォームへ → 07_booking_form')">＋ 予約追加</button>
 
-        <!-- スタッフドロップダウン (Zone C から移動、ラベルなし) -->
+        <!-- スタッフドロップダウン -->
         <div class="staff-dd" id="staffDd">
           <button class="sdd-btn" id="sddBtn" onclick="toggleDd(event)">
             <div class="sdd-preview" id="sddPreview">
@@ -532,8 +521,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
           </div>
         </div>
 
+        <!-- ビュードロップダウン -->
+        <div class="zb-view-dd" id="viewDd">
+          <button class="zb-vdd-btn" id="vddBtn" onclick="toggleViewDd(event)">
+            <span id="vddLabel">日</span>
+            <span class="zb-vdd-caret">▼</span>
+          </button>
+          <div class="zb-vdd-menu" id="vddMenu">
+            <div class="zb-vdd-item active" id="vdd-day"   onclick="vddSelect('day')">日<span id="vdd-check-day" style="color:#1E3A8A">✓</span></div>
+            <div class="zb-vdd-item"        id="vdd-week"  onclick="vddSelect('week')">週<span id="vdd-check-week"></span></div>
+            <div class="zb-vdd-item"        id="vdd-month" onclick="vddSelect('month')">月<span id="vdd-check-month"></span></div>
+            <div class="zb-vdd-item"        id="vdd-list"  onclick="vddSelect('list')">一覧<span id="vdd-check-list"></span></div>
+          </div>
+        </div>
         <div class="zb-spacer"></div>
-        <button class="zb-add-btn" onclick="toast('予約フォームへ → 07_booking_form')">＋ 予約追加</button>
       </div>
 
       <!-- View panels -->
