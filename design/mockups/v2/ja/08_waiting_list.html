@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1024">
+<title>08 · ウェイティング管理</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neue',sans-serif;background:#0F1D5C;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;}
+
+.ipad{
+  width:1024px;height:768px;
+  background:#F0F2F7;
+  border-radius:20px;overflow:hidden;
+  display:flex;flex-direction:column;
+  box-shadow:0 30px 80px rgba(0,0,0,.55);
+  position:relative;
+}
+
+/* ══ ZONE A ══ */
+.zone-a{height:44px;flex-shrink:0;background:#fff;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 14px;gap:10px;z-index:10;}
+.za-menu{font-size:18px;color:#1E3A8A;cursor:pointer;padding:4px 6px;border-radius:6px;line-height:1;user-select:none;}
+.za-menu:hover{background:#EEF2FF;}
+.za-logo{font-size:13px;color:#1E3A8A;font-weight:700;letter-spacing:.08em;}
+.za-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.za-sep{width:.5px;height:14px;background:#D0D0CC;}
+.za-avatar{width:24px;height:24px;border-radius:50%;background:#8E44AD;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;}
+.za-name{font-size:12px;color:#333;font-weight:500;}
+.za-branch{font-size:11px;color:#888;}
+.za-time{font-size:11px;color:#555;font-weight:500;}
+.za-lock{font-size:13px;color:#bbb;cursor:pointer;}
+
+/* Sidebar */
+.sb-overlay{position:absolute;inset:0;background:rgba(0,0,0,.38);z-index:200;opacity:0;pointer-events:none;transition:opacity .2s;}
+.sb-overlay.open{opacity:1;pointer-events:all;}
+.sidebar{position:absolute;left:0;top:0;bottom:0;width:224px;background:#1E3A8A;z-index:201;transform:translateX(-100%);transition:transform .22s cubic-bezier(.25,.46,.45,.94);display:flex;flex-direction:column;}
+.sidebar.open{transform:translateX(0);}
+.sb-head{padding:20px 16px 14px;border-bottom:.5px solid rgba(255,255,255,.1);}
+.sb-logo{font-size:14px;color:#fff;font-weight:700;letter-spacing:.06em;}
+.sb-sub{font-size:10px;color:rgba(255,255,255,.3);margin-top:3px;}
+.sb-nav{flex:1;padding:8px 0;overflow-y:auto;}
+.sb-item{display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;transition:background .12s;}
+.sb-item:hover{background:rgba(255,255,255,.07);}
+.sb-item.active{background:rgba(255,255,255,.13);}
+.sb-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.sb-label{font-size:13px;color:rgba(255,255,255,.65);}
+.sb-item.active .sb-label{color:#fff;font-weight:600;}
+.sb-foot{padding:12px 16px;border-top:.5px solid rgba(255,255,255,.1);}
+.sb-ver{font-size:10px;color:rgba(255,255,255,.2);}
+
+/* 2열 래퍼 */
+.wrap{flex:1;display:flex;overflow:hidden;}
+.left{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+
+/* ══ ZONE B · ツールバー ══ */
+.zone-b{height:46px;flex-shrink:0;background:#fff;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 14px;gap:10px;}
+.zb-title{font-size:14px;font-weight:700;color:#1A1A1A;white-space:nowrap;flex-shrink:0;}
+.zb-tabs{display:flex;background:#F0F2F7;border-radius:9px;padding:3px;gap:2px;flex-shrink:0;}
+.zb-tab{padding:6px 12px;font-size:12px;font-weight:600;color:#999;cursor:pointer;border-radius:7px;background:transparent;border:none;font-family:inherit;white-space:nowrap;transition:all .15s;}
+.zb-tab.active{background:#fff;color:#8E44AD;box-shadow:0 1px 4px rgba(0,0,0,.1);}
+.zb-search{flex:1;max-width:220px;}
+.zb-search input{width:100%;padding:7px 11px;border-radius:8px;border:.5px solid #E0E0DC;font-size:12px;font-family:inherit;color:#333;background:#FAFAFA;}
+.zb-search input:focus{outline:none;border-color:#8E44AD;background:#fff;}
+.zb-spacer{flex:1;}
+.zb-add-btn{display:flex;align-items:center;gap:4px;padding:7px 13px;border-radius:9px;background:#8E44AD;color:#fff;font-size:12px;font-weight:700;border:none;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0;box-shadow:0 2px 8px rgba(142,68,173,.3);transition:background .12s;}
+.zb-add-btn:hover{background:#7D3C98;}
+
+/* ══ ZONE C · リスト ══ */
+.zone-c{flex:1;overflow-y:auto;background:#F0F2F7;}
+.zone-c::-webkit-scrollbar{width:4px;}
+.zone-c::-webkit-scrollbar-thumb{background:#D0D0CC;border-radius:2px;}
+.zc-inner{padding:12px 14px;display:flex;flex-direction:column;gap:6px;}
+.zc-empty{padding:60px 0;text-align:center;color:#bbb;font-size:12px;}
+
+/* 인라인 추가 폼 */
+.add-form{background:#fff;border:1px solid #C9A6D6;border-radius:11px;padding:10px 12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.add-form input{flex:1;min-width:90px;padding:7px 9px;border-radius:7px;border:.5px solid #E0E0DC;font-size:12px;font-family:inherit;}
+.add-form input:focus{outline:none;border-color:#8E44AD;}
+.add-form .af-submit{padding:7px 14px;border-radius:7px;background:#8E44AD;color:#fff;border:none;font-size:12px;font-weight:700;font-family:inherit;cursor:pointer;white-space:nowrap;}
+.add-form .af-cancel{padding:7px 10px;border-radius:7px;background:#F0F0EC;color:#777;border:none;font-size:12px;font-family:inherit;cursor:pointer;white-space:nowrap;}
+
+/* 대기 카드 */
+.w-card{background:#fff;border:.5px solid #E5E5E0;border-radius:11px;padding:10px 12px;display:flex;align-items:center;gap:10px;transition:box-shadow .12s;}
+.w-card:hover{box-shadow:0 2px 10px rgba(0,0,0,.06);}
+.w-reorder{display:flex;flex-direction:column;gap:2px;flex-shrink:0;}
+.w-reorder button{width:18px;height:16px;border:.5px solid #E0E0DC;background:#fff;border-radius:4px;font-size:9px;color:#999;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;}
+.w-reorder button:hover{background:#F4F4F0;}
+.w-reorder button:disabled{opacity:.3;cursor:default;}
+.w-rank{width:22px;height:22px;border-radius:50%;background:#8E44AD;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.w-body{flex:1;min-width:0;}
+.w-top{display:flex;align-items:center;gap:8px;}
+.w-name{font-size:13px;font-weight:700;color:#1A1A1A;}
+.w-phone{font-size:11px;color:#aaa;}
+.w-meta{font-size:11px;color:#777;margin-top:2px;}
+.w-meta .w-staff-none{color:#bbb;}
+.w-time{font-size:11px;margin-top:2px;}
+.w-time .w-wait-low{color:#999;}
+.w-time .w-wait-mid{color:#D4AC0D;font-weight:600;}
+.w-time .w-wait-high{color:#E74C3C;font-weight:700;}
+.w-actions{display:flex;gap:6px;flex-shrink:0;}
+.w-btn{padding:7px 12px;border-radius:8px;font-size:11px;font-weight:700;border:none;cursor:pointer;font-family:inherit;white-space:nowrap;transition:opacity .12s;}
+.w-btn:hover{opacity:.85;}
+.w-btn-call{background:#2E86C1;color:#fff;}
+.w-btn-confirm{background:#1E8449;color:#fff;}
+.w-btn-cancel{background:#fff;color:#E74C3C;border:.5px solid #F1B9B2;}
+.w-btn-recall{background:#fff;color:#2E86C1;border:.5px solid #B9D6ED;}
+.w-status-badge{font-size:9px;font-weight:700;padding:3px 8px;border-radius:6px;flex-shrink:0;}
+.w-sb-confirmed{background:#EAF6EE;color:#1E8449;}
+.w-sb-cancelled{background:#FDECEA;color:#E74C3C;}
+.w-history-time{font-size:10px;color:#bbb;flex-shrink:0;}
+
+/* ══ ZONE D · サイドパネル ══ */
+.zone-d{width:210px;flex-shrink:0;border-left:.5px solid #E5E5E0;background:#fff;display:flex;flex-direction:column;overflow:hidden;}
+.zd1{padding:12px 12px;border-bottom:.5px solid #F0F0EC;flex-shrink:0;}
+.zd-title{font-size:9px;font-weight:700;color:#C8C8C4;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;}
+.zd-row{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:.5px solid #F8F8F6;font-size:11px;}
+.zd-row:last-child{border-bottom:none;}
+.zd-label{color:#999;}
+.zd-val{font-weight:700;color:#1A1A1A;}
+.zd-val.w{color:#D4AC0D;}
+.zd-val.c{color:#2E86C1;}
+.zd-val.g{color:#1E8449;}
+.zd-val.r{color:#E74C3C;}
+
+.zd2{padding:14px 12px;border-bottom:.5px solid #F0F0EC;flex-shrink:0;text-align:center;}
+.zd2-num{font-size:30px;font-weight:800;color:#8E44AD;line-height:1;}
+.zd2-unit{font-size:11px;color:#999;margin-top:4px;}
+
+.zd3{padding:12px 12px;flex:1;}
+.zd3-item{display:flex;align-items:center;gap:7px;font-size:10px;color:#777;padding:5px 0;}
+.zd3-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+
+/* Toast */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(12px);background:#1A1A1A;color:#fff;font-size:12px;font-weight:500;padding:10px 18px;border-radius:10px;z-index:9999;opacity:0;pointer-events:none;transition:all .22s;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+
+<div class="ipad">
+
+  <div class="sb-overlay" id="sbOverlay" onclick="closeSb()"></div>
+  <div class="sidebar" id="sidebar">
+    <div class="sb-head">
+      <div class="sb-logo">✂ salon pos</div>
+      <div class="sb-sub">Hair Salon Yuki · 渋谷区道玄坂</div>
+    </div>
+    <div class="sb-nav">
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#3B5BDB"></div><span class="sb-label">会計 · POS</span></div>
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#8E44AD"></div><span class="sb-label">予約カレンダー</span></div>
+      <div class="sb-item active" onclick="closeSb()"><div class="sb-dot" style="background:#D4AC0D"></div><span class="sb-label">ウェイティング</span></div>
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#10B981"></div><span class="sb-label">顧客管理</span></div>
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#EF4444"></div><span class="sb-label">スタッフ</span></div>
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#117A65"></div><span class="sb-label">店舗設定</span></div>
+    </div>
+    <div class="sb-foot"><div class="sb-ver">v2.0.0</div></div>
+  </div>
+
+  <!-- ══ ZONE A ══ -->
+  <div class="zone-a">
+    <span class="za-menu" onclick="openSb()">☰</span>
+    <span class="za-logo">✂ salon pos</span>
+    <div class="za-right">
+      <div class="za-avatar">由</div>
+      <span class="za-name">Yuki</span>
+      <span class="za-branch">渋谷店</span>
+      <div class="za-sep"></div>
+      <span class="za-time" id="tbTime">06.21 日　10:24</span>
+      <span class="za-lock">🔒</span>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="left">
+
+      <!-- ══ ZONE B ══ -->
+      <div class="zone-b">
+        <span class="zb-title">ウェイティング管理</span>
+        <div class="zb-tabs" id="zbTabs">
+          <div class="zb-tab active" data-tab="waiting" onclick="switchTab('waiting',this)">待機中 <span id="cnt-waiting"></span></div>
+          <div class="zb-tab" data-tab="called" onclick="switchTab('called',this)">呼び出し済み <span id="cnt-called"></span></div>
+          <div class="zb-tab" data-tab="history" onclick="switchTab('history',this)">本日の履歴 <span id="cnt-history"></span></div>
+        </div>
+        <div class="zb-search">
+          <input type="text" id="searchInput" placeholder="顧客名で検索" oninput="onSearch(this.value)">
+        </div>
+        <div class="zb-spacer"></div>
+        <button class="zb-add-btn" onclick="toggleAddForm()">＋ ウェイティング追加</button>
+      </div>
+
+      <!-- ══ ZONE C ══ -->
+      <div class="zone-c">
+        <div class="zc-inner" id="zcInner"></div>
+      </div>
+
+    </div><!-- /left -->
+
+    <!-- ══ ZONE D ══ -->
+    <div class="zone-d">
+      <div class="zd1">
+        <div class="zd-title">今日の状況</div>
+        <div class="zd-row"><span class="zd-label">総ウェイティング</span><span class="zd-val" id="statTotal">-</span></div>
+        <div class="zd-row"><span class="zd-label">待機中</span><span class="zd-val w" id="statWaiting">-</span></div>
+        <div class="zd-row"><span class="zd-label">確定</span><span class="zd-val g" id="statConfirmed">-</span></div>
+        <div class="zd-row"><span class="zd-label">キャンセル</span><span class="zd-val r" id="statCancelled">-</span></div>
+      </div>
+      <div class="zd2">
+        <div class="zd2-num" id="statAvg">-</div>
+        <div class="zd2-unit">平均待ち時間（分）</div>
+      </div>
+      <div class="zd3">
+        <div class="zd-title">経過時間の目安</div>
+        <div class="zd3-item"><div class="zd3-dot" style="background:#bbb"></div>10分未満</div>
+        <div class="zd3-item"><div class="zd3-dot" style="background:#D4AC0D"></div>10〜20分</div>
+        <div class="zd3-item"><div class="zd3-dot" style="background:#E74C3C"></div>20分以上</div>
+      </div>
+    </div>
+
+  </div><!-- /wrap -->
+</div><!-- /ipad -->
+
+<script>
+// ── Data ─────────────────────────────────────────────────────────────────
+const STAFF_COLOR = {Yuki:'#8E44AD', Mika:'#3B5BDB', Kenji:'#E67E22', Hana:'#E91E8C', Rio:'#10B981'};
+const NOW_MIN = 10*60+24; // 10:24 固定 (モック用)
+
+let WAITING = [
+  {id:1, name:'森 かれん',  phone:'090-1234-5678', svc:'カット＋カラー',  dur:90,  staff:'Yuki',  joined:'10:05', status:'waiting'},
+  {id:2, name:'清水 まい',  phone:'080-2345-6789', svc:'ヘッドスパ60分',  dur:60,  staff:null,    joined:'10:12', status:'waiting'},
+  {id:3, name:'橋本 ゆな',  phone:'070-3456-7890', svc:'パーマ',          dur:120, staff:'Kenji', joined:'10:20', status:'waiting'},
+  {id:4, name:'中島 けい',  phone:'090-4567-8901', svc:'カット',          dur:45,  staff:null,    joined:'09:50', status:'called'},
+  {id:5, name:'大野 さやか',phone:'080-5678-9012', svc:'トリートメント',  dur:60,  staff:'Mika',  joined:'09:30', status:'confirmed', resolvedAt:'10:05'},
+  {id:6, name:'山口 みき',  phone:'070-6789-0123', svc:'カラー',          dur:90,  staff:'Yuki',  joined:'09:15', status:'cancelled', resolvedAt:'09:40'},
+];
+
+let curTab='waiting', filterText='', addFormOpen=false, nextId=7;
+
+// ── Helpers ──────────────────────────────────────────────────────────────
+const toMin = t=>{ const [h,m]=t.split(':').map(Number); return h*60+m; };
+const waitMin = j=>NOW_MIN-toMin(j);
+const waitClass = m=> m>=20?'w-wait-high':m>=10?'w-wait-mid':'w-wait-low';
+
+function render(){
+  // counts
+  const waiting=WAITING.filter(w=>w.status==='waiting');
+  const called=WAITING.filter(w=>w.status==='called');
+  const history=WAITING.filter(w=>w.status==='confirmed'||w.status==='cancelled');
+  document.getElementById('cnt-waiting').textContent=`(${waiting.length})`;
+  document.getElementById('cnt-called').textContent=`(${called.length})`;
+  document.getElementById('cnt-history').textContent=`(${history.length})`;
+
+  let list = curTab==='waiting'?waiting:curTab==='called'?called:history;
+  if(filterText) list=list.filter(w=>w.name.includes(filterText));
+
+  let html='';
+  if(addFormOpen && curTab==='waiting'){
+    html+=`
+    <div class="add-form" id="addForm">
+      <input type="text" id="af-name" placeholder="顧客名">
+      <input type="text" id="af-phone" placeholder="電話番号">
+      <input type="text" id="af-svc" placeholder="メニュー">
+      <input type="text" id="af-staff" placeholder="希望スタッフ（任意）">
+      <button class="af-submit" onclick="submitAddForm()">登録</button>
+      <button class="af-cancel" onclick="toggleAddForm()">キャンセル</button>
+    </div>`;
+  }
+
+  if(list.length===0 && !(addFormOpen&&curTab==='waiting')){
+    html+=`<div class="zc-empty">該当するウェイティングはありません</div>`;
+  } else {
+    html+=list.map((w,i)=>{
+      if(w.status==='waiting'){
+        const m=waitMin(w.joined);
+        return `<div class="w-card">
+          <div class="w-reorder">
+            <button onclick="reorder(${w.id},-1)" ${i===0?'disabled':''}>▲</button>
+            <button onclick="reorder(${w.id},1)" ${i===waiting.length-1?'disabled':''}>▼</button>
+          </div>
+          <div class="w-rank">${i+1}</div>
+          <div class="w-body">
+            <div class="w-top"><span class="w-name">${w.name}</span><span class="w-phone">${w.phone}</span></div>
+            <div class="w-meta">${w.svc}・${w.dur}分 / 指定: ${w.staff?`<span style="color:${STAFF_COLOR[w.staff]};font-weight:600;">${w.staff}</span>`:'<span class="w-staff-none">指定なし</span>'}</div>
+            <div class="w-time">${w.joined} 受付 ・ <span class="${waitClass(m)}">${m}分待ち</span></div>
+          </div>
+          <div class="w-actions">
+            <button class="w-btn w-btn-call" onclick="callCustomer(${w.id})">呼び出す</button>
+            <button class="w-btn w-btn-cancel" onclick="cancelCustomer(${w.id})">取消</button>
+          </div>
+        </div>`;
+      }
+      if(w.status==='called'){
+        const m=waitMin(w.joined);
+        return `<div class="w-card">
+          <div class="w-rank" style="background:#2E86C1;">📣</div>
+          <div class="w-body">
+            <div class="w-top"><span class="w-name">${w.name}</span><span class="w-phone">${w.phone}</span></div>
+            <div class="w-meta">${w.svc}・${w.dur}分 / 指定: ${w.staff?`<span style="color:${STAFF_COLOR[w.staff]};font-weight:600;">${w.staff}</span>`:'<span class="w-staff-none">指定なし</span>'}</div>
+            <div class="w-time">${w.joined} 受付 ・ <span class="${waitClass(m)}">${m}分待ち</span></div>
+          </div>
+          <div class="w-actions">
+            <button class="w-btn w-btn-confirm" onclick="confirmCustomer(${w.id})">確定</button>
+            <button class="w-btn w-btn-recall" onclick="toast('${w.name} に再度呼び出しを送信しました')">再呼出</button>
+            <button class="w-btn w-btn-cancel" onclick="cancelCustomer(${w.id})">取消</button>
+          </div>
+        </div>`;
+      }
+      // history
+      const isOk=w.status==='confirmed';
+      return `<div class="w-card">
+        <div class="w-rank" style="background:${isOk?'#1E8449':'#E74C3C'};opacity:.85;">${isOk?'✓':'×'}</div>
+        <div class="w-body">
+          <div class="w-top"><span class="w-name">${w.name}</span><span class="w-phone">${w.phone}</span></div>
+          <div class="w-meta">${w.svc}・${w.dur}分 / 指定: ${w.staff?`<span style="color:${STAFF_COLOR[w.staff]};font-weight:600;">${w.staff}</span>`:'<span class="w-staff-none">指定なし</span>'}</div>
+        </div>
+        <span class="w-history-time">${w.joined} 受付</span>
+        <span class="w-status-badge w-sb-${w.status}">${isOk?'確定':'キャンセル'}</span>
+      </div>`;
+    }).join('');
+  }
+  document.getElementById('zcInner').innerHTML=html;
+
+  // Zone D stats
+  document.getElementById('statTotal').textContent=WAITING.length+'件';
+  document.getElementById('statWaiting').textContent=waiting.length+called.length+'件';
+  const confirmedList=WAITING.filter(w=>w.status==='confirmed');
+  document.getElementById('statConfirmed').textContent=confirmedList.length+'件';
+  document.getElementById('statCancelled').textContent=WAITING.filter(w=>w.status==='cancelled').length+'件';
+  if(confirmedList.length){
+    const avg=Math.round(confirmedList.reduce((s,w)=>s+(toMin(w.resolvedAt)-toMin(w.joined)),0)/confirmedList.length);
+    document.getElementById('statAvg').textContent=avg;
+  } else {
+    document.getElementById('statAvg').textContent='-';
+  }
+}
+
+// ── Actions ──────────────────────────────────────────────────────────────
+function switchTab(tab,el){
+  curTab=tab;
+  document.querySelectorAll('.zb-tab').forEach(t=>t.classList.remove('active'));
+  if(el) el.classList.add('active');
+  if(tab!=='waiting') addFormOpen=false;
+  render();
+}
+
+function onSearch(v){ filterText=v.trim(); render(); }
+
+function callCustomer(id){
+  const w=WAITING.find(x=>x.id===id); if(!w) return;
+  w.status='called';
+  toast(`${w.name} を呼び出しました`);
+  render();
+}
+function confirmCustomer(id){
+  const w=WAITING.find(x=>x.id===id); if(!w) return;
+  w.status='confirmed'; w.resolvedAt=fmtNow();
+  toast(`${w.name} の予約を確定しました → 07_booking_form`);
+  render();
+}
+function cancelCustomer(id){
+  const w=WAITING.find(x=>x.id===id); if(!w) return;
+  w.status='cancelled'; w.resolvedAt=fmtNow();
+  toast(`${w.name} のウェイティングを取消しました`);
+  render();
+}
+function reorder(id,dir){
+  const waiting=WAITING.filter(w=>w.status==='waiting');
+  const idx=waiting.findIndex(w=>w.id===id);
+  const swapIdx=idx+dir;
+  if(swapIdx<0||swapIdx>=waiting.length) return;
+  const a=waiting[idx], b=waiting[swapIdx];
+  const ia=WAITING.indexOf(a), ib=WAITING.indexOf(b);
+  [WAITING[ia],WAITING[ib]]=[WAITING[ib],WAITING[ia]];
+  render();
+}
+function toggleAddForm(){
+  if(curTab!=='waiting'){ switchTab('waiting', document.querySelector('.zb-tab[data-tab="waiting"]')); }
+  addFormOpen=!addFormOpen;
+  render();
+  if(addFormOpen) setTimeout(()=>{ const el=document.getElementById('af-name'); if(el) el.focus(); },50);
+}
+function submitAddForm(){
+  const name=document.getElementById('af-name').value.trim();
+  if(!name){ toast('顧客名を入力してください'); return; }
+  const phone=document.getElementById('af-phone').value.trim()||'未登録';
+  const svc=document.getElementById('af-svc').value.trim()||'未定';
+  const staff=document.getElementById('af-staff').value.trim()||null;
+  WAITING.push({id:nextId++, name, phone, svc, dur:60, staff, joined:fmtNow(), status:'waiting'});
+  addFormOpen=false;
+  toast(`${name} さんをウェイティングに追加しました`);
+  render();
+}
+
+function fmtNow(){
+  const h=Math.floor(NOW_MIN/60), m=NOW_MIN%60;
+  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+}
+
+function openSb(){ document.getElementById('sidebar').classList.add('open'); document.getElementById('sbOverlay').classList.add('open'); }
+function closeSb(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('sbOverlay').classList.remove('open'); }
+
+let _tt;
+function toast(msg){ const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); clearTimeout(_tt); _tt=setTimeout(()=>el.classList.remove('show'),2200); }
+
+const DOW=['日','月','火','水','木','金','土'];
+function tick(){
+  const d=new Date();
+  const el=document.getElementById('tbTime');
+  if(el) el.textContent=`${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} ${DOW[d.getDay()]}　${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
+
+// ── Init ─────────────────────────────────────────────────────────────────
+render();
+tick();
+setInterval(tick,30000);
+</script>
+</body>
+</html>
