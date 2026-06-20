@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1024">
+<title>09 · 顧客一覧</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neue',sans-serif;background:#0F1D5C;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;}
+
+.ipad{width:1024px;height:768px;background:#F0F2F7;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.55);position:relative;}
+
+/* ══ ZONE A ══ */
+.zone-a{height:44px;flex-shrink:0;background:#fff;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 14px;gap:10px;z-index:10;}
+.za-menu{font-size:18px;color:#1E3A8A;cursor:pointer;padding:4px 6px;border-radius:6px;line-height:1;user-select:none;}
+.za-menu:hover{background:#EEF2FF;}
+.za-logo{font-size:13px;color:#1E3A8A;font-weight:700;letter-spacing:.08em;}
+.za-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.za-sep{width:.5px;height:14px;background:#D0D0CC;}
+.za-avatar{width:24px;height:24px;border-radius:50%;background:#8E44AD;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;}
+.za-name{font-size:12px;color:#333;font-weight:500;}
+.za-branch{font-size:11px;color:#888;}
+.za-time{font-size:11px;color:#555;font-weight:500;}
+.za-lock{font-size:13px;color:#bbb;cursor:pointer;}
+
+/* Sidebar */
+.sb-overlay{position:absolute;inset:0;background:rgba(0,0,0,.38);z-index:200;opacity:0;pointer-events:none;transition:opacity .2s;}
+.sb-overlay.open{opacity:1;pointer-events:all;}
+.sidebar{position:absolute;left:0;top:0;bottom:0;width:224px;background:#1E3A8A;z-index:201;transform:translateX(-100%);transition:transform .22s cubic-bezier(.25,.46,.45,.94);display:flex;flex-direction:column;}
+.sidebar.open{transform:translateX(0);}
+.sb-head{padding:20px 16px 14px;border-bottom:.5px solid rgba(255,255,255,.1);}
+.sb-logo{font-size:14px;color:#fff;font-weight:700;letter-spacing:.06em;}
+.sb-sub{font-size:10px;color:rgba(255,255,255,.3);margin-top:3px;}
+.sb-nav{flex:1;padding:8px 0;overflow-y:auto;}
+.sb-item{display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;transition:background .12s;}
+.sb-item:hover{background:rgba(255,255,255,.07);}
+.sb-item.active{background:rgba(255,255,255,.13);}
+.sb-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.sb-label{font-size:13px;color:rgba(255,255,255,.65);}
+.sb-item.active .sb-label{color:#fff;font-weight:600;}
+.sb-foot{padding:12px 16px;border-top:.5px solid rgba(255,255,255,.1);}
+.sb-ver{font-size:10px;color:rgba(255,255,255,.2);}
+
+.wrap{flex:1;display:flex;overflow:hidden;}
+.left{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+
+/* ══ ZONE B ══ */
+.zone-b{height:46px;flex-shrink:0;background:#fff;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 12px;gap:8px;}
+.zb-tabs{display:flex;background:#F0F2F7;border-radius:9px;padding:3px;gap:2px;flex-shrink:0;}
+.zb-tab{padding:6px 10px;font-size:11.5px;font-weight:600;color:#999;cursor:pointer;border-radius:7px;background:transparent;border:none;font-family:inherit;white-space:nowrap;transition:all .15s;}
+.zb-tab.active{background:#fff;color:#10B981;box-shadow:0 1px 4px rgba(0,0,0,.1);}
+.zb-search{width:170px;flex-shrink:0;}
+.zb-search input{width:100%;padding:7px 11px;border-radius:8px;border:.5px solid #E0E0DC;font-size:12px;font-family:inherit;color:#333;background:#FAFAFA;}
+.zb-search input:focus{outline:none;border-color:#10B981;background:#fff;}
+.zb-sort{padding:7px 9px;border-radius:8px;border:.5px solid #E0E0DC;font-size:12px;font-family:inherit;color:#555;background:#fff;flex-shrink:0;}
+.zb-spacer{flex:1;}
+.zb-csv{padding:7px 12px;border-radius:8px;background:#F4F4F0;border:.5px solid #D0D0CC;font-size:12px;color:#555;cursor:pointer;font-family:inherit;flex-shrink:0;}
+.zb-add-btn{display:flex;align-items:center;gap:4px;padding:7px 13px;border-radius:9px;background:#10B981;color:#fff;font-size:12px;font-weight:700;border:none;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0;box-shadow:0 2px 8px rgba(16,185,129,.3);transition:background .12s;}
+.zb-add-btn:hover{background:#0E9F6E;}
+
+/* ══ ZONE C ══ */
+.zone-c{flex:1;overflow-y:auto;background:#F0F2F7;}
+.zone-c::-webkit-scrollbar{width:4px;}
+.zone-c::-webkit-scrollbar-thumb{background:#D0D0CC;border-radius:2px;}
+.zc-inner{padding:12px 14px;display:flex;flex-direction:column;gap:6px;}
+.zc-empty{padding:60px 0;text-align:center;color:#bbb;font-size:12px;}
+
+.add-form{background:#fff;border:1px solid #A7E8CE;border-radius:11px;padding:10px 12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.add-form input{flex:1;min-width:90px;padding:7px 9px;border-radius:7px;border:.5px solid #E0E0DC;font-size:12px;font-family:inherit;}
+.add-form input:focus{outline:none;border-color:#10B981;}
+.add-form .af-submit{padding:7px 14px;border-radius:7px;background:#10B981;color:#fff;border:none;font-size:12px;font-weight:700;font-family:inherit;cursor:pointer;white-space:nowrap;}
+.add-form .af-cancel{padding:7px 10px;border-radius:7px;background:#F0F0EC;color:#777;border:none;font-size:12px;font-family:inherit;cursor:pointer;white-space:nowrap;}
+
+.c-card{background:#fff;border:.5px solid #E5E5E0;border-radius:11px;padding:10px 14px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:box-shadow .12s,border-color .12s;}
+.c-card:hover{box-shadow:0 2px 10px rgba(0,0,0,.06);border-color:#C5E8DA;}
+.c-avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0;}
+.c-body{flex:1;min-width:0;}
+.c-top{display:flex;align-items:center;gap:7px;}
+.c-name{font-size:13.5px;font-weight:700;color:#1A1A1A;}
+.c-tag{font-size:9px;font-weight:700;padding:2px 7px;border-radius:5px;}
+.c-tag.vip{background:#FEF9E7;color:#B7950B;}
+.c-tag.dormant{background:#F4F4F0;color:#888;}
+.c-tag.black{background:#FDEDEC;color:#E74C3C;}
+.c-bday{font-size:11px;}
+.c-phone{font-size:11px;color:#999;margin-top:2px;}
+.c-stats{display:flex;gap:16px;flex-shrink:0;}
+.c-stat{text-align:center;min-width:54px;}
+.c-stat-val{font-size:13px;font-weight:700;color:#1A1A1A;}
+.c-stat-lbl{font-size:9px;color:#aaa;margin-top:1px;}
+.c-actions{display:flex;gap:6px;flex-shrink:0;}
+.c-btn{padding:6px 11px;border-radius:7px;font-size:11px;font-weight:700;border:none;cursor:pointer;font-family:inherit;background:#EEF2FF;color:#1E3A8A;white-space:nowrap;}
+.c-btn:hover{opacity:.85;}
+
+/* ══ ZONE D ══ */
+.zone-d{width:210px;flex-shrink:0;border-left:.5px solid #E5E5E0;background:#fff;display:flex;flex-direction:column;overflow-y:auto;}
+.zd-sec{padding:14px 14px;border-bottom:.5px solid #F0F0EC;}
+.zd-title{font-size:9px;font-weight:700;color:#C8C8C4;letter-spacing:.08em;text-transform:uppercase;margin-bottom:9px;}
+.zd-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:.5px solid #F8F8F6;font-size:12px;}
+.zd-row:last-child{border-bottom:none;}
+.zd-label{color:#999;}
+.zd-val{font-weight:700;color:#1A1A1A;}
+.zd-val.vip{color:#B7950B;}
+.zd-val.dormant{color:#888;}
+.zd-val.black{color:#E74C3C;}
+.zd-val.bday{color:#10B981;}
+.zd-legend-item{display:flex;align-items:center;gap:7px;font-size:11px;color:#666;padding:4px 0;}
+.zd-legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(12px);background:#1A1A1A;color:#fff;font-size:12px;font-weight:500;padding:10px 18px;border-radius:10px;z-index:9999;opacity:0;pointer-events:none;transition:all .22s;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+
+<div class="ipad">
+
+  <div class="sb-overlay" id="sbOverlay" onclick="closeSb()"></div>
+  <div class="sidebar" id="sidebar">
+    <div class="sb-head">
+      <div class="sb-logo">✂ salon pos</div>
+      <div class="sb-sub">Hair Salon Yuki · 渋谷区道玄坂</div>
+    </div>
+    <div class="sb-nav">
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#3B5BDB"></div><span class="sb-label">会計 · POS</span></div>
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#8E44AD"></div><span class="sb-label">予約カレンダー</span></div>
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#D4AC0D"></div><span class="sb-label">ウェイティング</span></div>
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#2E86C1"></div><span class="sb-label">取引履歴</span></div>
+      <div class="sb-item active" onclick="closeSb()"><div class="sb-dot" style="background:#10B981"></div><span class="sb-label">顧客管理</span></div>
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#EF4444"></div><span class="sb-label">スタッフ</span></div>
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#117A65"></div><span class="sb-label">店舗設定</span></div>
+    </div>
+    <div class="sb-foot"><div class="sb-ver">v2.0.0</div></div>
+  </div>
+
+  <!-- ══ ZONE A ══ -->
+  <div class="zone-a">
+    <span class="za-menu" onclick="openSb()">☰</span>
+    <span class="za-logo">✂ salon pos</span>
+    <div class="za-right">
+      <div class="za-avatar">由</div>
+      <span class="za-name">Yuki</span>
+      <span class="za-branch">渋谷店</span>
+      <div class="za-sep"></div>
+      <span class="za-time" id="tbTime">06.21 日　10:24</span>
+      <span class="za-lock">🔒</span>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="left">
+
+      <!-- ══ ZONE B ══ -->
+      <div class="zone-b">
+        <div class="zb-tabs" id="zbTabs">
+          <div class="zb-tab active" data-t="all" onclick="switchTab('all',this)">すべて</div>
+          <div class="zb-tab" data-t="vip" onclick="switchTab('vip',this)">VIP</div>
+          <div class="zb-tab" data-t="dormant" onclick="switchTab('dormant',this)">休眠</div>
+          <div class="zb-tab" data-t="black" onclick="switchTab('black',this)">ブラック</div>
+          <div class="zb-tab" data-t="bday" onclick="switchTab('bday',this)">今月誕生日</div>
+        </div>
+        <div class="zb-search"><input type="text" id="searchInput" placeholder="名前・電話番号で検索" oninput="onSearch(this.value)"></div>
+        <select class="zb-sort" id="sortSelect" onchange="onSort(this.value)">
+          <option value="visit">来店頻度順</option>
+          <option value="recent">最終来店順</option>
+          <option value="name">名前順</option>
+        </select>
+        <div class="zb-spacer"></div>
+        <button class="zb-csv" onclick="toast('CSV出力（モック）')">CSV出力</button>
+        <button class="zb-add-btn" onclick="toggleAddForm()">＋新規顧客</button>
+      </div>
+
+      <!-- ══ ZONE C ══ -->
+      <div class="zone-c"><div class="zc-inner" id="zcInner"></div></div>
+
+    </div><!-- /left -->
+
+    <!-- ══ ZONE D ══ -->
+    <div class="zone-d">
+      <div class="zd-sec">
+        <div class="zd-title">顧客状況</div>
+        <div class="zd-row"><span class="zd-label">総顧客数</span><span class="zd-val" id="statTotal">-</span></div>
+        <div class="zd-row"><span class="zd-label">VIP</span><span class="zd-val vip" id="statVip">-</span></div>
+        <div class="zd-row"><span class="zd-label">休眠</span><span class="zd-val dormant" id="statDormant">-</span></div>
+        <div class="zd-row"><span class="zd-label">ブラック</span><span class="zd-val black" id="statBlack">-</span></div>
+        <div class="zd-row"><span class="zd-label">今月誕生日</span><span class="zd-val bday" id="statBday">-</span></div>
+      </div>
+      <div class="zd-sec">
+        <div class="zd-title">平均来店周期</div>
+        <div style="text-align:center;padding:6px 0;">
+          <span style="font-size:26px;font-weight:800;color:#10B981;">34</span>
+          <span style="font-size:11px;color:#999;">日</span>
+        </div>
+      </div>
+      <div class="zd-sec">
+        <div class="zd-title">タグ凡例</div>
+        <div class="zd-legend-item"><div class="zd-legend-dot" style="background:#D4AC0D"></div>VIP（来店10回以上）</div>
+        <div class="zd-legend-item"><div class="zd-legend-dot" style="background:#999"></div>休眠（90日以上来店なし）</div>
+        <div class="zd-legend-item"><div class="zd-legend-dot" style="background:#E74C3C"></div>ブラック（ノーショー等）</div>
+      </div>
+    </div>
+
+  </div><!-- /wrap -->
+</div><!-- /ipad -->
+
+<script>
+// ── Data ─────────────────────────────────────────────────────────────────
+const AVATAR_COLORS=['#8E44AD','#3B5BDB','#E67E22','#10B981','#E91E8C','#2E86C1','#D4AC0D'];
+
+let CUSTOMERS = [
+  {id:1, name:'田中 美咲',   phone:'090-1234-5678', tag:null,     lastVisit:'2026-06-21', visitCount:14, points:320, bdayMonth:6},
+  {id:2, name:'佐藤 里奈',   phone:'080-2222-3333', tag:'vip',    lastVisit:'2026-06-21', visitCount:22, points:1280,bdayMonth:9},
+  {id:3, name:'中村 はな',   phone:'070-4444-5555', tag:null,     lastVisit:'2026-06-21', visitCount:3,  points:40,  bdayMonth:1},
+  {id:4, name:'小林 なつ',   phone:'090-5555-6666', tag:'vip',    lastVisit:'2026-06-20', visitCount:18, points:980, bdayMonth:6},
+  {id:5, name:'高橋 あおい', phone:'080-6666-7777', tag:null,     lastVisit:'2026-06-20', visitCount:6,  points:120, bdayMonth:11},
+  {id:6, name:'渡辺 ゆき',   phone:'070-7777-8888', tag:null,     lastVisit:'2026-06-19', visitCount:9,  points:210, bdayMonth:6},
+  {id:7, name:'山田 花子',   phone:'090-8888-9999', tag:'dormant',lastVisit:'2026-02-10', visitCount:5,  points:60,  bdayMonth:3},
+  {id:8, name:'伊藤 さくら', phone:'080-9999-0000', tag:'vip',    lastVisit:'2026-06-18', visitCount:31, points:2100,bdayMonth:6},
+  {id:9, name:'木村 あや',   phone:'070-0000-1111', tag:null,     lastVisit:'2026-06-18', visitCount:4,  points:55,  bdayMonth:8},
+  {id:10,name:'森 かれん',   phone:'090-1111-2222', tag:'black',  lastVisit:'2026-05-01', visitCount:2,  points:0,   bdayMonth:4},
+  {id:11,name:'清水 まい',   phone:'080-3333-4444', tag:'dormant',lastVisit:'2026-01-20', visitCount:7,  points:90,  bdayMonth:6},
+  {id:12,name:'橋本 ゆな',   phone:'070-5555-1111', tag:null,     lastVisit:'2026-06-17', visitCount:11, points:340, bdayMonth:10},
+];
+
+let curTab='all', filterText='', sortBy='visit', addFormOpen=false, nextId=13;
+const CUR_MONTH=6;
+
+function initial(name){ return name[0]; }
+function avatarColor(id){ return AVATAR_COLORS[id % AVATAR_COLORS.length]; }
+function daysAgo(dateStr){
+  const d=new Date(dateStr), now=new Date(2026,5,21);
+  return Math.round((now-d)/(1000*60*60*24));
+}
+function fmtDate(dateStr){
+  const d=new Date(dateStr);
+  return `${d.getMonth()+1}/${d.getDate()}`;
+}
+
+function render(){
+  let list=[...CUSTOMERS];
+  if(curTab==='vip') list=list.filter(c=>c.tag==='vip');
+  else if(curTab==='dormant') list=list.filter(c=>c.tag==='dormant');
+  else if(curTab==='black') list=list.filter(c=>c.tag==='black');
+  else if(curTab==='bday') list=list.filter(c=>c.bdayMonth===CUR_MONTH);
+
+  if(filterText) list=list.filter(c=>c.name.includes(filterText)||c.phone.includes(filterText));
+
+  if(sortBy==='visit') list.sort((a,b)=>b.visitCount-a.visitCount);
+  else if(sortBy==='recent') list.sort((a,b)=>new Date(b.lastVisit)-new Date(a.lastVisit));
+  else if(sortBy==='name') list.sort((a,b)=>a.name.localeCompare(b.name,'ja'));
+
+  let html='';
+  if(addFormOpen){
+    html+=`<div class="add-form" id="addForm">
+      <input type="text" id="af-name" placeholder="顧客名">
+      <input type="text" id="af-phone" placeholder="電話番号">
+      <button class="af-submit" onclick="submitAddForm()">登録</button>
+      <button class="af-cancel" onclick="toggleAddForm()">キャンセル</button>
+    </div>`;
+  }
+
+  if(list.length===0 && !addFormOpen){
+    html+=`<div class="zc-empty">該当する顧客はいません</div>`;
+  } else {
+    html+=list.map(c=>{
+      const tagHtml = c.tag==='vip'?`<span class="c-tag vip">VIP</span>`
+        : c.tag==='dormant'?`<span class="c-tag dormant">休眠</span>`
+        : c.tag==='black'?`<span class="c-tag black">ブラック</span>`:'';
+      const bdayHtml = c.bdayMonth===CUR_MONTH?`<span class="c-bday">🎂</span>`:'';
+      return `<div class="c-card" onclick="openDetail(${c.id})">
+        <div class="c-avatar" style="background:${avatarColor(c.id)}">${initial(c.name)}</div>
+        <div class="c-body">
+          <div class="c-top"><span class="c-name">${c.name}</span>${tagHtml}${bdayHtml}</div>
+          <div class="c-phone">${c.phone}</div>
+        </div>
+        <div class="c-stats">
+          <div class="c-stat"><div class="c-stat-val">${fmtDate(c.lastVisit)}</div><div class="c-stat-lbl">最終来店</div></div>
+          <div class="c-stat"><div class="c-stat-val">${c.visitCount}回</div><div class="c-stat-lbl">来店回数</div></div>
+          <div class="c-stat"><div class="c-stat-val">${c.points}pt</div><div class="c-stat-lbl">ポイント</div></div>
+        </div>
+        <div class="c-actions">
+          <button class="c-btn" onclick="event.stopPropagation(); toast('${c.name} 様の予約フォームへ → 07_booking_form')">予約</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  document.getElementById('zcInner').innerHTML=html;
+  renderStats();
+}
+
+function renderStats(){
+  document.getElementById('statTotal').textContent=CUSTOMERS.length+'名';
+  document.getElementById('statVip').textContent=CUSTOMERS.filter(c=>c.tag==='vip').length+'名';
+  document.getElementById('statDormant').textContent=CUSTOMERS.filter(c=>c.tag==='dormant').length+'名';
+  document.getElementById('statBlack').textContent=CUSTOMERS.filter(c=>c.tag==='black').length+'名';
+  document.getElementById('statBday').textContent=CUSTOMERS.filter(c=>c.bdayMonth===CUR_MONTH).length+'名';
+}
+
+// ── Actions ──────────────────────────────────────────────────────────────
+function switchTab(t,el){
+  curTab=t;
+  document.querySelectorAll('.zb-tab').forEach(x=>x.classList.remove('active'));
+  if(el) el.classList.add('active');
+  render();
+}
+function onSearch(v){ filterText=v.trim(); render(); }
+function onSort(v){ sortBy=v; render(); }
+function openDetail(id){
+  const c=CUSTOMERS.find(x=>x.id===id);
+  toast(`${c.name} 様の詳細へ → 10_customer_detail`);
+}
+function toggleAddForm(){
+  addFormOpen=!addFormOpen;
+  render();
+  if(addFormOpen) setTimeout(()=>{ const el=document.getElementById('af-name'); if(el) el.focus(); },50);
+}
+function submitAddForm(){
+  const name=document.getElementById('af-name').value.trim();
+  if(!name){ toast('顧客名を入力してください'); return; }
+  const phone=document.getElementById('af-phone').value.trim()||'未登録';
+  CUSTOMERS.push({id:nextId++, name, phone, tag:null, lastVisit:'2026-06-21', visitCount:0, points:0, bdayMonth:0});
+  addFormOpen=false;
+  toast(`${name} 様を新規登録しました`);
+  render();
+}
+
+function openSb(){ document.getElementById('sidebar').classList.add('open'); document.getElementById('sbOverlay').classList.add('open'); }
+function closeSb(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('sbOverlay').classList.remove('open'); }
+
+let _tt;
+function toast(msg){ const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); clearTimeout(_tt); _tt=setTimeout(()=>el.classList.remove('show'),2400); }
+
+const DOW=['日','月','火','水','木','金','土'];
+function tick(){
+  const d=new Date();
+  const el=document.getElementById('tbTime');
+  if(el) el.textContent=`${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} ${DOW[d.getDay()]}　${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
+
+// ── Init ─────────────────────────────────────────────────────────────────
+render();
+tick();
+setInterval(tick,30000);
+</script>
+</body>
+</html>
