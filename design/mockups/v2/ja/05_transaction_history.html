@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1024">
+<title>05 · 取引履歴</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neue',sans-serif;background:#0F1D5C;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;}
+
+.ipad{width:1024px;height:768px;background:#F0F2F7;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.55);position:relative;}
+
+/* ══ ZONE A ══ */
+.zone-a{height:44px;flex-shrink:0;background:#fff;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 14px;gap:10px;z-index:10;}
+.za-menu{font-size:18px;color:#1E3A8A;cursor:pointer;padding:4px 6px;border-radius:6px;line-height:1;user-select:none;}
+.za-menu:hover{background:#EEF2FF;}
+.za-logo{font-size:13px;color:#1E3A8A;font-weight:700;letter-spacing:.08em;}
+.za-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.za-sep{width:.5px;height:14px;background:#D0D0CC;}
+.za-avatar{width:24px;height:24px;border-radius:50%;background:#8E44AD;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;}
+.za-name{font-size:12px;color:#333;font-weight:500;}
+.za-branch{font-size:11px;color:#888;}
+.za-time{font-size:11px;color:#555;font-weight:500;}
+.za-lock{font-size:13px;color:#bbb;cursor:pointer;}
+
+/* Sidebar */
+.sb-overlay{position:absolute;inset:0;background:rgba(0,0,0,.38);z-index:200;opacity:0;pointer-events:none;transition:opacity .2s;}
+.sb-overlay.open{opacity:1;pointer-events:all;}
+.sidebar{position:absolute;left:0;top:0;bottom:0;width:224px;background:#1E3A8A;z-index:201;transform:translateX(-100%);transition:transform .22s cubic-bezier(.25,.46,.45,.94);display:flex;flex-direction:column;}
+.sidebar.open{transform:translateX(0);}
+.sb-head{padding:20px 16px 14px;border-bottom:.5px solid rgba(255,255,255,.1);}
+.sb-logo{font-size:14px;color:#fff;font-weight:700;letter-spacing:.06em;}
+.sb-sub{font-size:10px;color:rgba(255,255,255,.3);margin-top:3px;}
+.sb-nav{flex:1;padding:8px 0;overflow-y:auto;}
+.sb-item{display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;transition:background .12s;}
+.sb-item:hover{background:rgba(255,255,255,.07);}
+.sb-item.active{background:rgba(255,255,255,.13);}
+.sb-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.sb-label{font-size:13px;color:rgba(255,255,255,.65);}
+.sb-item.active .sb-label{color:#fff;font-weight:600;}
+.sb-foot{padding:12px 16px;border-top:.5px solid rgba(255,255,255,.1);}
+.sb-ver{font-size:10px;color:rgba(255,255,255,.2);}
+
+.wrap{flex:1;display:flex;overflow:hidden;}
+.left{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+
+/* ══ ZONE B ══ */
+.zone-b{height:46px;flex-shrink:0;background:#fff;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 14px;gap:10px;}
+.zb-title{font-size:14px;font-weight:700;color:#1A1A1A;white-space:nowrap;flex-shrink:0;}
+.zb-tabs{display:flex;background:#F0F2F7;border-radius:9px;padding:3px;gap:2px;flex-shrink:0;}
+.zb-tab{padding:6px 12px;font-size:12px;font-weight:600;color:#999;cursor:pointer;border-radius:7px;background:transparent;border:none;font-family:inherit;white-space:nowrap;transition:all .15s;}
+.zb-tab.active{background:#fff;color:#2E86C1;box-shadow:0 1px 4px rgba(0,0,0,.1);}
+.zb-search{flex:1;max-width:240px;}
+.zb-search input{width:100%;padding:7px 11px;border-radius:8px;border:.5px solid #E0E0DC;font-size:12px;font-family:inherit;color:#333;background:#FAFAFA;}
+.zb-search input:focus{outline:none;border-color:#2E86C1;background:#fff;}
+.zb-spacer{flex:1;}
+.zb-count{font-size:11px;color:#999;flex-shrink:0;}
+
+/* ══ ZONE C ══ */
+.zone-c{flex:1;overflow-y:auto;background:#F0F2F7;}
+.zone-c::-webkit-scrollbar{width:4px;}
+.zone-c::-webkit-scrollbar-thumb{background:#D0D0CC;border-radius:2px;}
+.zc-inner{padding:12px 14px;display:flex;flex-direction:column;gap:6px;}
+.zc-daysep{font-size:10px;font-weight:700;color:#aaa;letter-spacing:.06em;padding:8px 4px 2px;}
+.zc-empty{padding:60px 0;text-align:center;color:#bbb;font-size:12px;}
+
+.t-card{background:#fff;border:1.5px solid transparent;border-radius:11px;padding:10px 12px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:box-shadow .12s,border-color .12s;}
+.t-card:hover{box-shadow:0 2px 10px rgba(0,0,0,.06);}
+.t-card.selected{border-color:#2E86C1;background:#F5FAFD;}
+.t-time{width:46px;font-size:11px;color:#999;flex-shrink:0;}
+.t-body{flex:1;min-width:0;}
+.t-name{font-size:13px;font-weight:700;color:#1A1A1A;}
+.t-items{font-size:11px;color:#888;margin-top:2px;}
+.t-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;}
+.t-amount{font-size:13px;font-weight:700;color:#1A1A1A;}
+.t-amount.struck{text-decoration:line-through;color:#bbb;font-weight:500;font-size:11px;}
+.t-amount-final{font-size:12px;font-weight:700;color:#E74C3C;}
+.t-badges{display:flex;gap:5px;align-items:center;}
+.t-method{font-size:9px;color:#777;background:#F0F0EC;padding:2px 6px;border-radius:5px;white-space:nowrap;}
+.t-status{font-size:9px;font-weight:700;padding:2px 7px;border-radius:5px;white-space:nowrap;}
+.t-status.completed{background:#EAFAF1;color:#1E8449;}
+.t-status.partial_refund{background:#FEF9E7;color:#D4AC0D;}
+.t-status.refunded{background:#FDEDEC;color:#E74C3C;}
+
+/* ══ ZONE D ══ */
+.zone-d{width:320px;flex-shrink:0;border-left:.5px solid #E5E5E0;background:#fff;display:flex;flex-direction:column;overflow-y:auto;}
+.zone-d::-webkit-scrollbar{width:4px;}
+.zone-d::-webkit-scrollbar-thumb{background:#E0E0DC;}
+
+/* 통계 (미선택) */
+.zd-stats{padding:16px 16px;}
+.zd-title{font-size:9px;font-weight:700;color:#C8C8C4;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;}
+.zd-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:.5px solid #F8F8F6;font-size:12px;}
+.zd-row:last-child{border-bottom:none;}
+.zd-label{color:#999;}
+.zd-val{font-weight:700;color:#1A1A1A;}
+.zd-val.r{color:#E74C3C;}
+.zd-big{text-align:center;padding:18px 0;}
+.zd-big-num{font-size:28px;font-weight:800;color:#2E86C1;line-height:1;}
+.zd-big-unit{font-size:11px;color:#999;margin-top:5px;}
+.zd-legend{margin-top:6px;}
+.zd-legend-item{display:flex;align-items:center;gap:7px;font-size:11px;color:#666;padding:4px 0;}
+.zd-legend-bar{flex:1;height:5px;border-radius:3px;background:#F0F0EC;overflow:hidden;}
+.zd-legend-fill{height:100%;border-radius:3px;}
+.zd-legend-n{width:24px;text-align:right;color:#999;}
+
+/* 영수증 상세 */
+.receipt{padding:18px;}
+.rc-head{margin-bottom:14px;}
+.rc-name{font-size:15px;font-weight:700;color:#1A1A1A;}
+.rc-phone{font-size:11px;color:#999;margin-top:2px;}
+.rc-meta{display:flex;flex-direction:column;gap:2px;margin-top:8px;font-size:10px;color:#aaa;}
+.rc-divider{height:.5px;background:#EBEBE7;margin:12px 0;}
+.rc-items{display:flex;flex-direction:column;gap:7px;}
+.rc-item{display:flex;justify-content:space-between;font-size:12px;color:#333;}
+.rc-item.refunded-item{text-decoration:line-through;color:#ccc;}
+.rc-sum-row{display:flex;justify-content:space-between;font-size:12px;color:#777;padding:3px 0;}
+.rc-total-row{display:flex;justify-content:space-between;font-size:15px;font-weight:800;color:#1A1A1A;padding-top:6px;}
+.rc-method-row{display:flex;justify-content:space-between;align-items:center;margin-top:10px;}
+.rc-status{margin-top:10px;display:flex;justify-content:flex-end;}
+
+.rc-actions{display:flex;gap:8px;margin-top:16px;}
+.rc-btn{flex:1;padding:9px 0;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;border:none;font-family:inherit;transition:opacity .12s;}
+.rc-btn:hover{opacity:.88;}
+.rc-btn-full{background:#FDEDEC;color:#E74C3C;border:1px solid #F1B9B2;}
+.rc-btn-partial{background:#FEF9E7;color:#B7950B;border:1px solid #F6E29A;}
+
+.refund-form{margin-top:14px;background:#FAFAF8;border:1px solid #EBEBE7;border-radius:10px;padding:12px;}
+.rf-title{font-size:11px;font-weight:700;color:#777;margin-bottom:8px;}
+.rf-item-row{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:12px;color:#333;}
+.rf-item-row input{width:14px;height:14px;}
+.rf-reason{width:100%;padding:8px 9px;border-radius:7px;border:.5px solid #E0E0DC;font-size:12px;font-family:inherit;margin-top:8px;resize:none;height:54px;}
+.rf-reason:focus{outline:none;border-color:#E74C3C;}
+.rf-buttons{display:flex;gap:8px;margin-top:10px;}
+.rf-confirm{flex:1;padding:8px 0;border-radius:8px;background:#E74C3C;color:#fff;border:none;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;}
+.rf-cancel{flex:1;padding:8px 0;border-radius:8px;background:#fff;border:.5px solid #D0D0CC;color:#777;font-size:12px;cursor:pointer;font-family:inherit;}
+.rf-amount{font-size:13px;font-weight:700;color:#E74C3C;margin-top:8px;text-align:right;}
+
+.refund-info{margin-top:12px;background:#FDEDEC;border-radius:9px;padding:11px 12px;}
+.ri-row{display:flex;justify-content:space-between;font-size:11px;color:#C0392B;padding:2px 0;}
+.ri-reason{font-size:11px;color:#A93226;margin-top:4px;}
+
+.zd-empty-hint{padding:40px 16px;text-align:center;color:#bbb;font-size:11px;}
+
+/* Toast */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(12px);background:#1A1A1A;color:#fff;font-size:12px;font-weight:500;padding:10px 18px;border-radius:10px;z-index:9999;opacity:0;pointer-events:none;transition:all .22s;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+
+<div class="ipad">
+
+  <div class="sb-overlay" id="sbOverlay" onclick="closeSb()"></div>
+  <div class="sidebar" id="sidebar">
+    <div class="sb-head">
+      <div class="sb-logo">✂ salon pos</div>
+      <div class="sb-sub">Hair Salon Yuki · 渋谷区道玄坂</div>
+    </div>
+    <div class="sb-nav">
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#3B5BDB"></div><span class="sb-label">会計 · POS</span></div>
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#8E44AD"></div><span class="sb-label">予約カレンダー</span></div>
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#D4AC0D"></div><span class="sb-label">ウェイティング</span></div>
+      <div class="sb-item active" onclick="closeSb()"><div class="sb-dot" style="background:#2E86C1"></div><span class="sb-label">取引履歴</span></div>
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#10B981"></div><span class="sb-label">顧客管理</span></div>
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#EF4444"></div><span class="sb-label">スタッフ</span></div>
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#117A65"></div><span class="sb-label">店舗設定</span></div>
+    </div>
+    <div class="sb-foot"><div class="sb-ver">v2.0.0</div></div>
+  </div>
+
+  <!-- ══ ZONE A ══ -->
+  <div class="zone-a">
+    <span class="za-menu" onclick="openSb()">☰</span>
+    <span class="za-logo">✂ salon pos</span>
+    <div class="za-right">
+      <div class="za-avatar">由</div>
+      <span class="za-name">Yuki</span>
+      <span class="za-branch">渋谷店</span>
+      <div class="za-sep"></div>
+      <span class="za-time" id="tbTime">06.21 日　10:24</span>
+      <span class="za-lock">🔒</span>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="left">
+
+      <!-- ══ ZONE B ══ -->
+      <div class="zone-b">
+        <span class="zb-title">取引履歴</span>
+        <div class="zb-tabs" id="zbTabs">
+          <div class="zb-tab active" data-p="today" onclick="switchPeriod('today',this)">今日</div>
+          <div class="zb-tab" data-p="week" onclick="switchPeriod('week',this)">今週</div>
+          <div class="zb-tab" data-p="month" onclick="switchPeriod('month',this)">今月</div>
+          <div class="zb-tab" data-p="all" onclick="switchPeriod('all',this)">全期間</div>
+        </div>
+        <div class="zb-search">
+          <input type="text" id="searchInput" placeholder="顧客名・取引番号で検索" oninput="onSearch(this.value)">
+        </div>
+        <div class="zb-spacer"></div>
+        <span class="zb-count" id="zbCount"></span>
+      </div>
+
+      <!-- ══ ZONE C ══ -->
+      <div class="zone-c">
+        <div class="zc-inner" id="zcInner"></div>
+      </div>
+
+    </div><!-- /left -->
+
+    <!-- ══ ZONE D ══ -->
+    <div class="zone-d" id="zoneD"></div>
+
+  </div><!-- /wrap -->
+</div><!-- /ipad -->
+
+<script>
+// ── Data ─────────────────────────────────────────────────────────────────
+const METHOD_LABEL = {cash:'現金💴', card:'カード💳', paypay:'PayPay📱', linepay:'LINE Pay💬', credit:'後払い📋'};
+const STATUS_LABEL = {completed:'完了', partial_refund:'部分返金', refunded:'返金済み'};
+const NOW_LABEL = '06.21 日　10:24';
+
+let TXNS = [
+  {id:'T-1024', daysAgo:0, time:'10:05', customer:'田中 美咲', phone:'090-1234-5678', items:[{name:'カット',price:5500},{name:'ワンカラー',price:8800}], staff:'Yuki', method:'card', status:'completed'},
+  {id:'T-1023', daysAgo:0, time:'09:40', customer:'佐藤 里奈', phone:'080-2222-3333', items:[{name:'パーマ',price:18700}], staff:'Mika', method:'cash', status:'completed'},
+  {id:'T-1019', daysAgo:0, time:'09:10', customer:'中村 はな', phone:'070-4444-5555', items:[{name:'前髪カット',price:2200}], staff:'Kenji', method:'paypay', status:'refunded',
+    refund:{amount:2200, reason:'お客様都合によるキャンセル', at:'09:50', items:[0]}},
+  {id:'T-0998', daysAgo:1, time:'17:20', customer:'小林 なつ', phone:'090-5555-6666', items:[{name:'縮毛矯正',price:27500},{name:'トリートメント',price:4500}], staff:'Mika', method:'linepay', status:'partial_refund',
+    refund:{amount:4500, reason:'施術内容に一部不備があったため', at:'18:00', items:[1]}},
+  {id:'T-0991', daysAgo:1, time:'14:00', customer:'高橋 あおい', phone:'080-6666-7777', items:[{name:'トリートメントM',price:9900}], staff:'Yuki', method:'card', status:'completed'},
+  {id:'T-0970', daysAgo:2, time:'13:30', customer:'渡辺 ゆき', phone:'070-7777-8888', items:[{name:'ワンカラー',price:11000}], staff:'Mika', method:'cash', status:'completed'},
+  {id:'T-0966', daysAgo:2, time:'11:00', customer:'山田 花子', phone:'090-8888-9999', items:[{name:'ヘッドスパ60分',price:8800}], staff:'Yuki', method:'credit', status:'completed'},
+  {id:'T-0942', daysAgo:3, time:'16:00', customer:'伊藤 さくら', phone:'080-9999-0000', items:[{name:'ダブルカラー',price:22000}], staff:'Yuki', method:'card', status:'completed'},
+  {id:'T-0938', daysAgo:3, time:'15:30', customer:'木村 あや', phone:'070-0000-1111', items:[{name:'グラデーション',price:19800}], staff:'Kenji', method:'paypay', status:'completed'},
+  {id:'T-0901', daysAgo:4, time:'10:00', customer:'森 かれん', phone:'090-1111-2222', items:[{name:'カット',price:5500},{name:'カラー',price:8800}], staff:'Yuki', method:'cash', status:'refunded',
+    refund:{amount:14300, reason:'ノーショー後の誤決済', at:'10:20', items:[0,1]}},
+];
+
+let curPeriod='today', filterText='', selectedId=null;
+let refundFormType=null; // null | 'full' | 'partial'
+let refundCheckedItems=new Set();
+
+// ── Helpers ──────────────────────────────────────────────────────────────
+const itemsTotal = t=>t.items.reduce((s,it)=>s+it.price,0);
+const fmtY = n=>`¥${n.toLocaleString()}`;
+const finalTotal = t=>itemsTotal(t)-(t.refund?t.refund.amount:0);
+
+function periodMatch(t){
+  if(curPeriod==='today') return t.daysAgo===0;
+  if(curPeriod==='week') return t.daysAgo<=6;
+  if(curPeriod==='month') return t.daysAgo<=30;
+  return true;
+}
+
+function render(){
+  let list=TXNS.filter(periodMatch);
+  if(filterText) list=list.filter(t=>t.customer.includes(filterText)||t.id.toLowerCase().includes(filterText.toLowerCase()));
+  document.getElementById('zbCount').textContent=`${list.length}件`;
+
+  if(list.length===0){
+    document.getElementById('zcInner').innerHTML=`<div class="zc-empty">該当する取引はありません</div>`;
+  } else {
+    let lastDay=null, html='';
+    list.forEach(t=>{
+      const dayLabel = t.daysAgo===0?'今日':t.daysAgo===1?'昨日':`${t.daysAgo}日前`;
+      if(dayLabel!==lastDay){ html+=`<div class="zc-daysep">${dayLabel}</div>`; lastDay=dayLabel; }
+      const itemSummary = t.items.length>1?`${t.items[0].name}　他${t.items.length-1}件`:t.items[0].name;
+      const total=itemsTotal(t);
+      const amountHtml = t.refund
+        ? `<span class="t-amount struck">${fmtY(total)}</span><span class="t-amount-final">${fmtY(finalTotal(t))}</span>`
+        : `<span class="t-amount">${fmtY(total)}</span>`;
+      html+=`<div class="t-card${t.id===selectedId?' selected':''}" onclick="selectTxn('${t.id}')">
+        <div class="t-time">${t.time}</div>
+        <div class="t-body">
+          <div class="t-name">${t.customer}</div>
+          <div class="t-items">${itemSummary}</div>
+        </div>
+        <div class="t-right">
+          <div class="t-badges">${amountHtml}</div>
+          <div class="t-badges">
+            <span class="t-method">${METHOD_LABEL[t.method]}</span>
+            <span class="t-status ${t.status}">${STATUS_LABEL[t.status]}</span>
+          </div>
+        </div>
+      </div>`;
+    });
+    document.getElementById('zcInner').innerHTML=html;
+  }
+
+  renderZoneD();
+}
+
+function renderZoneD(){
+  const t=TXNS.find(x=>x.id===selectedId);
+  if(!t){ renderStats(); return; }
+
+  const total=itemsTotal(t);
+  const itemsHtml=t.items.map((it,idx)=>{
+    const wasRefunded=t.refund&&t.refund.items.includes(idx);
+    return `<div class="rc-item${wasRefunded?' refunded-item':''}"><span>${it.name}</span><span>${fmtY(it.price)}</span></div>`;
+  }).join('');
+
+  let actionHtml='';
+  if(t.status==='completed'){
+    actionHtml=`<div class="rc-actions">
+      <button class="rc-btn rc-btn-full" onclick="openRefundForm('full')">全額返金</button>
+      <button class="rc-btn rc-btn-partial" onclick="openRefundForm('partial')">部分返金</button>
+    </div>`;
+    if(refundFormType){
+      if(refundFormType==='full'){
+        actionHtml+=`<div class="refund-form">
+          <div class="rf-title">全額返金</div>
+          <div style="font-size:11px;color:#999;">${t.items.map(i=>i.name).join('・')} 全${t.items.length}点を返金します</div>
+          <textarea class="rf-reason" id="rfReason" placeholder="返金理由を入力（必須）"></textarea>
+          <div class="rf-amount">返金額: ${fmtY(total)}</div>
+          <div class="rf-buttons">
+            <button class="rf-cancel" onclick="cancelRefundForm()">キャンセル</button>
+            <button class="rf-confirm" onclick="confirmRefund()">返金を確定</button>
+          </div>
+        </div>`;
+      } else {
+        const checkedAmount=[...refundCheckedItems].reduce((s,idx)=>s+t.items[idx].price,0);
+        actionHtml+=`<div class="refund-form">
+          <div class="rf-title">部分返金（品目を選択）</div>
+          ${t.items.map((it,idx)=>`
+            <label class="rf-item-row">
+              <input type="checkbox" ${refundCheckedItems.has(idx)?'checked':''} onchange="toggleRefundItem(${idx})">
+              <span style="flex:1;">${it.name}</span><span>${fmtY(it.price)}</span>
+            </label>`).join('')}
+          <textarea class="rf-reason" id="rfReason" placeholder="返金理由を入力（必須）"></textarea>
+          <div class="rf-amount">返金額: ${fmtY(checkedAmount)}</div>
+          <div class="rf-buttons">
+            <button class="rf-cancel" onclick="cancelRefundForm()">キャンセル</button>
+            <button class="rf-confirm" onclick="confirmRefund()">返金を確定</button>
+          </div>
+        </div>`;
+      }
+    }
+  } else if(t.refund){
+    actionHtml=`<div class="refund-info">
+      <div class="ri-row"><span>返金額</span><span>${fmtY(t.refund.amount)}</span></div>
+      <div class="ri-row"><span>処理時刻</span><span>${t.refund.at}</span></div>
+      <div class="ri-reason">理由: ${t.refund.reason}</div>
+    </div>`;
+  }
+
+  document.getElementById('zoneD').innerHTML=`
+    <div class="receipt">
+      <div class="rc-head">
+        <div class="rc-name">${t.customer}</div>
+        <div class="rc-phone">${t.phone}</div>
+        <div class="rc-meta">
+          <span>取引番号: ${t.id}</span>
+          <span>日時: ${t.daysAgo===0?'今日':t.daysAgo+'日前'} ${t.time}</span>
+          <span>担当: ${t.staff}</span>
+        </div>
+      </div>
+      <div class="rc-divider"></div>
+      <div class="rc-items">${itemsHtml}</div>
+      <div class="rc-divider"></div>
+      <div class="rc-sum-row"><span>小計</span><span>${fmtY(total)}</span></div>
+      <div class="rc-total-row"><span>合計</span><span>${fmtY(total)}</span></div>
+      <div class="rc-method-row">
+        <span style="font-size:11px;color:#999;">支払方法</span>
+        <span class="t-method">${METHOD_LABEL[t.method]}</span>
+      </div>
+      <div class="rc-status">
+        <span class="t-status ${t.status}">${STATUS_LABEL[t.status]}</span>
+      </div>
+      ${actionHtml}
+    </div>`;
+}
+
+function renderStats(){
+  const today=TXNS.filter(t=>t.daysAgo===0);
+  const sales=today.reduce((s,t)=>s+finalTotal(t),0);
+  const refundCount=today.filter(t=>t.refund).length;
+  const refundAmount=today.reduce((s,t)=>s+(t.refund?t.refund.amount:0),0);
+
+  const byMethod={};
+  today.forEach(t=>{ byMethod[t.method]=(byMethod[t.method]||0)+1; });
+  const maxCnt=Math.max(1,...Object.values(byMethod));
+  const methodColors={cash:'#1E8449',card:'#2E86C1',paypay:'#D4AC0D',linepay:'#8E44AD',credit:'#7D3C98'};
+  const legendHtml=Object.keys(byMethod).map(m=>`
+    <div class="zd-legend-item">
+      <span style="width:54px;">${METHOD_LABEL[m]}</span>
+      <div class="zd-legend-bar"><div class="zd-legend-fill" style="width:${byMethod[m]/maxCnt*100}%;background:${methodColors[m]};"></div></div>
+      <span class="zd-legend-n">${byMethod[m]}</span>
+    </div>`).join('');
+
+  document.getElementById('zoneD').innerHTML=`
+    <div class="zd-stats">
+      <div class="zd-title">今日の売上状況</div>
+      <div class="zd-big">
+        <div class="zd-big-num">${fmtY(sales)}</div>
+        <div class="zd-big-unit">総売上（返金反映後）</div>
+      </div>
+      <div class="zd-row"><span class="zd-label">取引件数</span><span class="zd-val">${today.length}件</span></div>
+      <div class="zd-row"><span class="zd-label">返金件数</span><span class="zd-val r">${refundCount}件</span></div>
+      <div class="zd-row"><span class="zd-label">返金額</span><span class="zd-val r">${fmtY(refundAmount)}</span></div>
+      <div style="margin-top:16px;">
+        <div class="zd-title">決済手段別件数</div>
+        <div class="zd-legend">${legendHtml}</div>
+      </div>
+      <div class="zd-empty-hint">取引を選択すると詳細・返金処理が行えます</div>
+    </div>`;
+}
+
+// ── Actions ──────────────────────────────────────────────────────────────
+function switchPeriod(p,el){
+  curPeriod=p;
+  document.querySelectorAll('.zb-tab').forEach(t=>t.classList.remove('active'));
+  if(el) el.classList.add('active');
+  render();
+}
+function onSearch(v){ filterText=v.trim(); render(); }
+
+function selectTxn(id){
+  selectedId = selectedId===id ? null : id;
+  refundFormType=null; refundCheckedItems=new Set();
+  render();
+}
+
+function openRefundForm(type){
+  refundFormType=type;
+  refundCheckedItems=new Set();
+  renderZoneD();
+}
+function cancelRefundForm(){
+  refundFormType=null; refundCheckedItems=new Set();
+  renderZoneD();
+}
+function toggleRefundItem(idx){
+  if(refundCheckedItems.has(idx)) refundCheckedItems.delete(idx);
+  else refundCheckedItems.add(idx);
+  renderZoneD();
+}
+
+function confirmRefund(){
+  const t=TXNS.find(x=>x.id===selectedId); if(!t) return;
+  const reason=document.getElementById('rfReason').value.trim();
+  if(!reason){ toast('返金理由を入力してください'); return; }
+
+  if(refundFormType==='full'){
+    t.status='refunded';
+    t.refund={amount:itemsTotal(t), reason, at:'10:24', items:t.items.map((_,i)=>i)};
+    toast(`${t.customer} 様の取引を全額返金しました`);
+  } else {
+    if(refundCheckedItems.size===0){ toast('返金する品目を選択してください'); return; }
+    const amount=[...refundCheckedItems].reduce((s,idx)=>s+t.items[idx].price,0);
+    const isAll=refundCheckedItems.size===t.items.length;
+    t.status=isAll?'refunded':'partial_refund';
+    t.refund={amount, reason, at:'10:24', items:[...refundCheckedItems]};
+    toast(`${t.customer} 様の取引を部分返金しました（${fmtY(amount)}）`);
+  }
+  refundFormType=null; refundCheckedItems=new Set();
+  render();
+}
+
+function openSb(){ document.getElementById('sidebar').classList.add('open'); document.getElementById('sbOverlay').classList.add('open'); }
+function closeSb(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('sbOverlay').classList.remove('open'); }
+
+let _tt;
+function toast(msg){ const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); clearTimeout(_tt); _tt=setTimeout(()=>el.classList.remove('show'),2400); }
+
+const DOW=['日','月','火','水','木','金','土'];
+function tick(){
+  const d=new Date();
+  const el=document.getElementById('tbTime');
+  if(el) el.textContent=`${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} ${DOW[d.getDay()]}　${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
+
+// ── Init ─────────────────────────────────────────────────────────────────
+render();
+tick();
+setInterval(tick,30000);
+</script>
+</body>
+</html>
