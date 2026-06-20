@@ -212,8 +212,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 .ze-col{width:191px;flex-shrink:0;position:relative;border-right:.5px solid #EBEBEB;}
 .ze-col:last-child{border-right:none;}
 .ze-col.dim{background:repeating-linear-gradient(45deg,#F9F9F7,#F9F9F7 3px,#FAFAF8 3px,#FAFAF8 7px);}
-.ze-h-line{position:absolute;left:0;right:0;height:.5px;background:#EBEBEB;pointer-events:none;}
-.ze-h-half{background:#F4F4F2;}
+.ze-h-line{position:absolute;left:0;height:1px;background:#DCDCD8;pointer-events:none;}
+.ze-h-half{background:#EBEBE7;}
 
 /* ── 「右にまだスタッフがいる」ヒント: フェード + ドットページネーション ── */
 .day-fade-right{
@@ -776,12 +776,13 @@ function buildDay() {
   colsEl.style.width=totalW+'px';
   // NOW ライン — ze-staff-cols 全幅に配置
   const nowLineHtml=`<div class="ze-now-line" data-time="10:24" style="top:${nowTop}px;width:${totalW}px;position:absolute;left:0;z-index:20;"></div>`;
+  // 正時・30分の時間線 — 列ごとではなく ze-staff-cols 全幅を貫通させる
+  let hLines='';
+  for(let h=DAY_START_H;h<=DAY_END_H;h++){
+    hLines+=`<div class="ze-h-line" style="top:${toTop(h,0)}px;width:${totalW}px;"></div>`;
+    if(h<DAY_END_H) hLines+=`<div class="ze-h-line ze-h-half" style="top:${toTop(h,30)}px;width:${totalW}px;"></div>`;
+  }
   const colsHtml=vis.map(st=>{
-    let lines='';
-    for(let h=DAY_START_H;h<=DAY_END_H;h++){
-      lines+=`<div class="ze-h-line" style="top:${toTop(h,0)}px"></div>`;
-      if(h<DAY_END_H) lines+=`<div class="ze-h-line ze-h-half" style="top:${toTop(h,30)}px"></div>`;
-    }
     const blocks=bks.filter(b=>b.s===st.i).map(b=>{
       const top=toTop(b.sh,b.sm);
       const ht=Math.max(22, b.dur*(40/60)-2);
@@ -807,9 +808,9 @@ function buildDay() {
         </div>
       </div>`;
     }).join('');
-    return `<div class="ze-col" style="height:${DAY_H}px;">${lines}${blocks}</div>`;
+    return `<div class="ze-col" style="height:${DAY_H}px;">${blocks}</div>`;
   }).join('');
-  colsEl.innerHTML=nowLineHtml+colsHtml;
+  colsEl.innerHTML=hLines+nowLineHtml+colsHtml;
   updateZdDots();
 }
 
@@ -871,8 +872,8 @@ function buildWeek() {
     const isTod=d.toDateString()===todS;
     let lines='';
     for(let h=DAY_START_H;h<=DAY_END_H;h++){
-      lines+=`<div class="ze-h-line" style="top:${toTop(h,0)}px;position:absolute;left:0;right:0;height:.5px;background:#EBEBEB;"></div>`;
-      if(h<DAY_END_H) lines+=`<div class="ze-h-line" style="top:${toTop(h,30)}px;position:absolute;left:0;right:0;height:.5px;background:#F4F4F2;"></div>`;
+      lines+=`<div class="ze-h-line" style="top:${toTop(h,0)}px;position:absolute;left:0;right:0;height:1px;background:#DCDCD8;"></div>`;
+      if(h<DAY_END_H) lines+=`<div class="ze-h-line" style="top:${toTop(h,30)}px;position:absolute;left:0;right:0;height:.5px;background:#EBEBE7;"></div>`;
     }
     const blocks=(isTod?bks:[]).map(b=>{
       const top=toTop(b.sh,b.sm),ht=Math.max(20,b.dur*(40/60)-2);
