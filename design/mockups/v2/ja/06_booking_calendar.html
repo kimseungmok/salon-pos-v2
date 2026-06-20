@@ -199,7 +199,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 
 /* 時間ガター */
 .ze-time-gutter{width:50px;flex-shrink:0;border-right:.5px solid #E5E5E0;background:#FAFAFA;}
-.ze-time-cell{height:40px;display:flex;align-items:flex-start;justify-content:flex-end;padding:3px 7px 0;font-size:10px;color:#bbb;border-bottom:.5px solid #EBEBEB;}
+.ze-time-cell{height:40px;position:relative;display:flex;align-items:flex-start;justify-content:flex-end;padding:3px 7px 0;font-size:10px;color:#bbb;border-bottom:.5px solid #EBEBEB;}
+.ze-time-half{position:absolute;top:21px;right:7px;font-size:8.5px;color:#d4d4d0;font-weight:400;}
 
 /* スタッフ列 */
 .ze-cols-outer{flex:1;overflow-x:auto;overflow-y:visible;cursor:grab;user-select:none;}
@@ -381,7 +382,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 .wk-scroll::-webkit-scrollbar-thumb{background:#E0E0DC;border-radius:2px;}
 .wk-grid{display:flex;}
 .wk-time-gutter{width:50px;flex-shrink:0;border-right:.5px solid #E5E5E0;background:#FAFAFA;}
-.wk-time-cell{height:40px;display:flex;align-items:flex-start;justify-content:flex-end;padding:3px 7px 0;font-size:10px;color:#bbb;border-bottom:.5px solid #EBEBEB;}
+.wk-time-cell{height:40px;position:relative;display:flex;align-items:flex-start;justify-content:flex-end;padding:3px 7px 0;font-size:10px;color:#bbb;border-bottom:.5px solid #EBEBEB;}
 /* スナップスクロールキャロセル: 連続ドラッグ + 日境界にスナップ */
 .wk-cols-outer{
   flex:1;overflow-x:auto;overflow-y:visible;cursor:grab;user-select:none;
@@ -756,9 +757,12 @@ function buildDay() {
     </div>`;
   }).join('');
 
-  // Zone E: 時間ガター
+  // Zone E: 時間ガター (正時 + 30分の控えめなラベル)
   let tg='';
-  for(let h=DAY_START_H;h<=DAY_END_H;h++) tg+=`<div class="ze-time-cell">${h}:00</div>`;
+  for(let h=DAY_START_H;h<=DAY_END_H;h++){
+    const half=h<DAY_END_H?`<span class="ze-time-half">${h}:30</span>`:'';
+    tg+=`<div class="ze-time-cell">${h}:00${half}</div>`;
+  }
   document.getElementById('zeTimeGutter').innerHTML=tg;
 
   // Zone E: スタッフ列 + 予約ブロック (Concept B スタイル)
@@ -849,7 +853,10 @@ function buildWeek() {
   }).join('');
 
   let tg='';
-  for(let h=DAY_START_H;h<=DAY_END_H;h++) tg+=`<div class="wk-time-cell">${h}:00</div>`;
+  for(let h=DAY_START_H;h<=DAY_END_H;h++){
+    const half=h<DAY_END_H?`<span class="ze-time-half">${h}:30</span>`:'';
+    tg+=`<div class="wk-time-cell">${h}:00${half}</div>`;
+  }
   document.getElementById('wkTimeGutter').innerHTML=tg;
 
   const colsEl=document.getElementById('wkDayCols');
