@@ -173,9 +173,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
   background:#fff;
   border-bottom:.5px solid #E5E5E0;
   display:flex;
+  position:relative;
 }
 .zd-gutter{width:50px;flex-shrink:0;border-right:.5px solid #E5E5E0;background:#FAFAFA;}
-.zd-cols-outer{flex:1;overflow:hidden;}
+.zd-cols-outer{flex:1;overflow:hidden;margin-right:24px;}
 .zd-cols{display:flex;}
 .zd-col{width:191px;flex-shrink:0;display:flex;align-items:center;justify-content:center;gap:5px;border-right:.5px solid #EBEBEB;font-size:11px;font-weight:700;color:#333;}
 .zd-col:last-child{border-right:none;}
@@ -202,7 +203,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 .ze-time-cell{height:40px;display:flex;align-items:flex-start;justify-content:flex-end;padding:3px 7px 0;font-size:10px;color:#bbb;border-bottom:.5px solid #EBEBEB;}
 
 /* スタッフ列 */
-.ze-cols-outer{flex:1;overflow-x:auto;overflow-y:visible;cursor:grab;user-select:none;}
+.ze-cols-outer{flex:1;overflow-x:auto;overflow-y:visible;cursor:grab;user-select:none;margin-right:24px;}
 .ze-cols-outer::-webkit-scrollbar{height:0;}
 .ze-cols-outer.dragging{cursor:grabbing;}
 .ze-staff-cols{display:flex;position:relative;}
@@ -211,6 +212,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 .ze-col.dim{background:repeating-linear-gradient(45deg,#F9F9F7,#F9F9F7 3px,#FAFAF8 3px,#FAFAF8 7px);}
 .ze-h-line{position:absolute;left:0;right:0;height:.5px;background:#EBEBEB;pointer-events:none;}
 .ze-h-half{background:#F4F4F2;}
+
+/* ── 「右にまだスタッフがいる」ヒント: フェード + ドットページネーション ── */
+.day-fade-right{
+  position:absolute;top:0;right:24px;bottom:0;width:30px;
+  background:linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,.95) 70%);
+  pointer-events:none;z-index:30;
+}
+.zd-dots{
+  position:absolute;top:5px;right:4px;z-index:40;
+  display:flex;gap:4px;align-items:center;
+  background:rgba(255,255,255,.9);padding:3px 7px;border-radius:10px;
+  box-shadow:0 1px 4px rgba(0,0,0,.08);
+  pointer-events:none;
+}
+.zd-dot-pg{width:5px;height:5px;border-radius:50%;background:#E0E0DC;transition:background .15s,transform .15s;}
+.zd-dot-pg.active{background:#1E3A8A;transform:scale(1.25);}
 
 /* ──────────────────────────────────
    予約ブロック — Concept B デザイン
@@ -548,7 +565,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 
       <!-- View panels -->
       <!-- ══ ZONE D + ZONE E: 日 ビュー ══ -->
-      <div class="view-panel active" id="view-day">
+      <div class="view-panel active" id="view-day" style="position:relative;">
 
         <!-- ZONE D -->
         <div class="zone-d">
@@ -569,6 +586,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
             </div>
           </div>
         </div>
+
+        <!-- 「右にまだスタッフがいる」ヒント -->
+        <div class="day-fade-right"></div>
+        <div class="zd-dots" id="zdDots"></div>
 
       </div>
 
@@ -716,6 +737,8 @@ const filtBK = ()=>filters.has('all')?BK:BK.filter(b=>filters.has(b.s));
 const visStaff = ()=>STAFF.map((st,i)=>({...st,i})).filter(st=>filters.has('all')||filters.has(st.i));
 
 // ── DAY VIEW ─────────────────────────────────────────────────────────────
+const DAY_START_H=9, DAY_END_H=24; // 9:00〜24:00
+const DAY_H=(DAY_END_H-DAY_START_H+1)*40+10;
 function buildDay() {
   const bks=filtBK();
   const vis=visStaff();
@@ -733,7 +756,7 @@ function buildDay() {
 
   // Zone E: 時間ガター
   let tg='';
-  for(let h=9;h<=19;h++) tg+=`<div class="ze-time-cell">${h}:00</div>`;
+  for(let h=DAY_START_H;h<=DAY_END_H;h++) tg+=`<div class="ze-time-cell">${h}:00</div>`;
   document.getElementById('zeTimeGutter').innerHTML=tg;
 
   // Zone E: スタッフ列 + 予約ブロック (Concept B スタイル)
@@ -744,9 +767,9 @@ function buildDay() {
   const nowLineHtml=`<div class="ze-now-line" data-time="10:24" style="top:${nowTop}px;width:${totalW}px;position:absolute;left:0;z-index:20;"></div>`;
   const colsHtml=vis.map(st=>{
     let lines='';
-    for(let h=9;h<=19;h++){
+    for(let h=DAY_START_H;h<=DAY_END_H;h++){
       lines+=`<div class="ze-h-line" style="top:${toTop(h,0)}px"></div>`;
-      if(h<19) lines+=`<div class="ze-h-line ze-h-half" style="top:${toTop(h,30)}px"></div>`;
+      if(h<DAY_END_H) lines+=`<div class="ze-h-line ze-h-half" style="top:${toTop(h,30)}px"></div>`;
     }
     const blocks=bks.filter(b=>b.s===st.i).map(b=>{
       const top=toTop(b.sh,b.sm);
@@ -773,9 +796,25 @@ function buildDay() {
         </div>
       </div>`;
     }).join('');
-    return `<div class="ze-col" style="height:${11*40+10}px;">${lines}${blocks}</div>`;
+    return `<div class="ze-col" style="height:${DAY_H}px;">${lines}${blocks}</div>`;
   }).join('');
   colsEl.innerHTML=nowLineHtml+colsHtml;
+  updateZdDots();
+}
+
+// ── ドットページネーション: スタッフ列の「現在見えている範囲」を表示 ──
+function updateZdDots(){
+  const dotsEl=document.getElementById('zdDots'); if(!dotsEl) return;
+  const outer=document.getElementById('zeColsOuter'); if(!outer) return;
+  const n=visStaff().length;
+  const sl=outer.scrollLeft, cw=outer.clientWidth;
+  let html='';
+  for(let i=0;i<n;i++){
+    const left=i*COL_W, right=left+COL_W;
+    const visible = right>sl && left<sl+cw; // 列が表示範囲と重なっているか
+    html+=`<div class="zd-dot-pg${visible?' active':''}"></div>`;
+  }
+  dotsEl.innerHTML=html;
 }
 
 // ── WEEK VIEW ─────────────────────────────────────────────────────────────
@@ -801,7 +840,7 @@ function buildWeek() {
   }).join('');
 
   let tg='';
-  for(let h=9;h<=19;h++) tg+=`<div class="wk-time-cell">${h}:00</div>`;
+  for(let h=DAY_START_H;h<=DAY_END_H;h++) tg+=`<div class="wk-time-cell">${h}:00</div>`;
   document.getElementById('wkTimeGutter').innerHTML=tg;
 
   const colsEl=document.getElementById('wkDayCols');
@@ -809,9 +848,9 @@ function buildWeek() {
   colsEl.innerHTML=days.map(d=>{
     const isTod=d.toDateString()===todS;
     let lines='';
-    for(let h=9;h<=19;h++){
+    for(let h=DAY_START_H;h<=DAY_END_H;h++){
       lines+=`<div class="ze-h-line" style="top:${toTop(h,0)}px;position:absolute;left:0;right:0;height:.5px;background:#EBEBEB;"></div>`;
-      if(h<19) lines+=`<div class="ze-h-line" style="top:${toTop(h,30)}px;position:absolute;left:0;right:0;height:.5px;background:#F4F4F2;"></div>`;
+      if(h<DAY_END_H) lines+=`<div class="ze-h-line" style="top:${toTop(h,30)}px;position:absolute;left:0;right:0;height:.5px;background:#F4F4F2;"></div>`;
     }
     const blocks=(isTod?bks:[]).map(b=>{
       const top=toTop(b.sh,b.sm),ht=Math.max(20,b.dur*(40/60)-2);
@@ -825,7 +864,7 @@ function buildWeek() {
       </div>`;
     }).join('');
     const nowLine=isTod?`<div style="position:absolute;left:0;right:0;top:${toTop(10,24)}px;height:2px;background:#EF4444;z-index:10;"></div>`:'';
-    return `<div class="wk-day-col${isTod?' today':''}" style="height:${11*40+10}px;position:relative;">${lines}${blocks}${nowLine}</div>`;
+    return `<div class="wk-day-col${isTod?' today':''}" style="height:${DAY_H}px;position:relative;">${lines}${blocks}${nowLine}</div>`;
   }).join('');
 
   // 当週の月曜が左端に来るようスクロール位置を初期化 (前バッファ分だけオフセット)
@@ -1031,6 +1070,8 @@ function toggleSide(){
   document.getElementById('zoneF').classList.toggle('closed',!sideOpen);
   document.getElementById('zfTab').classList.toggle('closed',!sideOpen);
   document.getElementById('zfTab').textContent=sideOpen?'›':'‹';
+  // 幅トランジション (.2s) 完了後にドット表示を再計算
+  setTimeout(updateZdDots,220);
 }
 function openSb(){ document.getElementById('sidebar').classList.add('open'); document.getElementById('sbOverlay').classList.add('open'); }
 function closeSb(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('sbOverlay').classList.remove('open'); }
@@ -1085,8 +1126,14 @@ function tick(){
     syncHead(el.scrollLeft);
   },{passive:true});
 
+  // トラックパッド等のネイティブスクロールにもヘッダー追従 + ドット更新
+  document.addEventListener('scroll',e=>{
+    if(e.target&&e.target.id==='zeColsOuter'){ syncHead(e.target.scrollLeft); updateZdDots(); }
+  },true);
+
   function syncHead(sl){
     const h=getHead(); if(h) h.scrollLeft=sl;
+    updateZdDots();
   }
   function snapBack(){
     const el=getOuter(); if(!el) return;
@@ -1161,6 +1208,7 @@ updateDdUI();
 render();
 tick();
 setInterval(tick,30000);
+window.addEventListener('resize',()=>{ if(curView==='day') updateZdDots(); });
 </script>
 </body>
 </html>
