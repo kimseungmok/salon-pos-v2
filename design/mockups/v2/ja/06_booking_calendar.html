@@ -328,8 +328,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 .zf1-d.today{background:#8E44AD;color:#fff;font-weight:700;}
 .zf1-d.has-bk{font-weight:700;color:#3B5BDB;}
 .zf1-d.other-m{color:#ddd;}
-.zf1-d.viewing{border:1.5px solid #3B5BDB;border-top:none;border-radius:4px 4px 2px 2px;}
-.zf1-d.viewing.today{border-color:#fff;}
+.zf1-d.viewing{
+  position:relative;
+  width:20px;height:20px; /* 보더가 굵어진 만큼 살짝 줄여 전체 크기를 맞춤 */
+  border-bottom:3px solid #3B5BDB;
+  border-radius:3px 3px 1px 1px;
+}
+.zf1-d.viewing::before,.zf1-d.viewing::after{
+  content:'';position:absolute;bottom:0;width:2.5px;height:35%;
+  background:#3B5BDB;
+}
+.zf1-d.viewing::before{left:-1px;}
+.zf1-d.viewing::after{right:-1px;}
+.zf1-d.viewing.today{border-bottom-color:#fff;}
+.zf1-d.viewing.today::before,.zf1-d.viewing.today::after{background:#fff;}
 
 /* ── Zone F-2: 日次統計 ── */
 .zone-f2{padding:10px 12px;border-bottom:.5px solid #F0F0EC;flex-shrink:0;}
