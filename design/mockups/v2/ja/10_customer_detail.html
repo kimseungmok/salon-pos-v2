@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1024">
+<title>10 · 顧客詳細</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neue',sans-serif;background:#0F1D5C;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;}
+
+.ipad{width:1024px;height:768px;background:#F0F2F7;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.55);position:relative;}
+
+/* ══ ZONE A ══ */
+.zone-a{height:44px;flex-shrink:0;background:#fff;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 14px;gap:10px;z-index:10;}
+.za-menu{font-size:18px;color:#1E3A8A;cursor:pointer;padding:4px 6px;border-radius:6px;line-height:1;user-select:none;}
+.za-menu:hover{background:#EEF2FF;}
+.za-logo{font-size:13px;color:#1E3A8A;font-weight:700;letter-spacing:.08em;}
+.za-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.za-sep{width:.5px;height:14px;background:#D0D0CC;}
+.za-avatar{width:24px;height:24px;border-radius:50%;background:#8E44AD;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;}
+.za-name{font-size:12px;color:#333;font-weight:500;}
+.za-branch{font-size:11px;color:#888;}
+.za-time{font-size:11px;color:#555;font-weight:500;}
+.za-lock{font-size:13px;color:#bbb;cursor:pointer;}
+
+/* Sidebar */
+.sb-overlay{position:absolute;inset:0;background:rgba(0,0,0,.38);z-index:200;opacity:0;pointer-events:none;transition:opacity .2s;}
+.sb-overlay.open{opacity:1;pointer-events:all;}
+.sidebar{position:absolute;left:0;top:0;bottom:0;width:224px;background:#1E3A8A;z-index:201;transform:translateX(-100%);transition:transform .22s cubic-bezier(.25,.46,.45,.94);display:flex;flex-direction:column;}
+.sidebar.open{transform:translateX(0);}
+.sb-head{padding:20px 16px 14px;border-bottom:.5px solid rgba(255,255,255,.1);}
+.sb-logo{font-size:14px;color:#fff;font-weight:700;letter-spacing:.06em;}
+.sb-sub{font-size:10px;color:rgba(255,255,255,.3);margin-top:3px;}
+.sb-nav{flex:1;padding:8px 0;overflow-y:auto;}
+.sb-item{display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;transition:background .12s;}
+.sb-item:hover{background:rgba(255,255,255,.07);}
+.sb-item.active{background:rgba(255,255,255,.13);}
+.sb-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.sb-label{font-size:13px;color:rgba(255,255,255,.65);}
+.sb-item.active .sb-label{color:#fff;font-weight:600;}
+.sb-foot{padding:12px 16px;border-top:.5px solid rgba(255,255,255,.1);}
+.sb-ver{font-size:10px;color:rgba(255,255,255,.2);}
+
+/* ══ ZONE B ══ */
+.zone-b{height:48px;flex-shrink:0;background:#fff;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 14px;gap:10px;}
+.back-btn{font-size:12px;color:#10B981;cursor:pointer;padding:5px 9px;border-radius:7px;font-weight:600;white-space:nowrap;}
+.back-btn:hover{background:#EAFAF1;}
+.zb-sep{width:.5px;height:16px;background:#D0D0CC;}
+.zb-name{font-size:15px;font-weight:700;color:#1A1A1A;}
+.zb-tag{font-size:9px;font-weight:700;padding:3px 8px;border-radius:6px;}
+.zb-tag.vip{background:#FEF9E7;color:#B7950B;}
+.zb-tag.black{background:#FDEDEC;color:#E74C3C;}
+.zb-spacer{flex:1;}
+.zb-actions{display:flex;gap:7px;}
+.zb-btn{padding:7px 13px;border-radius:8px;font-size:12px;font-weight:700;border:none;cursor:pointer;font-family:inherit;white-space:nowrap;}
+.zb-btn.primary{background:#10B981;color:#fff;}
+.zb-btn.secondary{background:#EEF2FF;color:#1E3A8A;}
+.zb-btn.outline{background:#fff;border:.5px solid #D0D0CC;color:#666;}
+.zb-btn.outline.on-vip{background:#FEF9E7;border-color:#F6E29A;color:#B7950B;}
+.zb-btn.outline.on-black{background:#FDEDEC;border-color:#F1B9B2;color:#E74C3C;}
+
+/* ══ ZONE C ══ */
+.zone-c{flex-shrink:0;background:#fff;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:14px 18px;gap:24px;}
+.zc-avatar{width:56px;height:56px;border-radius:50%;background:#3B5BDB;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#fff;flex-shrink:0;}
+.zc-info{flex-shrink:0;}
+.zc-phone{font-size:12px;color:#999;}
+.zc-meta{font-size:11px;color:#aaa;margin-top:3px;display:flex;gap:10px;}
+.zc-meta b{color:#666;font-weight:600;}
+.zc-stats{display:flex;gap:22px;flex-shrink:0;}
+.zc-stat{text-align:center;}
+.zc-stat-val{font-size:17px;font-weight:800;color:#1A1A1A;}
+.zc-stat-lbl{font-size:10px;color:#aaa;margin-top:2px;}
+.zc-graph{flex:1;display:flex;align-items:flex-end;gap:6px;height:46px;padding-left:10px;border-left:.5px solid #EBEBE7;}
+.zc-bar-col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:3px;}
+.zc-bar{width:14px;border-radius:3px 3px 0 0;background:#A7E8CE;}
+.zc-bar-lbl{font-size:8px;color:#bbb;}
+
+/* ══ ZONE D ══ */
+.zone-d{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.zd-tabs{display:flex;background:#fff;border-bottom:.5px solid #E5E5E0;padding:0 18px;gap:4px;flex-shrink:0;}
+.zd-tab{padding:11px 6px;font-size:13px;font-weight:600;color:#999;cursor:pointer;border-bottom:2.5px solid transparent;margin-right:18px;}
+.zd-tab.active{color:#10B981;border-bottom-color:#10B981;}
+.zd-content{flex:1;overflow-y:auto;padding:16px 18px;}
+.zd-content::-webkit-scrollbar{width:4px;}
+.zd-content::-webkit-scrollbar-thumb{background:#D0D0CC;}
+
+/* 基本情報 */
+.info-card{background:#fff;border:.5px solid #E5E5E0;border-radius:12px;padding:16px;max-width:520px;}
+.info-row{display:flex;padding:9px 0;border-bottom:.5px solid #F8F8F6;font-size:13px;}
+.info-row:last-child{border-bottom:none;}
+.info-label{width:110px;color:#999;flex-shrink:0;}
+.info-val{color:#1A1A1A;font-weight:500;}
+.edit-btn{margin-top:14px;padding:8px 16px;border-radius:8px;background:#F4F4F0;border:.5px solid #D0D0CC;font-size:12px;color:#555;cursor:pointer;font-family:inherit;}
+
+/* カルテ */
+.karte-section{margin-bottom:18px;}
+.karte-title{font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
+.karte-card{background:#fff;border:.5px solid #E5E5E0;border-radius:11px;padding:12px 14px;margin-bottom:8px;}
+.karte-top{display:flex;justify-content:space-between;align-items:center;}
+.karte-date{font-size:12px;font-weight:700;color:#1A1A1A;}
+.karte-staff{font-size:10px;color:#10B981;background:#EAFAF1;padding:2px 7px;border-radius:5px;}
+.karte-menu{font-size:13px;font-weight:600;color:#333;margin-top:4px;}
+.karte-recipe{font-size:11px;color:#777;margin-top:5px;background:#FAFAF8;padding:6px 9px;border-radius:7px;}
+.karte-memo{font-size:11px;color:#999;margin-top:5px;}
+.karte-photo{width:34px;height:34px;border-radius:7px;background:#EBEBE7;display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:#bbb;margin-top:6px;}
+
+.recipe-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.recipe-card{background:#FAFAF8;border:.5px solid #EBEBE7;border-radius:10px;padding:10px 12px;}
+.recipe-name{font-size:12px;font-weight:700;color:#1A1A1A;}
+.recipe-detail{font-size:11px;color:#888;margin-top:4px;}
+.recipe-dup{margin-top:8px;padding:5px 10px;border-radius:6px;background:#10B981;color:#fff;border:none;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;}
+
+.note-box{background:#FEF9E7;border:.5px solid #F6E29A;border-radius:10px;padding:10px 12px;font-size:12px;color:#7D6608;margin-top:6px;}
+
+/* 履歴 */
+.hist-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:.5px solid #F0F0EC;}
+.hist-item:last-child{border-bottom:none;}
+.hist-icon{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;color:#fff;}
+.hist-body{flex:1;}
+.hist-label{font-size:12.5px;font-weight:600;color:#1A1A1A;}
+.hist-date{font-size:10px;color:#aaa;margin-top:1px;}
+.hist-amount{font-size:13px;font-weight:700;color:#1A1A1A;flex-shrink:0;}
+.hist-amount.minus{color:#E74C3C;}
+.hist-amount.plus{color:#10B981;}
+
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(12px);background:#1A1A1A;color:#fff;font-size:12px;font-weight:500;padding:10px 18px;border-radius:10px;z-index:9999;opacity:0;pointer-events:none;transition:all .22s;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+
+<div class="ipad">
+
+  <div class="sb-overlay" id="sbOverlay" onclick="closeSb()"></div>
+  <div class="sidebar" id="sidebar">
+    <div class="sb-head">
+      <div class="sb-logo">✂ salon pos</div>
+      <div class="sb-sub">Hair Salon Yuki · 渋谷区道玄坂</div>
+    </div>
+    <div class="sb-nav">
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#3B5BDB"></div><span class="sb-label">会計 · POS</span></div>
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#8E44AD"></div><span class="sb-label">予約カレンダー</span></div>
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#D4AC0D"></div><span class="sb-label">ウェイティング</span></div>
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#2E86C1"></div><span class="sb-label">取引履歴</span></div>
+      <div class="sb-item active" onclick="closeSb()"><div class="sb-dot" style="background:#10B981"></div><span class="sb-label">顧客管理</span></div>
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#EF4444"></div><span class="sb-label">スタッフ</span></div>
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#117A65"></div><span class="sb-label">店舗設定</span></div>
+    </div>
+    <div class="sb-foot"><div class="sb-ver">v2.0.0</div></div>
+  </div>
+
+  <!-- ══ ZONE A ══ -->
+  <div class="zone-a">
+    <span class="za-menu" onclick="openSb()">☰</span>
+    <span class="za-logo">✂ salon pos</span>
+    <div class="za-right">
+      <div class="za-avatar">由</div>
+      <span class="za-name">Yuki</span>
+      <span class="za-branch">渋谷店</span>
+      <div class="za-sep"></div>
+      <span class="za-time" id="tbTime">06.21 日　10:24</span>
+      <span class="za-lock">🔒</span>
+    </div>
+  </div>
+
+  <!-- ══ ZONE B ══ -->
+  <div class="zone-b">
+    <span class="back-btn" onclick="toast('← 09_customer_list')">‹ 顧客一覧</span>
+    <div class="zb-sep"></div>
+    <span class="zb-name">佐藤 里奈</span>
+    <span class="zb-tag vip" id="vipTag" style="display:none;">VIP</span>
+    <span class="zb-tag black" id="blackTag" style="display:none;">ブラック</span>
+    <div class="zb-spacer"></div>
+    <div class="zb-actions">
+      <button class="zb-btn primary" onclick="toast('予約フォームへ → 07_booking_form')">予約</button>
+      <button class="zb-btn secondary" onclick="toast('POS注文画面へ → 02_pos_order')">会計</button>
+      <button class="zb-btn outline" onclick="toast('メッセージ送信（モック）')">メッセージ送信</button>
+      <button class="zb-btn outline" id="vipBtn" onclick="toggleVip()">VIP指定</button>
+      <button class="zb-btn outline" id="blackBtn" onclick="toggleBlack()">ブラック指定</button>
+    </div>
+  </div>
+
+  <!-- ══ ZONE C ══ -->
+  <div class="zone-c">
+    <div class="zc-avatar">佐</div>
+    <div class="zc-info">
+      <div class="zc-phone">080-2222-3333</div>
+      <div class="zc-meta"><span>誕生日: <b>9/12</b></span><span>紹介者: <b>田中 美咲 様</b></span></div>
+    </div>
+    <div class="zc-stats">
+      <div class="zc-stat"><div class="zc-stat-val">1,280pt</div><div class="zc-stat-lbl">累計ポイント</div></div>
+      <div class="zc-stat"><div class="zc-stat-val">22回</div><div class="zc-stat-lbl">来店回数</div></div>
+      <div class="zc-stat"><div class="zc-stat-val">6/21</div><div class="zc-stat-lbl">最終来店</div></div>
+    </div>
+    <div class="zc-graph" id="graphBars"></div>
+  </div>
+
+  <!-- ══ ZONE D ══ -->
+  <div class="zone-d">
+    <div class="zd-tabs">
+      <div class="zd-tab active" data-t="basic" onclick="switchTab('basic',this)">基本情報</div>
+      <div class="zd-tab" data-t="karte" onclick="switchTab('karte',this)">カルテ</div>
+      <div class="zd-tab" data-t="history" onclick="switchTab('history',this)">履歴</div>
+    </div>
+    <div class="zd-content" id="zdContent"></div>
+  </div>
+
+</div><!-- /ipad -->
+
+<script>
+let isVip=true, isBlack=false, curTab='basic';
+
+const GRAPH = [3,5,2,6,4,2]; // 최근 6개월 방문수
+const GRAPH_MONTHS = ['1月','2月','3月','4月','5月','6月'];
+
+const KARTE = [
+  {date:'2026/06/21', staff:'Yuki', menu:'ワンカラー＋トリートメント', recipe:'ブラウン系 7Lv ／ M:N:A = 5:3:2', memo:'頭皮やや敏感。低刺激シャンプー使用', photo:true},
+  {date:'2026/05/15', staff:'Yuki', menu:'カット＋ワンカラー', recipe:'ブラウン系 7Lv ／ M:N:A = 5:3:2', memo:'前回と同じレシピで満足度高', photo:false},
+  {date:'2026/04/02', staff:'Mika', menu:'パーマ', recipe:'-', memo:'巻きはやや弱めに', photo:true},
+];
+
+const COLOR_RECIPES = [
+  {name:'ブラウン系 定番レシピ', detail:'7Lv ／ マット:ナチュラル:アッシュ = 5:3:2 ／ オキシ 6%'},
+  {name:'秋冬限定レシピ', detail:'6Lv ／ レッド:ブラウン = 4:6 ／ オキシ 4.5%'},
+];
+
+const HISTORY = [
+  {type:'visit',   date:'2026/06/21', label:'ワンカラー＋トリートメント', amount:-14300},
+  {type:'point',   date:'2026/06/21', label:'ポイント獲得', amount:143, plus:true},
+  {type:'booking', date:'2026/06/21', label:'次回予約登録 (7/19)', amount:null},
+  {type:'visit',   date:'2026/05/15', label:'カット＋ワンカラー', amount:-9900},
+  {type:'point',   date:'2026/05/15', label:'ポイント使用', amount:-500},
+  {type:'visit',   date:'2026/04/02', label:'パーマ', amount:-18700},
+  {type:'credit',  date:'2026/04/02', label:'立て替え（外상）登録', amount:-3000},
+];
+const HIST_ICON = {visit:'💇', point:'⭐', booking:'📅', credit:'📋'};
+const HIST_COLOR = {visit:'#3B5BDB', point:'#D4AC0D', booking:'#8E44AD', credit:'#E74C3C'};
+
+const fmtY = n=>`¥${Math.abs(n).toLocaleString()}`;
+
+function renderGraph(){
+  const max=Math.max(...GRAPH);
+  document.getElementById('graphBars').innerHTML = GRAPH.map((v,i)=>`
+    <div class="zc-bar-col">
+      <div class="zc-bar" style="height:${v/max*100}%;"></div>
+      <div class="zc-bar-lbl">${GRAPH_MONTHS[i]}</div>
+    </div>`).join('');
+}
+
+function renderTags(){
+  document.getElementById('vipTag').style.display = isVip?'inline-block':'none';
+  document.getElementById('blackTag').style.display = isBlack?'inline-block':'none';
+  document.getElementById('vipBtn').textContent = isVip?'VIP解除':'VIP指定';
+  document.getElementById('vipBtn').className = 'zb-btn outline'+(isVip?' on-vip':'');
+  document.getElementById('blackBtn').textContent = isBlack?'ブラック解除':'ブラック指定';
+  document.getElementById('blackBtn').className = 'zb-btn outline'+(isBlack?' on-black':'');
+}
+
+function renderBasic(){
+  return `<div class="info-card">
+    <div class="info-row"><span class="info-label">電話番号</span><span class="info-val">080-2222-3333</span></div>
+    <div class="info-row"><span class="info-label">誕生日</span><span class="info-val">9月12日</span></div>
+    <div class="info-row"><span class="info-label">紹介者</span><span class="info-val">田中 美咲 様</span></div>
+    <div class="info-row"><span class="info-label">初回来店</span><span class="info-val">2023年8月3日</span></div>
+    <div class="info-row"><span class="info-label">メモ</span><span class="info-val">パーマ・カラー希望が多い。アレルギーなし</span></div>
+    <button class="edit-btn" onclick="toast('編集フォームを開く（モック）')">編集する</button>
+  </div>`;
+}
+
+function renderKarte(){
+  const karteHtml = KARTE.map(k=>`
+    <div class="karte-card">
+      <div class="karte-top"><span class="karte-date">${k.date}</span><span class="karte-staff">${k.staff}</span></div>
+      <div class="karte-menu">${k.menu}</div>
+      ${k.recipe!=='-'?`<div class="karte-recipe">🎨 ${k.recipe}</div>`:''}
+      <div class="karte-memo">${k.memo}</div>
+      ${k.photo?`<div class="karte-photo">📷</div>`:''}
+    </div>`).join('');
+
+  const recipeHtml = COLOR_RECIPES.map((r,i)=>`
+    <div class="recipe-card">
+      <div class="recipe-name">${r.name}</div>
+      <div class="recipe-detail">${r.detail}</div>
+      <button class="recipe-dup" onclick="duplicateRecipe(${i})">このレシピで施術記録を作成</button>
+    </div>`).join('');
+
+  return `
+    <div class="karte-section">
+      <div class="karte-title">注意事項・メモ</div>
+      <div class="note-box">⚠️ 頭皮やや敏感。低刺激シャンプー推奨。アレルギーなし</div>
+    </div>
+    <div class="karte-section">
+      <div class="karte-title">保管カラーレシピ</div>
+      <div class="recipe-grid">${recipeHtml}</div>
+    </div>
+    <div class="karte-section">
+      <div class="karte-title">施術記録（新しい順）</div>
+      ${karteHtml}
+    </div>`;
+}
+
+function renderHistory(){
+  return HISTORY.map(h=>{
+    const unit = h.type==='point' ? `${Math.abs(h.amount)}pt` : fmtY(h.amount);
+    const amountHtml = h.amount==null?'' :
+      `<div class="hist-amount ${h.amount<0?'minus':'plus'}">${h.amount<0?'-':'+'}${unit}</div>`;
+    return `<div class="hist-item">
+      <div class="hist-icon" style="background:${HIST_COLOR[h.type]}">${HIST_ICON[h.type]}</div>
+      <div class="hist-body">
+        <div class="hist-label">${h.label}</div>
+        <div class="hist-date">${h.date}</div>
+      </div>
+      ${amountHtml}
+    </div>`;
+  }).join('');
+}
+
+function renderTab(){
+  const el=document.getElementById('zdContent');
+  if(curTab==='basic') el.innerHTML=renderBasic();
+  else if(curTab==='karte') el.innerHTML=renderKarte();
+  else el.innerHTML=renderHistory();
+}
+
+function switchTab(t,el){
+  curTab=t;
+  document.querySelectorAll('.zd-tab').forEach(x=>x.classList.remove('active'));
+  if(el) el.classList.add('active');
+  renderTab();
+}
+
+function toggleVip(){ isVip=!isVip; if(isVip) isBlack=false; renderTags(); toast(isVip?'VIPに指定しました':'VIP指定を解除しました'); }
+function toggleBlack(){ isBlack=!isBlack; if(isBlack) isVip=false; renderTags(); toast(isBlack?'ブラックに指定しました':'ブラック指定を解除しました'); }
+function duplicateRecipe(i){ toast(`「${COLOR_RECIPES[i].name}」を複製して新しい施術記録を作成しました`); }
+
+function openSb(){ document.getElementById('sidebar').classList.add('open'); document.getElementById('sbOverlay').classList.add('open'); }
+function closeSb(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('sbOverlay').classList.remove('open'); }
+
+let _tt;
+function toast(msg){ const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); clearTimeout(_tt); _tt=setTimeout(()=>el.classList.remove('show'),2400); }
+
+const DOW=['日','月','火','水','木','金','土'];
+function tick(){
+  const d=new Date();
+  const el=document.getElementById('tbTime');
+  if(el) el.textContent=`${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} ${DOW[d.getDay()]}　${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
+
+// ── Init ─────────────────────────────────────────────────────────────────
+renderGraph();
+renderTags();
+renderTab();
+tick();
+setInterval(tick,30000);
+</script>
+</body>
+</html>
