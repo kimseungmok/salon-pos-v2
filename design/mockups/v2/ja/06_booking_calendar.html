@@ -176,7 +176,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
   position:relative;
 }
 .zd-gutter{width:50px;flex-shrink:0;border-right:.5px solid #E5E5E0;background:#FAFAFA;}
-.zd-cols-outer{flex:1;overflow:hidden;margin-right:24px;}
+.zd-cols-outer{flex:1;overflow:hidden;}
 .zd-cols{display:flex;}
 .zd-col{width:191px;flex-shrink:0;display:flex;align-items:center;justify-content:center;gap:5px;border-right:.5px solid #EBEBEB;font-size:11px;font-weight:700;color:#333;}
 .zd-col:last-child{border-right:none;}
@@ -202,7 +202,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 .ze-time-cell{height:40px;display:flex;align-items:flex-start;justify-content:flex-end;padding:3px 7px 0;font-size:10px;color:#bbb;border-bottom:.5px solid #EBEBEB;}
 
 /* スタッフ列 */
-.ze-cols-outer{flex:1;overflow-x:auto;overflow-y:visible;cursor:grab;user-select:none;margin-right:24px;}
+.ze-cols-outer{flex:1;overflow-x:auto;overflow-y:visible;cursor:grab;user-select:none;}
 .ze-cols-outer::-webkit-scrollbar{height:0;}
 .ze-cols-outer.dragging{cursor:grabbing;}
 .ze-staff-cols{display:flex;position:relative;}
@@ -214,13 +214,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 
 /* ── 「右にまだスタッフがいる」ヒント: フェード + ドットページネーション ── */
 .day-fade-right{
-  position:absolute;top:0;right:24px;bottom:0;width:30px;
+  position:absolute;top:0;right:0;bottom:0;width:28px;
   background:linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,.95) 70%);
   pointer-events:none;z-index:30;
 }
 /* タイムライン下部中央のドット — スライド中のみフェード表示 */
 .ze-dots{
-  position:absolute;left:50px;right:24px;bottom:10px;z-index:40;
+  position:absolute;left:50px;right:0;bottom:10px;z-index:40;
   display:flex;justify-content:center;gap:5px;
   pointer-events:none;
   opacity:0;
