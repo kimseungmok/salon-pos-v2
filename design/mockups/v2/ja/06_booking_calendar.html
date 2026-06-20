@@ -190,11 +190,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
    高さ: flex:1 (残り全高)
    レイアウト: Concept A (スタッフ列) + ブロックデザイン: Concept B
 ══════════════════════════════════════ */
-.zone-e{flex:1;overflow:hidden;display:flex;flex-direction:column;}
+.zone-e{flex:1;overflow:hidden;display:flex;flex-direction:column;position:relative;}
 
 .ze-scroll{flex:1;overflow-y:auto;}
-.ze-scroll::-webkit-scrollbar{width:4px;}
-.ze-scroll::-webkit-scrollbar-thumb{background:#E0E0DC;border-radius:2px;}
+.ze-scroll::-webkit-scrollbar{width:0;}
 
 .ze-grid{display:flex;}
 
@@ -219,15 +218,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
   background:linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,.95) 70%);
   pointer-events:none;z-index:30;
 }
-.zd-dots{
-  position:absolute;top:5px;right:4px;z-index:40;
-  display:flex;gap:4px;align-items:center;
-  background:rgba(255,255,255,.9);padding:3px 7px;border-radius:10px;
-  box-shadow:0 1px 4px rgba(0,0,0,.08);
+/* タイムライン下部中央のドット — スライド中のみフェード表示 */
+.ze-dots{
+  position:absolute;left:50px;right:24px;bottom:10px;z-index:40;
+  display:flex;justify-content:center;gap:5px;
   pointer-events:none;
+  opacity:0;
+  transition:opacity .25s;
 }
-.zd-dot-pg{width:5px;height:5px;border-radius:50%;background:#E0E0DC;transition:background .15s,transform .15s;}
-.zd-dot-pg.active{background:#1E3A8A;transform:scale(1.25);}
+.ze-dots.show{opacity:1;}
+.ze-dot-pg{width:5px;height:5px;border-radius:50%;background:#DCDCDA;transition:background .15s,transform .15s;}
+.ze-dot-pg.active{background:#6B6B68;transform:scale(1.3);}
 
 /* ──────────────────────────────────
    予約ブロック — Concept B デザイン
@@ -585,11 +586,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
               </div>
             </div>
           </div>
+          <!-- スライド中のみ表示するドット -->
+          <div class="ze-dots" id="zeDots"></div>
         </div>
 
         <!-- 「右にまだスタッフがいる」ヒント -->
         <div class="day-fade-right"></div>
-        <div class="zd-dots" id="zdDots"></div>
 
       </div>
 
@@ -803,8 +805,10 @@ function buildDay() {
 }
 
 // ── ドットページネーション: スタッフ列の「現在見えている範囲」を表示 ──
-function updateZdDots(){
-  const dotsEl=document.getElementById('zdDots'); if(!dotsEl) return;
+// スライド(ドラッグ/スクロール)中だけフェードインし、止まったら少し経ってフェードアウトする
+let _zeDotsHideTimer=null;
+function updateZdDots(showNow){
+  const dotsEl=document.getElementById('zeDots'); if(!dotsEl) return;
   const outer=document.getElementById('zeColsOuter'); if(!outer) return;
   const n=visStaff().length;
   const sl=outer.scrollLeft, cw=outer.clientWidth;
@@ -812,9 +816,14 @@ function updateZdDots(){
   for(let i=0;i<n;i++){
     const left=i*COL_W, right=left+COL_W;
     const visible = right>sl && left<sl+cw; // 列が表示範囲と重なっているか
-    html+=`<div class="zd-dot-pg${visible?' active':''}"></div>`;
+    html+=`<div class="ze-dot-pg${visible?' active':''}"></div>`;
   }
   dotsEl.innerHTML=html;
+  if(showNow){
+    dotsEl.classList.add('show');
+    clearTimeout(_zeDotsHideTimer);
+    _zeDotsHideTimer=setTimeout(()=>dotsEl.classList.remove('show'),900);
+  }
 }
 
 // ── WEEK VIEW ─────────────────────────────────────────────────────────────
@@ -1128,12 +1137,12 @@ function tick(){
 
   // トラックパッド等のネイティブスクロールにもヘッダー追従 + ドット更新
   document.addEventListener('scroll',e=>{
-    if(e.target&&e.target.id==='zeColsOuter'){ syncHead(e.target.scrollLeft); updateZdDots(); }
+    if(e.target&&e.target.id==='zeColsOuter'){ syncHead(e.target.scrollLeft); }
   },true);
 
   function syncHead(sl){
     const h=getHead(); if(h) h.scrollLeft=sl;
-    updateZdDots();
+    updateZdDots(true);
   }
   function snapBack(){
     const el=getOuter(); if(!el) return;
