@@ -318,7 +318,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 .zf1-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
 .zf1-month{font-size:12px;font-weight:700;color:#1A1A1A;}
 .zf1-nav{display:flex;gap:2px;}
-.zf1-nav-btn{width:20px;height:20px;border-radius:5px;border:.5px solid #E0E0DC;background:#fff;font-size:11px;color:#555;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.zf1-nav-btn{width:27px;height:27px;border-radius:7px;border:.5px solid #E0E0DC;background:#fff;font-size:14px;color:#555;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 .zf1-nav-btn:hover{background:#F4F4F0;}
 .zf1-dow{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:3px;}
 .zf1-dow-lbl{font-size:9px;color:#bbb;text-align:center;padding:2px 0;}
@@ -328,6 +328,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 .zf1-d.today{background:#8E44AD;color:#fff;font-weight:700;}
 .zf1-d.has-bk{font-weight:700;color:#3B5BDB;}
 .zf1-d.other-m{color:#ddd;}
+.zf1-d.viewing{border-bottom:2.5px solid #3B5BDB;border-radius:4px 4px 1px 1px;}
+.zf1-d.viewing.today{border-bottom-color:#fff;}
 
 /* ── Zone F-2: 日次統計 ── */
 .zone-f2{padding:10px 12px;border-bottom:.5px solid #F0F0EC;flex-shrink:0;}
@@ -939,14 +941,16 @@ function buildList() {
 function buildMiniCal() {
   const first=new Date(2026,5,1);
   const hasBk=new Set([3,5,8,10,11,12,17,18,19,22,24,25]);
+  // 日ビューで現在タイムラインに表示中の日付に下線インジケーターを表示
+  const viewingN=(curView==='day'&&curDate.getFullYear()===2026&&curDate.getMonth()===5)?curDate.getDate():null;
   let html='';
   for(let i=0;i<35;i++){
     const n=i-first.getDay()+1;
     if(n<1||n>30){
       html+=`<div class="zf1-d other-m">${n<1?30+n:n-30}</div>`;
     } else {
-      const isTod=n===19,hasBk2=hasBk.has(n);
-      html+=`<div class="zf1-d${isTod?' today':hasBk2?' has-bk':''}" onclick="jumpDate(${n})">${n}</div>`;
+      const isTod=n===19,hasBk2=hasBk.has(n),isViewing=n===viewingN;
+      html+=`<div class="zf1-d${isTod?' today':hasBk2?' has-bk':''}${isViewing?' viewing':''}" onclick="jumpDate(${n})">${n}</div>`;
     }
   }
   document.getElementById('zf1Days').innerHTML=html;
@@ -1044,6 +1048,7 @@ function render() {
   if(curView==='week')  buildWeek();
   if(curView==='month') buildMonth();
   if(curView==='list')  buildList();
+  buildMiniCal();
 }
 
 function updateDateLabel() {
