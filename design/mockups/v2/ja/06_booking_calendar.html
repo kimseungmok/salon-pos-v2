@@ -328,8 +328,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 .zf1-d.today{background:#8E44AD;color:#fff;font-weight:700;}
 .zf1-d.has-bk{font-weight:700;color:#3B5BDB;}
 .zf1-d.other-m{color:#ddd;}
-.zf1-d.viewing{box-shadow:inset 0 0 0 1.5px #3B5BDB;}
-.zf1-d.viewing.today{box-shadow:inset 0 0 0 1.5px #fff;}
 
 /* ── Zone F-2: 日次統計 ── */
 .zone-f2{padding:10px 12px;border-bottom:.5px solid #F0F0EC;flex-shrink:0;}
@@ -941,16 +939,14 @@ function buildList() {
 function buildMiniCal() {
   const first=new Date(2026,5,1);
   const hasBk=new Set([3,5,8,10,11,12,17,18,19,22,24,25]);
-  // 日ビューで現在タイムラインに表示中の日付に下線インジケーターを表示
-  const viewingN=(curView==='day'&&curDate.getFullYear()===2026&&curDate.getMonth()===5)?curDate.getDate():null;
   let html='';
   for(let i=0;i<35;i++){
     const n=i-first.getDay()+1;
     if(n<1||n>30){
       html+=`<div class="zf1-d other-m">${n<1?30+n:n-30}</div>`;
     } else {
-      const isTod=n===19,hasBk2=hasBk.has(n),isViewing=n===viewingN;
-      html+=`<div class="zf1-d${isTod?' today':hasBk2?' has-bk':''}${isViewing?' viewing':''}" onclick="jumpDate(${n})">${n}</div>`;
+      const isTod=n===19,hasBk2=hasBk.has(n);
+      html+=`<div class="zf1-d${isTod?' today':hasBk2?' has-bk':''}" onclick="jumpDate(${n})">${n}</div>`;
     }
   }
   document.getElementById('zf1Days').innerHTML=html;
@@ -1048,7 +1044,6 @@ function render() {
   if(curView==='week')  buildWeek();
   if(curView==='month') buildMonth();
   if(curView==='list')  buildList();
-  buildMiniCal();
 }
 
 function updateDateLabel() {
