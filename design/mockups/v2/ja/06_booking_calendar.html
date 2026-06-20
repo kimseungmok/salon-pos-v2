@@ -200,6 +200,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 /* 時間ガター */
 .ze-time-gutter{width:50px;flex-shrink:0;border-right:.5px solid #E5E5E0;background:#FAFAFA;}
 .ze-time-cell{height:40px;position:relative;display:flex;align-items:flex-start;justify-content:flex-end;padding:3px 7px 0;font-size:10px;color:#bbb;border-bottom:.5px solid #EBEBEB;}
+.ze-time-cell::after{content:'';position:absolute;left:0;right:0;top:20px;height:.5px;background:#F4F4F2;}
+.ze-time-cell.no-half::after{display:none;}
 .ze-time-half{position:absolute;top:21px;right:7px;font-size:8.5px;color:#d4d4d0;font-weight:400;}
 
 /* スタッフ列 */
@@ -383,6 +385,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 .wk-grid{display:flex;}
 .wk-time-gutter{width:50px;flex-shrink:0;border-right:.5px solid #E5E5E0;background:#FAFAFA;}
 .wk-time-cell{height:40px;position:relative;display:flex;align-items:flex-start;justify-content:flex-end;padding:3px 7px 0;font-size:10px;color:#bbb;border-bottom:.5px solid #EBEBEB;}
+.wk-time-cell::after{content:'';position:absolute;left:0;right:0;top:20px;height:.5px;background:#F4F4F2;}
+.wk-time-cell.no-half::after{display:none;}
 /* スナップスクロールキャロセル: 連続ドラッグ + 日境界にスナップ */
 .wk-cols-outer{
   flex:1;overflow-x:auto;overflow-y:visible;cursor:grab;user-select:none;
@@ -760,8 +764,9 @@ function buildDay() {
   // Zone E: 時間ガター (正時 + 30分の控えめなラベル)
   let tg='';
   for(let h=DAY_START_H;h<=DAY_END_H;h++){
-    const half=h<DAY_END_H?`<span class="ze-time-half">${h}:30</span>`:'';
-    tg+=`<div class="ze-time-cell">${h}:00${half}</div>`;
+    const isLast=h===DAY_END_H;
+    const half=isLast?'':`<span class="ze-time-half">${h}:30</span>`;
+    tg+=`<div class="ze-time-cell${isLast?' no-half':''}">${h}:00${half}</div>`;
   }
   document.getElementById('zeTimeGutter').innerHTML=tg;
 
@@ -854,8 +859,9 @@ function buildWeek() {
 
   let tg='';
   for(let h=DAY_START_H;h<=DAY_END_H;h++){
-    const half=h<DAY_END_H?`<span class="ze-time-half">${h}:30</span>`:'';
-    tg+=`<div class="wk-time-cell">${h}:00${half}</div>`;
+    const isLast=h===DAY_END_H;
+    const half=isLast?'':`<span class="ze-time-half">${h}:30</span>`;
+    tg+=`<div class="wk-time-cell${isLast?' no-half':''}">${h}:00${half}</div>`;
   }
   document.getElementById('wkTimeGutter').innerHTML=tg;
 
