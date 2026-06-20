@@ -346,8 +346,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 /* ── Week View ── */
 .wk-day-header{height:42px;background:#fff;border-bottom:.5px solid #E5E5E0;display:flex;flex-shrink:0;}
 .wk-dh-gutter{width:50px;flex-shrink:0;border-right:.5px solid #E5E5E0;background:#FAFAFA;}
-.wk-dh-cols{flex:1;display:flex;}
-.wk-dh-col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border-right:.5px solid #EBEBEB;cursor:pointer;transition:background .1s;}
+/* ヘッダーは横スクロール非表示 (本体に追従するだけ) */
+.wk-dh-outer{flex:1;overflow:hidden;}
+.wk-dh-cols{display:flex;}
+.wk-dh-col{width:130px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;border-right:.5px solid #EBEBEB;cursor:pointer;transition:background .1s;}
 .wk-dh-col:last-child{border-right:none;}
 .wk-dh-col:hover{background:#F8FAFF;}
 .wk-dh-col.today{background:#EEF2FF;}
@@ -362,8 +364,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 .wk-grid{display:flex;}
 .wk-time-gutter{width:50px;flex-shrink:0;border-right:.5px solid #E5E5E0;background:#FAFAFA;}
 .wk-time-cell{height:40px;display:flex;align-items:flex-start;justify-content:flex-end;padding:3px 7px 0;font-size:10px;color:#bbb;border-bottom:.5px solid #EBEBEB;}
-.wk-day-cols{flex:1;display:flex;}
-.wk-day-col{flex:1;position:relative;border-right:.5px solid #EBEBEB;}
+/* スナップスクロールキャロセル: 連続ドラッグ + 日境界にスナップ */
+.wk-cols-outer{
+  flex:1;overflow-x:auto;overflow-y:visible;cursor:grab;user-select:none;
+  scroll-snap-type:x mandatory;
+}
+.wk-cols-outer::-webkit-scrollbar{height:0;}
+.wk-cols-outer.dragging{cursor:grabbing;scroll-snap-type:none;}
+.wk-day-cols{display:flex;}
+.wk-day-col{width:130px;flex-shrink:0;position:relative;border-right:.5px solid #EBEBEB;scroll-snap-align:start;}
 .wk-day-col:last-child{border-right:none;}
 .wk-day-col.today{background:#FAFBFF;}
 
@@ -563,16 +572,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 
       </div>
 
-      <!-- 週 ビュー -->
+      <!-- 週 ビュー (スナップスクロールキャロセル) -->
       <div class="view-panel" id="view-week">
         <div class="wk-day-header">
           <div class="wk-dh-gutter"></div>
-          <div class="wk-dh-cols" id="wkDhCols"></div>
+          <div class="wk-dh-outer" id="wkDhOuter">
+            <div class="wk-dh-cols" id="wkDhCols"></div>
+          </div>
         </div>
         <div class="wk-scroll">
           <div class="wk-grid">
             <div class="wk-time-gutter" id="wkTimeGutter"></div>
-            <div class="wk-day-cols" id="wkDayCols"></div>
+            <div class="wk-cols-outer" id="wkColsOuter">
+              <div class="wk-day-cols" id="wkDayCols"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -766,13 +779,18 @@ function buildDay() {
 }
 
 // ── WEEK VIEW ─────────────────────────────────────────────────────────────
+const WK_COL_W=130, WK_BUF=7; // 前後 7日分のバッファで連続ドラッグを可能にする
 function buildWeek() {
   const mon=new Date(curDate);
   mon.setDate(mon.getDate()-((mon.getDay()+6)%7));
-  const days=Array.from({length:7},(_,i)=>{const d=new Date(mon);d.setDate(d.getDate()+i);return d;});
+  // 前バッファ7日 + 当週7日 + 後バッファ7日 = 21日
+  const start=new Date(mon); start.setDate(start.getDate()-WK_BUF);
+  const days=Array.from({length:7+WK_BUF*2},(_,i)=>{const d=new Date(start);d.setDate(d.getDate()+i);return d;});
   const todS=new Date(2026,5,19).toDateString();
   const bks=filtBK();
+  const totalW=days.length*WK_COL_W;
 
+  document.getElementById('wkDhCols').style.width=totalW+'px';
   document.getElementById('wkDhCols').innerHTML=days.map(d=>{
     const isTod=d.toDateString()===todS;
     const isSun=d.getDay()===0,isSat=d.getDay()===6;
@@ -786,7 +804,9 @@ function buildWeek() {
   for(let h=9;h<=19;h++) tg+=`<div class="wk-time-cell">${h}:00</div>`;
   document.getElementById('wkTimeGutter').innerHTML=tg;
 
-  document.getElementById('wkDayCols').innerHTML=days.map(d=>{
+  const colsEl=document.getElementById('wkDayCols');
+  colsEl.style.width=totalW+'px';
+  colsEl.innerHTML=days.map(d=>{
     const isTod=d.toDateString()===todS;
     let lines='';
     for(let h=9;h<=19;h++){
@@ -807,6 +827,11 @@ function buildWeek() {
     const nowLine=isTod?`<div style="position:absolute;left:0;right:0;top:${toTop(10,24)}px;height:2px;background:#EF4444;z-index:10;"></div>`:'';
     return `<div class="wk-day-col${isTod?' today':''}" style="height:${11*40+10}px;position:relative;">${lines}${blocks}${nowLine}</div>`;
   }).join('');
+
+  // 当週の月曜が左端に来るようスクロール位置を初期化 (前バッファ分だけオフセット)
+  const outer=document.getElementById('wkColsOuter');
+  outer.scrollLeft=WK_BUF*WK_COL_W;
+  document.getElementById('wkDhOuter').scrollLeft=outer.scrollLeft;
 }
 
 // ── MONTH VIEW ────────────────────────────────────────────────────────────
@@ -1072,6 +1097,60 @@ function tick(){
       el.scrollLeft=maxScroll;
     }
     // if over-scrolled past 0 (browsers handle this natively)
+  }
+})();
+
+// ── Horizontal Drag Scroll (Week View — snap carousel) ────────────────────
+(function(){
+  let isDown=false, startX=0, scrollLeft=0;
+  function getOuter(){ return document.getElementById('wkColsOuter'); }
+  function getHead(){  return document.getElementById('wkDhOuter'); }
+
+  document.addEventListener('mousedown',e=>{
+    const el=getOuter(); if(!el||!el.contains(e.target)) return;
+    isDown=true; startX=e.pageX-el.offsetLeft; scrollLeft=el.scrollLeft;
+    el.classList.add('dragging'); e.preventDefault();
+  });
+  document.addEventListener('mouseup',()=>{
+    if(!isDown) return; isDown=false;
+    const el=getOuter(); if(el) el.classList.remove('dragging');
+    snapToDay();
+  });
+  document.addEventListener('mousemove',e=>{
+    if(!isDown) return;
+    const el=getOuter(); if(!el) return;
+    const x=e.pageX-el.offsetLeft;
+    el.scrollLeft=scrollLeft-(x-startX);
+    syncHead(el.scrollLeft);
+  });
+  document.addEventListener('touchstart',e=>{
+    const el=getOuter(); if(!el||!el.contains(e.target)) return;
+    isDown=true; startX=e.touches[0].pageX-el.offsetLeft; scrollLeft=el.scrollLeft;
+  },{passive:true});
+  document.addEventListener('touchend',()=>{
+    if(!isDown) return; isDown=false; snapToDay();
+  });
+  document.addEventListener('touchmove',e=>{
+    if(!isDown) return;
+    const el=getOuter(); if(!el) return;
+    const x=e.touches[0].pageX-el.offsetLeft;
+    el.scrollLeft=scrollLeft-(x-startX);
+    syncHead(el.scrollLeft);
+  },{passive:true});
+  // ネイティブスクロール (トラックパッド等) でもヘッダーを追従させる
+  document.addEventListener('scroll',e=>{
+    if(e.target&&e.target.id==='wkColsOuter') syncHead(e.target.scrollLeft);
+  },true);
+
+  function syncHead(sl){
+    const h=getHead(); if(h) h.scrollLeft=sl;
+  }
+  // 手を離した位置から最も近い日境界へスムーズスナップ
+  function snapToDay(){
+    const el=getOuter(); if(!el) return;
+    const snapped=Math.round(el.scrollLeft/WK_COL_W)*WK_COL_W;
+    el.scrollTo({left:snapped,behavior:'smooth'});
+    syncHead(snapped);
   }
 })();
 
