@@ -58,22 +58,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 .card-head{padding:11px 14px;border-bottom:.5px solid #F0F0EC;font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.06em;}
 .card-body{padding:12px 14px;}
 
-/* 체크리스트 */
-.chk-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:.5px solid #F8F8F6;cursor:pointer;}
-.chk-row:last-child{border-bottom:none;}
-.chk-box{width:20px;height:20px;border-radius:6px;border:1.5px solid #D0D0CC;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;color:#fff;transition:all .12s;}
-.chk-box.on{background:#117A65;border-color:#117A65;}
-.chk-label{font-size:13px;color:#333;}
-.chk-row.done .chk-label{color:#999;text-decoration:line-through;}
-
-/* 출근현황 */
-.att-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:.5px solid #F8F8F6;}
-.att-row:last-child{border-bottom:none;}
-.att-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
-.att-name{flex:1;font-size:13px;font-weight:600;color:#1A1A1A;}
-.att-toggle{padding:4px 11px;border-radius:7px;font-size:11px;font-weight:700;border:none;cursor:pointer;font-family:inherit;}
-.att-toggle.in{background:#EAFAF1;color:#117A65;}
-.att-toggle.out{background:#F4F4F0;color:#aaa;}
+/* 지점 체크인 현황 (출퇴근/이동 로그) */
+.ci-row{display:flex;align-items:center;gap:9px;padding:9px 0;border-bottom:.5px solid #F8F8F6;}
+.ci-row:last-child{border-bottom:none;}
+.ci-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+.ci-body{flex:1;min-width:0;}
+.ci-top{display:flex;align-items:center;gap:6px;}
+.ci-name{font-size:13px;font-weight:700;color:#1A1A1A;}
+.ci-help-tag{font-size:9px;font-weight:700;padding:1px 6px;border-radius:5px;background:#FEF9E7;color:#B7950B;}
+.ci-time{font-size:11px;color:#999;margin-top:2px;}
+.ci-status{font-size:10px;font-weight:700;padding:3px 9px;border-radius:6px;flex-shrink:0;white-space:nowrap;}
+.ci-status.here{background:#EAFAF1;color:#117A65;}
+.ci-status.left{background:#F4F4F0;color:#aaa;}
+.ci-empty{padding:20px 0;text-align:center;color:#bbb;font-size:12px;}
 
 /* 시재 카운트 */
 .cash-table{width:100%;border-collapse:collapse;}
@@ -145,15 +142,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
   </div>
 
   <div class="main">
-    <!-- ══ 좌측: 체크리스트 + 출근현황 ══ -->
+    <!-- ══ 좌측: 지점 체크인 현황 (출퇴근/이동 로그) ══ -->
     <div class="col-left">
       <div class="card">
-        <div class="card-head">開店チェックリスト</div>
-        <div class="card-body" id="checklistBody"></div>
-      </div>
-      <div class="card">
-        <div class="card-head">本日の出勤状況</div>
-        <div class="card-body" id="attendBody"></div>
+        <div class="card-head">本日のスタッフ在店状況（渋谷店）</div>
+        <div class="card-body" id="checkinBody"></div>
       </div>
     </div>
 
@@ -181,19 +174,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 
 <script>
 // ── Data ─────────────────────────────────────────────────────────────────
-let CHECKLIST = [
-  {id:1, label:'施術スペースの清掃・整頓を確認', checked:false},
-  {id:2, label:'消耗品（タオル・カラー剤等）の在庫を確認', checked:false},
-  {id:3, label:'音楽・照明・空調をON', checked:false},
-  {id:4, label:'POS端末・カード端末の動作確認', checked:false},
-];
-
-let STAFF_ATTEND = [
-  {name:'Yuki',  color:'#8E44AD', in:true},
-  {name:'Mika',  color:'#3B5BDB', in:true},
-  {name:'Kenji', color:'#E67E22', in:true},
-  {name:'Hana',  color:'#E91E8C', in:false},
-  {name:'Rio',   color:'#10B981', in:true},
+// PINログイン = チェックイン、別店舗での再ログイン = 自動チェックアウト+移動。
+// 「ヘルプ」= 自店舗以外が所属の場合に表示。
+const THIS_BRANCH = '渋谷店';
+let CHECKINS = [
+  {name:'Yuki',  color:'#8E44AD', homeBranch:'渋谷店', checkIn:'09:02', checkOut:null,    movedTo:null},
+  {name:'Mika',  color:'#3B5BDB', homeBranch:'渋谷店', checkIn:'09:05', checkOut:null,    movedTo:null},
+  {name:'Kenji', color:'#E67E22', homeBranch:'渋谷店', checkIn:'09:10', checkOut:'13:00', movedTo:'池袋店'},
+  {name:'Rio',   color:'#10B981', homeBranch:'池袋店', checkIn:'13:05', checkOut:null,    movedTo:null},
 ];
 
 let DENOMS = [
@@ -212,20 +200,22 @@ const EXPECTED_START = 50000;
 const fmtY = n=>`¥${n.toLocaleString()}`;
 
 // ── Render ───────────────────────────────────────────────────────────────
-function renderChecklist(){
-  document.getElementById('checklistBody').innerHTML = CHECKLIST.map(c=>`
-    <div class="chk-row${c.checked?' done':''}" onclick="toggleCheck(${c.id})">
-      <div class="chk-box${c.checked?' on':''}">${c.checked?'✓':''}</div>
-      <span class="chk-label">${c.label}</span>
-    </div>`).join('');
-}
-function renderAttend(){
-  document.getElementById('attendBody').innerHTML = STAFF_ATTEND.map(s=>`
-    <div class="att-row">
-      <div class="att-dot" style="background:${s.color}"></div>
-      <span class="att-name">${s.name}</span>
-      <button class="att-toggle ${s.in?'in':'out'}" onclick="toggleAttend('${s.name}')">${s.in?'出勤':'休み'}</button>
-    </div>`).join('');
+function renderCheckins(){
+  const el=document.getElementById('checkinBody');
+  if(CHECKINS.length===0){ el.innerHTML=`<div class="ci-empty">本日のチェックイン記録はまだありません</div>`; return; }
+  el.innerHTML = CHECKINS.map(c=>{
+    const isHelp = c.homeBranch!==THIS_BRANCH;
+    const isHere = !c.checkOut;
+    const timeLabel = isHere ? `${c.checkIn} 〜 在店中` : `${c.checkIn} 〜 ${c.checkOut}${c.movedTo?`（${c.movedTo}へ移動）`:''}`;
+    return `<div class="ci-row">
+      <div class="ci-dot" style="background:${c.color}"></div>
+      <div class="ci-body">
+        <div class="ci-top"><span class="ci-name">${c.name}</span>${isHelp?`<span class="ci-help-tag">${c.homeBranch}よりヘルプ</span>`:''}</div>
+        <div class="ci-time">${timeLabel}</div>
+      </div>
+      <span class="ci-status ${isHere?'here':'left'}">${isHere?'在店中':'退店済み'}</span>
+    </div>`;
+  }).join('');
 }
 function renderCash(){
   document.getElementById('cashRows').innerHTML = DENOMS.map(d=>`
@@ -256,22 +246,11 @@ function renderCash(){
 }
 
 function updateOpenBtn(){
-  const allChecked = CHECKLIST.every(c=>c.checked);
   const total = DENOMS.reduce((s,d)=>s+d.value*d.qty,0);
-  document.getElementById('openBtn').disabled = !(allChecked && total>0);
+  document.getElementById('openBtn').disabled = !(total>0);
 }
 
 // ── Actions ──────────────────────────────────────────────────────────────
-function toggleCheck(id){
-  const c=CHECKLIST.find(x=>x.id===id); if(!c) return;
-  c.checked=!c.checked;
-  renderChecklist(); updateOpenBtn();
-}
-function toggleAttend(name){
-  const s=STAFF_ATTEND.find(x=>x.name===name); if(!s) return;
-  s.in=!s.in;
-  renderAttend();
-}
 function updateQty(value, qty){
   const d=DENOMS.find(x=>x.value===value); if(!d) return;
   d.qty = Math.max(0, parseInt(qty)||0);
@@ -296,8 +275,7 @@ function tick(){
 }
 
 // ── Init ─────────────────────────────────────────────────────────────────
-renderChecklist();
-renderAttend();
+renderCheckins();
 renderCash();
 tick();
 setInterval(tick,30000);
