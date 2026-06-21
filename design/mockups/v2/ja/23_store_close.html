@@ -86,9 +86,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 .cash-table th:last-child,.cash-table td:last-child{text-align:right;}
 .cash-table td{padding:6px 8px;font-size:13px;border-bottom:.5px solid #F8F8F6;}
 .cash-table .denom{font-weight:600;color:#333;}
-.cash-table input{width:70px;padding:6px 8px;border-radius:7px;border:.5px solid #D0D0CC;font-size:13px;font-family:inherit;text-align:right;}
+.cash-table input{width:48px;padding:6px 4px;border-radius:7px;border:.5px solid #D0D0CC;font-size:13px;font-family:inherit;text-align:center;}
 .cash-table input:focus{outline:none;border-color:#C0392B;}
 .cash-table .subtotal{color:#555;}
+.qty-control{display:flex;align-items:center;gap:5px;}
+.qty-btn{width:24px;height:24px;border-radius:6px;border:.5px solid #D0D0CC;background:#F8F8F6;color:#555;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:inherit;transition:background .1s;}
+.qty-btn:hover{background:#EFEFEC;}
+.qty-btn:disabled{opacity:.35;cursor:default;}
 
 .cash-summary{margin-top:14px;padding:14px;border-radius:10px;background:#FAFAF8;}
 .cs-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;font-size:13px;}
@@ -261,7 +265,13 @@ function renderCash(){
   document.getElementById('cashRows').innerHTML = DENOMS.map(d=>`
     <tr>
       <td class="denom">${d.label}</td>
-      <td><input type="number" min="0" value="${d.qty||''}" placeholder="0" oninput="updateQty(${d.value}, this.value)"></td>
+      <td>
+        <div class="qty-control">
+          <button class="qty-btn" onclick="stepQty(${d.value},-1)" ${d.qty<=0?'disabled':''}>−</button>
+          <input type="number" min="0" value="${d.qty||''}" placeholder="0" oninput="updateQty(${d.value}, this.value)">
+          <button class="qty-btn" onclick="stepQty(${d.value},1)">＋</button>
+        </div>
+      </td>
       <td class="subtotal">${fmtY(d.value*d.qty)}</td>
     </tr>`).join('');
 
@@ -298,6 +308,11 @@ function toggleCheck(id){
   const c=CHECKLIST.find(x=>x.id===id); if(!c) return;
   c.checked=!c.checked;
   renderChecklist();
+}
+function stepQty(value, dir){
+  const d=DENOMS.find(x=>x.value===value); if(!d) return;
+  d.qty = Math.max(0, (d.qty||0)+dir);
+  renderCash();
 }
 function updateQty(value, qty){
   const d=DENOMS.find(x=>x.value===value); if(!d) return;

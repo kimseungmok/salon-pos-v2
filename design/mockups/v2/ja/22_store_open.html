@@ -44,7 +44,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 /* ══ ZONE B ══ */
 .zone-b{height:46px;flex-shrink:0;background:#fff;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 14px;gap:10px;}
 .zb-title{font-size:14px;font-weight:700;color:#1A1A1A;}
-.zb-date{font-size:12px;color:#999;}
+.zb-date-nav{display:flex;align-items:center;gap:6px;}
+.zb-nav-btn{width:26px;height:26px;border-radius:7px;border:.5px solid #E0E0DC;background:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;color:#555;cursor:pointer;flex-shrink:0;transition:background .1s;}
+.zb-nav-btn:hover{background:#F4F4F0;}
+.zb-today-btn{padding:5px 10px;border-radius:7px;border:.5px solid #E0E0DC;background:#fff;font-size:11px;color:#555;cursor:pointer;font-family:inherit;flex-shrink:0;}
+.zb-today-btn:hover{background:#F4F4F0;}
+.zb-date{font-size:13px;font-weight:700;color:#1A1A1A;min-width:140px;text-align:center;}
 .zb-spacer{flex:1;}
 .zb-open-btn{padding:9px 20px;border-radius:10px;background:#117A65;color:#fff;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:inherit;box-shadow:0 2px 8px rgba(17,122,101,.3);transition:opacity .12s;}
 .zb-open-btn:disabled{background:#D0D0CC;color:#999;cursor:not-allowed;box-shadow:none;}
@@ -78,9 +83,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 .cash-table th:last-child,.cash-table td:last-child{text-align:right;}
 .cash-table td{padding:6px 8px;font-size:13px;border-bottom:.5px solid #F8F8F6;}
 .cash-table .denom{font-weight:600;color:#333;}
-.cash-table input{width:70px;padding:6px 8px;border-radius:7px;border:.5px solid #D0D0CC;font-size:13px;font-family:inherit;text-align:right;}
+.cash-table input{width:48px;padding:6px 4px;border-radius:7px;border:.5px solid #D0D0CC;font-size:13px;font-family:inherit;text-align:center;}
 .cash-table input:focus{outline:none;border-color:#117A65;}
 .cash-table .subtotal{color:#555;}
+.qty-control{display:flex;align-items:center;gap:5px;}
+.qty-btn{width:24px;height:24px;border-radius:6px;border:.5px solid #D0D0CC;background:#F8F8F6;color:#555;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:inherit;transition:background .1s;}
+.qty-btn:hover{background:#EFEFEC;}
+.qty-btn:disabled{opacity:.35;cursor:default;}
 
 .cash-summary{margin-top:14px;padding:14px;border-radius:10px;background:#FAFAF8;}
 .cs-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;font-size:13px;}
@@ -136,7 +145,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
   <!-- ══ ZONE B ══ -->
   <div class="zone-b">
     <span class="zb-title">開店準備</span>
-    <span class="zb-date">2026年6月21日（日）</span>
+    <div class="zb-date-nav">
+      <button class="zb-nav-btn" onclick="navigateDate(-1)">‹</button>
+      <span class="zb-date" id="zbDate">2026年6月21日（日）</span>
+      <button class="zb-nav-btn" onclick="navigateDate(1)">›</button>
+      <button class="zb-today-btn" onclick="goToday()">今日</button>
+    </div>
     <div class="zb-spacer"></div>
     <button class="zb-open-btn" id="openBtn" onclick="confirmOpen()" disabled>開店確定</button>
   </div>
@@ -177,6 +191,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 // PINログイン = チェックイン、別店舗での再ログイン = 自動チェックアウト+移動。
 // 「ヘルプ」= 自店舗以外が所属の場合に表示。
 const THIS_BRANCH = '渋谷店';
+let curDate = new Date(2026,5,21);
 let CHECKINS = [
   {name:'Yuki',  color:'#8E44AD', homeBranch:'渋谷店', checkIn:'09:02', checkOut:null,    movedTo:null},
   {name:'Mika',  color:'#3B5BDB', homeBranch:'渋谷店', checkIn:'09:05', checkOut:null,    movedTo:null},
@@ -221,7 +236,13 @@ function renderCash(){
   document.getElementById('cashRows').innerHTML = DENOMS.map(d=>`
     <tr>
       <td class="denom">${d.label}</td>
-      <td><input type="number" min="0" value="${d.qty||''}" placeholder="0" oninput="updateQty(${d.value}, this.value)"></td>
+      <td>
+        <div class="qty-control">
+          <button class="qty-btn" onclick="stepQty(${d.value},-1)" ${d.qty<=0?'disabled':''}>−</button>
+          <input type="number" min="0" value="${d.qty||''}" placeholder="0" oninput="updateQty(${d.value}, this.value)">
+          <button class="qty-btn" onclick="stepQty(${d.value},1)">＋</button>
+        </div>
+      </td>
       <td class="subtotal">${fmtY(d.value*d.qty)}</td>
     </tr>`).join('');
 
@@ -251,6 +272,11 @@ function updateOpenBtn(){
 }
 
 // ── Actions ──────────────────────────────────────────────────────────────
+function stepQty(value, dir){
+  const d=DENOMS.find(x=>x.value===value); if(!d) return;
+  d.qty = Math.max(0, (d.qty||0)+dir);
+  renderCash();
+}
 function updateQty(value, qty){
   const d=DENOMS.find(x=>x.value===value); if(!d) return;
   d.qty = Math.max(0, parseInt(qty)||0);
@@ -259,6 +285,19 @@ function updateQty(value, qty){
 function confirmOpen(){
   if(document.getElementById('openBtn').disabled) return;
   toast('開店処理が完了しました。本日も頑張りましょう！ → 02_pos_order');
+}
+
+function navigateDate(dir){
+  curDate.setDate(curDate.getDate()+dir);
+  updateDateLabel();
+}
+function goToday(){
+  curDate=new Date(2026,5,21);
+  updateDateLabel();
+}
+function updateDateLabel(){
+  const d=curDate;
+  document.getElementById('zbDate').textContent=`${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日（${DOW[d.getDay()]}）`;
 }
 
 function openSb(){ document.getElementById('sidebar').classList.add('open'); document.getElementById('sbOverlay').classList.add('open'); }
@@ -275,6 +314,7 @@ function tick(){
 }
 
 // ── Init ─────────────────────────────────────────────────────────────────
+updateDateLabel();
 renderCheckins();
 renderCash();
 tick();
