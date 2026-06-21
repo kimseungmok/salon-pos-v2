@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1024">
+<title>13 · 勤怠ログ</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neue',sans-serif;background:#0F1D5C;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;}
+.ipad{width:1024px;height:768px;background:#F0F2F7;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.55);position:relative;}
+
+.zone-a{height:44px;flex-shrink:0;background:#fff;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 14px;gap:10px;z-index:10;}
+.za-menu{font-size:18px;color:#1E3A8A;cursor:pointer;padding:4px 6px;border-radius:6px;line-height:1;user-select:none;}
+.za-logo{font-size:13px;color:#1E3A8A;font-weight:700;letter-spacing:.08em;}
+.za-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.za-sep{width:.5px;height:14px;background:#D0D0CC;}
+.za-avatar{width:24px;height:24px;border-radius:50%;background:#8E44AD;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;}
+.za-name{font-size:12px;color:#333;font-weight:500;}
+.za-branch{font-size:11px;color:#888;}
+.za-time{font-size:11px;color:#555;font-weight:500;}
+.za-lock{font-size:13px;color:#bbb;cursor:pointer;}
+
+.sb-overlay{position:absolute;inset:0;background:rgba(0,0,0,.38);z-index:200;opacity:0;pointer-events:none;transition:opacity .2s;}
+.sb-overlay.open{opacity:1;pointer-events:all;}
+.sidebar{position:absolute;left:0;top:0;bottom:0;width:224px;background:#1E3A8A;z-index:201;transform:translateX(-100%);transition:transform .22s cubic-bezier(.25,.46,.45,.94);display:flex;flex-direction:column;}
+.sidebar.open{transform:translateX(0);}
+.sb-head{padding:20px 16px 14px;border-bottom:.5px solid rgba(255,255,255,.1);}
+.sb-logo{font-size:14px;color:#fff;font-weight:700;letter-spacing:.06em;}
+.sb-sub{font-size:10px;color:rgba(255,255,255,.3);margin-top:3px;}
+.sb-nav{flex:1;padding:8px 0;overflow-y:auto;}
+.sb-item{display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;transition:background .12s;}
+.sb-item:hover{background:rgba(255,255,255,.07);}
+.sb-item.active{background:rgba(255,255,255,.13);}
+.sb-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.sb-label{font-size:13px;color:rgba(255,255,255,.65);}
+.sb-item.active .sb-label{color:#fff;font-weight:600;}
+.sb-foot{padding:12px 16px;border-top:.5px solid rgba(255,255,255,.1);}
+.sb-ver{font-size:10px;color:rgba(255,255,255,.2);}
+
+.wrap{flex:1;display:flex;overflow:hidden;}
+.left{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+
+.zone-b{height:46px;flex-shrink:0;background:#fff;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 12px;gap:8px;}
+.zb-title{font-size:14px;font-weight:700;color:#1A1A1A;}
+.zb-nav-btn{width:26px;height:26px;border-radius:7px;border:.5px solid #E0E0DC;background:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;color:#555;cursor:pointer;flex-shrink:0;}
+.zb-nav-btn:hover{background:#F4F4F0;}
+.zb-today-btn{padding:5px 10px;border-radius:7px;border:.5px solid #E0E0DC;background:#fff;font-size:11px;color:#555;cursor:pointer;font-family:inherit;flex-shrink:0;}
+.zb-date{font-size:13px;font-weight:700;color:#1A1A1A;min-width:110px;text-align:center;}
+.zb-branch-sel{padding:6px 10px;border-radius:8px;border:.5px solid #E0E0DC;font-size:12px;font-family:inherit;color:#333;background:#fff;}
+.zb-spacer{flex:1;}
+
+.zone-c{flex:1;overflow-y:auto;background:#F0F2F7;}
+.zone-c::-webkit-scrollbar{width:4px;}
+.zone-c::-webkit-scrollbar-thumb{background:#D0D0CC;border-radius:2px;}
+.zc-inner{padding:14px;display:flex;flex-direction:column;gap:14px;}
+
+.now-card{background:#fff;border:.5px solid #E5E5E0;border-radius:12px;overflow:hidden;}
+.now-card-head{padding:11px 14px;border-bottom:.5px solid #F0F0EC;font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.06em;}
+.now-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:12px 14px;}
+.now-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:9px;background:#FAFAF8;border:.5px solid #F0F0EC;}
+.now-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.now-body{flex:1;min-width:0;}
+.now-name{font-size:12px;font-weight:700;color:#1A1A1A;}
+.now-sub{font-size:10px;color:#999;}
+.now-help{font-size:8px;font-weight:700;background:#FEF9E7;color:#B7950B;padding:1px 5px;border-radius:4px;margin-left:4px;}
+
+.log-card{background:#fff;border:.5px solid #E5E5E0;border-radius:12px;overflow:hidden;}
+.log-card-head{padding:11px 14px;border-bottom:.5px solid #F0F0EC;font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.06em;}
+.log-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:.5px solid #F8F8F6;}
+.log-row:last-child{border-bottom:none;}
+.log-time{width:46px;font-size:12px;font-weight:700;color:#555;flex-shrink:0;}
+.log-icon{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;color:#fff;}
+.log-icon.in{background:#117A65;}
+.log-icon.out{background:#bbb;}
+.log-body{flex:1;}
+.log-name{font-size:12.5px;font-weight:700;color:#1A1A1A;}
+.log-branch{font-size:10.5px;color:#999;margin-top:1px;}
+.log-action{font-size:10px;font-weight:700;padding:3px 9px;border-radius:6px;flex-shrink:0;}
+.log-action.in{background:#EAFAF1;color:#117A65;}
+.log-action.out{background:#F4F4F0;color:#aaa;}
+
+.zone-d{width:210px;flex-shrink:0;border-left:.5px solid #E5E5E0;background:#fff;display:flex;flex-direction:column;overflow-y:auto;}
+.zd-sec{padding:14px 14px;border-bottom:.5px solid #F0F0EC;}
+.zd-title{font-size:9px;font-weight:700;color:#C8C8C4;letter-spacing:.08em;text-transform:uppercase;margin-bottom:9px;}
+.zd-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:.5px solid #F8F8F6;font-size:12px;}
+.zd-row:last-child{border-bottom:none;}
+.zd-label{color:#999;}
+.zd-val{font-weight:700;color:#1A1A1A;}
+.zd-val.help{color:#B7950B;}
+</style>
+</head>
+<body>
+<div class="ipad">
+  <div class="sb-overlay" id="sbOverlay" onclick="closeSb()"></div>
+  <div class="sidebar" id="sidebar">
+    <div class="sb-head">
+      <div class="sb-logo">✂ salon pos</div>
+      <div class="sb-sub">Hair Salon Yuki · 全店舗管理</div>
+    </div>
+    <div class="sb-nav">
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#3B5BDB"></div><span class="sb-label">会計 · POS</span></div>
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#8E44AD"></div><span class="sb-label">予約カレンダー</span></div>
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#D4AC0D"></div><span class="sb-label">ウェイティング</span></div>
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#2E86C1"></div><span class="sb-label">取引履歴</span></div>
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#10B981"></div><span class="sb-label">顧客管理</span></div>
+      <div class="sb-item active" onclick="closeSb()"><div class="sb-dot" style="background:#C0392B"></div><span class="sb-label">スタッフ</span></div>
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#117A65"></div><span class="sb-label">店舗設定</span></div>
+    </div>
+    <div class="sb-foot"><div class="sb-ver">v2.0.0</div></div>
+  </div>
+
+  <div class="zone-a">
+    <span class="za-menu" onclick="openSb()">☰</span>
+    <span class="za-logo">✂ salon pos</span>
+    <div class="za-right">
+      <div class="za-avatar">由</div>
+      <span class="za-name">Yuki</span>
+      <span class="za-branch">渋谷店</span>
+      <div class="za-sep"></div>
+      <span class="za-time" id="tbTime">06.21 日　19:30</span>
+      <span class="za-lock">🔒</span>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="left">
+      <div class="zone-b">
+        <span class="zb-title">勤怠ログ</span>
+        <button class="zb-nav-btn" onclick="navigateDate(-1)">‹</button>
+        <span class="zb-date" id="zbDate">2026年6月21日</span>
+        <button class="zb-nav-btn" onclick="navigateDate(1)">›</button>
+        <button class="zb-today-btn" onclick="goToday()">今日</button>
+        <select class="zb-branch-sel" id="branchSel" onchange="onBranchChange(this.value)">
+          <option value="all">全店舗</option>
+          <option value="渋谷店">渋谷店</option>
+          <option value="池袋店">池袋店</option>
+        </select>
+        <div class="zb-spacer"></div>
+      </div>
+
+      <div class="zone-c">
+        <div class="zc-inner">
+          <div class="now-card">
+            <div class="now-card-head">現在の在店状況</div>
+            <div class="now-grid" id="nowGrid"></div>
+          </div>
+          <div class="log-card">
+            <div class="log-card-head">本日のチェックイン・チェックアウト履歴（時系列）</div>
+            <div id="logRows"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="zone-d">
+      <div class="zd-sec">
+        <div class="zd-title">本日の集計</div>
+        <div class="zd-row"><span class="zd-label">総出勤人数</span><span class="zd-val" id="statTotal">-</span></div>
+        <div class="zd-row"><span class="zd-label">現在在店中</span><span class="zd-val" id="statHere">-</span></div>
+        <div class="zd-row"><span class="zd-label">他店ヘルプ件数</span><span class="zd-val help" id="statHelp">-</span></div>
+      </div>
+      <div class="zd-sec">
+        <div class="zd-title">店舗別人数</div>
+        <div id="byBranch"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const STAFF_COLOR={Yuki:'#8E44AD',Mika:'#3B5BDB',Kenji:'#E67E22',Rio:'#10B981',Hana:'#E91E8C'};
+
+// 全店舗・全スタッフのチェックイン/アウト記録 (mock: 本日分)
+const EVENTS=[
+  {time:'09:00', name:'Yuki',  branch:'渋谷店', action:'in'},
+  {time:'09:05', name:'Mika',  branch:'渋谷店', action:'in'},
+  {time:'09:10', name:'Kenji', branch:'渋谷店', action:'in'},
+  {time:'08:55', name:'Rio',   branch:'池袋店', action:'in'},
+  {time:'13:00', name:'Kenji', branch:'渋谷店', action:'out'},
+  {time:'13:00', name:'Rio',   branch:'池袋店', action:'out'},
+  {time:'13:05', name:'Rio',   branch:'渋谷店', action:'in'},
+  {time:'13:10', name:'Kenji', branch:'池袋店', action:'in'},
+  {time:'18:00', name:'Mika',  branch:'渋谷店', action:'out'},
+];
+
+let curDate=new Date(2026,5,21), curBranch='all';
+
+function homeBranch(name){
+  // 直近で最初にチェックインした店舗をホームとみなす(モック用簡易判定)
+  return {Yuki:'渋谷店',Mika:'渋谷店',Kenji:'渋谷店',Rio:'池袋店',Hana:'渋谷店'}[name];
+}
+
+function computeStatus(){
+  // 各スタッフの最新イベントから現在地を算出
+  const byName={};
+  EVENTS.forEach(e=>{ byName[e.name]=e; });
+  return Object.keys(byName).map(name=>({
+    name, color:STAFF_COLOR[name],
+    branch:byName[name].branch,
+    here:byName[name].action==='in',
+    since:byName[name].time,
+    isHelp:byName[name].branch!==homeBranch(name),
+  }));
+}
+
+function render(){
+  let evs=[...EVENTS].sort((a,b)=>a.time.localeCompare(b.time));
+  if(curBranch!=='all') evs=evs.filter(e=>e.branch===curBranch);
+
+  document.getElementById('logRows').innerHTML = evs.map(e=>`
+    <div class="log-row">
+      <div class="log-time">${e.time}</div>
+      <div class="log-icon ${e.action}">${e.action==='in'?'✓':'×'}</div>
+      <div class="log-body">
+        <div class="log-name">${e.name}</div>
+        <div class="log-branch">${e.branch}</div>
+      </div>
+      <span class="log-action ${e.action}">${e.action==='in'?'チェックイン':'チェックアウト'}</span>
+    </div>`).join('');
+
+  let status=computeStatus();
+  if(curBranch!=='all') status=status.filter(s=>s.branch===curBranch);
+  document.getElementById('nowGrid').innerHTML = status.map(s=>`
+    <div class="now-item">
+      <div class="now-dot" style="background:${s.color}"></div>
+      <div class="now-body">
+        <div class="now-name">${s.name}${s.isHelp&&s.here?'<span class="now-help">ヘルプ</span>':''}</div>
+        <div class="now-sub">${s.here?`${s.branch}・${s.since}〜`:`退店済み(${s.since})`}</div>
+      </div>
+    </div>`).join('');
+
+  const allStatus=computeStatus();
+  document.getElementById('statTotal').textContent=allStatus.length+'名';
+  document.getElementById('statHere').textContent=allStatus.filter(s=>s.here).length+'名';
+  document.getElementById('statHelp').textContent=allStatus.filter(s=>s.isHelp&&s.here).length+'件';
+
+  const branches=[...new Set(allStatus.map(s=>s.branch))];
+  document.getElementById('byBranch').innerHTML = branches.map(b=>{
+    const cnt=allStatus.filter(s=>s.branch===b&&s.here).length;
+    return `<div class="zd-row"><span class="zd-label">${b}</span><span class="zd-val">${cnt}名</span></div>`;
+  }).join('');
+}
+
+function navigateDate(dir){ curDate.setDate(curDate.getDate()+dir); updateDateLabel(); render(); }
+function goToday(){ curDate=new Date(2026,5,21); updateDateLabel(); render(); }
+function updateDateLabel(){
+  const d=curDate;
+  document.getElementById('zbDate').textContent=`${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日`;
+}
+function onBranchChange(v){ curBranch=v; render(); }
+
+function openSb(){ document.getElementById('sidebar').classList.add('open'); document.getElementById('sbOverlay').classList.add('open'); }
+function closeSb(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('sbOverlay').classList.remove('open'); }
+
+const DOW=['日','月','火','水','木','金','土'];
+function tick(){
+  const d=new Date();
+  const el=document.getElementById('tbTime');
+  if(el) el.textContent=`${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} ${DOW[d.getDay()]}　${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
+
+updateDateLabel();
+render();
+tick();
+setInterval(tick,30000);
+</script>
+</body>
+</html>
