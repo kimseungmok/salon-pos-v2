@@ -169,7 +169,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
    レイアウト: Concept A
 ══════════════════════════════════════ */
 .zone-d{
-  height:34px;flex-shrink:0;
+  height:42px;flex-shrink:0;
   background:#fff;
   border-bottom:.5px solid #E5E5E0;
   display:flex;
@@ -178,10 +178,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 .zd-gutter{width:50px;flex-shrink:0;border-right:.5px solid #E5E5E0;background:#FAFAFA;}
 .zd-cols-outer{flex:1;overflow:hidden;}
 .zd-cols{display:flex;}
-.zd-col{width:191px;flex-shrink:0;display:flex;align-items:center;justify-content:center;gap:5px;border-right:.5px solid #EBEBEB;font-size:11px;font-weight:700;color:#333;}
+.zd-col{width:191px;flex-shrink:0;display:flex;align-items:center;justify-content:center;gap:6px;border-right:.5px solid #EBEBEB;font-size:11px;font-weight:700;color:#333;}
 .zd-col:last-child{border-right:none;}
 .zd-col.dim{opacity:.35;}
 .zd-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.zd-col-info{display:flex;flex-direction:column;align-items:center;line-height:1.3;}
+.zd-col-name{display:flex;align-items:center;gap:4px;}
+.zd-col-time{font-size:8.5px;font-weight:400;color:#bbb;}
+.zd-help-tag{font-size:7.5px;font-weight:700;background:#FEF9E7;color:#B7950B;padding:1px 4px;border-radius:4px;}
+.zd-col-unassigned{color:#aaa;background:repeating-linear-gradient(45deg,#FAFAF8,#FAFAF8 4px,#F4F4F0 4px,#F4F4F0 8px);}
 .zd-count{font-size:9px;font-weight:400;color:#bbb;margin-left:1px;}
 
 /* ══════════════════════════════════════
@@ -212,6 +217,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 .ze-col{width:191px;flex-shrink:0;position:relative;border-right:.5px solid #EBEBEB;}
 .ze-col:last-child{border-right:none;}
 .ze-col.dim{background:repeating-linear-gradient(45deg,#F9F9F7,#F9F9F7 3px,#FAFAF8 3px,#FAFAF8 7px);}
+.ze-col-unassigned{background:repeating-linear-gradient(45deg,#FAFAF8,#FAFAF8 4px,#F4F4F0 4px,#F4F4F0 8px);}
+.bk-unassigned{border:1px dashed #C8C8C4;box-shadow:none;}
+.bk-staff-badge-unassigned{font-size:8px;font-weight:700;padding:1px 5px;border-radius:5px;background:#F4F4F0;color:#999;flex-shrink:0;white-space:nowrap;}
+
+/* 担当割り当てメニュー (担当未定ブロッククリック時) */
+.assign-menu{position:absolute;background:#fff;border:.5px solid #E0E0DC;border-radius:11px;box-shadow:0 8px 28px rgba(0,0,0,.16);z-index:300;min-width:180px;overflow:hidden;}
+.assign-menu-header{padding:9px 12px 6px;font-size:9px;font-weight:700;color:#C8C8C4;letter-spacing:.06em;text-transform:uppercase;}
+.assign-menu-item{display:flex;align-items:center;gap:8px;padding:9px 12px;cursor:pointer;transition:background .1s;}
+.assign-menu-item:hover{background:#F8FAFF;}
+.assign-menu-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.assign-menu-name{font-size:12px;font-weight:600;color:#1A1A1A;flex:1;}
+.assign-menu-time{font-size:9px;color:#bbb;}
+.assign-menu-empty{padding:14px 12px;font-size:11px;color:#bbb;text-align:center;}
 .ze-h-line{position:absolute;left:0;height:1px;background:#DCDCD8;pointer-events:none;}
 .ze-h-half{background:#EBEBE7;}
 
@@ -453,6 +471,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 </head>
 <body>
 <div class="toast" id="toast"></div>
+<div class="assign-menu" id="assignMenu" style="display:none;"></div>
 
 <div class="ipad">
 
@@ -523,31 +542,25 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
             <div class="sdd-item selected" id="sdd-0" onclick="sddSelect(0)">
               <div class="sdd-item-dot" style="background:#8E44AD"></div>
               <span class="sdd-item-name">Yuki</span>
-              <span class="sdd-item-count">5件</span>
+              <span class="sdd-item-count">09:02〜在店</span>
               <span class="sdd-check" id="sdd-check-0">✓</span>
             </div>
             <div class="sdd-item selected" id="sdd-1" onclick="sddSelect(1)">
               <div class="sdd-item-dot" style="background:#3B5BDB"></div>
               <span class="sdd-item-name">Mika</span>
-              <span class="sdd-item-count">5件</span>
+              <span class="sdd-item-count">09:05〜在店</span>
               <span class="sdd-check" id="sdd-check-1">✓</span>
             </div>
             <div class="sdd-item selected" id="sdd-2" onclick="sddSelect(2)">
               <div class="sdd-item-dot" style="background:#E67E22"></div>
               <span class="sdd-item-name">Kenji</span>
-              <span class="sdd-item-count">4件</span>
+              <span class="sdd-item-count">09:10〜13:00</span>
               <span class="sdd-check" id="sdd-check-2">✓</span>
             </div>
-            <div class="sdd-item selected" id="sdd-4" onclick="sddSelect(4)">
+            <div class="sdd-item selected" id="sdd-3" onclick="sddSelect(3)">
               <div class="sdd-item-dot" style="background:#10B981"></div>
               <span class="sdd-item-name">Rio</span>
-              <span class="sdd-item-count">4件</span>
-              <span class="sdd-check" id="sdd-check-4">✓</span>
-            </div>
-            <div class="sdd-item selected" id="sdd-3" onclick="sddSelect(3)">
-              <div class="sdd-item-dot" style="background:#888"></div>
-              <span class="sdd-item-name">Hana</span>
-              <span class="sdd-item-count">2件</span>
+              <span class="sdd-item-count">13:05〜（池袋店よりヘルプ）</span>
               <span class="sdd-check" id="sdd-check-3">✓</span>
             </div>
           </div>
@@ -683,12 +696,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 
 <script>
 // ── Data ─────────────────────────────────────────────────────────────────
+// PINログイン=チェックイン、別店舗での再ログイン=自動チェックアウト+移動。
+// checkOut が null なら現在も在店中。homeBranch が自店舗と異なれば「ヘルプ」。
+const THIS_BRANCH='渋谷店';
 const STAFF = [
-  {name:'Yuki',  color:'#8E44AD', off:false},
-  {name:'Mika',  color:'#3B5BDB', off:false},
-  {name:'Kenji', color:'#E67E22', off:false},
-  {name:'Hana',  color:'#E91E8C', off:false},
-  {name:'Rio',   color:'#10B981', off:false},
+  {name:'Yuki',  color:'#8E44AD', homeBranch:'渋谷店', checkIn:'09:02', checkOut:null},
+  {name:'Mika',  color:'#3B5BDB', homeBranch:'渋谷店', checkIn:'09:05', checkOut:null},
+  {name:'Kenji', color:'#E67E22', homeBranch:'渋谷店', checkIn:'09:10', checkOut:'13:00'},
+  {name:'Rio',   color:'#10B981', homeBranch:'池袋店', checkIn:'13:05', checkOut:null},
 ];
 const COL_W = 191;
 const SC = {done:'#888',checkin:'#3B5BDB',confirmed:'#10B981',pending:'#D4AC0D',noshow:'#8E44AD',block:'#555'};
@@ -709,19 +724,16 @@ const BK = [
   {s:1,sh:12,sm:30, dur:30,  name:'中村 はな',    svc:'前髪カット',      price:2200,  status:'noshow'},
   {s:1,sh:14,sm:0,  dur:90,  name:'小林 なつ',    svc:'縮毛矯正',        price:27500, status:'confirmed'},
   {s:1,sh:16,sm:30, dur:60,  name:'松田 あかり',  svc:'カット＋ブロー',  price:8800,  status:'pending'},
-  // Kenji (s:2)
+  // Kenji (s:2) — 13:00に池袋店へ移動するため、それ以前で終わるよう調整
   {s:2,sh:10,sm:0,  dur:60,  name:'加藤 みさき',  svc:'カット',          price:5500,  status:'done'},
-  {s:2,sh:11,sm:30, dur:120, name:'松本 えり',    svc:'デジタルパーマ',  price:33000, status:'checkin'},
-  {s:2,sh:14,sm:0,  dur:60,  name:'井上 るか',    svc:'ヘアセット',      price:6600,  status:'confirmed'},
-  {s:2,sh:15,sm:30, dur:90,  name:'木村 あや',    svc:'グラデーション',  price:19800, status:'pending'},
-  // Hana (s:3) — 休日なのに予約が入っている
-  {s:3,sh:10,sm:0,  dur:60,  name:'野口 あみ',   svc:'カット',          price:5500,  status:'confirmed'},
-  {s:3,sh:14,sm:0,  dur:90,  name:'長谷川 さき', svc:'カラー＋ケア',    price:13200, status:'pending'},
-  // Rio (s:4)
-  {s:4,sh:9, sm:30, dur:60,  name:'藤原 のの',   svc:'カット',          price:5500,  status:'done'},
-  {s:4,sh:11,sm:0,  dur:90,  name:'上田 さな',   svc:'カラー＋ケア',    price:13200, status:'confirmed'},
-  {s:4,sh:13,sm:30, dur:60,  name:'石井 みお',   svc:'トリートメント',  price:8800,  status:'confirmed'},
-  {s:4,sh:16,sm:0,  dur:60,  name:'丸山 るな',   svc:'カット＋ブロー',  price:8800,  status:'pending'},
+  {s:2,sh:11,sm:30, dur:90,  name:'松本 えり',    svc:'デジタルパーマ',  price:33000, status:'checkin'},
+  // Rio (s:3) — 13:05に池袋店からヘルプで到着
+  {s:3,sh:13,sm:30, dur:60,  name:'石井 みお',   svc:'トリートメント',  price:8800,  status:'confirmed'},
+  {s:3,sh:16,sm:0,  dur:60,  name:'丸山 るな',   svc:'カット＋ブロー',  price:8800,  status:'pending'},
+  // 担当未定 (s:null) — 「指定なし」で受けた予約。在店中のスタッフへ後で割り当てる
+  {s:null,sh:14,sm:0,  dur:60,  name:'井上 るか',   svc:'ヘアセット',      price:6600,  status:'confirmed'},
+  {s:null,sh:14,sm:0,  dur:90,  name:'長谷川 さき', svc:'カラー＋ケア',    price:13200, status:'pending'},
+  {s:null,sh:15,sm:30, dur:90,  name:'木村 あや',   svc:'グラデーション',  price:19800, status:'pending'},
 ];
 
 const WAITING = [
@@ -732,7 +744,7 @@ const WAITING = [
 
 // ── State ────────────────────────────────────────────────────────────────
 let curView='day', curDate=new Date(2026,5,19), sideOpen=true;
-let filters=new Set(['all',0,1,2,3,4]);
+let filters=new Set(['all',0,1,2,3]);
 let ddOpen=false, vddOpen=false;
 
 // ── Helpers ──────────────────────────────────────────────────────────────
@@ -740,26 +752,64 @@ const toTop  = (h,m)=>(h-9)*40+m*(40/60);
 const fmtT   = (h,m)=>`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
 const endT   = b=>{ const t=b.sh*60+b.sm+b.dur; return fmtT(Math.floor(t/60),t%60); };
 const fmtY   = n=>`¥${n.toLocaleString()}`;
-const filtBK = ()=>filters.has('all')?BK:BK.filter(b=>filters.has(b.s));
+// 担当未定(s:null)の予約は誰がアサインすべきか分かるよう、フィルタに関係なく常に表示する
+const filtBK = ()=>filters.has('all')?BK:BK.filter(b=>b.s===null||filters.has(b.s));
 const visStaff = ()=>STAFF.map((st,i)=>({...st,i})).filter(st=>filters.has('all')||filters.has(st.i));
 
 // ── DAY VIEW ─────────────────────────────────────────────────────────────
 const DAY_START_H=9, DAY_END_H=24; // 9:00〜24:00
 const DAY_H=(DAY_END_H-DAY_START_H+1)*40+10;
+// 予約ブロック1件分のHTML。未定列(unassigned=true)はクリックで担当割り当てメニューを開く
+function renderBlock(b, unassigned){
+  const top=toTop(b.sh,b.sm);
+  const ht=Math.max(22, b.dur*(40/60)-2);
+  const isBlock=b.status==='block';
+  const accentColor=unassigned?'#bbb':isBlock?'#ccc':STAFF[b.s].color;
+  const showSvc  =ht>=34&&b.svc;
+  const showMeta =ht>=52;
+  const showPrice=ht>=52&&b.price>0;
+  const showBadge=ht>=72;
+  const idx=BK.indexOf(b);
+  const clickHandler = unassigned ? `openAssignMenu(event,${idx})` : `showDetail(${idx})`;
+  const staffBadge = unassigned
+    ? `<div class="bk-staff-badge bk-staff-badge-unassigned">担当未定</div>`
+    : (ht>=34?`<div class="bk-staff-badge" style="background:${STAFF[b.s].color}20;color:${STAFF[b.s].color};">${STAFF[b.s].name}</div>`:'');
+  return `<div class="bk${isBlock?' bk-block':''}${unassigned?' bk-unassigned':''}" style="top:${top}px;height:${ht}px;" onclick="${clickHandler}">
+    <div class="bk-accent" style="background:${accentColor}"></div>
+    <div class="bk-body">
+      <div class="bk-top">
+        <div class="bk-customer">${b.name}</div>
+        ${staffBadge}
+      </div>
+      ${showSvc  ?`<div class="bk-service">${b.svc}</div>`:''}
+      ${showMeta ?`<div class="bk-meta">
+        <span class="bk-time">${fmtT(b.sh,b.sm)}〜${endT(b)}</span>
+        ${showPrice?`<span class="bk-price">${fmtY(b.price)}</span>`:''}
+      </div>`:''}
+      ${showBadge?`<div class="status-badge sb-${b.status}">${SL[b.status]}</div>`:''}
+    </div>
+  </div>`;
+}
+
 function buildDay() {
   const bks=filtBK();
   const vis=visStaff();
-  const totalW=vis.length*COL_W;
+  const totalW=(vis.length+1)*COL_W; // +1 = 担当未定列
 
   // Zone D: スタッフコラムヘッダー (固定幅・スクロール同期)
   document.getElementById('zdCols').style.width=totalW+'px';
   document.getElementById('zdCols').innerHTML = vis.map(st=>{
     const cnt=bks.filter(b=>b.s===st.i&&b.status!=='block').length;
+    const isHelp = st.homeBranch!==THIS_BRANCH;
+    const timeLabel = st.checkOut ? `${st.checkIn}〜${st.checkOut}` : `${st.checkIn}〜在店中`;
     return `<div class="zd-col">
       <div class="zd-dot" style="background:${st.color}"></div>
-      ${st.name}<span class="zd-count">${cnt}件</span>
+      <div class="zd-col-info">
+        <div class="zd-col-name">${st.name}${isHelp?'<span class="zd-help-tag">ヘルプ</span>':''}<span class="zd-count">${cnt}件</span></div>
+        <div class="zd-col-time">${timeLabel}</div>
+      </div>
     </div>`;
-  }).join('');
+  }).join('')+`<div class="zd-col zd-col-unassigned"><div class="zd-dot" style="background:#ccc"></div><div class="zd-col-info"><div class="zd-col-name">担当未定</div></div></div>`;
 
   // Zone E: 時間ガター (正時 + 30分の控えめなラベル)
   let tg='';
@@ -783,34 +833,13 @@ function buildDay() {
     if(h<DAY_END_H) hLines+=`<div class="ze-h-line ze-h-half" style="top:${toTop(h,30)}px;width:${totalW}px;"></div>`;
   }
   const colsHtml=vis.map(st=>{
-    const blocks=bks.filter(b=>b.s===st.i).map(b=>{
-      const top=toTop(b.sh,b.sm);
-      const ht=Math.max(22, b.dur*(40/60)-2);
-      const isBlock=b.status==='block';
-      const accentColor=isBlock?'#ccc':STAFF[b.s].color;
-      const showSvc  =ht>=34&&b.svc;
-      const showMeta =ht>=52;
-      const showPrice=ht>=52&&b.price>0;
-      const showBadge=ht>=72;
-      return `<div class="bk${isBlock?' bk-block':''}" style="top:${top}px;height:${ht}px;" onclick="showDetail(${BK.indexOf(b)})">
-        <div class="bk-accent" style="background:${accentColor}"></div>
-        <div class="bk-body">
-          <div class="bk-top">
-            <div class="bk-customer">${b.name}</div>
-            ${ht>=34?`<div class="bk-staff-badge" style="background:${STAFF[b.s].color}20;color:${STAFF[b.s].color};">${STAFF[b.s].name}</div>`:''}
-          </div>
-          ${showSvc  ?`<div class="bk-service">${b.svc}</div>`:''}
-          ${showMeta ?`<div class="bk-meta">
-            <span class="bk-time">${fmtT(b.sh,b.sm)}〜${endT(b)}</span>
-            ${showPrice?`<span class="bk-price">${fmtY(b.price)}</span>`:''}
-          </div>`:''}
-          ${showBadge?`<div class="status-badge sb-${b.status}">${SL[b.status]}</div>`:''}
-        </div>
-      </div>`;
-    }).join('');
+    const blocks=bks.filter(b=>b.s===st.i).map(b=>renderBlock(b)).join('');
     return `<div class="ze-col" style="height:${DAY_H}px;">${blocks}</div>`;
   }).join('');
-  colsEl.innerHTML=hLines+nowLineHtml+colsHtml;
+  // 担当未定列 — クリックすると現在在店中のスタッフへ割り当てられる
+  const unassignedBlocks=bks.filter(b=>b.s===null).map(b=>renderBlock(b,true)).join('');
+  const unassignedCol=`<div class="ze-col ze-col-unassigned" style="height:${DAY_H}px;">${unassignedBlocks}</div>`;
+  colsEl.innerHTML=hLines+nowLineHtml+colsHtml+unassignedCol;
   updateZdDots();
 }
 
@@ -877,12 +906,15 @@ function buildWeek() {
     }
     const blocks=(isTod?bks:[]).map(b=>{
       const top=toTop(b.sh,b.sm),ht=Math.max(20,b.dur*(40/60)-2);
-      const st=STAFF[b.s];
-      return `<div style="position:absolute;top:${top}px;height:${ht}px;left:2px;right:2px;border-radius:6px;overflow:hidden;display:flex;cursor:pointer;border:.5px solid rgba(0,0,0,.06);box-shadow:0 1px 3px rgba(0,0,0,.07);" onclick="showDetail(${BK.indexOf(b)})">
-        <div style="width:3px;background:${st.color};flex-shrink:0;"></div>
+      const st=b.s===null?null:STAFF[b.s];
+      const color=st?st.color:'#bbb';
+      const label=st?st.name:'担当未定';
+      const click=st?`showDetail(${BK.indexOf(b)})`:`openAssignMenu(event,${BK.indexOf(b)})`;
+      return `<div style="position:absolute;top:${top}px;height:${ht}px;left:2px;right:2px;border-radius:6px;overflow:hidden;display:flex;cursor:pointer;border:.5px solid rgba(0,0,0,.06);box-shadow:0 1px 3px rgba(0,0,0,.07);" onclick="${click}">
+        <div style="width:3px;background:${color};flex-shrink:0;"></div>
         <div style="flex:1;background:#fff;padding:3px 5px;">
           <div style="font-size:9px;font-weight:700;color:#1A1A1A;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${b.name}</div>
-          ${ht>=28?`<div style="font-size:8px;font-weight:600;color:${st.color};">${st.name}</div>`:''}
+          ${ht>=28?`<div style="font-size:8px;font-weight:600;color:${color};">${label}</div>`:''}
         </div>
       </div>`;
     }).join('');
@@ -927,9 +959,13 @@ function buildList() {
   const d=curDate;
   let html=`<div class="ls-day-hdr">${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日 (${DOW[d.getDay()]}) — ${bks.length}件</div>`;
   html+=bks.map(b=>{
-    const st=STAFF[b.s];
-    return `<div class="ls-item" onclick="showDetail(${BK.indexOf(b)})">
-      <div class="ls-accent" style="background:${st.color}"></div>
+    const st=b.s===null?null:STAFF[b.s];
+    const accentColor=st?st.color:'#bbb';
+    const staffBadge=st
+      ? `<div class="ls-staff-badge" style="background:${st.color}18;color:${st.color};">${st.name}</div>`
+      : `<div class="ls-staff-badge" style="background:#F4F4F0;color:#999;">担当未定</div>`;
+    return `<div class="ls-item" onclick="${st?`showDetail(${BK.indexOf(b)})`:`openAssignMenu(event,${BK.indexOf(b)})`}">
+      <div class="ls-accent" style="background:${accentColor}"></div>
       <div class="ls-time-col">
         <div class="ls-start">${fmtT(b.sh,b.sm)}</div>
         <div class="ls-end">〜${endT(b)}</div>
@@ -941,7 +977,7 @@ function buildList() {
       </div>
       <div class="ls-right">
         <div class="ls-price">${b.price?fmtY(b.price):''}</div>
-        <div class="ls-staff-badge" style="background:${st.color}18;color:${st.color};">${st.name}</div>
+        ${staffBadge}
       </div>
       <div class="status-badge sb-${b.status}">${SL[b.status]}</div>
     </div>`;
@@ -1016,12 +1052,12 @@ document.addEventListener('click',()=>{
 
 function sddSelect(key) {
   if(key==='all'){
-    filters=new Set(['all',0,1,2,3,4]);
+    filters=new Set(['all',0,1,2,3]);
   } else {
     filters.delete('all');
     if(filters.has(key)) filters.delete(key);
     else filters.add(key);
-    if(filters.size===0) filters=new Set(['all',0,1,2,3,4]);
+    if(filters.size===0) filters=new Set(['all',0,1,2,3]);
   }
   updateDdUI();
   render();
@@ -1032,7 +1068,7 @@ function updateDdUI() {
   // チェックマーク更新
   document.getElementById('sdd-all').classList.toggle('selected',isAll);
   document.getElementById('sdd-check-all').textContent=isAll?'✓':'';
-  [0,1,2,3,4].forEach(i=>{
+  [0,1,2,3].forEach(i=>{
     const on=isAll||filters.has(i);
     document.getElementById(`sdd-${i}`).classList.toggle('selected',on);
     document.getElementById(`sdd-check-${i}`).textContent=on?'✓':'';
@@ -1100,6 +1136,40 @@ function openSb(){ document.getElementById('sidebar').classList.add('open'); doc
 function closeSb(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('sbOverlay').classList.remove('open'); }
 
 function showDetail(i){ const b=BK[i]; if(!b) return; toast(`${b.name} · ${b.svc} · ${b.dur}分`); }
+
+// ── 担当割り当てメニュー (担当未定ブロック クリック時) ──────────────────────
+function openAssignMenu(e, idx){
+  e.stopPropagation();
+  const b=BK[idx]; if(!b) return;
+  const menu=document.getElementById('assignMenu');
+  // 現在在店中のスタッフのみ選択可能 (チェックアウト済みは対象外)
+  const candidates=STAFF.map((st,i)=>({...st,i})).filter(st=>!st.checkOut);
+  menu.innerHTML = `<div class="assign-menu-header">${b.name} 様の担当を割り当て</div>` +
+    (candidates.length===0 ? `<div class="assign-menu-empty">現在在店中のスタッフがいません</div>` :
+      candidates.map(st=>`<div class="assign-menu-item" onclick="assignTo(${idx},${st.i})">
+        <div class="assign-menu-dot" style="background:${st.color}"></div>
+        <span class="assign-menu-name">${st.name}</span>
+        <span class="assign-menu-time">${st.checkIn}〜在店中</span>
+      </div>`).join(''));
+
+  const ipadRect=document.querySelector('.ipad').getBoundingClientRect();
+  const clickRect=e.currentTarget.getBoundingClientRect();
+  menu.style.left=(clickRect.left-ipadRect.left+20)+'px';
+  menu.style.top=(clickRect.top-ipadRect.top+10)+'px';
+  menu.style.display='block';
+}
+function closeAssignMenu(){ document.getElementById('assignMenu').style.display='none'; }
+function assignTo(idx, staffIndex){
+  const b=BK[idx]; if(!b) return;
+  b.s=staffIndex;
+  closeAssignMenu();
+  toast(`${b.name} 様の担当を ${STAFF[staffIndex].name} に割り当てました`);
+  render();
+}
+document.addEventListener('click',(e)=>{
+  const menu=document.getElementById('assignMenu');
+  if(menu.style.display==='block' && !menu.contains(e.target)) closeAssignMenu();
+});
 
 let _tt;
 function toast(msg){ const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); clearTimeout(_tt); _tt=setTimeout(()=>el.classList.remove('show'),2200); }
