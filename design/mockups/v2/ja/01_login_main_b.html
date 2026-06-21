@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>01 ログイン · メイン — salon-pos-v2 JA mockup</title>
+<title>01b ログイン · レジ開店ゲート型 — salon-pos-v2 JA mockup</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -60,6 +60,22 @@ h1{font-size:13px;font-weight:500;color:#666;letter-spacing:.05em;}
 .lock-name{font-size:15px;color:#fff;font-weight:500;margin-bottom:3px;}
 .lock-sub{font-size:10px;color:rgba(255,255,255,.4);letter-spacing:.15em;margin-bottom:22px;}
 .lock-back{position:absolute;top:18px;left:18px;font-size:11px;color:rgba(255,255,255,.4);cursor:pointer;}
+
+/* レジ開店ゲート — 当日まだ未開店の場合、ログイン直後にこの画面を強制表示 */
+#s-gate{position:absolute;inset:0;background:linear-gradient(160deg,#1C2833 0%,#2C3E50 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;transform:scale(.97);pointer-events:none;transition:opacity .35s,transform .35s;}
+#s-gate.visible{opacity:1;transform:scale(1);pointer-events:all;}
+.gate-icon{font-size:34px;margin-bottom:14px;}
+.gate-title{font-size:16px;color:#fff;font-weight:500;margin-bottom:6px;}
+.gate-sub{font-size:11px;color:rgba(255,255,255,.45);margin-bottom:28px;text-align:center;line-height:1.7;}
+.gate-card{background:rgba(255,255,255,.07);border:.5px solid rgba(255,255,255,.15);border-radius:14px;padding:22px 28px;display:flex;flex-direction:column;align-items:center;gap:16px;width:300px;}
+.gate-row{display:flex;align-items:center;justify-content:space-between;width:100%;}
+.gate-label{font-size:11px;color:rgba(255,255,255,.5);}
+.gate-amount{font-size:22px;color:#fff;font-weight:600;}
+.gate-stepper{display:flex;align-items:center;gap:8px;}
+.gate-step-btn{width:30px;height:30px;border-radius:7px;background:rgba(255,255,255,.12);color:#fff;border:none;font-size:15px;cursor:pointer;}
+.gate-step-btn:hover{background:rgba(255,255,255,.22);}
+.gate-open-btn{margin-top:6px;width:100%;padding:11px;border-radius:9px;background:#2E86C1;color:#fff;border:none;font-size:13px;font-weight:500;cursor:pointer;}
+.gate-skip{font-size:10px;color:rgba(255,255,255,.3);margin-top:14px;cursor:pointer;}
 .main-body{flex:1;padding:20px 24px;display:flex;flex-direction:column;gap:16px;overflow:hidden;}
 .stats-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
 .stat-card{background:white;border-radius:10px;padding:12px 14px;border:.5px solid rgba(0,0,0,.07);}
@@ -93,7 +109,7 @@ h1{font-size:13px;font-weight:500;color:#666;letter-spacing:.05em;}
 </style>
 </head>
 <body>
-<h1>salon-pos-v2 · 01 ログイン / メイン画面モックアップ</h1>
+<h1>salon-pos-v2 · 01b ログイン / レジ開店ゲート型モックアップ</h1>
 <div class="ipad">
 <div class="screen">
 <div id="s-login">
@@ -144,6 +160,24 @@ h1{font-size:13px;font-weight:500;color:#666;letter-spacing:.05em;}
     </div>
   </div>
   <div class="login-hint">PIN 123456 でログイン（デモ）</div>
+</div>
+<div id="s-gate">
+  <div class="gate-icon">🔓</div>
+  <div class="gate-title">本日のレジはまだ開店していません</div>
+  <div class="gate-sub">渋谷店の端末は本日未開店です。<br>開始金を確認してから営業を開始してください。</div>
+  <div class="gate-card">
+    <div class="gate-row">
+      <span class="gate-label">レジ開始金（現金）</span>
+      <span class="gate-amount" id="gateAmount">¥30,000</span>
+    </div>
+    <div class="gate-stepper">
+      <button class="gate-step-btn" onclick="gateStep(-10000)">−</button>
+      <span style="font-size:11px;color:rgba(255,255,255,.4);">¥10,000 単位</span>
+      <button class="gate-step-btn" onclick="gateStep(10000)">＋</button>
+    </div>
+    <button class="gate-open-btn" onclick="confirmOpen()">この金額で開店する</button>
+  </div>
+  <div class="gate-skip">※ 詳細な権種別カウントは「22 開店準備」で後から記録できます</div>
 </div>
 <div id="s-main">
   <div id="s-lock">
@@ -230,12 +264,22 @@ h1{font-size:13px;font-weight:500;color:#666;letter-spacing:.05em;}
 </div>
 </div>
 </div>
-<p style="font-size:11px;color:#999;">PIN 123456 入力後ログイン　/　🔒 = レジを開けたままロック　/　「退勤」= 完全ログアウト（チェックアウト記録）</p>
+<p style="font-size:11px;color:#999;">PIN 123456 入力後ログイン　/　当日未開店なら開店ゲートを強制表示（一度開店すれば他スタッフはスキップ）　/　🔒=ロック　/　「退勤」=完全ログアウト</p>
 <script>
 const DEMO_PIN='123456';
 const PIN_LEN=6;
 let pin='',lockPin='',selColor='#8E44AD',selInitial='由',selNameStr='Yuki',selRole='店長';
 const THIS_BRANCH_NAME='渋谷店';
+// この端末が本日すでに開店済みか（一度開店すれば、以後ログインする他スタッフはゲートをスキップ）
+let registerOpen=false;
+let gateAmount=30000;
+function gateStep(d){ gateAmount=Math.max(0,gateAmount+d); document.getElementById('gateAmount').textContent='¥'+gateAmount.toLocaleString(); }
+function confirmOpen(){
+  registerOpen=true;
+  document.getElementById('s-gate').classList.remove('visible');
+  enterMain();
+  setTimeout(()=>punch(`✓ レジ開店（開始金 ¥${gateAmount.toLocaleString()}）`),400);
+}
 function selStaff(el,c,i,n,r){document.querySelectorAll('.staff-btn').forEach(b=>b.classList.remove('selected'));el.classList.add('selected');selColor=c;selInitial=i;selNameStr=n;selRole=r;pin='';updateDots();}
 function pinKey(k){if(pin.length>=PIN_LEN)return;pin+=k;updateDots();if(pin.length===PIN_LEN)setTimeout(doLogin,250);}
 function pinDel(){pin=pin.slice(0,-1);updateDots();}
@@ -253,9 +297,18 @@ function doLogin(){
   document.getElementById('topName').textContent=selNameStr;
   document.getElementById('topRole').textContent=selRole;
   document.getElementById('s-login').classList.add('hidden');
-  document.getElementById('s-main').classList.add('visible');
+  if(!registerOpen){
+    // 当日まだ未開店 → メイン画面の前にレジ開店ゲートを強制表示
+    document.getElementById('s-gate').classList.add('visible');
+    return;
+  }
+  enterMain();
   // PINログイン = この拠点へチェックイン (別拠点で直前にログイン中だった場合は自動チェックアウト)
   setTimeout(()=>punch(`✓ ${selNameStr} さん ${THIS_BRANCH_NAME} にチェックイン（${nowHM()}）`),400);
+}
+function enterMain(){
+  document.getElementById('s-login').classList.add('hidden');
+  document.getElementById('s-main').classList.add('visible');
 }
 // ── クイックロック: レジ/チェックインは維持したまま画面だけ施錠 ──────────
 function lockScreen(){

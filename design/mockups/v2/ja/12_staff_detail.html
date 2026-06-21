@@ -60,16 +60,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 .info-label{width:120px;color:#999;flex-shrink:0;}
 .info-val{color:#1A1A1A;font-weight:500;flex:1;}
 .info-val.masked{font-family:monospace;letter-spacing:2px;}
-.role-select{padding:6px 10px;border-radius:7px;border:.5px solid #D0D0CC;font-size:12px;font-family:inherit;color:#333;background:#fff;}
 .edit-btn{margin-top:14px;padding:8px 16px;border-radius:8px;background:#F4F4F0;border:.5px solid #D0D0CC;font-size:12px;color:#555;cursor:pointer;font-family:inherit;}
-.reveal-btn{font-size:10px;color:#2E86C1;cursor:pointer;margin-left:8px;}
-
-.perm-table{width:100%;border-collapse:collapse;margin-top:10px;}
-.perm-table th,.perm-table td{padding:7px 8px;font-size:11px;text-align:center;border-bottom:.5px solid #F0F0EC;}
-.perm-table th{color:#999;font-weight:600;}
-.perm-table td:first-child,.perm-table th:first-child{text-align:left;color:#555;font-weight:600;}
-.perm-yes{color:#117A65;font-weight:700;}
-.perm-no{color:#ddd;}
+.perm-hint{font-size:11px;color:#bbb;margin-top:10px;max-width:520px;}
 
 .log-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:.5px solid #F0F0EC;}
 .log-item:last-child{border-bottom:none;}
@@ -115,9 +107,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
     <span class="zb-role" id="zbRole">-</span>
     <div class="zb-spacer"></div>
     <div class="zb-actions">
-      <button class="zb-btn outline" onclick="toast('PINを再発行しました（モック）')">PIN再発行</button>
-      <button class="zb-btn outline" onclick="toast('このスタッフを無効化しました（モック）')">無効化</button>
-      <button class="zb-btn primary" onclick="toast('保存しました')">保存</button>
+      <button class="zb-btn primary" onclick="toast('連絡先を保存しました')">保存</button>
     </div>
   </div>
 
@@ -192,43 +182,16 @@ function renderHeader(){
 
 function renderBasic(){
   const s=curStaff;
-  const roleOptions=Object.keys(ROLE_LABEL).map(r=>`<option value="${r}" ${r===s.role?'selected':''}>${ROLE_LABEL[r]}</option>`).join('');
   return `
     <div class="info-card">
       <div class="info-row"><span class="info-label">ログインID</span><span class="info-val">${s.loginId}</span></div>
-      <div class="info-row"><span class="info-label">PIN</span><span class="info-val masked" id="pinVal">••••</span><span class="reveal-btn" onclick="revealPin()">表示</span></div>
       <div class="info-row"><span class="info-label">電話番号</span><span class="info-val">${s.phone}</span></div>
       <div class="info-row"><span class="info-label">所属店舗</span><span class="info-val">${s.branch}</span></div>
       <div class="info-row"><span class="info-label">入社日</span><span class="info-val">${s.joined}</span></div>
-      <div class="info-row"><span class="info-label">権限レベル</span><span class="info-val">
-        <select class="role-select" onchange="toast('権限を '+this.options[this.selectedIndex].text+' に変更しました（モック）')">${roleOptions}</select>
-      </span></div>
+      <div class="info-row"><span class="info-label">権限レベル</span><span class="zb-role ${s.role}" style="display:inline-block;">${ROLE_LABEL[s.role]}</span></div>
       <button class="edit-btn" onclick="toast('編集フォームを開く（モック）')">連絡先を編集</button>
     </div>
-
-    <div class="info-card" style="margin-top:14px;">
-      <div style="font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">権限マトリクス（${ROLE_LABEL[s.role]}）</div>
-      <table class="perm-table">
-        <tr><th>機能</th><th>オーナー</th><th>店長</th><th>主任</th><th>スタッフ</th></tr>
-        ${permRow('開店・閉店処理',[1,1,0,0])}
-        ${permRow('スタッフ・権限管理',[1,1,0,0])}
-        ${permRow('売上レポート（全体）',[1,1,0,0])}
-        ${permRow('返金・取消承認',[1,1,1,0])}
-        ${permRow('POS・予約操作',[1,1,1,1])}
-        ${permRow('顧客管理（VIP/ブラック指定）',[1,1,1,0])}
-      </table>
-    </div>`;
-}
-function permRow(label, flags){
-  const roleKeys=['owner','manager','senior','staff'];
-  return `<tr><td>${label}</td>${flags.map((f,i)=>{
-    const isCur=roleKeys[i]===curStaff.role;
-    return `<td class="${f?'perm-yes':'perm-no'}" style="${isCur?'background:#FDEDEC;border-radius:4px;':''}">${f?'✓':'—'}</td>`;
-  }).join('')}</tr>`;
-}
-function revealPin(){
-  document.getElementById('pinVal').textContent=curStaff.pin;
-  setTimeout(()=>{ const el=document.getElementById('pinVal'); if(el) el.textContent='••••'; },3000);
+    <div class="perm-hint">※ ログインID・PIN・権限レベルの変更は勤怠管理サイト（管理者専用）で行います。</div>`;
 }
 
 function renderLog(){
