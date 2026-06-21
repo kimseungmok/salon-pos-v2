@@ -14,25 +14,28 @@ h1{font-size:13px;font-weight:500;color:#666;letter-spacing:.05em;}
 .screen{width:100%;height:100%;border-radius:6px;overflow:hidden;position:relative;}
 #s-login{position:absolute;inset:0;background:linear-gradient(160deg,#1C2833 0%,#2C3E50 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .35s,transform .35s;}
 .login-logo{font-size:22px;font-weight:300;color:white;letter-spacing:.15em;margin-bottom:4px;}
-.login-sub{font-size:11px;color:rgba(255,255,255,.35);letter-spacing:.2em;margin-bottom:36px;}
-.staff-label{font-size:11px;color:rgba(255,255,255,.45);margin-bottom:14px;}
-.staff-row{display:flex;gap:14px;margin-bottom:32px;}
-.staff-btn{display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;opacity:.55;transition:opacity .15s;}
+.login-sub{font-size:11px;color:rgba(255,255,255,.35);letter-spacing:.2em;margin-bottom:18px;}
+.staff-label{font-size:11px;color:rgba(255,255,255,.45);margin-bottom:10px;}
+.staff-search{width:220px;background:rgba(255,255,255,.08);border:.5px solid rgba(255,255,255,.18);border-radius:8px;padding:6px 12px;color:#fff;font-size:11px;margin-bottom:12px;font-family:inherit;}
+.staff-search::placeholder{color:rgba(255,255,255,.3);}
+.staff-row{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;justify-content:center;max-width:560px;}
+.staff-btn{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:.55;transition:opacity .15s;width:64px;}
 .staff-btn.selected{opacity:1;}
-.staff-avatar{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:500;color:white;border:2px solid transparent;transition:border-color .15s;}
+.staff-avatar{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:500;color:white;border:2px solid transparent;transition:border-color .15s;position:relative;}
 .staff-btn.selected .staff-avatar{border-color:rgba(255,255,255,.7);}
 .staff-name{font-size:11px;color:rgba(255,255,255,.7);}
 .staff-role{font-size:8.5px;color:rgba(255,255,255,.35);margin-top:-3px;}
-.pin-box{background:rgba(255,255,255,.07);border:.5px solid rgba(255,255,255,.15);border-radius:14px;padding:20px 24px;display:flex;flex-direction:column;align-items:center;gap:14px;}
+.staff-help-badge{font-size:7.5px;color:#F5B041;background:rgba(245,176,65,.15);border:.5px solid rgba(245,176,65,.4);padding:1px 5px;border-radius:5px;margin-top:1px;white-space:nowrap;}
+.pin-box{background:rgba(255,255,255,.07);border:.5px solid rgba(255,255,255,.15);border-radius:14px;padding:14px 24px;display:flex;flex-direction:column;align-items:center;gap:10px;}
 .pin-dots{display:flex;gap:12px;}
 .pin-dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.2);transition:background .15s;}
 .pin-dot.filled{background:white;}
-.pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
-.pin-key{width:52px;height:40px;border-radius:8px;background:rgba(255,255,255,.1);color:white;font-size:15px;border:none;cursor:pointer;transition:background .1s;}
+.pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;}
+.pin-key{width:52px;height:36px;border-radius:8px;background:rgba(255,255,255,.1);color:white;font-size:15px;border:none;cursor:pointer;transition:background .1s;}
 .pin-key:hover{background:rgba(255,255,255,.2);}
 .pin-key.del{font-size:12px;background:transparent;color:rgba(255,255,255,.5);}
 .pin-key.enter{background:#2E86C1;font-size:11px;}
-.login-hint{font-size:10px;color:rgba(255,255,255,.25);margin-top:8px;}
+.login-hint{font-size:10px;color:rgba(255,255,255,.25);margin-top:6px;}
 #s-main{position:absolute;inset:0;background:#F4F4F0;display:flex;flex-direction:column;opacity:0;transform:scale(.97);pointer-events:none;transition:opacity .35s,transform .35s;}
 #s-main.visible{opacity:1;transform:scale(1);pointer-events:all;}
 #s-login.hidden{opacity:0;pointer-events:none;}
@@ -60,6 +63,16 @@ h1{font-size:13px;font-weight:500;color:#666;letter-spacing:.05em;}
 .lock-name{font-size:15px;color:#fff;font-weight:500;margin-bottom:3px;}
 .lock-sub{font-size:10px;color:rgba(255,255,255,.4);letter-spacing:.15em;margin-bottom:22px;}
 .lock-back{position:absolute;top:18px;left:18px;font-size:11px;color:rgba(255,255,255,.4);cursor:pointer;}
+.lock-switch{font-size:11px;color:#5DADE2;cursor:pointer;margin-top:18px;}
+.lock-switch:hover{text-decoration:underline;}
+
+/* 開店未処理バナー（業務はブロックしない、通知のみ） */
+.open-banner{display:none;background:#FCF3E3;border:.5px solid #F0C36D;border-radius:10px;padding:10px 14px;align-items:center;gap:10px;}
+.open-banner.show{display:flex;}
+.open-banner-icon{font-size:16px;}
+.open-banner-text{flex:1;font-size:11.5px;color:#7D6608;}
+.open-banner-text b{font-weight:700;}
+.open-banner-btn{background:#D4AC0D;color:#fff;border:none;padding:6px 14px;border-radius:7px;font-size:11px;cursor:pointer;font-family:inherit;white-space:nowrap;}
 .main-body{flex:1;padding:20px 24px;display:flex;flex-direction:column;gap:16px;overflow:hidden;}
 .stats-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
 .stat-card{background:white;border-radius:10px;padding:12px 14px;border:.5px solid rgba(0,0,0,.07);}
@@ -99,29 +112,9 @@ h1{font-size:13px;font-weight:500;color:#666;letter-spacing:.05em;}
 <div id="s-login">
   <div class="login-logo">✂ salon pos</div>
   <div class="login-sub">STAFF LOGIN</div>
-  <div class="staff-label">担当者を選んでください</div>
-  <div class="staff-row">
-    <div class="staff-btn selected" onclick="selStaff(this,'#C0392B','管','Admin','オーナー')">
-      <div class="staff-avatar" style="background:#C0392B;">管</div>
-      <span class="staff-name">Admin</span>
-      <span class="staff-role">オーナー</span>
-    </div>
-    <div class="staff-btn" onclick="selStaff(this,'#8E44AD','由','Yuki','店長')">
-      <div class="staff-avatar" style="background:#8E44AD;">由</div>
-      <span class="staff-name">Yuki</span>
-      <span class="staff-role">店長</span>
-    </div>
-    <div class="staff-btn" onclick="selStaff(this,'#2E86C1','花','Hana','主任')">
-      <div class="staff-avatar" style="background:#2E86C1;">花</div>
-      <span class="staff-name">Hana</span>
-      <span class="staff-role">主任</span>
-    </div>
-    <div class="staff-btn" onclick="selStaff(this,'#1E8449','蓮','Ren','スタッフ')">
-      <div class="staff-avatar" style="background:#1E8449;">蓮</div>
-      <span class="staff-name">Ren</span>
-      <span class="staff-role">スタッフ</span>
-    </div>
-  </div>
+  <div class="staff-label">担当者を選んでください（他店からのヘルプもここから選択）</div>
+  <input class="staff-search" id="staffSearch" placeholder="🔍 名前で検索…" oninput="renderStaffRow()">
+  <div class="staff-row" id="staffRow"></div>
   <div class="pin-box">
     <div class="pin-dots" id="pindots">
       <div class="pin-dot"></div><div class="pin-dot"></div>
@@ -172,6 +165,7 @@ h1{font-size:13px;font-weight:500;color:#666;letter-spacing:.05em;}
         <button class="pin-key enter" onclick="doUnlock()">→</button>
       </div>
     </div>
+    <div class="lock-switch" onclick="switchStaffFromLock()">他のスタッフでログイン（他店からのヘルプもこちら）→</div>
   </div>
   <div class="punch-toast" id="punchToast"></div>
   <div class="topbar">
@@ -192,6 +186,11 @@ h1{font-size:13px;font-weight:500;color:#666;letter-spacing:.05em;}
     </div>
   </div>
   <div class="main-body">
+    <div class="open-banner" id="openBanner">
+      <span class="open-banner-icon">⚠️</span>
+      <span class="open-banner-text">本日のレジは<b>まだ開店処理が済んでいません</b>。先に開始金を確認してください（会計などの操作は可能です）。</span>
+      <button class="open-banner-btn" onclick="location.href='22_store_open.html'">開店処理へ</button>
+    </div>
     <div class="stats-row">
       <div class="stat-card"><div class="stat-label">本日売上</div><div class="stat-val good">¥87,400</div><div class="stat-sub">前日比 +12%</div></div>
       <div class="stat-card"><div class="stat-label">予約合計</div><div class="stat-val">12件</div><div class="stat-sub">完了 8 · 残り 4</div></div>
@@ -230,13 +229,40 @@ h1{font-size:13px;font-weight:500;color:#666;letter-spacing:.05em;}
 </div>
 </div>
 </div>
-<p style="font-size:11px;color:#999;">PIN 123456 入力後ログイン　/　🔒 = レジを開けたままロック　/　「退勤」= 完全ログアウト（チェックアウト記録）</p>
+<p style="font-size:11px;color:#999;">PIN 123456 入力後ログイン　/　Rioは池袋店所属＝ヘルプ表示の例　/　🔒=ロック中も「他のスタッフでログイン」で他店ヘルプが入れる　/　「退勤」=完全ログアウト</p>
 <script>
 const DEMO_PIN='123456';
 const PIN_LEN=6;
-let pin='',lockPin='',selColor='#8E44AD',selInitial='由',selNameStr='Yuki',selRole='店長';
 const THIS_BRANCH_NAME='渋谷店';
-function selStaff(el,c,i,n,r){document.querySelectorAll('.staff-btn').forEach(b=>b.classList.remove('selected'));el.classList.add('selected');selColor=c;selInitial=i;selNameStr=n;selRole=r;pin='';updateDots();}
+// 全店舗共通スタッフ名簿 — 06_booking_calendar / 12_staff_detail と同じ人物データ。
+// ここに「自店だけ」ではなく全スタッフを載せておくことで、他店からヘルプに来た
+// スタッフもこの端末でPINログイン＝チェックインできる（拠点移動ボタンは作らない方針）。
+const STAFF_DIRECTORY=[
+  {color:'#C0392B', initial:'管', name:'Admin', role:'オーナー', homeBranch:'渋谷店'},
+  {color:'#8E44AD', initial:'由', name:'Yuki',  role:'店長',     homeBranch:'渋谷店'},
+  {color:'#2E86C1', initial:'美', name:'Mika',  role:'主任',     homeBranch:'渋谷店'},
+  {color:'#2E86C1', initial:'花', name:'Hana',  role:'主任',     homeBranch:'渋谷店'},
+  {color:'#E67E22', initial:'健', name:'Kenji', role:'スタッフ', homeBranch:'渋谷店'},
+  {color:'#1E8449', initial:'蓮', name:'Ren',   role:'スタッフ', homeBranch:'渋谷店'},
+  {color:'#10B981', initial:'里', name:'Rio',   role:'スタッフ', homeBranch:'池袋店'},
+];
+let pin='',lockPin='',selIdx=0;
+function curStaff(){ return STAFF_DIRECTORY[selIdx]; }
+function renderStaffRow(){
+  const q=(document.getElementById('staffSearch').value||'').toLowerCase();
+  const row=document.getElementById('staffRow');
+  row.innerHTML=STAFF_DIRECTORY.map((s,i)=>{
+    if(q && !s.name.toLowerCase().includes(q)) return '';
+    const isHelp=s.homeBranch!==THIS_BRANCH_NAME;
+    return `<div class="staff-btn ${i===selIdx?'selected':''}" onclick="selStaff(${i})">
+      <div class="staff-avatar" style="background:${s.color};">${s.initial}</div>
+      <span class="staff-name">${s.name}</span>
+      <span class="staff-role">${s.role}</span>
+      ${isHelp?`<span class="staff-help-badge">${s.homeBranch}ヘルプ</span>`:''}
+    </div>`;
+  }).join('');
+}
+function selStaff(i){selIdx=i;pin='';updateDots();renderStaffRow();}
 function pinKey(k){if(pin.length>=PIN_LEN)return;pin+=k;updateDots();if(pin.length===PIN_LEN)setTimeout(doLogin,250);}
 function pinDel(){pin=pin.slice(0,-1);updateDots();}
 function updateDots(){document.querySelectorAll('#pindots .pin-dot').forEach((d,i)=>d.classList.toggle('filled',i<pin.length));}
@@ -246,25 +272,42 @@ function punch(msg){
   el.textContent=msg; el.classList.add('show');
   clearTimeout(window._punchT); window._punchT=setTimeout(()=>el.classList.remove('show'),2600);
 }
+let registerOpen=false;
 function doLogin(){
   if(pin!==DEMO_PIN){pin='';updateDots();return;}
-  document.getElementById('topAvatar').style.background=selColor;
-  document.getElementById('topAvatar').textContent=selInitial;
-  document.getElementById('topName').textContent=selNameStr;
-  document.getElementById('topRole').textContent=selRole;
+  const s=curStaff();
+  document.getElementById('topAvatar').style.background=s.color;
+  document.getElementById('topAvatar').textContent=s.initial;
+  document.getElementById('topName').textContent=s.name;
+  document.getElementById('topRole').textContent=s.role;
+  document.getElementById('s-lock').classList.remove('show');
   document.getElementById('s-login').classList.add('hidden');
   document.getElementById('s-main').classList.add('visible');
-  // PINログイン = この拠点へチェックイン (別拠点で直前にログイン中だった場合は自動チェックアウト)
-  setTimeout(()=>punch(`✓ ${selNameStr} さん ${THIS_BRANCH_NAME} にチェックイン（${nowHM()}）`),400);
+  document.getElementById('openBanner').classList.toggle('show', !registerOpen);
+  // PINログイン = この拠点へチェックイン (別拠点で直前にログイン中だった場合は自動チェックアウト・他店からのヘルプもここでチェックインされる)
+  const isHelp=s.homeBranch!==THIS_BRANCH_NAME;
+  setTimeout(()=>punch(isHelp
+    ? `✓ ${s.name} さん（${s.homeBranch}）が ${THIS_BRANCH_NAME} にヘルプでチェックイン（${nowHM()}）`
+    : `✓ ${s.name} さん ${THIS_BRANCH_NAME} にチェックイン（${nowHM()}）`),400);
 }
 // ── クイックロック: レジ/チェックインは維持したまま画面だけ施錠 ──────────
 function lockScreen(){
+  const s=curStaff();
   lockPin='';
   document.querySelectorAll('#lockdots .pin-dot').forEach(d=>d.classList.remove('filled'));
-  document.getElementById('lockAvatar').style.background=selColor;
-  document.getElementById('lockAvatar').textContent=selInitial;
-  document.getElementById('lockName').textContent=selNameStr;
+  document.getElementById('lockAvatar').style.background=s.color;
+  document.getElementById('lockAvatar').textContent=s.initial;
+  document.getElementById('lockName').textContent=s.name;
   document.getElementById('s-lock').classList.add('show');
+}
+// 他店からヘルプで来たスタッフなど、ロック中の本人以外がこの端末を使う場合の入口。
+// ロック中だったスタッフのチェックイン状態はそのまま維持し、画面だけスタッフ選択に戻す（チェックアウトはしない）。
+function switchStaffFromLock(){
+  document.getElementById('s-lock').classList.remove('show');
+  document.getElementById('s-main').classList.remove('visible');
+  document.getElementById('s-login').classList.remove('hidden');
+  pin='';updateDots();
+  renderStaffRow();
 }
 function lockPinKey(k){
   if(lockPin.length>=PIN_LEN)return;
@@ -286,14 +329,17 @@ function cancelUnlock(){
 }
 // ── 完全ログアウト(退勤): チェックアウトを記録し、スタッフ選択画面に戻る ──
 function doLogout(){
-  punch(`${selNameStr} さん ${THIS_BRANCH_NAME} からチェックアウト（${nowHM()}）`);
+  const s=curStaff();
+  punch(`${s.name} さん ${THIS_BRANCH_NAME} からチェックアウト（${nowHM()}）`);
   setTimeout(()=>{
     pin='';updateDots();
     document.getElementById('s-lock').classList.remove('show');
     document.getElementById('s-login').classList.remove('hidden');
     document.getElementById('s-main').classList.remove('visible');
+    renderStaffRow();
   },900);
 }
+renderStaffRow();
 </script>
 </body>
 </html>
