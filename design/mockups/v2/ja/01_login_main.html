@@ -22,6 +22,7 @@ h1{font-size:13px;font-weight:500;color:#666;letter-spacing:.05em;}
 .staff-avatar{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:500;color:white;border:2px solid transparent;transition:border-color .15s;}
 .staff-btn.selected .staff-avatar{border-color:rgba(255,255,255,.7);}
 .staff-name{font-size:11px;color:rgba(255,255,255,.7);}
+.staff-role{font-size:8.5px;color:rgba(255,255,255,.35);margin-top:-3px;}
 .pin-box{background:rgba(255,255,255,.07);border:.5px solid rgba(255,255,255,.15);border-radius:14px;padding:20px 24px;display:flex;flex-direction:column;align-items:center;gap:14px;}
 .pin-dots{display:flex;gap:12px;}
 .pin-dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.2);transition:background .15s;}
@@ -43,6 +44,9 @@ h1{font-size:13px;font-weight:500;color:#666;letter-spacing:.05em;}
 .topbar-staff{display:flex;align-items:center;gap:7px;}
 .topbar-avatar{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;color:white;}
 .topbar-staffname{font-size:12px;color:rgba(255,255,255,.75);}
+.topbar-role{font-size:9px;color:rgba(255,255,255,.4);background:rgba(255,255,255,.08);padding:2px 7px;border-radius:5px;}
+.punch-toast{position:absolute;top:14px;left:50%;transform:translateX(-50%) translateY(-10px);background:rgba(20,20,20,.92);color:#fff;font-size:11px;padding:8px 16px;border-radius:8px;opacity:0;transition:all .25s;pointer-events:none;z-index:50;white-space:nowrap;}
+.punch-toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 .topbar-time{font-size:11px;color:rgba(255,255,255,.4);}
 .topbar-bell{font-size:16px;color:rgba(255,255,255,.5);position:relative;cursor:pointer;}
 .bell-badge{position:absolute;top:-3px;right:-3px;width:8px;height:8px;border-radius:50%;background:#E74C3C;}
@@ -88,21 +92,25 @@ h1{font-size:13px;font-weight:500;color:#666;letter-spacing:.05em;}
   <div class="login-sub">STAFF LOGIN</div>
   <div class="staff-label">担当者を選んでください</div>
   <div class="staff-row">
-    <div class="staff-btn selected" onclick="selStaff(this,'#8E44AD','由','Yuki')">
-      <div class="staff-avatar" style="background:#8E44AD;">由</div>
-      <span class="staff-name">Yuki</span>
-    </div>
-    <div class="staff-btn" onclick="selStaff(this,'#2E86C1','花','Hana')">
-      <div class="staff-avatar" style="background:#2E86C1;">花</div>
-      <span class="staff-name">Hana</span>
-    </div>
-    <div class="staff-btn" onclick="selStaff(this,'#1E8449','蓮','Ren')">
-      <div class="staff-avatar" style="background:#1E8449;">蓮</div>
-      <span class="staff-name">Ren</span>
-    </div>
-    <div class="staff-btn" onclick="selStaff(this,'#C0392B','管','Admin')">
+    <div class="staff-btn selected" onclick="selStaff(this,'#C0392B','管','Admin','オーナー')">
       <div class="staff-avatar" style="background:#C0392B;">管</div>
       <span class="staff-name">Admin</span>
+      <span class="staff-role">オーナー</span>
+    </div>
+    <div class="staff-btn" onclick="selStaff(this,'#8E44AD','由','Yuki','店長')">
+      <div class="staff-avatar" style="background:#8E44AD;">由</div>
+      <span class="staff-name">Yuki</span>
+      <span class="staff-role">店長</span>
+    </div>
+    <div class="staff-btn" onclick="selStaff(this,'#2E86C1','花','Hana','主任')">
+      <div class="staff-avatar" style="background:#2E86C1;">花</div>
+      <span class="staff-name">Hana</span>
+      <span class="staff-role">主任</span>
+    </div>
+    <div class="staff-btn" onclick="selStaff(this,'#1E8449','蓮','Ren','スタッフ')">
+      <div class="staff-avatar" style="background:#1E8449;">蓮</div>
+      <span class="staff-name">Ren</span>
+      <span class="staff-role">スタッフ</span>
     </div>
   </div>
   <div class="pin-box">
@@ -128,6 +136,7 @@ h1{font-size:13px;font-weight:500;color:#666;letter-spacing:.05em;}
   <div class="login-hint">PIN 1234 でログイン（デモ）</div>
 </div>
 <div id="s-main">
+  <div class="punch-toast" id="punchToast"></div>
   <div class="topbar">
     <span class="topbar-logo">✂ salon pos</span>
     <div class="topbar-sep"></div>
@@ -136,6 +145,7 @@ h1{font-size:13px;font-weight:500;color:#666;letter-spacing:.05em;}
       <div class="topbar-staff">
         <div class="topbar-avatar" id="topAvatar" style="background:#8E44AD;">由</div>
         <span class="topbar-staffname" id="topName">Yuki</span>
+        <span class="topbar-role" id="topRole">店長</span>
       </div>
       <div class="topbar-sep"></div>
       <span class="topbar-time">2026.06.12 木　10:24</span>
@@ -184,13 +194,37 @@ h1{font-size:13px;font-weight:500;color:#666;letter-spacing:.05em;}
 </div>
 <p style="font-size:11px;color:#999;">PIN 1234 入力後 → ボタンでログイン　/　🔒 でロック画面に戻る</p>
 <script>
-let pin='',selColor='#8E44AD',selInitial='由',selNameStr='Yuki';
-function selStaff(el,c,i,n){document.querySelectorAll('.staff-btn').forEach(b=>b.classList.remove('selected'));el.classList.add('selected');selColor=c;selInitial=i;selNameStr=n;pin='';updateDots();}
+let pin='',selColor='#8E44AD',selInitial='由',selNameStr='Yuki',selRole='店長';
+const THIS_BRANCH_NAME='渋谷店';
+function selStaff(el,c,i,n,r){document.querySelectorAll('.staff-btn').forEach(b=>b.classList.remove('selected'));el.classList.add('selected');selColor=c;selInitial=i;selNameStr=n;selRole=r;pin='';updateDots();}
 function pinKey(k){if(pin.length>=4)return;pin+=k;updateDots();if(pin.length===4)setTimeout(doLogin,300);}
 function pinDel(){pin=pin.slice(0,-1);updateDots();}
 function updateDots(){document.querySelectorAll('.pin-dot').forEach((d,i)=>d.classList.toggle('filled',i<pin.length));}
-function doLogin(){if(pin!=='1234'){pin='';updateDots();return;}document.getElementById('topAvatar').style.background=selColor;document.getElementById('topAvatar').textContent=selInitial;document.getElementById('topName').textContent=selNameStr;document.getElementById('s-login').classList.add('hidden');document.getElementById('s-main').classList.add('visible');}
-function doLogout(){pin='';updateDots();document.getElementById('s-login').classList.remove('hidden');document.getElementById('s-main').classList.remove('visible');}
+function nowHM(){const d=new Date();return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;}
+function punch(msg){
+  const el=document.getElementById('punchToast');
+  el.textContent=msg; el.classList.add('show');
+  clearTimeout(window._punchT); window._punchT=setTimeout(()=>el.classList.remove('show'),2600);
+}
+function doLogin(){
+  if(pin!=='1234'){pin='';updateDots();return;}
+  document.getElementById('topAvatar').style.background=selColor;
+  document.getElementById('topAvatar').textContent=selInitial;
+  document.getElementById('topName').textContent=selNameStr;
+  document.getElementById('topRole').textContent=selRole;
+  document.getElementById('s-login').classList.add('hidden');
+  document.getElementById('s-main').classList.add('visible');
+  // PINログイン = この拠点へチェックイン (別拠点で直前にログイン中だった場合は自動チェックアウト)
+  setTimeout(()=>punch(`✓ ${selNameStr} さん ${THIS_BRANCH_NAME} にチェックイン（${nowHM()}）`),400);
+}
+function doLogout(){
+  punch(`${selNameStr} さん ${THIS_BRANCH_NAME} からチェックアウト（${nowHM()}）`);
+  setTimeout(()=>{
+    pin='';updateDots();
+    document.getElementById('s-login').classList.remove('hidden');
+    document.getElementById('s-main').classList.remove('visible');
+  },900);
+}
 </script>
 </body>
 </html>
