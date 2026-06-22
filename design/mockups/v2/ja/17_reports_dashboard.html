@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1024">
+<title>17 · 売上ダッシュボード</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neue',sans-serif;background:#0F1D5C;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;}
+
+.ipad{width:1024px;height:768px;background:#F0F2F7;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.55);position:relative;}
+
+/* ══ ZONE A ══ */
+.zone-a{height:44px;flex-shrink:0;background:#fff;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 14px;gap:10px;z-index:10;}
+.za-menu{font-size:18px;color:#1E3A8A;cursor:pointer;padding:4px 6px;border-radius:6px;line-height:1;user-select:none;}
+.za-menu:hover{background:#EEF2FF;}
+.za-logo{font-size:13px;color:#1E3A8A;font-weight:700;letter-spacing:.08em;}
+.za-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.za-sep{width:.5px;height:14px;background:#D0D0CC;}
+.za-avatar{width:24px;height:24px;border-radius:50%;background:#8E44AD;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;}
+.za-name{font-size:12px;color:#333;font-weight:500;}
+.za-branch{font-size:11px;color:#888;}
+.za-time{font-size:11px;color:#555;font-weight:500;}
+.za-lock{font-size:13px;color:#bbb;cursor:pointer;}
+
+/* Sidebar */
+.sb-overlay{position:absolute;inset:0;background:rgba(0,0,0,.38);z-index:200;opacity:0;pointer-events:none;transition:opacity .2s;}
+.sb-overlay.open{opacity:1;pointer-events:all;}
+.sidebar{position:absolute;left:0;top:0;bottom:0;width:224px;background:#1E3A8A;z-index:201;transform:translateX(-100%);transition:transform .22s cubic-bezier(.25,.46,.45,.94);display:flex;flex-direction:column;}
+.sidebar.open{transform:translateX(0);}
+.sb-head{padding:20px 16px 14px;border-bottom:.5px solid rgba(255,255,255,.1);}
+.sb-logo{font-size:14px;color:#fff;font-weight:700;letter-spacing:.06em;}
+.sb-sub{font-size:10px;color:rgba(255,255,255,.3);margin-top:3px;}
+.sb-nav{flex:1;padding:8px 0;overflow-y:auto;}
+.sb-item{display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;transition:background .12s;}
+.sb-item:hover{background:rgba(255,255,255,.07);}
+.sb-item.active{background:rgba(255,255,255,.13);}
+.sb-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.sb-label{font-size:13px;color:rgba(255,255,255,.65);}
+.sb-item.active .sb-label{color:#fff;font-weight:600;}
+.sb-foot{padding:12px 16px;border-top:.5px solid rgba(255,255,255,.1);}
+.sb-ver{font-size:10px;color:rgba(255,255,255,.2);}
+
+/* ══ ZONE B ══ */
+.zone-b{height:46px;flex-shrink:0;background:#fff;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 14px;gap:10px;}
+.zb-title{font-size:14px;font-weight:700;color:#1A1A1A;flex-shrink:0;}
+.zb-tabs{display:flex;background:#F0F2F7;border-radius:9px;padding:3px;gap:2px;flex-shrink:0;}
+.zb-tab{padding:6px 13px;font-size:11.5px;font-weight:600;color:#999;cursor:pointer;border-radius:7px;background:transparent;border:none;font-family:inherit;white-space:nowrap;transition:all .15s;}
+.zb-tab.active{background:#fff;color:#D4AC0D;box-shadow:0 1px 4px rgba(0,0,0,.1);}
+.zb-branch-sel{padding:6px 10px;border-radius:8px;border:.5px solid #E0E0DC;font-size:12px;color:#555;font-family:inherit;background:#fff;flex-shrink:0;}
+.zb-spacer{flex:1;}
+.zb-period-label{font-size:11px;color:#999;flex-shrink:0;}
+
+/* ══ Main ══ */
+.main{flex:1;overflow-y:auto;padding:16px;}
+.grid-kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px;}
+.kpi-card{background:#fff;border:.5px solid #E5E5E0;border-radius:12px;padding:14px;}
+.kpi-label{font-size:10.5px;color:#999;margin-bottom:6px;}
+.kpi-val{font-size:21px;font-weight:800;color:#1A1A1A;}
+.kpi-val.good{color:#1E8449;}
+.kpi-val.r{color:#E74C3C;}
+.kpi-sub{font-size:10.5px;color:#aaa;margin-top:4px;}
+.kpi-sub.up{color:#1E8449;}
+.kpi-sub.down{color:#E74C3C;}
+
+.row2{display:grid;grid-template-columns:1.4fr 1fr;gap:10px;margin-bottom:12px;}
+.row2b{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+
+.card{background:#fff;border:.5px solid #E5E5E0;border-radius:12px;overflow:hidden;}
+.card-head{padding:11px 14px;border-bottom:.5px solid #F0F0EC;font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.06em;}
+.card-body{padding:12px 14px;}
+
+/* 매출 추이 (간단 바 차트) */
+.trend-chart{display:flex;align-items:flex-end;gap:4px;height:120px;padding-top:8px;}
+.trend-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:4px;}
+.trend-bar{width:100%;border-radius:4px 4px 0 0;background:#D4AC0D;min-height:2px;transition:height .2s;}
+.trend-bar.today{background:#1E3A8A;}
+.trend-lbl{font-size:9px;color:#aaa;white-space:nowrap;}
+
+/* 결제수단/순위 바 */
+.method-split{display:flex;flex-direction:column;gap:9px;}
+.method-row{display:flex;align-items:center;gap:8px;font-size:11.5px;color:#555;}
+.method-bar{flex:1;height:7px;border-radius:4px;background:#F0F0EC;overflow:hidden;}
+.method-fill{height:100%;border-radius:4px;}
+
+.rank-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:.5px solid #F8F8F6;}
+.rank-row:last-child{border-bottom:none;}
+.rank-no{width:18px;font-size:12px;font-weight:800;color:#C8C8C4;flex-shrink:0;text-align:center;}
+.rank-row:nth-child(1) .rank-no{color:#D4AC0D;}
+.rank-row:nth-child(2) .rank-no{color:#aaa;}
+.rank-row:nth-child(3) .rank-no{color:#CD7F32;}
+.rank-avatar{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;}
+.rank-body{flex:1;min-width:0;}
+.rank-name{font-size:12.5px;font-weight:700;color:#1A1A1A;}
+.rank-bar{height:5px;border-radius:3px;background:#F0F0EC;margin-top:4px;overflow:hidden;}
+.rank-bar-fill{height:100%;border-radius:3px;background:#2E86C1;}
+.rank-val{font-size:12.5px;font-weight:700;color:#1A1A1A;flex-shrink:0;white-space:nowrap;}
+
+/* 지점 비교 */
+.branch-compare{display:flex;gap:14px;}
+.branch-col{flex:1;text-align:center;padding:14px;border-radius:10px;background:#FAFAF8;}
+.branch-col.lead{background:#FEF9E7;}
+.branch-name{font-size:12px;font-weight:700;color:#888;margin-bottom:6px;}
+.branch-sales{font-size:20px;font-weight:800;color:#1A1A1A;}
+.branch-sub{font-size:10.5px;color:#aaa;margin-top:3px;}
+.branch-bar{height:6px;border-radius:3px;background:#F0F0EC;margin-top:10px;overflow:hidden;}
+.branch-bar-fill{height:100%;border-radius:3px;background:#117A65;}
+
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(12px);background:#1A1A1A;color:#fff;font-size:12px;font-weight:500;padding:10px 18px;border-radius:10px;z-index:9999;opacity:0;pointer-events:none;transition:all .22s;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+
+<div class="ipad">
+
+  <div class="sb-overlay" id="sbOverlay" onclick="closeSb()"></div>
+  <div class="sidebar" id="sidebar">
+    <div class="sb-head">
+      <div class="sb-logo">✂ salon pos</div>
+      <div class="sb-sub">Hair Salon Yuki · 渋谷区道玄坂</div>
+    </div>
+    <div class="sb-nav">
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#3B5BDB"></div><span class="sb-label">会計 · POS</span></div>
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#8E44AD"></div><span class="sb-label">予約カレンダー</span></div>
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#2E86C1"></div><span class="sb-label">取引履歴</span></div>
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#10B981"></div><span class="sb-label">顧客管理</span></div>
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#C0392B"></div><span class="sb-label">スタッフ</span></div>
+      <div class="sb-item active" onclick="closeSb()"><div class="sb-dot" style="background:#D4AC0D"></div><span class="sb-label">売上ダッシュボード</span></div>
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#117A65"></div><span class="sb-label">店舗設定</span></div>
+    </div>
+    <div class="sb-foot"><div class="sb-ver">v2.0.0</div></div>
+  </div>
+
+  <!-- ══ ZONE A ══ -->
+  <div class="zone-a">
+    <span class="za-menu" onclick="openSb()">☰</span>
+    <span class="za-logo" style="cursor:pointer;" onclick="location.href='01_login_main.html'">✂ salon pos</span>
+    <div class="za-right">
+      <div class="za-avatar">由</div>
+      <span class="za-name">Yuki</span>
+      <span class="za-branch">渋谷店</span>
+      <div class="za-sep"></div>
+      <span class="za-time" id="tbTime">06.21 日　20:30</span>
+      <span class="za-lock">🔒</span>
+    </div>
+  </div>
+
+  <!-- ══ ZONE B ══ -->
+  <div class="zone-b">
+    <span class="zb-title">売上ダッシュボード</span>
+    <div class="zb-tabs" id="zbTabs">
+      <div class="zb-tab" data-p="today" onclick="switchPeriod('today',this)">今日</div>
+      <div class="zb-tab" data-p="week" onclick="switchPeriod('week',this)">今週</div>
+      <div class="zb-tab active" data-p="month" onclick="switchPeriod('month',this)">今月</div>
+    </div>
+    <select class="zb-branch-sel" id="branchSel" onchange="onBranchChange(this.value)">
+      <option value="all">全店舗</option>
+      <option value="渋谷店">渋谷店</option>
+      <option value="池袋店">池袋店</option>
+    </select>
+    <div class="zb-spacer"></div>
+    <span class="zb-period-label" id="periodLabel"></span>
+  </div>
+
+  <div class="main">
+    <!-- KPI 4종 -->
+    <div class="grid-kpi" id="kpiRow"></div>
+
+    <!-- 매출추이 + 결제수단 -->
+    <div class="row2">
+      <div class="card">
+        <div class="card-head">売上推移</div>
+        <div class="card-body"><div class="trend-chart" id="trendChart"></div></div>
+      </div>
+      <div class="card">
+        <div class="card-head">決済手段別 比率</div>
+        <div class="card-body"><div class="method-split" id="methodSplit"></div></div>
+      </div>
+    </div>
+
+    <!-- 스태프 순위 + 메뉴 순위 -->
+    <div class="row2b">
+      <div class="card">
+        <div class="card-head">スタッフ別売上ランキング</div>
+        <div class="card-body" id="staffRank"></div>
+      </div>
+      <div class="card">
+        <div class="card-head">施術メニュー別売上 TOP5</div>
+        <div class="card-body" id="menuRank"></div>
+      </div>
+    </div>
+
+    <!-- 지점별 비교 -->
+    <div class="card">
+      <div class="card-head">店舗別比較</div>
+      <div class="card-body"><div class="branch-compare" id="branchCompare"></div></div>
+    </div>
+  </div>
+
+</div><!-- /ipad -->
+
+<script>
+// ── Data ─────────────────────────────────────────────────────────────────
+// 渋谷店・池袋店 멀티지점 운영을 반영한 mock 데이터 (06/12/13과 동일 인물·지점 체계 사용)
+const fmtY = n=>`¥${Math.round(n).toLocaleString()}`;
+const STAFF_COLORS={Yuki:'#8E44AD',Mika:'#2E86C1',Kenji:'#E67E22',Rio:'#10B981',Hana:'#2E86C1'};
+
+const DATASETS = {
+  today: {
+    label:'2026年6月21日（日）', sales:128700, count:13, refund:2200, prevSales:114900,
+    trend:[
+      {l:'15時',v:8200},{l:'16時',v:14500},{l:'17時',v:21000},{l:'18時',v:32100,today:true},
+      {l:'19時',v:28400,today:true},{l:'20時',v:24500,today:true},
+    ],
+    byMethod:{cash:35000,card:52000,paypay:24500,linepay:17200,credit:0},
+    byStaff:[{n:'Yuki',v:42000},{n:'Mika',v:31000},{n:'Kenji',v:28000},{n:'Rio',v:27700}],
+    byMenu:[{n:'カット＋カラー',v:38500},{n:'パーマ',v:24000},{n:'トリートメント',v:21200},{n:'カット',v:18000},{n:'ヘッドスパ',v:27000}],
+    byBranch:{'渋谷店':84200,'池袋店':44500},
+  },
+  week: {
+    label:'2026年6月15日 〜 21日', sales:842300, count:86, refund:9800, prevSales:790100,
+    trend:[
+      {l:'月',v:98000},{l:'火',v:112000},{l:'水',v:105500},{l:'木',v:121000},
+      {l:'金',v:138200},{l:'土',v:148900},{l:'日',v:128700,today:true},
+    ],
+    byMethod:{cash:228000,card:341000,paypay:162000,linepay:111300,credit:0},
+    byStaff:[{n:'Yuki',v:268000},{n:'Mika',v:215000},{n:'Kenji',v:189000},{n:'Rio',v:170300}],
+    byMenu:[{n:'カット＋カラー',v:241000},{n:'パーマ',v:168000},{n:'トリートメント',v:142500},{n:'ヘッドスパ',v:158800},{n:'カット',v:132000}],
+    byBranch:{'渋谷店':548500,'池袋店':293800},
+  },
+  month: {
+    label:'2026年6月', sales:3214800, count:341, refund:38200, prevSales:2987600,
+    trend:[
+      {l:'第1週',v:712000},{l:'第2週',v:798500},{l:'第3週',v:861000},{l:'第4週',v:843300,today:true},
+    ],
+    byMethod:{cash:892000,card:1324000,paypay:612000,linepay:386800,credit:0},
+    byStaff:[{n:'Yuki',v:982000},{n:'Mika',v:812000},{n:'Kenji',v:712000},{n:'Rio',v:708800}],
+    byMenu:[{n:'カット＋カラー',v:986000},{n:'パーマ',v:648000},{n:'ヘッドスパ',v:589000},{n:'トリートメント',v:572400},{n:'カット',v:498000}],
+    byBranch:{'渋谷店':2052300,'池袋店':1162500},
+  },
+};
+const METHOD_LABEL = {cash:'現金', card:'カード', paypay:'PayPay', linepay:'LINE Pay', credit:'後払い'};
+const METHOD_COLOR = {cash:'#117A65', card:'#2E86C1', paypay:'#D4AC0D', linepay:'#8E44AD', credit:'#7D3C98'};
+
+let curPeriod='month', curBranch='all';
+
+// ── Render ───────────────────────────────────────────────────────────────
+function curData(){ return DATASETS[curPeriod]; }
+function branchFactor(){
+  // 지점 필터 시 mock 매출을 지점 비중에 맞춰 단순 스케일링
+  if(curBranch==='all') return 1;
+  const d=curData();
+  const total=d.byBranch['渋谷店']+d.byBranch['池袋店'];
+  return d.byBranch[curBranch]/total;
+}
+
+function render(){
+  const d=curData();
+  const f=branchFactor();
+  document.getElementById('periodLabel').textContent=d.label;
+
+  renderKpi(d,f);
+  renderTrend(d,f);
+  renderMethod(d,f);
+  renderStaffRank(d,f);
+  renderMenuRank(d,f);
+  renderBranchCompare(d);
+}
+
+function renderKpi(d,f){
+  const sales=d.sales*f, prev=d.prevSales*f, refund=d.refund*f, count=Math.round(d.count*f);
+  const diffPct = prev>0 ? ((sales-prev)/prev*100) : 0;
+  const avg = count>0 ? sales/count : 0;
+  document.getElementById('kpiRow').innerHTML = `
+    <div class="kpi-card">
+      <div class="kpi-label">総売上（返金反映後）</div>
+      <div class="kpi-val good">${fmtY(sales-refund)}</div>
+      <div class="kpi-sub ${diffPct>=0?'up':'down'}">${diffPct>=0?'▲':'▼'} 前期比 ${Math.abs(diffPct).toFixed(1)}%</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">取引件数</div>
+      <div class="kpi-val">${count}件</div>
+      <div class="kpi-sub">客単価 ${fmtY(avg)}</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">客単価</div>
+      <div class="kpi-val">${fmtY(avg)}</div>
+      <div class="kpi-sub">1件あたり平均</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">返金額</div>
+      <div class="kpi-val r">${fmtY(refund)}</div>
+      <div class="kpi-sub">売上に対し ${(refund/sales*100).toFixed(1)}%</div>
+    </div>`;
+}
+
+function renderTrend(d,f){
+  const max=Math.max(...d.trend.map(t=>t.v*f),1);
+  document.getElementById('trendChart').innerHTML = d.trend.map(t=>`
+    <div class="trend-bar-wrap">
+      <div class="trend-bar ${t.today?'today':''}" style="height:${Math.max(4,t.v*f/max*100)}%;" title="${fmtY(t.v*f)}"></div>
+      <div class="trend-lbl">${t.l}</div>
+    </div>`).join('');
+}
+
+function renderMethod(d,f){
+  const max=Math.max(...Object.values(d.byMethod),1);
+  document.getElementById('methodSplit').innerHTML = Object.keys(d.byMethod).map(m=>`
+    <div class="method-row">
+      <span style="width:58px;flex-shrink:0;">${METHOD_LABEL[m]}</span>
+      <div class="method-bar"><div class="method-fill" style="width:${d.byMethod[m]/max*100}%;background:${METHOD_COLOR[m]};"></div></div>
+      <span style="width:70px;text-align:right;flex-shrink:0;">${fmtY(d.byMethod[m]*f)}</span>
+    </div>`).join('');
+}
+
+function renderStaffRank(d,f){
+  const sorted=[...d.byStaff].sort((a,b)=>b.v-a.v);
+  const max=sorted[0].v;
+  document.getElementById('staffRank').innerHTML = sorted.map((s,i)=>`
+    <div class="rank-row">
+      <div class="rank-no">${i+1}</div>
+      <div class="rank-avatar" style="background:${STAFF_COLORS[s.n]||'#888'};">${s.n[0]}</div>
+      <div class="rank-body">
+        <div class="rank-name">${s.n}</div>
+        <div class="rank-bar"><div class="rank-bar-fill" style="width:${s.v/max*100}%;"></div></div>
+      </div>
+      <div class="rank-val">${fmtY(s.v*f)}</div>
+    </div>`).join('');
+}
+
+function renderMenuRank(d,f){
+  const sorted=[...d.byMenu].sort((a,b)=>b.v-a.v);
+  const max=sorted[0].v;
+  document.getElementById('menuRank').innerHTML = sorted.map((m,i)=>`
+    <div class="rank-row">
+      <div class="rank-no">${i+1}</div>
+      <div class="rank-body">
+        <div class="rank-name">${m.n}</div>
+        <div class="rank-bar"><div class="rank-bar-fill" style="background:#8E44AD;width:${m.v/max*100}%;"></div></div>
+      </div>
+      <div class="rank-val">${fmtY(m.v*f)}</div>
+    </div>`).join('');
+}
+
+function renderBranchCompare(d){
+  const shibuya=d.byBranch['渋谷店'], ikebukuro=d.byBranch['池袋店'];
+  const max=Math.max(shibuya,ikebukuro);
+  const mk=(name,val)=>`
+    <div class="branch-col ${val===max?'lead':''}">
+      <div class="branch-name">${name}</div>
+      <div class="branch-sales">${fmtY(val)}</div>
+      <div class="branch-sub">${val===max?'本期間トップ':''}</div>
+      <div class="branch-bar"><div class="branch-bar-fill" style="width:${val/max*100}%;"></div></div>
+    </div>`;
+  document.getElementById('branchCompare').innerHTML = mk('渋谷店',shibuya) + mk('池袋店',ikebukuro);
+}
+
+// ── Actions ──────────────────────────────────────────────────────────────
+function switchPeriod(p,el){
+  curPeriod=p;
+  document.querySelectorAll('.zb-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  render();
+}
+function onBranchChange(v){ curBranch=v; render(); }
+
+function openSb(){ document.getElementById('sidebar').classList.add('open'); document.getElementById('sbOverlay').classList.add('open'); }
+function closeSb(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('sbOverlay').classList.remove('open'); }
+
+let _tt;
+function toast(msg){ const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); clearTimeout(_tt); _tt=setTimeout(()=>el.classList.remove('show'),2400); }
+
+const DOW=['日','月','火','水','木','金','土'];
+function tick(){
+  const d=new Date();
+  const el=document.getElementById('tbTime');
+  if(el) el.textContent=`${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} ${DOW[d.getDay()]}　${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
+
+// ── Init ─────────────────────────────────────────────────────────────────
+render();
+tick();
+setInterval(tick,30000);
+</script>
+</body>
+</html>
