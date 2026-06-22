@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1024">
+<title>15 · 在庫変動履歴</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neue',sans-serif;background:#0F1D5C;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;}
+.ipad{width:1024px;height:768px;background:#F0F2F7;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.55);position:relative;}
+
+.zone-a{height:44px;flex-shrink:0;background:#fff;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 14px;gap:10px;z-index:10;}
+.za-logo{font-size:13px;color:#1E3A8A;font-weight:700;letter-spacing:.08em;cursor:pointer;}
+.za-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.za-time{font-size:11px;color:#555;font-weight:500;}
+
+.wrap{flex:1;display:flex;overflow:hidden;}
+.left{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+
+.zone-b{height:46px;flex-shrink:0;background:#fff;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 12px;gap:8px;flex-wrap:wrap;}
+.zb-back{font-size:12px;color:#999;cursor:pointer;flex-shrink:0;}
+.zb-back:hover{color:#555;}
+.zb-title{font-size:14px;font-weight:700;color:#1A1A1A;flex-shrink:0;}
+.zb-nav-btn{width:26px;height:26px;border-radius:7px;border:.5px solid #E0E0DC;background:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;color:#555;cursor:pointer;flex-shrink:0;}
+.zb-nav-btn:hover{background:#F4F4F0;}
+.zb-date{font-size:12.5px;font-weight:700;color:#1A1A1A;min-width:110px;text-align:center;}
+.zb-today-btn{padding:5px 10px;border-radius:7px;border:.5px solid #E0E0DC;background:#fff;font-size:11px;color:#555;cursor:pointer;font-family:inherit;flex-shrink:0;}
+.zb-today-btn:hover{background:#F4F4F0;}
+.zb-sel{padding:6px 9px;border-radius:8px;border:.5px solid #E0E0DC;font-size:11.5px;color:#555;font-family:inherit;background:#fff;flex-shrink:0;}
+.zb-spacer{flex:1;min-width:4px;}
+
+.zone-c{flex:1;overflow-y:auto;background:#fff;}
+.hist-table{width:100%;border-collapse:collapse;}
+.hist-table th{font-size:10px;color:#aaa;text-align:left;padding:9px 14px;border-bottom:.5px solid #EBEBE7;font-weight:600;background:#FAFAF8;position:sticky;top:0;}
+.hist-table th.r,.hist-table td.r{text-align:right;}
+.hist-table th.c,.hist-table td.c{text-align:center;}
+.hist-table td{padding:9px 14px;font-size:12.5px;border-bottom:.5px solid #F8F8F6;color:#333;}
+.hist-time{color:#999;font-size:11px;}
+.hist-name{font-weight:700;color:#1A1A1A;}
+.reason-badge{font-size:9.5px;font-weight:700;padding:3px 9px;border-radius:6px;white-space:nowrap;}
+.reason-badge.in{background:#EAFAF1;color:#117A65;}
+.reason-badge.sale{background:#EBF5FB;color:#2E86C1;}
+.reason-badge.adjust{background:#F5EEF8;color:#8E44AD;}
+.reason-badge.loss{background:#FDEDEC;color:#C0392B;}
+.delta{font-weight:800;}
+.delta.plus{color:#117A65;}
+.delta.minus{color:#E74C3C;}
+
+.zone-d{width:210px;flex-shrink:0;border-left:.5px solid #E5E5E0;background:#fff;display:flex;flex-direction:column;overflow-y:auto;}
+.zd-sec{padding:14px 14px;border-bottom:.5px solid #F0F0EC;}
+.zd-title{font-size:9px;font-weight:700;color:#C8C8C4;letter-spacing:.08em;text-transform:uppercase;margin-bottom:9px;}
+.zd-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:.5px solid #F8F8F6;font-size:12px;}
+.zd-row:last-child{border-bottom:none;}
+.zd-label{color:#999;}
+.zd-val{font-weight:700;color:#1A1A1A;}
+.zd-legend-item{display:flex;align-items:center;gap:7px;font-size:11px;color:#666;padding:4px 0;}
+.zd-legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+</style>
+</head>
+<body>
+<div class="ipad">
+  <div class="zone-a">
+    <span class="za-logo" onclick="location.href='01_login_main.html'">✂ salon pos</span>
+    <div class="za-right">
+      <span class="za-time" id="tbTime">06.21 日　10:24</span>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="left">
+      <div class="zone-b">
+        <span class="zb-back" onclick="location.href='14_inventory_list.html'">‹ 戻る</span>
+        <span class="zb-title">在庫変動履歴</span>
+        <button class="zb-nav-btn" onclick="navigateDate(-1)">‹</button>
+        <span class="zb-date" id="zbDate">2026年6月21日</span>
+        <button class="zb-nav-btn" onclick="navigateDate(1)">›</button>
+        <button class="zb-today-btn" onclick="goToday()">今日</button>
+        <select class="zb-sel" id="catSel" onchange="render()">
+          <option value="all">全カテゴリ</option>
+          <option value="カラー剤">カラー剤</option>
+          <option value="パーマ剤">パーマ剤</option>
+          <option value="シャンプー">シャンプー</option>
+          <option value="トリートメント">トリートメント</option>
+          <option value="スタイリング剤">スタイリング剤</option>
+        </select>
+        <select class="zb-sel" id="reasonSel" onchange="render()">
+          <option value="all">全変更理由</option>
+          <option value="in">入荷</option>
+          <option value="sale">販売消費</option>
+          <option value="adjust">手動調整</option>
+          <option value="loss">廃棄・損失</option>
+        </select>
+        <div class="zb-spacer"></div>
+      </div>
+
+      <div class="zone-c">
+        <table class="hist-table">
+          <tr><th>時刻</th><th>商品名</th><th class="c">理由</th><th class="r">変動</th><th class="r">変更後在庫</th><th>担当者</th></tr>
+          <tbody id="histRows"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="zone-d">
+      <div class="zd-sec">
+        <div class="zd-title">本日の変動サマリー</div>
+        <div class="zd-row"><span class="zd-label">総変動件数</span><span class="zd-val" id="statTotal">-</span></div>
+        <div class="zd-row"><span class="zd-label">入荷</span><span class="zd-val" id="statIn">-</span></div>
+        <div class="zd-row"><span class="zd-label">販売消費</span><span class="zd-val" id="statSale">-</span></div>
+        <div class="zd-row"><span class="zd-label">手動調整</span><span class="zd-val" id="statAdjust">-</span></div>
+        <div class="zd-row"><span class="zd-label">廃棄・損失</span><span class="zd-val" id="statLoss">-</span></div>
+      </div>
+      <div class="zd-sec">
+        <div class="zd-title">理由 凡例</div>
+        <div class="zd-legend-item"><div class="zd-legend-dot" style="background:#117A65"></div>入荷：仕入れ・納品受け取り</div>
+        <div class="zd-legend-item"><div class="zd-legend-dot" style="background:#2E86C1"></div>販売消費：POS販売時に自動減算</div>
+        <div class="zd-legend-item"><div class="zd-legend-dot" style="background:#8E44AD"></div>手動調整：在庫現況での＋／－修正</div>
+        <div class="zd-legend-item"><div class="zd-legend-dot" style="background:#C0392B"></div>廃棄・損失：破損・期限切れ等</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Data ─────────────────────────────────────────────────────────────────
+// 토스 §4-6「재고관리 히스토리: 카테고리별, 날짜별, 변경이유별 필터」그대로.
+const REASON_LABEL={in:'入荷', sale:'販売消費', adjust:'手動調整', loss:'廃棄・損失'};
+
+let curDate=new Date(2026,5,21);
+
+const EVENTS=[
+  {time:'09:15', name:'カラー剤（ブラウン系）', cat:'カラー剤', reason:'in',     delta:+12, after:24, staff:'Yuki'},
+  {time:'10:02', name:'シャンプー（業務用）',   cat:'シャンプー', reason:'sale',   delta:-1,  after:13, staff:'Mika'},
+  {time:'10:40', name:'パーマ液 2剤',          cat:'パーマ剤', reason:'sale',   delta:-2,  after:2,  staff:'Kenji'},
+  {time:'11:05', name:'カラー剤（アッシュ系）', cat:'カラー剤', reason:'sale',   delta:-1,  after:7,  staff:'Yuki'},
+  {time:'12:30', name:'ワックス',              cat:'スタイリング剤', reason:'loss',   delta:-1,  after:4,  staff:'Hana'},
+  {time:'13:15', name:'パーマ液 2剤',          cat:'パーマ剤', reason:'sale',   delta:-2,  after:0,  staff:'Rio'},
+  {time:'14:00', name:'トリートメント（業務用）', cat:'トリートメント', reason:'adjust', delta:+2,  after:14, staff:'Yuki'},
+  {time:'15:20', name:'カラー剤（アッシュ系）', cat:'カラー剤', reason:'sale',   delta:-1,  after:6,  staff:'Mika'},
+  {time:'16:45', name:'ヘアスプレー',          cat:'スタイリング剤', reason:'sale',   delta:-1,  after:11, staff:'Kenji'},
+  {time:'17:30', name:'ワックス',              cat:'スタイリング剤', reason:'adjust', delta:-1,  after:3,  staff:'Yuki'},
+];
+
+function render(){
+  const cat=document.getElementById('catSel').value;
+  const reason=document.getElementById('reasonSel').value;
+  let list=[...EVENTS];
+  if(cat!=='all') list=list.filter(e=>e.cat===cat);
+  if(reason!=='all') list=list.filter(e=>e.reason===reason);
+
+  document.getElementById('histRows').innerHTML = list.map(e=>`
+    <tr>
+      <td class="hist-time">${e.time}</td>
+      <td class="hist-name">${e.name}</td>
+      <td class="c"><span class="reason-badge ${e.reason}">${REASON_LABEL[e.reason]}</span></td>
+      <td class="r"><span class="delta ${e.delta>=0?'plus':'minus'}">${e.delta>=0?'+':''}${e.delta}</span></td>
+      <td class="r">${e.after}</td>
+      <td>${e.staff}</td>
+    </tr>`).join('');
+
+  document.getElementById('statTotal').textContent=EVENTS.length+'件';
+  document.getElementById('statIn').textContent=EVENTS.filter(e=>e.reason==='in').length+'件';
+  document.getElementById('statSale').textContent=EVENTS.filter(e=>e.reason==='sale').length+'件';
+  document.getElementById('statAdjust').textContent=EVENTS.filter(e=>e.reason==='adjust').length+'件';
+  document.getElementById('statLoss').textContent=EVENTS.filter(e=>e.reason==='loss').length+'件';
+}
+
+function navigateDate(dir){ curDate.setDate(curDate.getDate()+dir); updateDateLabel(); }
+function goToday(){ curDate=new Date(2026,5,21); updateDateLabel(); }
+function updateDateLabel(){
+  const d=curDate;
+  document.getElementById('zbDate').textContent=`${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日`;
+}
+
+const DOW=['日','月','火','水','木','金','土'];
+function tick(){
+  const d=new Date();
+  const el=document.getElementById('tbTime');
+  if(el) el.textContent=`${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} ${DOW[d.getDay()]}　${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
+
+updateDateLabel();
+render();
+tick();
+setInterval(tick,30000);
+</script>
+</body>
+</html>
