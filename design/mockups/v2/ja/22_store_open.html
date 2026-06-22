@@ -78,14 +78,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 .ci-empty{padding:20px 0;text-align:center;color:#bbb;font-size:12px;}
 
 /* 시재 카운트 */
-.cash-table{width:100%;border-collapse:collapse;}
+.cash-table{width:100%;border-collapse:collapse;table-layout:fixed;}
+.cash-table col.c-denom{width:90px;}
+.cash-table col.c-qty{width:140px;}
+.cash-table col.c-sub{width:auto;}
 .cash-table th{font-size:10px;color:#aaa;text-align:left;padding:6px 8px;border-bottom:.5px solid #EBEBE7;font-weight:600;}
 .cash-table th:last-child,.cash-table td:last-child{text-align:right;}
 .cash-table td{padding:6px 8px;font-size:13px;border-bottom:.5px solid #F8F8F6;}
 .cash-table .denom{font-weight:600;color:#333;}
 .cash-table input{width:48px;padding:6px 4px;border-radius:7px;border:.5px solid #D0D0CC;font-size:13px;font-family:inherit;text-align:center;}
 .cash-table input:focus{outline:none;border-color:#117A65;}
-.cash-table .subtotal{color:#555;}
+.cash-table .subtotal{color:#555;font-variant-numeric:tabular-nums;display:inline-block;min-width:64px;}
 .qty-control{display:flex;align-items:center;gap:5px;}
 .qty-btn{width:24px;height:24px;border-radius:6px;border:.5px solid #D0D0CC;background:#F8F8F6;color:#555;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:inherit;transition:background .1s;}
 .qty-btn:hover{background:#EFEFEC;}
@@ -99,7 +102,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 .cs-row.diff .val{font-size:15px;}
 .cs-row.diff .val.match{color:#117A65;}
 .cs-row.diff .val.mismatch{color:#E74C3C;}
-.cs-hint{font-size:11px;color:#E74C3C;margin-top:4px;text-align:right;}
+.cs-hint{font-size:11px;color:#E74C3C;margin-top:4px;text-align:right;height:14px;visibility:hidden;}
+.cs-hint.show{visibility:visible;}
 
 /* Toast */
 .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(12px);background:#1A1A1A;color:#fff;font-size:12px;font-weight:500;padding:10px 18px;border-radius:10px;z-index:9999;opacity:0;pointer-events:none;transition:all .22s;white-space:nowrap;}
@@ -170,6 +174,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
         <div class="card-head">レジ開始金カウント</div>
         <div class="card-body">
           <table class="cash-table">
+            <colgroup><col class="c-denom"><col class="c-qty"><col class="c-sub"></colgroup>
             <tr><th>金種</th><th>枚数・個数</th><th>小計</th></tr>
             <tbody id="cashRows"></tbody>
           </table>
@@ -177,7 +182,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
             <div class="cs-row total"><span class="lbl">合計</span><span class="val" id="cashTotal">¥0</span></div>
             <div class="cs-row"><span class="lbl">前日締め予想額</span><span class="val" id="expectedVal">¥50,000</span></div>
             <div class="cs-row diff"><span class="lbl">差額</span><span class="val" id="diffVal">-</span></div>
-            <div class="cs-hint" id="diffHint" style="display:none;">差額があります。再確認してください。</div>
+            <div class="cs-hint" id="diffHint">差額があります。再確認してください。</div>
           </div>
         </div>
       </div>
@@ -232,21 +237,32 @@ function renderCheckins(){
     </div>`;
   }).join('');
 }
-function renderCash(){
+// テーブル行は初回に1度だけ作り、以後はクリック毎に行全体を作り直さず
+// 該当セルだけ更新する（毎回innerHTMLを再構築すると列幅が再計算されてガタつくため）。
+function buildCashRows(){
   document.getElementById('cashRows').innerHTML = DENOMS.map(d=>`
     <tr>
       <td class="denom">${d.label}</td>
       <td>
         <div class="qty-control">
-          <button class="qty-btn" onclick="stepQty(${d.value},-1)" ${d.qty<=0?'disabled':''}>−</button>
-          <input type="number" min="0" value="${d.qty||''}" placeholder="0" oninput="updateQty(${d.value}, this.value)">
+          <button class="qty-btn" id="dec-${d.value}" onclick="stepQty(${d.value},-1)" disabled>−</button>
+          <input type="number" min="0" id="qty-${d.value}" value="" placeholder="0" oninput="updateQty(${d.value}, this.value)">
           <button class="qty-btn" onclick="stepQty(${d.value},1)">＋</button>
         </div>
       </td>
-      <td class="subtotal">${fmtY(d.value*d.qty)}</td>
+      <td class="subtotal" id="sub-${d.value}">${fmtY(0)}</td>
     </tr>`).join('');
-
-  const total = DENOMS.reduce((s,d)=>s+d.value*d.qty,0);
+}
+function refreshCash(){
+  let total=0;
+  DENOMS.forEach(d=>{
+    const sub=d.value*d.qty;
+    total+=sub;
+    document.getElementById(`sub-${d.value}`).textContent=fmtY(sub);
+    document.getElementById(`dec-${d.value}`).disabled = d.qty<=0;
+    const inp=document.getElementById(`qty-${d.value}`);
+    if(document.activeElement!==inp) inp.value=d.qty||'';
+  });
   document.getElementById('cashTotal').textContent = fmtY(total);
   document.getElementById('expectedVal').textContent = fmtY(EXPECTED_START);
 
@@ -255,13 +271,13 @@ function renderCash(){
   const hintEl = document.getElementById('diffHint');
   if(total===0){
     diffEl.textContent='-'; diffEl.className='val';
-    hintEl.style.display='none';
+    hintEl.classList.remove('show');
   } else if(diff===0){
     diffEl.textContent='¥0（一致）'; diffEl.className='val match';
-    hintEl.style.display='none';
+    hintEl.classList.remove('show');
   } else {
     diffEl.textContent=(diff>0?'+':'')+fmtY(diff); diffEl.className='val mismatch';
-    hintEl.style.display='block';
+    hintEl.classList.add('show');
   }
   updateOpenBtn();
 }
@@ -275,12 +291,12 @@ function updateOpenBtn(){
 function stepQty(value, dir){
   const d=DENOMS.find(x=>x.value===value); if(!d) return;
   d.qty = Math.max(0, (d.qty||0)+dir);
-  renderCash();
+  refreshCash();
 }
 function updateQty(value, qty){
   const d=DENOMS.find(x=>x.value===value); if(!d) return;
   d.qty = Math.max(0, parseInt(qty)||0);
-  renderCash();
+  refreshCash();
 }
 function confirmOpen(){
   if(document.getElementById('openBtn').disabled) return;
@@ -316,7 +332,8 @@ function tick(){
 // ── Init ─────────────────────────────────────────────────────────────────
 updateDateLabel();
 renderCheckins();
-renderCash();
+buildCashRows();
+refreshCash();
 tick();
 setInterval(tick,30000);
 </script>
