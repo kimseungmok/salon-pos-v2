@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1024">
+<title>19 · クーポン管理</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neue',sans-serif;background:#0F1D5C;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;}
+.ipad{width:1024px;height:768px;background:#F0F2F7;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.55);position:relative;}
+
+.zone-a{height:44px;flex-shrink:0;background:#fff;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 14px;gap:10px;z-index:10;}
+.za-menu{font-size:18px;color:#1E3A8A;cursor:pointer;padding:4px 6px;border-radius:6px;line-height:1;user-select:none;}
+.za-menu:hover{background:#EEF2FF;}
+.za-logo{font-size:13px;color:#1E3A8A;font-weight:700;letter-spacing:.08em;cursor:pointer;}
+.za-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.za-time{font-size:11px;color:#555;font-weight:500;}
+
+.sb-overlay{position:absolute;inset:0;background:rgba(0,0,0,.38);z-index:200;opacity:0;pointer-events:none;transition:opacity .2s;}
+.sb-overlay.open{opacity:1;pointer-events:all;}
+.sidebar{position:absolute;left:0;top:0;bottom:0;width:224px;background:#1E3A8A;z-index:201;transform:translateX(-100%);transition:transform .22s cubic-bezier(.25,.46,.45,.94);display:flex;flex-direction:column;}
+.sidebar.open{transform:translateX(0);}
+.sb-head{padding:20px 16px 14px;border-bottom:.5px solid rgba(255,255,255,.1);}
+.sb-logo{font-size:14px;color:#fff;font-weight:700;letter-spacing:.06em;}
+.sb-sub{font-size:10px;color:rgba(255,255,255,.3);margin-top:3px;}
+.sb-nav{flex:1;padding:8px 0;overflow-y:auto;}
+.sb-item{display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;transition:background .12s;}
+.sb-item:hover{background:rgba(255,255,255,.07);}
+.sb-item.active{background:rgba(255,255,255,.13);}
+.sb-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.sb-label{font-size:13px;color:rgba(255,255,255,.65);}
+.sb-item.active .sb-label{color:#fff;font-weight:600;}
+.sb-foot{padding:12px 16px;border-top:.5px solid rgba(255,255,255,.1);}
+.sb-ver{font-size:10px;color:rgba(255,255,255,.2);}
+
+.wrap{flex:1;display:flex;overflow:hidden;}
+.left{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+
+.zone-b{height:46px;flex-shrink:0;background:#fff;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 12px;gap:8px;}
+.zb-tabs{display:flex;background:#F0F2F7;border-radius:9px;padding:3px;gap:2px;flex-shrink:0;}
+.zb-tab{padding:6px 12px;font-size:11.5px;font-weight:600;color:#999;cursor:pointer;border-radius:7px;background:transparent;border:none;font-family:inherit;white-space:nowrap;}
+.zb-tab.active{background:#fff;color:#D35400;box-shadow:0 1px 4px rgba(0,0,0,.1);}
+.zb-spacer{flex:1;}
+.zb-add-btn{display:flex;align-items:center;gap:4px;padding:7px 13px;border-radius:9px;background:#D35400;color:#fff;font-size:12px;font-weight:700;border:none;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0;box-shadow:0 2px 8px rgba(211,84,0,.3);}
+.zb-add-btn:hover{background:#BA4A00;}
+
+.zone-c{flex:1;overflow-y:auto;background:#F0F2F7;padding:12px 14px;display:flex;flex-direction:column;gap:8px;}
+
+.c-card{background:#fff;border:.5px solid #E5E5E0;border-radius:11px;padding:13px 16px;display:flex;align-items:center;gap:14px;}
+.c-code{font-family:'SF Mono',Menlo,monospace;font-size:13px;font-weight:700;color:#1A1A1A;background:#F4F4F0;padding:5px 10px;border-radius:7px;flex-shrink:0;letter-spacing:.04em;}
+.c-body{flex:1;min-width:0;}
+.c-name{font-size:13px;font-weight:700;color:#1A1A1A;}
+.c-sub{font-size:11px;color:#999;margin-top:2px;}
+.c-discount{font-size:15px;font-weight:800;color:#D35400;flex-shrink:0;min-width:70px;text-align:right;}
+.c-status{font-size:10px;font-weight:700;padding:3px 9px;border-radius:6px;flex-shrink:0;white-space:nowrap;}
+.c-status.active{background:#EAFAF1;color:#117A65;}
+.c-status.expired{background:#F4F4F0;color:#aaa;}
+.c-status.soon{background:#FEF9E7;color:#B7950B;}
+.c-toggle{width:36px;height:21px;border-radius:11px;background:#E0E0DC;position:relative;cursor:pointer;flex-shrink:0;}
+.c-toggle.on{background:#D35400;}
+.c-toggle-knob{width:17px;height:17px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:left .15s;}
+.c-toggle.on .c-toggle-knob{left:17px;}
+
+/* 영수증 쿠폰번호 설정（토스 §3-4/§4-5 그대로） */
+.receipt-card{background:#fff;border:.5px solid #E5E5E0;border-radius:11px;padding:14px 16px;}
+.rc-title{font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;}
+.rc-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:.5px solid #F8F8F6;}
+.rc-row:last-child{border-bottom:none;}
+.rc-label{font-size:12.5px;color:#333;}
+.rc-sub{font-size:10.5px;color:#999;margin-top:2px;}
+.rc-input{width:140px;padding:6px 9px;border-radius:7px;border:.5px solid #D8D8D4;font-size:12px;font-family:inherit;text-align:center;}
+
+.fresha-note{background:#F5EEF8;border:.5px solid #E0CCEC;border-radius:11px;padding:12px 16px;font-size:11.5px;color:#6C3483;display:flex;gap:10px;align-items:flex-start;}
+.fresha-note b{display:block;margin-bottom:3px;}
+
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(12px);background:#1A1A1A;color:#fff;font-size:12px;font-weight:500;padding:10px 18px;border-radius:10px;z-index:9999;opacity:0;pointer-events:none;transition:all .22s;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+
+<div class="ipad">
+  <div class="sb-overlay" id="sbOverlay" onclick="closeSb()"></div>
+  <div class="sidebar" id="sidebar">
+    <div class="sb-head">
+      <div class="sb-logo">✂ salon pos</div>
+      <div class="sb-sub">Hair Salon Yuki · 渋谷区道玄坂</div>
+    </div>
+    <div class="sb-nav">
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#3B5BDB"></div><span class="sb-label">会計 · POS</span></div>
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#2E86C1"></div><span class="sb-label">顧客管理</span></div>
+      <div class="sb-item active" onclick="closeSb()"><div class="sb-dot" style="background:#D35400"></div><span class="sb-label">マーケティング</span></div>
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#117A65"></div><span class="sb-label">店舗設定</span></div>
+    </div>
+    <div class="sb-foot"><div class="sb-ver">v2.0.0</div></div>
+  </div>
+
+  <div class="zone-a">
+    <span class="za-menu" onclick="openSb()">☰</span>
+    <span class="za-logo" onclick="location.href='01_login_main.html'">✂ salon pos</span>
+    <div class="za-right">
+      <span class="za-time" id="tbTime">06.21 日　10:24</span>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="left">
+      <div class="zone-b">
+        <div class="zb-tabs" id="zbTabs">
+          <div class="zb-tab active" data-t="all" onclick="switchTab('all',this)">すべて</div>
+          <div class="zb-tab" data-t="active" onclick="switchTab('active',this)">有効</div>
+          <div class="zb-tab" data-t="expired" onclick="switchTab('expired',this)">終了</div>
+        </div>
+        <div class="zb-spacer"></div>
+        <button class="zb-add-btn" onclick="toast('新規クーポン発行フォーム（モック）')">＋クーポン発行</button>
+      </div>
+
+      <div class="zone-c">
+        <div id="couponList"></div>
+
+        <!-- 토스 §3-4「영수증 쿠폰 번호」+ §4-5: 로또 번호 → 할인 비밀번호 -->
+        <div class="receipt-card">
+          <div class="rc-title">レシートクーポン番号設定</div>
+          <div class="rc-row">
+            <div><div class="rc-label">ロト番号方式</div><div class="rc-sub">レシートに抽選番号を印字し、来店時に提示すると割引適用</div></div>
+            <div class="c-toggle on" id="lottoToggle" onclick="toggleSwitch('lottoToggle')"><div class="c-toggle-knob"></div></div>
+          </div>
+          <div class="rc-row">
+            <div><div class="rc-label">割引パスワード</div><div class="rc-sub">レシート下部に印字する合言葉（POSで入力すると割引適用）</div></div>
+            <input class="rc-input" value="SHIBUYA2026">
+          </div>
+        </div>
+
+        <!-- 프레샤 보조: 체크아웃 시 리워드 적용 (Course 5.7) -->
+        <div class="fresha-note">
+          <span>💡</span>
+          <div><b>プレシャ参考機能（補助）</b>会計時にクーポンとロイヤルティポイントを同時に適用できるようにする予定（Fresha「Apply Rewards at Checkout」参考）。詳細は21ポイント政策を参照。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Data ─────────────────────────────────────────────────────────────────
+// 토스 §1-3「할인」그대로: 금액(￥)/비율(%) 선택, 자주 쓰는 할인 저장 즐겨찾기 등록 개념을 쿠폰코드로 확장.
+let COUPONS=[
+  {code:'WELCOME10', name:'新規来店 10%OFF', sub:'初回来店のお客様限定 · 1人1回まで', type:'percent', value:10, status:'active'},
+  {code:'BDAY2026',  name:'お誕生日月 ¥1,000OFF', sub:'誕生月の来店で自動適用', type:'amount', value:1000, status:'active'},
+  {code:'RAINYDAY',  name:'雨の日クーポン 5%OFF', sub:'雨天時のみ手動適用', type:'percent', value:5, status:'soon'},
+  {code:'SUMMER25',  name:'夏季キャンペーン 15%OFF', sub:'2025/7/1〜8/31（終了）', type:'percent', value:15, status:'expired'},
+];
+
+let curTab='all';
+
+function render(){
+  let list=[...COUPONS];
+  if(curTab!=='all') list=list.filter(c=>c.status===(curTab==='active'?'active':'expired') || (curTab==='active'&&c.status==='soon'));
+
+  const statusLabel={active:'有効', soon:'準備中', expired:'終了'};
+  document.getElementById('couponList').innerHTML = `<div style="display:flex;flex-direction:column;gap:8px;">` + list.map(c=>`
+    <div class="c-card">
+      <span class="c-code">${c.code}</span>
+      <div class="c-body">
+        <div class="c-name">${c.name}</div>
+        <div class="c-sub">${c.sub}</div>
+      </div>
+      <span class="c-discount">${c.type==='percent'?c.value+'%':'¥'+c.value.toLocaleString()}</span>
+      <span class="c-status ${c.status}">${statusLabel[c.status]}</span>
+      <div class="c-toggle ${c.status!=='expired'?'on':''}" onclick="toggleCoupon('${c.code}',this)"><div class="c-toggle-knob"></div></div>
+    </div>`).join('') + `</div>`;
+}
+
+function switchTab(t,el){
+  curTab=t;
+  document.querySelectorAll('.zb-tab').forEach(x=>x.classList.remove('active'));
+  if(el) el.classList.add('active');
+  render();
+}
+function toggleCoupon(code,el){
+  el.classList.toggle('on');
+  toast(el.classList.contains('on')? `${code} を有効にしました` : `${code} を無効にしました`);
+}
+function toggleSwitch(id){ document.getElementById(id).classList.toggle('on'); }
+
+function openSb(){ document.getElementById('sidebar').classList.add('open'); document.getElementById('sbOverlay').classList.add('open'); }
+function closeSb(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('sbOverlay').classList.remove('open'); }
+
+let _tt;
+function toast(msg){ const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); clearTimeout(_tt); _tt=setTimeout(()=>el.classList.remove('show'),2400); }
+
+const DOW=['日','月','火','水','木','金','土'];
+function tick(){
+  const d=new Date();
+  const el=document.getElementById('tbTime');
+  if(el) el.textContent=`${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} ${DOW[d.getDay()]}　${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
+
+render();
+tick();
+setInterval(tick,30000);
+</script>
+</body>
+</html>
