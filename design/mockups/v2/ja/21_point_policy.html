@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1024">
+<title>21 · ポイント政策</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neue',sans-serif;background:#0F1D5C;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;}
+.ipad{width:1024px;height:768px;background:#F0F2F7;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.55);position:relative;}
+
+.zone-a{height:44px;flex-shrink:0;background:#fff;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 14px;gap:10px;z-index:10;}
+.za-menu{font-size:18px;color:#1E3A8A;cursor:pointer;padding:4px 6px;border-radius:6px;line-height:1;user-select:none;}
+.za-menu:hover{background:#EEF2FF;}
+.za-logo{font-size:13px;color:#1E3A8A;font-weight:700;letter-spacing:.08em;cursor:pointer;}
+.za-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.za-time{font-size:11px;color:#555;font-weight:500;}
+
+.sb-overlay{position:absolute;inset:0;background:rgba(0,0,0,.38);z-index:200;opacity:0;pointer-events:none;transition:opacity .2s;}
+.sb-overlay.open{opacity:1;pointer-events:all;}
+.sidebar{position:absolute;left:0;top:0;bottom:0;width:224px;background:#1E3A8A;z-index:201;transform:translateX(-100%);transition:transform .22s cubic-bezier(.25,.46,.45,.94);display:flex;flex-direction:column;}
+.sidebar.open{transform:translateX(0);}
+.sb-head{padding:20px 16px 14px;border-bottom:.5px solid rgba(255,255,255,.1);}
+.sb-logo{font-size:14px;color:#fff;font-weight:700;letter-spacing:.06em;}
+.sb-sub{font-size:10px;color:rgba(255,255,255,.3);margin-top:3px;}
+.sb-nav{flex:1;padding:8px 0;overflow-y:auto;}
+.sb-item{display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;transition:background .12s;}
+.sb-item:hover{background:rgba(255,255,255,.07);}
+.sb-item.active{background:rgba(255,255,255,.13);}
+.sb-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.sb-label{font-size:13px;color:rgba(255,255,255,.65);}
+.sb-item.active .sb-label{color:#fff;font-weight:600;}
+.sb-foot{padding:12px 16px;border-top:.5px solid rgba(255,255,255,.1);}
+.sb-ver{font-size:10px;color:rgba(255,255,255,.2);}
+
+.zone-b{height:46px;flex-shrink:0;background:#fff;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 14px;gap:10px;}
+.zb-title{font-size:14px;font-weight:700;color:#1A1A1A;}
+.zb-spacer{flex:1;}
+.zb-save-btn{padding:8px 18px;border-radius:9px;background:#D35400;color:#fff;font-size:12px;font-weight:700;border:none;cursor:pointer;font-family:inherit;box-shadow:0 2px 8px rgba(211,84,0,.3);}
+.zb-save-btn:hover{background:#BA4A00;}
+
+.main{flex:1;overflow-y:auto;padding:14px 16px;display:flex;justify-content:center;}
+.form-wrap{width:760px;display:flex;flex-direction:column;gap:12px;}
+
+.card{background:#fff;border:.5px solid #E5E5E0;border-radius:12px;overflow:hidden;}
+.card-head{padding:11px 16px;border-bottom:.5px solid #F0F0EC;font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.06em;}
+.card-body{padding:14px 16px;}
+
+.f-toggle-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:.5px solid #F8F8F6;}
+.f-toggle-row:last-child{border-bottom:none;}
+.f-toggle-label{font-size:13px;color:#333;font-weight:600;}
+.f-toggle-sub{font-size:10.5px;color:#999;margin-top:2px;}
+.f-switch{width:40px;height:23px;border-radius:12px;background:#E0E0DC;position:relative;cursor:pointer;flex-shrink:0;}
+.f-switch.on{background:#D35400;}
+.f-switch-knob{width:19px;height:19px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:left .15s;box-shadow:0 1px 3px rgba(0,0,0,.2);}
+.f-switch.on .f-switch-knob{left:19px;}
+
+.f-row{display:flex;gap:14px;margin-bottom:12px;}
+.f-row:last-child{margin-bottom:0;}
+.f-col{flex:1;display:flex;flex-direction:column;gap:6px;}
+.f-label{font-size:11.5px;font-weight:600;color:#555;}
+.f-input{padding:9px 11px;border-radius:8px;border:.5px solid #D8D8D4;font-size:13px;font-family:inherit;color:#1A1A1A;}
+.f-input:focus{outline:none;border-color:#D35400;}
+.f-hint{font-size:10.5px;color:#999;margin-top:2px;}
+
+.fresha-tag{font-size:9px;font-weight:700;color:#8E44AD;background:#F5EEF8;padding:2px 7px;border-radius:5px;margin-left:6px;}
+
+.tier-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.tier-card{border-radius:11px;padding:13px;text-align:center;border:1.5px solid transparent;}
+.tier-card.bronze{background:#FBF0E9;border-color:#E8D2BD;}
+.tier-card.silver{background:#F0F2F5;border-color:#D6DCE2;}
+.tier-card.gold{background:#FEF9E7;border-color:#F0DC9E;}
+.tier-card.platinum{background:#F1ECF7;border-color:#D9CBEC;}
+.tier-name{font-size:12.5px;font-weight:800;margin-bottom:5px;}
+.tier-card.bronze .tier-name{color:#A9683C;}
+.tier-card.silver .tier-name{color:#7A8794;}
+.tier-card.gold .tier-name{color:#B7950B;}
+.tier-card.platinum .tier-name{color:#7D3C98;}
+.tier-threshold{font-size:11px;color:#666;margin-bottom:8px;}
+.tier-benefit{font-size:10.5px;color:#555;line-height:1.6;}
+
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(12px);background:#1A1A1A;color:#fff;font-size:12px;font-weight:500;padding:10px 18px;border-radius:10px;z-index:9999;opacity:0;pointer-events:none;transition:all .22s;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+
+<div class="ipad">
+  <div class="sb-overlay" id="sbOverlay" onclick="closeSb()"></div>
+  <div class="sidebar" id="sidebar">
+    <div class="sb-head">
+      <div class="sb-logo">✂ salon pos</div>
+      <div class="sb-sub">Hair Salon Yuki · 渋谷区道玄坂</div>
+    </div>
+    <div class="sb-nav">
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#3B5BDB"></div><span class="sb-label">会計 · POS</span></div>
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#2E86C1"></div><span class="sb-label">顧客管理</span></div>
+      <div class="sb-item active" onclick="closeSb()"><div class="sb-dot" style="background:#D35400"></div><span class="sb-label">マーケティング</span></div>
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#117A65"></div><span class="sb-label">店舗設定</span></div>
+    </div>
+    <div class="sb-foot"><div class="sb-ver">v2.0.0</div></div>
+  </div>
+
+  <div class="zone-a">
+    <span class="za-menu" onclick="openSb()">☰</span>
+    <span class="za-logo" onclick="location.href='01_login_main.html'">✂ salon pos</span>
+    <div class="za-right">
+      <span class="za-time" id="tbTime">06.21 日　10:24</span>
+    </div>
+  </div>
+
+  <div class="zone-b">
+    <span class="zb-title">ポイント政策</span>
+    <div class="zb-spacer"></div>
+    <button class="zb-save-btn" onclick="toast('ポイント政策を保存しました（モック）')">保存</button>
+  </div>
+
+  <div class="main">
+    <div class="form-wrap">
+
+      <!-- 토스 §1-1 그대로: 결제수단으로서의 포인트 -->
+      <div class="card">
+        <div class="card-head">決済手段としてのポイント</div>
+        <div class="card-body" style="padding:0 16px;">
+          <div class="f-toggle-row">
+            <div>
+              <div class="f-toggle-label">会計画面でポイント決済を許可する</div>
+              <div class="f-toggle-sub">トスポス §1-1：決済手段に「現金・カード・簡易決済・ポイント」を含める（03会計画面に反映予定）</div>
+            </div>
+            <div class="f-switch on" id="swPayWithPoint" onclick="toggleSwitch('swPayWithPoint')"><div class="f-switch-knob"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 프레샤 보조: 적립/사용 규칙 -->
+      <div class="card">
+        <div class="card-head">ポイント付与・利用ルール<span class="fresha-tag">プレシャ参考</span></div>
+        <div class="card-body">
+          <div class="f-row">
+            <div class="f-col">
+              <span class="f-label">付与率（購入額に対する%）</span>
+              <input class="f-input" value="5" type="number">
+              <span class="f-hint">例）¥10,000のご利用で500ポイント付与</span>
+            </div>
+            <div class="f-col">
+              <span class="f-label">1ポイントの価値</span>
+              <input class="f-input" value="1" type="number">
+              <span class="f-hint">1ポイント = ¥1として利用可能</span>
+            </div>
+          </div>
+          <div class="f-row">
+            <div class="f-col">
+              <span class="f-label">最低利用ポイント</span>
+              <input class="f-input" value="100" type="number">
+              <span class="f-hint">100ポイント未満は会計時に使用不可</span>
+            </div>
+            <div class="f-col">
+              <span class="f-label">ポイント有効期限</span>
+              <input class="f-input" value="365" type="number">
+              <span class="f-hint">付与日から日数（日）。期限切れは自動失効</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 프레샤 보조: 로열티 티어 -->
+      <div class="card">
+        <div class="card-head">ロイヤルティティア<span class="fresha-tag">プレシャ参考</span></div>
+        <div class="card-body">
+          <div class="tier-grid" id="tierGrid"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// 프레샤 Course 5.5「Customise Your Loyalty Tiers」그대로: ブロンズ/シルバー/ゴールド/プラチナ 4단계
+const TIERS=[
+  {cls:'bronze',   name:'ブロンズ',   threshold:'入会時から', benefit:'付与率 5%'},
+  {cls:'silver',   name:'シルバー',   threshold:'年間 ¥50,000〜', benefit:'付与率 7% ・誕生月クーポン'},
+  {cls:'gold',     name:'ゴールド',   threshold:'年間 ¥150,000〜', benefit:'付与率 10% ・優先予約'},
+  {cls:'platinum', name:'プラチナ',   threshold:'年間 ¥300,000〜', benefit:'付与率 12% ・専属スタイリスト優先'},
+];
+
+function renderTiers(){
+  document.getElementById('tierGrid').innerHTML = TIERS.map(t=>`
+    <div class="tier-card ${t.cls}">
+      <div class="tier-name">${t.name}</div>
+      <div class="tier-threshold">${t.threshold}</div>
+      <div class="tier-benefit">${t.benefit}</div>
+    </div>`).join('');
+}
+
+function toggleSwitch(id){ document.getElementById(id).classList.toggle('on'); }
+
+function openSb(){ document.getElementById('sidebar').classList.add('open'); document.getElementById('sbOverlay').classList.add('open'); }
+function closeSb(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('sbOverlay').classList.remove('open'); }
+
+let _tt;
+function toast(msg){ const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); clearTimeout(_tt); _tt=setTimeout(()=>el.classList.remove('show'),2400); }
+
+const DOW=['日','月','火','水','木','金','土'];
+function tick(){
+  const d=new Date();
+  const el=document.getElementById('tbTime');
+  if(el) el.textContent=`${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} ${DOW[d.getDay()]}　${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
+
+renderTiers();
+tick();
+setInterval(tick,30000);
+</script>
+</body>
+</html>
