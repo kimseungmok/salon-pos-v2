@@ -41,7 +41,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 .sb-foot{padding:12px 16px;border-top:.5px solid rgba(255,255,255,.1);}
 .sb-ver{font-size:10px;color:rgba(255,255,255,.2);}
 
-/* ══ ZONE B ══ */
+/* ══ ZONE B (기간/지점 공통 필터) ══ */
 .zone-b{height:46px;flex-shrink:0;background:#fff;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 14px;gap:10px;}
 .zb-title{font-size:14px;font-weight:700;color:#1A1A1A;flex-shrink:0;}
 .zb-tabs{display:flex;background:#F0F2F7;border-radius:9px;padding:3px;gap:2px;flex-shrink:0;}
@@ -51,8 +51,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 .zb-spacer{flex:1;}
 .zb-period-label{font-size:11px;color:#999;flex-shrink:0;}
 
+/* ══ ZONE B2 (리포트 카테고리 탭) ══ */
+.zone-b2{height:42px;flex-shrink:0;background:#fff;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 10px;gap:2px;overflow-x:auto;}
+.cat-tab{padding:9px 13px;font-size:12px;font-weight:700;color:#999;cursor:pointer;border-bottom:2.5px solid transparent;white-space:nowrap;flex-shrink:0;transition:color .12s,border-color .12s;}
+.cat-tab:hover{color:#555;}
+.cat-tab.active{color:#1E3A8A;border-bottom-color:#1E3A8A;}
+
 /* ══ Main ══ */
 .main{flex:1;overflow-y:auto;padding:16px;}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+
 .grid-kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px;}
 .kpi-card{background:#fff;border:.5px solid #E5E5E0;border-radius:12px;padding:14px;}
 .kpi-label{font-size:10.5px;color:#999;margin-bottom:6px;}
@@ -65,10 +74,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 
 .row2{display:grid;grid-template-columns:1.4fr 1fr;gap:10px;margin-bottom:12px;}
 .row2b{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+.row3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px;}
 
-.card{background:#fff;border:.5px solid #E5E5E0;border-radius:12px;overflow:hidden;}
-.card-head{padding:11px 14px;border-bottom:.5px solid #F0F0EC;font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.06em;}
+.card{background:#fff;border:.5px solid #E5E5E0;border-radius:12px;overflow:hidden;margin-bottom:12px;}
+.card-head{padding:11px 14px;border-bottom:.5px solid #F0F0EC;font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.06em;display:flex;align-items:center;justify-content:space-between;}
+.card-head-hint{font-size:9.5px;color:#bbb;text-transform:none;letter-spacing:0;font-weight:500;}
 .card-body{padding:12px 14px;}
+.row2 .card,.row2b .card,.row3 .card{margin-bottom:0;}
 
 /* 매출 추이 (간단 바 차트) */
 .trend-chart{display:flex;align-items:flex-end;gap:4px;height:120px;padding-top:8px;}
@@ -94,7 +106,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 .rank-name{font-size:12.5px;font-weight:700;color:#1A1A1A;}
 .rank-bar{height:5px;border-radius:3px;background:#F0F0EC;margin-top:4px;overflow:hidden;}
 .rank-bar-fill{height:100%;border-radius:3px;background:#2E86C1;}
-.rank-val{font-size:12.5px;font-weight:700;color:#1A1A1A;flex-shrink:0;white-space:nowrap;}
+.rank-val{font-size:12.5px;font-weight:700;color:#1A1A1A;flex-shrink:0;white-space:nowrap;text-align:right;min-width:64px;}
+.rank-diff{font-size:10px;font-weight:700;flex-shrink:0;white-space:nowrap;min-width:38px;text-align:right;}
+.rank-diff.up{color:#1E8449;}
+.rank-diff.down{color:#E74C3C;}
+.rank-qty{font-size:10px;color:#aaa;margin-top:2px;}
+
+/* 메뉴 테이블 */
+.menu-table{width:100%;border-collapse:collapse;}
+.menu-table th{font-size:10px;color:#aaa;text-align:left;padding:6px 6px;border-bottom:.5px solid #EBEBE7;font-weight:600;}
+.menu-table th:last-child,.menu-table td:last-child,.menu-table th.r,.menu-table td.r{text-align:right;}
+.menu-table td{padding:8px 6px;font-size:12.5px;border-bottom:.5px solid #F8F8F6;color:#333;}
+.menu-table .rk{color:#C8C8C4;font-weight:800;width:20px;}
 
 /* 지점 비교 */
 .branch-compare{display:flex;gap:14px;}
@@ -105,6 +128,63 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 .branch-sub{font-size:10.5px;color:#aaa;margin-top:3px;}
 .branch-bar{height:6px;border-radius:3px;background:#F0F0EC;margin-top:10px;overflow:hidden;}
 .branch-bar-fill{height:100%;border-radius:3px;background:#117A65;}
+.branch-extra{display:flex;justify-content:space-between;margin-top:10px;font-size:10.5px;color:#999;border-top:.5px solid #F0F0EC;padding-top:8px;}
+
+/* 고객등급 분석 */
+.tier-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.tier-card{border-radius:10px;padding:12px;text-align:center;}
+.tier-card .t-label{font-size:10.5px;font-weight:700;margin-bottom:4px;}
+.tier-card .t-val{font-size:18px;font-weight:800;}
+.tier-card .t-sub{font-size:10px;margin-top:3px;opacity:.7;}
+.retention-row{display:flex;align-items:center;gap:10px;margin-top:14px;}
+.retention-bar{flex:1;height:10px;border-radius:5px;background:#F0F0EC;overflow:hidden;display:flex;}
+.retention-seg{height:100%;}
+.retention-legend{display:flex;gap:14px;margin-top:8px;font-size:10.5px;color:#666;flex-wrap:wrap;}
+.retention-legend-item{display:flex;align-items:center;gap:5px;}
+.retention-legend-dot{width:8px;height:8px;border-radius:50%;}
+
+/* 스태프 실적(가동률 포함) */
+.staff-perf-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:.5px solid #F8F8F6;}
+.staff-perf-row:last-child{border-bottom:none;}
+.sp-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;}
+.sp-body{flex:1;min-width:0;}
+.sp-name{font-size:12.5px;font-weight:700;color:#1A1A1A;}
+.sp-stats{display:flex;gap:14px;margin-top:3px;}
+.sp-stat{font-size:10.5px;color:#999;}
+.sp-stat b{color:#555;}
+.sp-occ-wrap{width:90px;flex-shrink:0;text-align:right;}
+.sp-occ-lbl{font-size:9.5px;color:#aaa;margin-bottom:3px;}
+.sp-occ-bar{height:6px;border-radius:3px;background:#F0F0EC;overflow:hidden;}
+.sp-occ-fill{height:100%;border-radius:3px;background:#8E44AD;}
+.sp-sales{width:78px;flex-shrink:0;text-align:right;font-size:12.5px;font-weight:700;color:#1A1A1A;}
+
+/* 결제·거래 finance summary */
+.finance-rows{display:flex;flex-direction:column;}
+.fin-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:.5px solid #F8F8F6;font-size:12.5px;}
+.fin-row:last-child{border-bottom:none;}
+.fin-row .lbl{color:#888;}
+.fin-row .val{font-weight:700;color:#1A1A1A;}
+.fin-row .val.r{color:#E74C3C;}
+.fin-row.net{padding-top:11px;border-top:1px solid #E5E5E0;border-bottom:none;}
+.fin-row.net .val{font-size:16px;color:#117A65;}
+.saletype-split{display:flex;flex-direction:column;gap:9px;}
+
+/* 매출 카레인더 */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr) 86px;gap:5px;}
+.cal-dow{font-size:10px;color:#aaa;text-align:center;padding-bottom:4px;font-weight:700;}
+.cal-dow.wk{color:#bbb;}
+.cal-cell{border-radius:8px;background:#FAFAF8;padding:6px 5px;min-height:58px;border:.5px solid transparent;}
+.cal-cell.empty{background:transparent;}
+.cal-cell.today{border-color:#1E3A8A;background:#EEF2FF;}
+.cal-cell.wk-total{background:#F0F2F7;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;}
+.cal-cell.wk-total .wk-lbl{font-size:9px;color:#aaa;font-weight:700;}
+.cal-cell.wk-total .wk-val{font-size:11px;font-weight:800;color:#1E3A8A;margin-top:4px;}
+.cal-date{font-size:10.5px;color:#999;font-weight:700;display:flex;justify-content:space-between;align-items:center;}
+.cal-weather{font-size:10px;}
+.cal-amount{font-size:11px;font-weight:800;color:#1A1A1A;margin-top:5px;}
+.cal-amount.none{color:#ccc;font-weight:500;}
+.week-total-row{display:flex;justify-content:space-between;background:#F4F4F0;border-radius:8px;padding:7px 12px;margin-top:6px;font-size:11px;color:#666;}
+.week-total-row b{color:#1A1A1A;}
 
 .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(12px);background:#1A1A1A;color:#fff;font-size:12px;font-weight:500;padding:10px 18px;border-radius:10px;z-index:9999;opacity:0;pointer-events:none;transition:all .22s;white-space:nowrap;}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
@@ -147,13 +227,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
     </div>
   </div>
 
-  <!-- ══ ZONE B ══ -->
+  <!-- ══ ZONE B：기간/지점 공통 필터 ══ -->
   <div class="zone-b">
     <span class="zb-title">売上ダッシュボード</span>
     <div class="zb-tabs" id="zbTabs">
       <div class="zb-tab" data-p="today" onclick="switchPeriod('today',this)">今日</div>
       <div class="zb-tab" data-p="week" onclick="switchPeriod('week',this)">今週</div>
       <div class="zb-tab active" data-p="month" onclick="switchPeriod('month',this)">今月</div>
+      <div class="zb-tab" data-p="year" onclick="switchPeriod('year',this)">今年</div>
     </div>
     <select class="zb-branch-sel" id="branchSel" onchange="onBranchChange(this.value)">
       <option value="all">全店舗</option>
@@ -164,92 +245,218 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
     <span class="zb-period-label" id="periodLabel"></span>
   </div>
 
+  <!-- ══ ZONE B2：리포트 카테고리 탭 (토스플레이스+프레샤 벤치마킹) ══ -->
+  <div class="zone-b2" id="catTabs">
+    <div class="cat-tab active" data-c="overview" onclick="switchCat('overview',this)">売上概況</div>
+    <div class="cat-tab" data-c="menu" onclick="switchCat('menu',this)">商品売上</div>
+    <div class="cat-tab" data-c="payment" onclick="switchCat('payment',this)">決済・取引</div>
+    <div class="cat-tab" data-c="client" onclick="switchCat('client',this)">顧客分析</div>
+    <div class="cat-tab" data-c="staff" onclick="switchCat('staff',this)">スタッフ実績</div>
+    <div class="cat-tab" data-c="calendar" onclick="switchCat('calendar',this)">売上カレンダー</div>
+    <div class="cat-tab" data-c="branch" onclick="switchCat('branch',this)">店舗比較</div>
+  </div>
+
   <div class="main">
-    <!-- KPI 4종 -->
-    <div class="grid-kpi" id="kpiRow"></div>
 
-    <!-- 매출추이 + 결제수단 -->
-    <div class="row2">
-      <div class="card">
-        <div class="card-head">売上推移</div>
-        <div class="card-body"><div class="trend-chart" id="trendChart"></div></div>
-      </div>
-      <div class="card">
-        <div class="card-head">決済手段別 比率</div>
-        <div class="card-body"><div class="method-split" id="methodSplit"></div></div>
+    <!-- ① 売上概況 (Toss: 매출현황 시간대/요일/전년비교 + Fresha: Sales Summary) -->
+    <div class="tab-panel active" id="panel-overview">
+      <div class="grid-kpi" id="kpiRow"></div>
+      <div class="row2">
+        <div class="card">
+          <div class="card-head">売上推移<span class="card-head-hint" id="trendHint"></span></div>
+          <div class="card-body"><div class="trend-chart" id="trendChart"></div></div>
+        </div>
+        <div class="card">
+          <div class="card-head">前年同期間比較</div>
+          <div class="card-body" id="yoyBody"></div>
+        </div>
       </div>
     </div>
 
-    <!-- 스태프 순위 + 메뉴 순위 -->
-    <div class="row2b">
+    <!-- ② 商品売上 (Toss: 상품 매출순위 + 등락률) -->
+    <div class="tab-panel" id="panel-menu">
       <div class="card">
-        <div class="card-head">スタッフ別売上ランキング</div>
-        <div class="card-body" id="staffRank"></div>
-      </div>
-      <div class="card">
-        <div class="card-head">施術メニュー別売上 TOP5</div>
-        <div class="card-body" id="menuRank"></div>
+        <div class="card-head">施術メニュー別売上ランキング<span class="card-head-hint">前期間比の等落率を表示（割引除外後の実販売額）</span></div>
+        <div class="card-body">
+          <table class="menu-table">
+            <tr><th>順位</th><th>メニュー</th><th class="r">販売件数</th><th class="r">売上</th><th class="r">前期間比</th></tr>
+            <tbody id="menuTableBody"></tbody>
+          </table>
+        </div>
       </div>
     </div>
 
-    <!-- 지점별 비교 -->
-    <div class="card">
-      <div class="card-head">店舗別比較</div>
-      <div class="card-body"><div class="branch-compare" id="branchCompare"></div></div>
+    <!-- ③ 決済・取引 (Fresha: Finance/Payments Summary + Toss: 판매유형) -->
+    <div class="tab-panel" id="panel-payment">
+      <div class="row2b">
+        <div class="card">
+          <div class="card-head">売上タイプ別比率</div>
+          <div class="card-body"><div class="saletype-split" id="saletypeSplit"></div></div>
+        </div>
+        <div class="card">
+          <div class="card-head">決済手段別 比率</div>
+          <div class="card-body"><div class="method-split" id="methodSplit"></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head">ファイナンスサマリー</div>
+        <div class="card-body"><div class="finance-rows" id="financeRows"></div></div>
+      </div>
     </div>
+
+    <!-- ④ 顧客分析 (Toss: 고객등급별 분석 + Fresha: Client Summary 리텐션) -->
+    <div class="tab-panel" id="panel-client">
+      <div class="card">
+        <div class="card-head">顧客ランク別 構成</div>
+        <div class="card-body"><div class="tier-grid" id="tierGrid"></div></div>
+      </div>
+      <div class="card">
+        <div class="card-head">リピート率（新規 vs リピート）</div>
+        <div class="card-body">
+          <div class="retention-row"><div class="retention-bar" id="retentionBar"></div></div>
+          <div class="retention-legend" id="retentionLegend"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ⑤ スタッフ実績 (Fresha: Performance Summary - 가동률/매출/건수) -->
+    <div class="tab-panel" id="panel-staff">
+      <div class="card">
+        <div class="card-head">スタッフ別実績<span class="card-head-hint">稼働率＝予約済み時間 ÷ 出勤時間</span></div>
+        <div class="card-body" id="staffPerfBody"></div>
+      </div>
+    </div>
+
+    <!-- ⑥ 売上カレンダー (Toss: 매출달력 - 날씨/메모/주간합계) -->
+    <div class="tab-panel" id="panel-calendar">
+      <div class="card">
+        <div class="card-head">2026年6月 売上カレンダー<span class="card-head-hint">日付セルに当日売上、週単位で自動集計</span></div>
+        <div class="card-body" id="calendarBody"></div>
+      </div>
+    </div>
+
+    <!-- ⑦ 店舗比較 (멀티지점 운영 — salon-pos-v2 자체 확장) -->
+    <div class="tab-panel" id="panel-branch">
+      <div class="card">
+        <div class="card-head">店舗別比較</div>
+        <div class="card-body"><div class="branch-compare" id="branchCompare"></div></div>
+      </div>
+    </div>
+
   </div>
 
 </div><!-- /ipad -->
 
 <script>
 // ── Data ─────────────────────────────────────────────────────────────────
-// 渋谷店・池袋店 멀티지점 운영을 반영한 mock 데이터 (06/12/13과 동일 인물·지점 체계 사용)
+// 渋谷店・池袋店 멀티지점 운영을 반영한 mock 데이터 (06/12/13과 동일 인물·지점 체계 사용).
+// 화면 구성은 토스플레이스(매출현황/판매유형·고객등급/상품순위/매출달력)와
+// 프레샤 Fresha(Sales/Performance/Client/Finance Summary)의 리포트 탭 구조를 벤치마킹.
 const fmtY = n=>`¥${Math.round(n).toLocaleString()}`;
 const STAFF_COLORS={Yuki:'#8E44AD',Mika:'#2E86C1',Kenji:'#E67E22',Rio:'#10B981',Hana:'#2E86C1'};
 
 const DATASETS = {
   today: {
-    label:'2026年6月21日（日）', sales:128700, count:13, refund:2200, prevSales:114900,
+    label:'2026年6月21日（日）', sales:128700, count:13, refund:2200, prevSales:114900, yoySales:108200,
     trend:[
       {l:'15時',v:8200},{l:'16時',v:14500},{l:'17時',v:21000},{l:'18時',v:32100,today:true},
       {l:'19時',v:28400,today:true},{l:'20時',v:24500,today:true},
     ],
     byMethod:{cash:35000,card:52000,paypay:24500,linepay:17200,credit:0},
-    byStaff:[{n:'Yuki',v:42000},{n:'Mika',v:31000},{n:'Kenji',v:28000},{n:'Rio',v:27700}],
-    byMenu:[{n:'カット＋カラー',v:38500},{n:'パーマ',v:24000},{n:'トリートメント',v:21200},{n:'カット',v:18000},{n:'ヘッドスパ',v:27000}],
+    bySaleType:{visit:96000,reservation:28000,online:4700},
+    byStaff:[{n:'Yuki',v:42000,count:5,occ:0.82},{n:'Mika',v:31000,count:3,occ:0.61},{n:'Kenji',v:28000,count:3,occ:0.55},{n:'Rio',v:27700,count:2,occ:0.48}],
+    byMenu:[
+      {n:'カット＋カラー',v:38500,qty:6,prev:35200},{n:'パーマ',v:24000,qty:3,prev:27800},
+      {n:'ヘッドスパ',v:27000,qty:4,prev:21500},{n:'トリートメント',v:21200,qty:3,prev:19800},
+      {n:'カット',v:18000,qty:6,prev:18900},
+    ],
     byBranch:{'渋谷店':84200,'池袋店':44500},
+    discounts:6400, gross:135100, taxIncluded:128700,
+    clientTiers:{vip:3,repeat:6,new:3,dormant:1},
   },
   week: {
-    label:'2026年6月15日 〜 21日', sales:842300, count:86, refund:9800, prevSales:790100,
+    label:'2026年6月15日 〜 21日', sales:842300, count:86, refund:9800, prevSales:790100, yoySales:705000,
     trend:[
       {l:'月',v:98000},{l:'火',v:112000},{l:'水',v:105500},{l:'木',v:121000},
       {l:'金',v:138200},{l:'土',v:148900},{l:'日',v:128700,today:true},
     ],
     byMethod:{cash:228000,card:341000,paypay:162000,linepay:111300,credit:0},
-    byStaff:[{n:'Yuki',v:268000},{n:'Mika',v:215000},{n:'Kenji',v:189000},{n:'Rio',v:170300}],
-    byMenu:[{n:'カット＋カラー',v:241000},{n:'パーマ',v:168000},{n:'トリートメント',v:142500},{n:'ヘッドスパ',v:158800},{n:'カット',v:132000}],
+    bySaleType:{visit:612000,reservation:189000,online:41300},
+    byStaff:[{n:'Yuki',v:268000,count:34,occ:0.78},{n:'Mika',v:215000,count:27,occ:0.66},{n:'Kenji',v:189000,count:23,occ:0.59},{n:'Rio',v:170300,count:18,occ:0.51}],
+    byMenu:[
+      {n:'カット＋カラー',v:241000,qty:38,prev:223000},{n:'パーマ',v:168000,qty:21,prev:179500},
+      {n:'ヘッドスパ',v:158800,qty:22,prev:139000},{n:'トリートメント',v:142500,qty:19,prev:151200},
+      {n:'カット',v:132000,qty:44,prev:128800},
+    ],
     byBranch:{'渋谷店':548500,'池袋店':293800},
+    discounts:41200, gross:883500, taxIncluded:842300,
+    clientTiers:{vip:14,repeat:42,new:23,dormant:7},
   },
   month: {
-    label:'2026年6月', sales:3214800, count:341, refund:38200, prevSales:2987600,
+    label:'2026年6月', sales:3214800, count:341, refund:38200, prevSales:2987600, yoySales:2705400,
     trend:[
       {l:'第1週',v:712000},{l:'第2週',v:798500},{l:'第3週',v:861000},{l:'第4週',v:843300,today:true},
     ],
     byMethod:{cash:892000,card:1324000,paypay:612000,linepay:386800,credit:0},
-    byStaff:[{n:'Yuki',v:982000},{n:'Mika',v:812000},{n:'Kenji',v:712000},{n:'Rio',v:708800}],
-    byMenu:[{n:'カット＋カラー',v:986000},{n:'パーマ',v:648000},{n:'ヘッドスパ',v:589000},{n:'トリートメント',v:572400},{n:'カット',v:498000}],
+    bySaleType:{visit:2312000,reservation:782000,online:120800},
+    byStaff:[{n:'Yuki',v:982000,count:128,occ:0.75},{n:'Mika',v:812000,count:104,occ:0.68},{n:'Kenji',v:712000,count:89,occ:0.57},{n:'Rio',v:708800,count:75,occ:0.49}],
+    byMenu:[
+      {n:'カット＋カラー',v:986000,qty:152,prev:912000},{n:'パーマ',v:648000,qty:83,prev:701000},
+      {n:'ヘッドスパ',v:589000,qty:81,prev:498000},{n:'トリートメント',v:572400,qty:76,prev:601200},
+      {n:'カット',v:498000,qty:166,prev:486500},
+    ],
     byBranch:{'渋谷店':2052300,'池袋店':1162500},
+    discounts:152800, gross:3367600, taxIncluded:3214800,
+    clientTiers:{vip:52,repeat:168,new:94,dormant:27},
+  },
+  year: {
+    label:'2026年（1月〜6月）', sales:17820000, count:1986, refund:198400, prevSales:15640000, yoySales:14200000,
+    trend:[
+      {l:'1月',v:2480000},{l:'2月',v:2390000},{l:'3月',v:2810000},
+      {l:'4月',v:2960000},{l:'5月',v:2965000},{l:'6月',v:3214800,today:true},
+    ],
+    byMethod:{cash:4920000,card:7340000,paypay:3380000,linepay:2180000,credit:0},
+    bySaleType:{visit:12860000,reservation:4180000,online:780000},
+    byStaff:[{n:'Yuki',v:5460000,count:712,occ:0.74},{n:'Mika',v:4520000,count:586,occ:0.66},{n:'Kenji',v:3980000,count:498,occ:0.55},{n:'Rio',v:3860000,count:190,occ:0.46}],
+    byMenu:[
+      {n:'カット＋カラー',v:5480000,qty:842,prev:4920000},{n:'パーマ',v:3620000,qty:462,prev:3810000},
+      {n:'ヘッドスパ',v:3280000,qty:451,prev:2760000},{n:'トリートメント',v:3180000,qty:421,prev:3320000},
+      {n:'カット',v:2780000,qty:924,prev:2710000},
+    ],
+    byBranch:{'渋谷店':11420000,'池袋店':6400000},
+    discounts:842000, gross:18662000, taxIncluded:17820000,
+    clientTiers:{vip:118,repeat:642,new:412,dormant:134},
   },
 };
 const METHOD_LABEL = {cash:'現金', card:'カード', paypay:'PayPay', linepay:'LINE Pay', credit:'後払い'};
 const METHOD_COLOR = {cash:'#117A65', card:'#2E86C1', paypay:'#D4AC0D', linepay:'#8E44AD', credit:'#7D3C98'};
+const SALETYPE_LABEL={visit:'当日来店',reservation:'予約来店',online:'オンライン事前決済'};
+const SALETYPE_COLOR={visit:'#1E3A8A',reservation:'#2E86C1',online:'#D4AC0D'};
+const TIER_DEF=[
+  {k:'vip',label:'VIP',bg:'#FDEDEC',color:'#C0392B'},
+  {k:'repeat',label:'リピート',bg:'#EAFAF1',color:'#117A65'},
+  {k:'new',label:'新規',bg:'#EBF5FB',color:'#2E86C1'},
+  {k:'dormant',label:'休眠',bg:'#F4F4F0',color:'#888'},
+];
 
-let curPeriod='month', curBranch='all';
+// 売上カレンダー専用 mock（2026年6月、日曜始まり）
+const CAL_DAYS = (()=>{
+  const days=[];
+  for(let d=1; d<=30; d++){
+    const dow=new Date(2026,5,d).getDay();
+    const isToday = d===21;
+    const base = 60000 + (d*1300)%70000 + (dow===0||dow===6?25000:0);
+    const weather = ['☀️','☀️','⛅','☁️','🌧️','☀️','⛅'][dow];
+    days.push({d, dow, sales: d<=21? base : 0, weather, isToday});
+  }
+  return days;
+})();
+
+let curPeriod='month', curBranch='all', curCat='overview';
 
 // ── Render ───────────────────────────────────────────────────────────────
 function curData(){ return DATASETS[curPeriod]; }
 function branchFactor(){
-  // 지점 필터 시 mock 매출을 지점 비중에 맞춰 단순 스케일링
   if(curBranch==='all') return 1;
   const d=curData();
   const total=d.byBranch['渋谷店']+d.byBranch['池袋店'];
@@ -263,10 +470,16 @@ function render(){
 
   renderKpi(d,f);
   renderTrend(d,f);
+  renderYoy(d,f);
+  renderMenuTable(d,f);
+  renderSaleType(d,f);
   renderMethod(d,f);
-  renderStaffRank(d,f);
-  renderMenuRank(d,f);
+  renderFinance(d,f);
+  renderTiers(d,f);
+  renderRetention(d,f);
+  renderStaffPerf(d,f);
   renderBranchCompare(d);
+  renderCalendar();
 }
 
 function renderKpi(d,f){
@@ -303,6 +516,44 @@ function renderTrend(d,f){
       <div class="trend-bar ${t.today?'today':''}" style="height:${Math.max(4,t.v*f/max*100)}%;" title="${fmtY(t.v*f)}"></div>
       <div class="trend-lbl">${t.l}</div>
     </div>`).join('');
+  const labelMap={today:'時間帯別',week:'曜日別',month:'週別',year:'月別'};
+  document.getElementById('trendHint').textContent = labelMap[curPeriod]+' 推移';
+}
+
+function renderYoy(d,f){
+  const sales=d.sales*f, yoy=d.yoySales*f;
+  const diff = sales-yoy;
+  const pct = yoy>0 ? (diff/yoy*100) : 0;
+  document.getElementById('yoyBody').innerHTML = `
+    <div class="fin-row"><span class="lbl">今期間</span><span class="val">${fmtY(sales)}</span></div>
+    <div class="fin-row"><span class="lbl">前年同期間</span><span class="val">${fmtY(yoy)}</span></div>
+    <div class="fin-row net"><span class="lbl">前年比</span><span class="val ${diff>=0?'good':'r'}">${diff>=0?'▲':'▼'} ${Math.abs(pct).toFixed(1)}%（${diff>=0?'+':''}${fmtY(diff)}）</span></div>
+  `;
+}
+
+function renderMenuTable(d,f){
+  const sorted=[...d.byMenu].sort((a,b)=>b.v-a.v);
+  document.getElementById('menuTableBody').innerHTML = sorted.map((m,i)=>{
+    const val=m.v*f, prev=m.prev*f;
+    const pct = prev>0 ? ((val-prev)/prev*100) : 0;
+    return `<tr>
+      <td class="rk">${i+1}</td>
+      <td>${m.n}</td>
+      <td class="r">${Math.round(m.qty*f)}件</td>
+      <td class="r">${fmtY(val)}</td>
+      <td class="r" style="color:${pct>=0?'#1E8449':'#E74C3C'};font-weight:700;">${pct>=0?'▲':'▼'} ${Math.abs(pct).toFixed(1)}%</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderSaleType(d,f){
+  const max=Math.max(...Object.values(d.bySaleType),1);
+  document.getElementById('saletypeSplit').innerHTML = Object.keys(d.bySaleType).map(k=>`
+    <div class="method-row">
+      <span style="width:120px;flex-shrink:0;">${SALETYPE_LABEL[k]}</span>
+      <div class="method-bar"><div class="method-fill" style="width:${d.bySaleType[k]/max*100}%;background:${SALETYPE_COLOR[k]};"></div></div>
+      <span style="width:74px;text-align:right;flex-shrink:0;">${fmtY(d.bySaleType[k]*f)}</span>
+    </div>`).join('');
 }
 
 function renderMethod(d,f){
@@ -315,56 +566,112 @@ function renderMethod(d,f){
     </div>`).join('');
 }
 
-function renderStaffRank(d,f){
-  const sorted=[...d.byStaff].sort((a,b)=>b.v-a.v);
-  const max=sorted[0].v;
-  document.getElementById('staffRank').innerHTML = sorted.map((s,i)=>`
-    <div class="rank-row">
-      <div class="rank-no">${i+1}</div>
-      <div class="rank-avatar" style="background:${STAFF_COLORS[s.n]||'#888'};">${s.n[0]}</div>
-      <div class="rank-body">
-        <div class="rank-name">${s.n}</div>
-        <div class="rank-bar"><div class="rank-bar-fill" style="width:${s.v/max*100}%;"></div></div>
-      </div>
-      <div class="rank-val">${fmtY(s.v*f)}</div>
-    </div>`).join('');
+function renderFinance(d,f){
+  const gross=d.gross*f, discounts=d.discounts*f, refund=d.refund*f, net=d.taxIncluded*f-refund;
+  document.getElementById('financeRows').innerHTML = `
+    <div class="fin-row"><span class="lbl">総売上（割引前）</span><span class="val">${fmtY(gross)}</span></div>
+    <div class="fin-row"><span class="lbl">割引額</span><span class="val r">−${fmtY(discounts)}</span></div>
+    <div class="fin-row"><span class="lbl">返金額</span><span class="val r">−${fmtY(refund)}</span></div>
+    <div class="fin-row net"><span class="lbl">純売上（Net Sales）</span><span class="val">${fmtY(net)}</span></div>
+  `;
 }
 
-function renderMenuRank(d,f){
-  const sorted=[...d.byMenu].sort((a,b)=>b.v-a.v);
-  const max=sorted[0].v;
-  document.getElementById('menuRank').innerHTML = sorted.map((m,i)=>`
-    <div class="rank-row">
-      <div class="rank-no">${i+1}</div>
-      <div class="rank-body">
-        <div class="rank-name">${m.n}</div>
-        <div class="rank-bar"><div class="rank-bar-fill" style="background:#8E44AD;width:${m.v/max*100}%;"></div></div>
+function renderTiers(d,f){
+  const t=d.clientTiers;
+  const total=Object.values(t).reduce((a,b)=>a+b,0);
+  document.getElementById('tierGrid').innerHTML = TIER_DEF.map(td=>{
+    const n=Math.round(t[td.k]*f);
+    const pct = total>0 ? (n/Math.round(total*f)*100) : 0;
+    return `<div class="tier-card" style="background:${td.bg};">
+      <div class="t-label" style="color:${td.color};">${td.label}</div>
+      <div class="t-val" style="color:${td.color};">${n}名</div>
+      <div class="t-sub" style="color:${td.color};">${pct.toFixed(0)}%</div>
+    </div>`;
+  }).join('');
+}
+
+function renderRetention(d,f){
+  const t=d.clientTiers;
+  const repeatLike=Math.round((t.vip+t.repeat)*f);
+  const newLike=Math.round((t.new+t.dormant)*f);
+  const total=repeatLike+newLike;
+  const repeatPct = total>0? repeatLike/total*100 : 0;
+  document.getElementById('retentionBar').innerHTML = `
+    <div class="retention-seg" style="width:${repeatPct}%;background:#117A65;"></div>
+    <div class="retention-seg" style="width:${100-repeatPct}%;background:#D4AC0D;"></div>`;
+  document.getElementById('retentionLegend').innerHTML = `
+    <div class="retention-legend-item"><div class="retention-legend-dot" style="background:#117A65;"></div>リピート顧客 ${repeatPct.toFixed(0)}%（${repeatLike}名）</div>
+    <div class="retention-legend-item"><div class="retention-legend-dot" style="background:#D4AC0D;"></div>新規・休眠 ${(100-repeatPct).toFixed(0)}%（${newLike}名）</div>`;
+}
+
+function renderStaffPerf(d,f){
+  const sorted=[...d.byStaff].sort((a,b)=>b.v-a.v);
+  document.getElementById('staffPerfBody').innerHTML = sorted.map(s=>`
+    <div class="staff-perf-row">
+      <div class="sp-avatar" style="background:${STAFF_COLORS[s.n]||'#888'};">${s.n[0]}</div>
+      <div class="sp-body">
+        <div class="sp-name">${s.n}</div>
+        <div class="sp-stats"><span class="sp-stat">施術件数 <b>${Math.round(s.count*f)}件</b></span></div>
       </div>
-      <div class="rank-val">${fmtY(m.v*f)}</div>
+      <div class="sp-occ-wrap">
+        <div class="sp-occ-lbl">稼働率 ${(s.occ*100).toFixed(0)}%</div>
+        <div class="sp-occ-bar"><div class="sp-occ-fill" style="width:${s.occ*100}%;"></div></div>
+      </div>
+      <div class="sp-sales">${fmtY(s.v*f)}</div>
     </div>`).join('');
 }
 
 function renderBranchCompare(d){
   const shibuya=d.byBranch['渋谷店'], ikebukuro=d.byBranch['池袋店'];
   const max=Math.max(shibuya,ikebukuro);
-  const mk=(name,val)=>`
+  const mk=(name,val,staffCount)=>`
     <div class="branch-col ${val===max?'lead':''}">
       <div class="branch-name">${name}</div>
       <div class="branch-sales">${fmtY(val)}</div>
       <div class="branch-sub">${val===max?'本期間トップ':''}</div>
       <div class="branch-bar"><div class="branch-bar-fill" style="width:${val/max*100}%;"></div></div>
+      <div class="branch-extra"><span>所属スタッフ</span><span>${staffCount}名</span></div>
     </div>`;
-  document.getElementById('branchCompare').innerHTML = mk('渋谷店',shibuya) + mk('池袋店',ikebukuro);
+  document.getElementById('branchCompare').innerHTML = mk('渋谷店',shibuya,3) + mk('池袋店',ikebukuro,1);
+}
+
+function renderCalendar(){
+  const firstDow = new Date(2026,5,1).getDay();
+  const dowLabels=['日','月','火','水','木','金','土'];
+  let cells = dowLabels.map(l=>`<div class="cal-dow">${l}</div>`).join('') + `<div class="cal-dow wk">週合計</div>`;
+  for(let i=0;i<firstDow;i++) cells += `<div class="cal-cell empty"></div>`;
+  let weekSum=0;
+  CAL_DAYS.forEach((day,idx)=>{
+    const hasSales = day.sales>0;
+    weekSum += day.sales;
+    cells += `<div class="cal-cell ${day.isToday?'today':''}">
+      <div class="cal-date"><span>${day.d}</span><span class="cal-weather">${hasSales?day.weather:''}</span></div>
+      <div class="cal-amount ${hasSales?'':'none'}">${hasSales?fmtY(day.sales):'—'}</div>
+    </div>`;
+    if(day.dow===6 || idx===CAL_DAYS.length-1){
+      cells += `<div class="cal-cell wk-total"><div class="wk-lbl">週合計</div><div class="wk-val">${fmtY(weekSum)}</div></div>`;
+      weekSum=0;
+    }
+  });
+  document.getElementById('calendarBody').innerHTML = `<div class="cal-grid">${cells}</div>
+    <div class="week-total-row"><span>2026年6月 累計（6/21時点）</span><b>${fmtY(CAL_DAYS.reduce((s,d)=>s+d.sales,0))}</b></div>`;
 }
 
 // ── Actions ──────────────────────────────────────────────────────────────
 function switchPeriod(p,el){
   curPeriod=p;
-  document.querySelectorAll('.zb-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('#zbTabs .zb-tab').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');
   render();
 }
 function onBranchChange(v){ curBranch=v; render(); }
+function switchCat(c,el){
+  curCat=c;
+  document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+c).classList.add('active');
+}
 
 function openSb(){ document.getElementById('sidebar').classList.add('open'); document.getElementById('sbOverlay').classList.add('open'); }
 function closeSb(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('sbOverlay').classList.remove('open'); }
