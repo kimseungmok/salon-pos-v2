@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1024">
+<title>14 · 在庫現況</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neue',sans-serif;background:#0F1D5C;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;}
+.ipad{width:1024px;height:768px;background:#F0F2F7;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.55);position:relative;}
+
+.zone-a{height:44px;flex-shrink:0;background:#fff;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 14px;gap:10px;z-index:10;}
+.za-menu{font-size:18px;color:#1E3A8A;cursor:pointer;padding:4px 6px;border-radius:6px;line-height:1;user-select:none;}
+.za-menu:hover{background:#EEF2FF;}
+.za-logo{font-size:13px;color:#1E3A8A;font-weight:700;letter-spacing:.08em;cursor:pointer;}
+.za-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.za-time{font-size:11px;color:#555;font-weight:500;}
+
+.sb-overlay{position:absolute;inset:0;background:rgba(0,0,0,.38);z-index:200;opacity:0;pointer-events:none;transition:opacity .2s;}
+.sb-overlay.open{opacity:1;pointer-events:all;}
+.sidebar{position:absolute;left:0;top:0;bottom:0;width:224px;background:#1E3A8A;z-index:201;transform:translateX(-100%);transition:transform .22s cubic-bezier(.25,.46,.45,.94);display:flex;flex-direction:column;}
+.sidebar.open{transform:translateX(0);}
+.sb-head{padding:20px 16px 14px;border-bottom:.5px solid rgba(255,255,255,.1);}
+.sb-logo{font-size:14px;color:#fff;font-weight:700;letter-spacing:.06em;}
+.sb-sub{font-size:10px;color:rgba(255,255,255,.3);margin-top:3px;}
+.sb-nav{flex:1;padding:8px 0;overflow-y:auto;}
+.sb-item{display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;transition:background .12s;}
+.sb-item:hover{background:rgba(255,255,255,.07);}
+.sb-item.active{background:rgba(255,255,255,.13);}
+.sb-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.sb-label{font-size:13px;color:rgba(255,255,255,.65);}
+.sb-item.active .sb-label{color:#fff;font-weight:600;}
+.sb-foot{padding:12px 16px;border-top:.5px solid rgba(255,255,255,.1);}
+.sb-ver{font-size:10px;color:rgba(255,255,255,.2);}
+
+.wrap{flex:1;display:flex;overflow:hidden;}
+.left{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+
+.zone-b{height:46px;flex-shrink:0;background:#fff;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 12px;gap:6px;}
+.zb-back{font-size:12px;color:#999;cursor:pointer;flex-shrink:0;}
+.zb-back:hover{color:#555;}
+.zb-title{font-size:14px;font-weight:700;color:#1A1A1A;flex-shrink:0;}
+.zb-tabs{display:flex;background:#F0F2F7;border-radius:9px;padding:3px;gap:2px;flex-shrink:1;overflow-x:auto;max-width:320px;}
+.zb-tab{padding:6px 10px;font-size:11px;font-weight:600;color:#999;cursor:pointer;border-radius:7px;background:transparent;border:none;font-family:inherit;white-space:nowrap;}
+.zb-tab.active{background:#fff;color:#7D3C98;box-shadow:0 1px 4px rgba(0,0,0,.1);}
+.zb-lowonly{display:flex;align-items:center;gap:6px;font-size:11.5px;color:#555;cursor:pointer;flex-shrink:0;white-space:nowrap;}
+.zb-lowonly input{accent-color:#7D3C98;}
+.zb-spacer{flex:1;min-width:4px;}
+.zb-hist-btn{padding:7px 12px;border-radius:9px;border:.5px solid #E0E0DC;background:#fff;color:#555;font-size:11.5px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0;}
+.zb-hist-btn:hover{background:#F4F4F0;}
+
+.zone-c{flex:1;overflow-y:auto;background:#fff;}
+.inv-table{width:100%;border-collapse:collapse;}
+.inv-table th{font-size:10px;color:#aaa;text-align:left;padding:9px 14px;border-bottom:.5px solid #EBEBE7;font-weight:600;background:#FAFAF8;position:sticky;top:0;}
+.inv-table th.r,.inv-table td.r{text-align:right;}
+.inv-table th.c,.inv-table td.c{text-align:center;}
+.inv-table td{padding:9px 14px;font-size:12.5px;border-bottom:.5px solid #F8F8F6;color:#333;}
+.inv-name{font-weight:700;color:#1A1A1A;}
+.inv-cat{font-size:10.5px;color:#999;margin-top:1px;}
+.qty-control{display:flex;align-items:center;gap:5px;justify-content:center;}
+.qty-btn{width:24px;height:24px;border-radius:6px;border:.5px solid #D0D0CC;background:#F8F8F6;color:#555;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:inherit;}
+.qty-btn:hover{background:#EFEFEC;}
+.qty-btn:disabled{opacity:.35;cursor:default;}
+.qty-control input{width:46px;padding:5px 4px;border-radius:7px;border:.5px solid #D0D0CC;font-size:12.5px;font-family:inherit;text-align:center;}
+.inv-status{font-size:10px;font-weight:700;padding:3px 9px;border-radius:6px;white-space:nowrap;}
+.inv-status.instock{background:#EAFAF1;color:#117A65;}
+.inv-status.low{background:#FEF9E7;color:#B7950B;}
+.inv-status.out{background:#FDEDEC;color:#C0392B;}
+
+.zone-d{width:210px;flex-shrink:0;border-left:.5px solid #E5E5E0;background:#fff;display:flex;flex-direction:column;overflow-y:auto;}
+.zd-sec{padding:14px 14px;border-bottom:.5px solid #F0F0EC;}
+.zd-title{font-size:9px;font-weight:700;color:#C8C8C4;letter-spacing:.08em;text-transform:uppercase;margin-bottom:9px;}
+.zd-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:.5px solid #F8F8F6;font-size:12px;}
+.zd-row:last-child{border-bottom:none;}
+.zd-label{color:#999;}
+.zd-val{font-weight:700;color:#1A1A1A;}
+.zd-val.r{color:#E74C3C;}
+.zd-hint{font-size:10.5px;color:#999;line-height:1.6;}
+
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(12px);background:#1A1A1A;color:#fff;font-size:12px;font-weight:500;padding:10px 18px;border-radius:10px;z-index:9999;opacity:0;pointer-events:none;transition:all .22s;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+
+<div class="ipad">
+  <div class="sb-overlay" id="sbOverlay" onclick="closeSb()"></div>
+  <div class="sidebar" id="sidebar">
+    <div class="sb-head">
+      <div class="sb-logo">✂ salon pos</div>
+      <div class="sb-sub">Hair Salon Yuki · 渋谷区道玄坂</div>
+    </div>
+    <div class="sb-nav">
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#3B5BDB"></div><span class="sb-label">会計 · POS</span></div>
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#8E44AD"></div><span class="sb-label">予約カレンダー</span></div>
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#2E86C1"></div><span class="sb-label">顧客管理</span></div>
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#C0392B"></div><span class="sb-label">スタッフ</span></div>
+      <div class="sb-item active" onclick="closeSb()"><div class="sb-dot" style="background:#7D3C98"></div><span class="sb-label">商品 · 在庫管理</span></div>
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#117A65"></div><span class="sb-label">店舗設定</span></div>
+    </div>
+    <div class="sb-foot"><div class="sb-ver">v2.0.0</div></div>
+  </div>
+
+  <div class="zone-a">
+    <span class="za-menu" onclick="openSb()">☰</span>
+    <span class="za-logo" onclick="location.href='01_login_main.html'">✂ salon pos</span>
+    <div class="za-right">
+      <span class="za-time" id="tbTime">06.21 日　10:24</span>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="left">
+      <div class="zone-b">
+        <span class="zb-back" onclick="location.href='25_product_list.html'">‹ 戻る</span>
+        <span class="zb-title">在庫現況</span>
+        <div class="zb-tabs" id="zbTabs"></div>
+        <label class="zb-lowonly"><input type="checkbox" id="lowOnlyChk" onchange="onLowOnly(this.checked)"> 不足・品切れのみ</label>
+        <div class="zb-spacer"></div>
+        <button class="zb-hist-btn" onclick="location.href='15_inventory_history.html'">変動履歴を見る</button>
+      </div>
+
+      <div class="zone-c">
+        <table class="inv-table">
+          <tr><th>商品名</th><th class="c">在庫数（クイック修正）</th><th class="r">しきい値</th><th class="c">状態</th></tr>
+          <tbody id="invRows"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="zone-d">
+      <div class="zd-sec">
+        <div class="zd-title">在庫サマリー</div>
+        <div class="zd-row"><span class="zd-label">総商品数</span><span class="zd-val" id="statTotal">-</span></div>
+        <div class="zd-row"><span class="zd-label">在庫不足</span><span class="zd-val r" id="statLow">-</span></div>
+        <div class="zd-row"><span class="zd-label">品切れ</span><span class="zd-val r" id="statOut">-</span></div>
+      </div>
+      <div class="zd-sec">
+        <div class="zd-title">使い方</div>
+        <div class="zd-hint">＋／－ボタンで在庫数をその場で調整できます。在庫が0になると自動的に品切れ表示・POS側で販売不可になります。</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Data ─────────────────────────────────────────────────────────────────
+// 토스 §4-6 재고관리 그대로: 재고 빠른수정(+/-), 부족 임계치, 0개시 자동 품절.
+const CATEGORIES=['すべて','カラー剤','パーマ剤','シャンプー','トリートメント','スタイリング剤','販売用シャンプー'];
+
+let PRODUCTS=[
+  {id:1, name:'カラー剤（ブラウン系）', cat:'カラー剤', stock:24, lowAt:10},
+  {id:2, name:'カラー剤（アッシュ系）', cat:'カラー剤', stock:6,  lowAt:10},
+  {id:3, name:'パーマ液 1剤',          cat:'パーマ剤', stock:18, lowAt:8},
+  {id:4, name:'パーマ液 2剤',          cat:'パーマ剤', stock:0,  lowAt:8},
+  {id:5, name:'シャンプー（業務用）',   cat:'シャンプー', stock:9,  lowAt:5},
+  {id:6, name:'トリートメント（業務用）', cat:'トリートメント', stock:14, lowAt:6},
+  {id:7, name:'ワックス',              cat:'スタイリング剤', stock:3,  lowAt:5},
+  {id:8, name:'ヘアスプレー',          cat:'スタイリング剤', stock:11, lowAt:5},
+  {id:9, name:'販売用シャンプー（顧客用）', cat:'販売用シャンプー', stock:7,  lowAt:5},
+];
+
+let curCat='すべて', lowOnly=false;
+
+function statusOf(p){
+  if(p.stock<=0) return {cls:'out', label:'品切れ'};
+  if(p.stock<=p.lowAt) return {cls:'low', label:'不足'};
+  return {cls:'instock', label:'正常'};
+}
+
+function renderTabs(){
+  document.getElementById('zbTabs').innerHTML = CATEGORIES.map(c=>
+    `<div class="zb-tab ${c===curCat?'active':''}" onclick="switchCat('${c}',this)">${c}</div>`).join('');
+}
+
+function render(){
+  let list=[...PRODUCTS];
+  if(curCat!=='すべて') list=list.filter(p=>p.cat===curCat);
+  if(lowOnly) list=list.filter(p=>p.stock<=p.lowAt);
+
+  document.getElementById('invRows').innerHTML = list.map(p=>{
+    const st=statusOf(p);
+    return `<tr>
+      <td><div class="inv-name">${p.name}</div><div class="inv-cat">${p.cat}</div></td>
+      <td class="c">
+        <div class="qty-control">
+          <button class="qty-btn" onclick="stepQty(${p.id},-1)" ${p.stock<=0?'disabled':''}>−</button>
+          <input type="number" min="0" id="qty-${p.id}" value="${p.stock}" onchange="setQty(${p.id},this.value)">
+          <button class="qty-btn" onclick="stepQty(${p.id},1)">＋</button>
+        </div>
+      </td>
+      <td class="r">${p.lowAt}</td>
+      <td class="c"><span class="inv-status ${st.cls}">${st.label}</span></td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('statTotal').textContent=PRODUCTS.length+'点';
+  document.getElementById('statLow').textContent=PRODUCTS.filter(p=>p.stock>0&&p.stock<=p.lowAt).length+'点';
+  document.getElementById('statOut').textContent=PRODUCTS.filter(p=>p.stock<=0).length+'点';
+}
+
+function switchCat(c,el){ curCat=c; renderTabs(); render(); }
+function onLowOnly(v){ lowOnly=v; render(); }
+
+function stepQty(id,dir){
+  const p=PRODUCTS.find(x=>x.id===id); if(!p) return;
+  const before=p.stock;
+  p.stock=Math.max(0,p.stock+dir);
+  render();
+  if(before>0 && p.stock===0) toast(`${p.name} が品切れになりました`);
+}
+function setQty(id,val){
+  const p=PRODUCTS.find(x=>x.id===id); if(!p) return;
+  p.stock=Math.max(0,parseInt(val)||0);
+  render();
+}
+
+function openSb(){ document.getElementById('sidebar').classList.add('open'); document.getElementById('sbOverlay').classList.add('open'); }
+function closeSb(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('sbOverlay').classList.remove('open'); }
+
+let _tt;
+function toast(msg){ const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); clearTimeout(_tt); _tt=setTimeout(()=>el.classList.remove('show'),2400); }
+
+const DOW=['日','月','火','水','木','金','土'];
+function tick(){
+  const d=new Date();
+  const el=document.getElementById('tbTime');
+  if(el) el.textContent=`${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} ${DOW[d.getDay()]}　${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
+
+renderTabs();
+render();
+tick();
+setInterval(tick,30000);
+</script>
+</body>
+</html>
