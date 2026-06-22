@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1024">
+<title>20 · キャンペーン管理</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neue',sans-serif;background:#0F1D5C;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;}
+.ipad{width:1024px;height:768px;background:#F0F2F7;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.55);position:relative;}
+
+.zone-a{height:44px;flex-shrink:0;background:#fff;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 14px;gap:10px;z-index:10;}
+.za-menu{font-size:18px;color:#1E3A8A;cursor:pointer;padding:4px 6px;border-radius:6px;line-height:1;user-select:none;}
+.za-menu:hover{background:#EEF2FF;}
+.za-logo{font-size:13px;color:#1E3A8A;font-weight:700;letter-spacing:.08em;cursor:pointer;}
+.za-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.za-time{font-size:11px;color:#555;font-weight:500;}
+
+.sb-overlay{position:absolute;inset:0;background:rgba(0,0,0,.38);z-index:200;opacity:0;pointer-events:none;transition:opacity .2s;}
+.sb-overlay.open{opacity:1;pointer-events:all;}
+.sidebar{position:absolute;left:0;top:0;bottom:0;width:224px;background:#1E3A8A;z-index:201;transform:translateX(-100%);transition:transform .22s cubic-bezier(.25,.46,.45,.94);display:flex;flex-direction:column;}
+.sidebar.open{transform:translateX(0);}
+.sb-head{padding:20px 16px 14px;border-bottom:.5px solid rgba(255,255,255,.1);}
+.sb-logo{font-size:14px;color:#fff;font-weight:700;letter-spacing:.06em;}
+.sb-sub{font-size:10px;color:rgba(255,255,255,.3);margin-top:3px;}
+.sb-nav{flex:1;padding:8px 0;overflow-y:auto;}
+.sb-item{display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;transition:background .12s;}
+.sb-item:hover{background:rgba(255,255,255,.07);}
+.sb-item.active{background:rgba(255,255,255,.13);}
+.sb-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.sb-label{font-size:13px;color:rgba(255,255,255,.65);}
+.sb-item.active .sb-label{color:#fff;font-weight:600;}
+.sb-foot{padding:12px 16px;border-top:.5px solid rgba(255,255,255,.1);}
+.sb-ver{font-size:10px;color:rgba(255,255,255,.2);}
+
+.zone-b{height:46px;flex-shrink:0;background:#fff;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 14px;gap:10px;}
+.zb-title{font-size:14px;font-weight:700;color:#1A1A1A;}
+.zb-spacer{flex:1;}
+.zb-add-btn{display:flex;align-items:center;gap:4px;padding:7px 13px;border-radius:9px;background:#D35400;color:#fff;font-size:12px;font-weight:700;border:none;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0;box-shadow:0 2px 8px rgba(211,84,0,.3);}
+.zb-add-btn:hover{background:#BA4A00;}
+
+.main{flex:1;overflow-y:auto;padding:14px 16px;}
+
+.camp-card{background:#fff;border:.5px solid #E5E5E0;border-radius:12px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:14px;}
+.camp-icon{width:42px;height:42px;border-radius:10px;background:#FEF5E7;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0;}
+.camp-body{flex:1;min-width:0;}
+.camp-name{font-size:13.5px;font-weight:700;color:#1A1A1A;}
+.camp-cond{display:flex;gap:6px;margin-top:5px;flex-wrap:wrap;}
+.cond-chip{font-size:9.5px;font-weight:600;color:#666;background:#F4F4F0;padding:3px 8px;border-radius:5px;}
+.camp-discount{font-size:15px;font-weight:800;color:#D35400;flex-shrink:0;min-width:64px;text-align:right;}
+.camp-toggle{width:40px;height:23px;border-radius:12px;background:#E0E0DC;position:relative;cursor:pointer;flex-shrink:0;}
+.camp-toggle.on{background:#D35400;}
+.camp-toggle-knob{width:19px;height:19px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:left .15s;box-shadow:0 1px 3px rgba(0,0,0,.2);}
+.camp-toggle.on .camp-toggle-knob{left:19px;}
+
+.section-head{font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.06em;margin:18px 0 8px;}
+
+.fresha-card{background:#F5EEF8;border:.5px solid #E0CCEC;border-radius:12px;padding:14px 16px;}
+.fresha-title{font-size:12px;font-weight:700;color:#6C3483;margin-bottom:6px;}
+.fresha-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:.5px solid #E8D9F0;font-size:12px;color:#555;}
+.fresha-row:last-child{border-bottom:none;}
+.fresha-toggle{width:36px;height:21px;border-radius:11px;background:#E0CCEC;position:relative;cursor:pointer;flex-shrink:0;}
+.fresha-toggle.on{background:#8E44AD;}
+.fresha-toggle-knob{width:17px;height:17px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:left .15s;}
+.fresha-toggle.on .fresha-toggle-knob{left:17px;}
+
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(12px);background:#1A1A1A;color:#fff;font-size:12px;font-weight:500;padding:10px 18px;border-radius:10px;z-index:9999;opacity:0;pointer-events:none;transition:all .22s;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+
+<div class="ipad">
+  <div class="sb-overlay" id="sbOverlay" onclick="closeSb()"></div>
+  <div class="sidebar" id="sidebar">
+    <div class="sb-head">
+      <div class="sb-logo">✂ salon pos</div>
+      <div class="sb-sub">Hair Salon Yuki · 渋谷区道玄坂</div>
+    </div>
+    <div class="sb-nav">
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#3B5BDB"></div><span class="sb-label">会計 · POS</span></div>
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#2E86C1"></div><span class="sb-label">顧客管理</span></div>
+      <div class="sb-item active" onclick="closeSb()"><div class="sb-dot" style="background:#D35400"></div><span class="sb-label">マーケティング</span></div>
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#117A65"></div><span class="sb-label">店舗設定</span></div>
+    </div>
+    <div class="sb-foot"><div class="sb-ver">v2.0.0</div></div>
+  </div>
+
+  <div class="zone-a">
+    <span class="za-menu" onclick="openSb()">☰</span>
+    <span class="za-logo" onclick="location.href='01_login_main.html'">✂ salon pos</span>
+    <div class="za-right">
+      <span class="za-time" id="tbTime">06.21 日　10:24</span>
+    </div>
+  </div>
+
+  <div class="zone-b">
+    <span class="zb-title">キャンペーン管理</span>
+    <div class="zb-spacer"></div>
+    <button class="zb-add-btn" onclick="toast('新規キャンペーン作成フォーム（モック）')">＋キャンペーン作成</button>
+  </div>
+
+  <div class="main">
+    <div class="section-head">自動キャンペーン（条件設定→自動適用）</div>
+    <div id="campList"></div>
+
+    <!-- 프레샤 보조: 추천인 프로그램 (Course 5.6) -->
+    <div class="fresha-card">
+      <div class="fresha-title">💡 プレシャ参考機能（補助）— 紹介プログラム</div>
+      <div class="fresha-row">
+        <span>紹介プログラムを有効にする<br><span style="font-size:10px;color:#8E6BA1;">紹介した人・紹介された人の両方に特典を付与（Fresha「Reward Clients for Referrals」参考）</span></span>
+        <div class="fresha-toggle" id="refToggle" onclick="toggleFresha('refToggle')"><div class="fresha-toggle-knob"></div></div>
+      </div>
+      <div class="fresha-row">
+        <span>紹介者への特典</span>
+        <span style="font-weight:700;color:#1A1A1A;">¥500クーポン</span>
+      </div>
+      <div class="fresha-row">
+        <span>被紹介者への特典</span>
+        <span style="font-weight:700;color:#1A1A1A;">初回10%OFF（19のWELCOME10と連携）</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Data ─────────────────────────────────────────────────────────────────
+// 토스 §1-3「자동 할인」그대로: 조건(시간대·요일·메뉴) 설정 → 자동 적용. "캠페인"으로 명칭만 확장.
+let CAMPAIGNS=[
+  {icon:'🌙', name:'平日ナイトタイム割引', cond:['平日','18:00〜20:00','全メニュー'], discount:'10%', on:true},
+  {icon:'📅', name:'火曜・水曜限定割引', cond:['火・水','終日','カラー・パーマ'], discount:'15%', on:true},
+  {icon:'🎂', name:'誕生月キャンペーン', cond:['誕生月','全期間','全メニュー'], discount:'¥1,000', on:true},
+  {icon:'☔', name:'雨の日来店割引', cond:['雨天時のみ','終日','全メニュー'], discount:'5%', on:false},
+];
+
+function render(){
+  document.getElementById('campList').innerHTML = CAMPAIGNS.map((c,i)=>`
+    <div class="camp-card">
+      <div class="camp-icon">${c.icon}</div>
+      <div class="camp-body">
+        <div class="camp-name">${c.name}</div>
+        <div class="camp-cond">${c.cond.map(x=>`<span class="cond-chip">${x}</span>`).join('')}</div>
+      </div>
+      <span class="camp-discount">${c.discount}</span>
+      <div class="camp-toggle ${c.on?'on':''}" onclick="toggleCamp(${i},this)"><div class="camp-toggle-knob"></div></div>
+    </div>`).join('');
+}
+function toggleCamp(i,el){
+  CAMPAIGNS[i].on=!CAMPAIGNS[i].on;
+  el.classList.toggle('on',CAMPAIGNS[i].on);
+  toast(`${CAMPAIGNS[i].name} を${CAMPAIGNS[i].on?'有効':'無効'}にしました`);
+}
+function toggleFresha(id){ document.getElementById(id).classList.toggle('on'); }
+
+function openSb(){ document.getElementById('sidebar').classList.add('open'); document.getElementById('sbOverlay').classList.add('open'); }
+function closeSb(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('sbOverlay').classList.remove('open'); }
+
+let _tt;
+function toast(msg){ const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); clearTimeout(_tt); _tt=setTimeout(()=>el.classList.remove('show'),2400); }
+
+const DOW=['日','月','火','水','木','金','土'];
+function tick(){
+  const d=new Date();
+  const el=document.getElementById('tbTime');
+  if(el) el.textContent=`${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} ${DOW[d.getDay()]}　${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
+
+render();
+tick();
+setInterval(tick,30000);
+</script>
+</body>
+</html>
