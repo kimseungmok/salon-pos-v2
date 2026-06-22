@@ -107,14 +107,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 
 /* ── Product grid (4×5, no scroll) ── */
 .product-grid{flex:1;padding:9px 12px;overflow:hidden;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(5,1fr);gap:8px;}
-.prod-card{background:white;border:.5px solid #E5E5E0;border-radius:10px;padding:10px 10px 8px;cursor:pointer;transition:all .12s;user-select:none;display:flex;flex-direction:column;gap:3px;overflow:hidden;}
-.prod-card:hover{border-color:#3B5BDB;box-shadow:0 2px 10px rgba(46,134,193,.13);}
+/* 2026-06-23 토스플레이스 실제 스크린샷 기준 보정: 상품 카드는 화이트+컬러스트립이 아니라
+   카테고리 등록 시 고른 색상 스와치를 카드 전체 배경으로 채우는 방식(흰색 텍스트). */
+.prod-card{border:none;border-radius:10px;padding:10px 10px 8px;cursor:pointer;transition:all .12s;user-select:none;display:flex;flex-direction:column;gap:3px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.08);}
+.prod-card:hover{filter:brightness(1.06);box-shadow:0 3px 10px rgba(0,0,0,.18);}
 .prod-card:active{transform:scale(.97);}
-.prod-card.in-cart{border-color:#3B5BDB;background:#EEF2FF;}
-.prod-badge{font-size:9px;font-weight:600;color:white;background:#E74C3C;border-radius:3px;padding:1px 5px;align-self:flex-start;flex-shrink:0;}
-.prod-name{font-size:12px;font-weight:500;color:#1A1A1A;line-height:1.35;flex:1;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
-.prod-price{font-size:13px;font-weight:600;color:#3B5BDB;flex-shrink:0;}
-.prod-time{font-size:10px;color:#C0C0BC;flex-shrink:0;}
+.prod-card.in-cart{outline:3px solid #1B64DA;outline-offset:-3px;}
+.prod-badge{font-size:9px;font-weight:700;color:white;background:rgba(0,0,0,.45);border-radius:3px;padding:1px 5px;align-self:flex-end;flex-shrink:0;}
+.prod-name{font-size:12px;font-weight:700;color:#fff;line-height:1.35;flex:1;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;text-shadow:0 1px 2px rgba(0,0,0,.12);}
+.prod-price{font-size:13px;font-weight:700;color:#fff;flex-shrink:0;}
+.prod-time{font-size:10px;color:rgba(255,255,255,.75);flex-shrink:0;}
 .prod-empty{background:#F9F9F7;border:1px dashed #DDDDD8;border-radius:10px;display:flex;align-items:center;justify-content:center;}
 
 /* ── Edit mode grid ── */
@@ -553,6 +555,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 function makeChildren(parentId, extras=[]) {
   return [{id:parentId+'_all', name:'すべて'}, ...extras];
 }
+// 토스플레이스 실제 「상품 추가」모달의 색상 스와치 순서 그대로 (백색 제외, 시계방향)
+const TILE_COLORS = ['#5B8DEF','#6FCF73','#F2994A','#F0C75E','#A78BFA','#9AA5B1','#4FD1C5','#3B5BDB','#A0714F','#F2A0C0'];
+function tileColor(idx){ return TILE_COLORS[idx % TILE_COLORS.length]; }
 const CATS = [
   {id:'cut',      name:'施術',         children:makeChildren('cut')},
   {id:'color',    name:'カラー',        children:makeChildren('color',   [{id:'color_std',name:'一般染色'},{id:'color_pre',name:'プレミアム染色'}])},
@@ -825,10 +830,10 @@ function renderProducts(){
     }).join('');
   }else{
     grid.className='product-grid';
-    grid.innerHTML=slots.map(p=>{
+    grid.innerHTML=slots.map((p,i)=>{
       if(!p||!p.visible)return`<div class="prod-empty"></div>`;
       const ic=cart.some(c=>c.name===p.name);
-      return`<div class="prod-card${ic?' in-cart':''}" onclick='addToCart(${JSON.stringify(p)})'>
+      return`<div class="prod-card${ic?' in-cart':''}" style="background:${tileColor(i)};" onclick='addToCart(${JSON.stringify(p)})'>
         ${p.badge?`<span class="prod-badge">${p.badge}</span>`:''}
         <span class="prod-name">${p.name}</span>
         <span class="prod-price">¥${p.price.toLocaleString()}</span>
