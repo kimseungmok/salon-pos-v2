@@ -95,6 +95,47 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 
 .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(12px);background:#1A1A1A;color:#fff;font-size:12px;font-weight:500;padding:10px 18px;border-radius:10px;z-index:9999;opacity:0;pointer-events:none;transition:all .22s;white-space:nowrap;}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+
+/* ══ 商品追加モーダル — 토스플레이스 실제 화면 그대로(2026-06-23): 사진업로드가 아니라
+   색상 스와치 선택 + 카테고리/옵션은 칩 다중선택, 전체 페이지가 아니라 모달 ══ */
+.modal-overlay{position:absolute;inset:0;background:rgba(0,0,0,.45);z-index:300;opacity:0;pointer-events:none;transition:opacity .15s;display:flex;align-items:center;justify-content:center;}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal-card{width:640px;max-height:680px;background:#fff;border-radius:16px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.modal-head{padding:18px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:.5px solid #EBEBE7;flex-shrink:0;}
+.modal-title{font-size:16px;font-weight:800;color:#1A1A1A;}
+.modal-close{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;color:#8B95A1;cursor:pointer;}
+.modal-close:hover{background:#F4F4F0;}
+.modal-body{flex:1;overflow-y:auto;padding:20px;}
+.swatch-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:18px;}
+.swatch-preview{width:64px;height:64px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:700;text-align:center;flex-shrink:0;padding:4px;overflow:hidden;}
+.swatch{width:32px;height:32px;border-radius:50%;cursor:pointer;border:2px solid transparent;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;}
+.swatch.sel{border-color:#1A1A1A;box-shadow:0 0 0 2px #fff inset;}
+.swatch.white{border:1.5px solid #D8D8D4;}
+.modal-toggle-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:.5px solid #F0F0EC;margin-bottom:16px;}
+.modal-toggle-label{font-size:13px;color:#333;font-weight:600;}
+.m-switch{width:38px;height:22px;border-radius:11px;background:#E0E0DC;position:relative;cursor:pointer;flex-shrink:0;}
+.m-switch.on{background:#1E3A8A;}
+.m-switch-knob{width:18px;height:18px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:left .15s;box-shadow:0 1px 3px rgba(0,0,0,.2);}
+.m-switch.on .m-switch-knob{left:18px;}
+.m-field{margin-bottom:16px;}
+.m-label{font-size:12px;font-weight:700;color:#555;margin-bottom:6px;display:block;}
+.m-label .req{color:#E74C3C;}
+.m-input{width:100%;padding:10px 12px;border-radius:9px;border:.5px solid #D8D8D4;font-size:13.5px;font-family:inherit;color:#1A1A1A;}
+.m-input:focus{outline:none;border-color:#1E3A8A;}
+.m-price-row{display:flex;align-items:center;gap:10px;}
+.m-price-row .m-input{flex:1;}
+.m-check-label{display:flex;align-items:center;gap:6px;font-size:11.5px;color:#777;white-space:nowrap;cursor:pointer;}
+.chip-wrap{display:flex;gap:7px;flex-wrap:wrap;}
+.chip{padding:7px 13px;border-radius:18px;border:1px solid #E0E0DC;background:#fff;font-size:12px;color:#555;cursor:pointer;transition:all .12s;}
+.chip:hover{background:#F4F4F0;}
+.chip.sel{background:#EEF2FF;border-color:#1E3A8A;color:#1E3A8A;font-weight:700;}
+.chip-add{font-size:12px;color:#1E3A8A;font-weight:600;cursor:pointer;padding:7px 4px;white-space:nowrap;}
+.modal-foot{padding:14px 20px;border-top:.5px solid #EBEBE7;display:flex;justify-content:flex-end;gap:10px;flex-shrink:0;}
+.m-btn{padding:10px 22px;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;border:none;font-family:inherit;}
+.m-btn-cancel{background:#F4F4F0;color:#555;}
+.m-btn-cancel:hover{background:#EAEAE6;}
+.m-btn-save{background:#1E3A8A;color:#fff;}
+.m-btn-save:hover{background:#16285F;}
 </style>
 </head>
 <body>
@@ -141,7 +182,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
         <div class="zb-search"><input type="text" id="searchInput" placeholder="商品名で検索" oninput="onSearch(this.value)"></div>
         <div class="zb-spacer"></div>
         <button class="zb-bulk-btn" onclick="toast('エクセルダウンロード → 内容入力 → アップロードで一括編集（モック）')">商品 一括編集</button>
-        <button class="zb-add-btn" onclick="location.href='26_product_form.html'">＋商品追加</button>
+        <button class="zb-add-btn" onclick="openModal(null)">＋商品追加</button>
       </div>
       <div class="zone-b2">
         <span class="zb2-hint">💡 カテゴリ削除時、連結商品は「未分類」に移動します</span>
@@ -150,6 +191,49 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
       </div>
 
       <div class="zone-c"><div class="zc-inner" id="zcInner"></div></div>
+    </div>
+
+    <!-- 商品追加・編集モーダル -->
+    <div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+      <div class="modal-card">
+        <div class="modal-head">
+          <span class="modal-title" id="modalTitle">商品追加</span>
+          <span class="modal-close" onclick="closeModal()">✕</span>
+        </div>
+        <div class="modal-body">
+          <div class="swatch-row">
+            <div class="swatch-preview" id="swatchPreview"></div>
+            <div id="swatchGrid" class="swatch-row" style="margin-bottom:0;"></div>
+          </div>
+          <div class="modal-toggle-row">
+            <span class="modal-toggle-label">キオスク露出</span>
+            <div class="m-switch" id="swKiosk" onclick="toggleMSwitch('swKiosk')"><div class="m-switch-knob"></div></div>
+          </div>
+          <div class="m-field">
+            <span class="m-label">商品名<span class="req">*</span></span>
+            <input class="m-input" id="mName" placeholder="例）カラー剤（ブラウン系）">
+          </div>
+          <div class="m-field">
+            <span class="m-label">カテゴリ選択<span class="req">*</span></span>
+            <div class="chip-wrap" id="catChips"></div>
+          </div>
+          <div class="m-field">
+            <span class="m-label">価格<span class="req">*</span></span>
+            <div class="m-price-row">
+              <input class="m-input" id="mPrice" type="number" placeholder="1800">
+              <label class="m-check-label"><input type="checkbox" id="mTimePrice"> 毎回直接入力します</label>
+            </div>
+          </div>
+          <div class="m-field">
+            <span class="m-label">商品に付けるオプションを選択してください</span>
+            <div class="chip-wrap" id="optChips"></div>
+          </div>
+        </div>
+        <div class="modal-foot">
+          <button class="m-btn m-btn-cancel" onclick="closeModal()">取消</button>
+          <button class="m-btn m-btn-save" onclick="saveProduct()">登録</button>
+        </div>
+      </div>
     </div>
 
     <div class="zone-d">
@@ -189,7 +273,12 @@ let PRODUCTS=[
   {id:9, name:'販売用シャンプー（顧客用）', cat:'販売用シャンプー', price:3200, icon:'🛍️', hasOption:true,  stock:7,  lowAt:5},
 ];
 
+// 토스플레이스 실제「상품 추가」모달의 색상 스와치 순서(白 포함 11색) 그대로
+const SWATCHES=['#FFFFFF','#5B8DEF','#6FCF73','#F2994A','#F0C75E','#A78BFA','#9AA5B1','#4FD1C5','#3B5BDB','#A0714F','#F2A0C0'];
+const OPTION_GROUPS=['長さ','コース追加','色の濃さ','サイズ','本数追加'];
+
 let curCat='すべて', filterText='';
+let editId=null, selSwatch=SWATCHES[3], selCats=new Set(), selOpts=new Set();
 
 function stockStatus(p){
   if(p.stock<=0) return {cls:'out', label:'品切れ'};
@@ -209,7 +298,7 @@ function render(){
 
   document.getElementById('zcInner').innerHTML = list.map(p=>{
     const st=stockStatus(p);
-    return `<div class="p-card" onclick="location.href='26_product_form.html?id=${p.id}'">
+    return `<div class="p-card" onclick="openModal(${p.id})">
       ${p.hasOption?'<span class="p-opt-badge">オプション</span>':''}
       <div class="p-thumb">${p.icon}</div>
       <div class="p-name">${p.name}</div>
@@ -241,6 +330,56 @@ function onSearch(v){ filterText=v.trim(); render(); }
 function openSb(){ document.getElementById('sidebar').classList.add('open'); document.getElementById('sbOverlay').classList.add('open'); }
 function closeSb(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('sbOverlay').classList.remove('open'); }
 
+// ── 商品追加・編集モーダル ──────────────────────────────────────────────
+function renderSwatchGrid(){
+  document.getElementById('swatchGrid').innerHTML = SWATCHES.map(c=>{
+    const isWhite = c==='#FFFFFF';
+    return `<div class="swatch${isWhite?' white':''}${c===selSwatch?' sel':''}" style="background:${c};" onclick="pickSwatch('${c}')">${c===selSwatch&&!isWhite?'✓':''}</div>`;
+  }).join('');
+  const prev=document.getElementById('swatchPreview');
+  prev.style.background=selSwatch==='#FFFFFF'?'#F4F0F7':selSwatch;
+  prev.style.color=selSwatch==='#FFFFFF'?'#999':'#fff';
+  prev.textContent=document.getElementById('mName').value||'プレビュー';
+}
+function pickSwatch(c){ selSwatch=c; renderSwatchGrid(); }
+
+function renderCatChips(){
+  document.getElementById('catChips').innerHTML = CATEGORIES.filter(c=>c!=='すべて').map(c=>
+    `<div class="chip${selCats.has(c)?' sel':''}" onclick="toggleCatChip('${c}')">${c}</div>`).join('')
+    + `<span class="chip-add" onclick="toast('新しいカテゴリを作成（モック）')">＋新しいカテゴリ登録</span>`;
+}
+function toggleCatChip(c){ selCats.clear(); selCats.add(c); renderCatChips(); }
+
+function renderOptChips(){
+  document.getElementById('optChips').innerHTML = OPTION_GROUPS.map(o=>
+    `<div class="chip${selOpts.has(o)?' sel':''}" onclick="toggleOptChip('${o}')">${o}</div>`).join('');
+}
+function toggleOptChip(o){ selOpts.has(o)?selOpts.delete(o):selOpts.add(o); renderOptChips(); }
+
+function toggleMSwitch(id){ document.getElementById(id).classList.toggle('on'); }
+
+function openModal(id){
+  editId=id;
+  const p = id ? PRODUCTS.find(x=>x.id===id) : null;
+  document.getElementById('modalTitle').textContent = p ? '商品編集' : '商品追加';
+  document.getElementById('mName').value = p ? p.name : '';
+  document.getElementById('mPrice').value = p ? p.price : '';
+  selSwatch = p ? (p.color||SWATCHES[3]) : SWATCHES[3];
+  selCats = new Set(p ? [p.cat] : []);
+  selOpts = new Set();
+  renderSwatchGrid(); renderCatChips(); renderOptChips();
+  document.getElementById('mName').oninput = renderSwatchGrid;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+function closeModal(){ document.getElementById('modalOverlay').classList.remove('open'); }
+function saveProduct(){
+  const name=document.getElementById('mName').value.trim();
+  if(!name||selCats.size===0){ toast('商品名とカテゴリを入力してください'); return; }
+  toast(editId ? `「${name}」を保存しました（モック）` : `「${name}」を追加しました（モック）`);
+  closeModal();
+  render();
+}
+
 let _tt;
 function toast(msg){ const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); clearTimeout(_tt); _tt=setTimeout(()=>el.classList.remove('show'),2400); }
 
@@ -255,6 +394,13 @@ renderTabs();
 render();
 tick();
 setInterval(tick,30000);
+
+// 구 26_product_form.html 링크 호환: ?open=1 또는 ?openId=N으로 들어오면 모달 자동 오픈
+(function(){
+  const q=new URLSearchParams(location.search);
+  if(q.has('openId')) openModal(parseInt(q.get('openId')));
+  else if(q.has('open')) openModal(null);
+})();
 </script>
 </body>
 </html>
