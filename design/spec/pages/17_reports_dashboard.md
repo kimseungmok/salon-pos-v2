@@ -9,6 +9,12 @@
 
 ## 1. 벤치마킹 근거
 
+**1차 출처(사내 기밀 벤치마킹 자료, `salon_pos/doc/benchmarking/`)**: `00_benchmarking_summary.md`에서 "매출 리포트 차트 = 일별/월별/스태프별/메뉴별 차트 UI"를 HIGH 우선순위 GAP으로, "매출 리포트 PIN 잠금"을 별도 보안 기능(MEDIUM)으로 명시 — `01_tosspos_analysis.md` §1-7 참조. 이 화면은 두 요구사항을 모두 반영:
+- 일별/월별/스태프별/메뉴별 차트 → 売上概況(기간별 추이)/スタッフ実績/商品売上 탭으로 구현
+- 매출 리포트 PIN 잠금 → §4 참조, 화면 진입 시 별도 PIN 게이트 추가
+
+**2차 출처(공개 웹 자료, 보조 참고)**:
+
 | 출처 | 참고한 구조 |
 |------|-------------|
 | **토스플레이스 매출 리포트** | 일·주·월·연 단위 분석 + 시간대·요일별 추이, 전년 동기간 비교, 판매유형·고객등급별 분포, 상품 매출순위(등락률 포함), 매출달력(날씨·주간합계) |
@@ -32,16 +38,22 @@
 
 `DATASETS = {today, week, month, year}` — 각 기간별로 `sales/count/refund/prevSales/yoySales/trend[]/byMethod{}/bySaleType{}/byStaff[]/byMenu[]/byBranch{}/discounts/gross/taxIncluded/clientTiers{}`를 독립적으로 보유한 mock. 지점 필터는 새 데이터셋을 만들지 않고 `branchFactor()`로 `byBranch` 비중만큼 전체 숫자를 스케일링(실제 구현 시엔 지점별 원본 집계로 대체 필요). `CAL_DAYS[]`는 売上カレンダー 전용 별도 mock(2026년 6월, 21일=오늘 기준 그 이후는 매출 없음).
 
-## 4. 멀티지점 연계
+## 4. 売上レポートPINロック (토스포스 「매출 리포트 PIN 잠금」 벤치마킹)
+
+화면 진입 시 `#s-pinlock` 오버레이가 항상 먼저 표시되며, 6자리 PIN(데모 123456)을 입력해야 콘텐츠가 보임 — 01의 일반 로그인 PIN과 별개로, "매출 데이터는 권한 있는 스태프만 봐야 한다"는 보안 요구를 화면 단위로 한 번 더 강제. Zone A 우측의 「🔒 レポート保護: ON/OFF」 배지로 이 보호 기능 자체를 켜고 끌 수 있음(데모용 토글, 실제로는 설정 화면에서 관리할 항목).
+
+## 5. 멀티지점 연계
 
 店舗比較·スタッフ実績 패널은 이번 세션에서 도입한 멀티지점 운영 모델(06/12/13과 동일 인물·지점 체계: 渋谷店/池袋店, Yuki/Mika/Kenji/Rio)을 그대로 재사용해 다른 화면과 일관성 유지.
 
-## 5. 관련 파일
+## 6. 관련 파일
 
 | 파일 | 역할 |
 |------|------|
 | `17_reports_dashboard.html` | 이 화면 |
-| `01_login_main.html` | 진입 출처(売上状況 타일) |
+| `01_login_main.html` | 진입 출처(売上状況 타일), PIN 게이트 디자인 패턴 출처 |
+| `salon_pos/doc/benchmarking/00_benchmarking_summary.md` | 1차 벤치마킹 출처(사내 기밀) |
+| `salon_pos/doc/benchmarking/01_tosspos_analysis.md` | 매출 리포트 PIN 잠금 §1-7 출처(사내 기밀) |
 | `05_transaction_history.html` | 決済手段別 색상 체계 출처 |
 | `23_store_close.html` | KPI 카드·파이낸스 서머리 패턴 출처 |
 | `12_staff_detail.html` | 스태프별 매출 바차트 패턴 출처 |

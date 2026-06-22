@@ -188,6 +188,28 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 
 .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(12px);background:#1A1A1A;color:#fff;font-size:12px;font-weight:500;padding:10px 18px;border-radius:10px;z-index:9999;opacity:0;pointer-events:none;transition:all .22s;white-space:nowrap;}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+
+/* 売上レポートPINロック — トスポス「매출 리포트 PIN 잠금」벤치마킹.
+   売上に関する画面は別途PINを要求し、誰でも閲覧できないようにする保護機能。 */
+.za-report-lock{display:flex;align-items:center;gap:4px;font-size:10.5px;color:#888;cursor:pointer;padding:3px 8px;border-radius:6px;border:.5px solid #E0E0DC;background:#FAFAF8;}
+.za-report-lock:hover{background:#F0F0EC;}
+.za-report-lock.off{color:#bbb;}
+#s-pinlock{position:absolute;inset:0;background:linear-gradient(160deg,#1C2833 0%,#2C3E50 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:500;opacity:1;transition:opacity .3s;}
+#s-pinlock.hidden{opacity:0;pointer-events:none;}
+.pl-icon{font-size:28px;margin-bottom:10px;}
+.pl-title{font-size:15px;color:#fff;font-weight:500;margin-bottom:3px;}
+.pl-sub{font-size:11px;color:rgba(255,255,255,.4);margin-bottom:24px;text-align:center;}
+.pl-back{position:absolute;top:18px;left:18px;font-size:12px;color:rgba(255,255,255,.4);cursor:pointer;}
+.pl-pinbox{background:rgba(255,255,255,.07);border:.5px solid rgba(255,255,255,.15);border-radius:14px;padding:18px 24px;display:flex;flex-direction:column;align-items:center;gap:12px;}
+.pl-dots{display:flex;gap:12px;}
+.pl-dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.2);}
+.pl-dot.filled{background:#fff;}
+.pl-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;}
+.pl-key{width:52px;height:38px;border-radius:8px;background:rgba(255,255,255,.1);color:#fff;font-size:15px;border:none;cursor:pointer;}
+.pl-key:hover{background:rgba(255,255,255,.2);}
+.pl-key.del{font-size:12px;background:transparent;color:rgba(255,255,255,.5);}
+.pl-key.enter{background:#D4AC0D;font-size:11px;}
+.pl-hint{font-size:10px;color:rgba(255,255,255,.25);margin-top:6px;}
 </style>
 </head>
 <body>
@@ -223,8 +245,38 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
       <span class="za-branch">渋谷店</span>
       <div class="za-sep"></div>
       <span class="za-time" id="tbTime">06.21 日　20:30</span>
+      <span class="za-report-lock" id="reportLockBadge" onclick="toggleReportLock()" title="売上レポートPINロックのON/OFF（設定の一部・デモ用）">🔒 レポート保護: ON</span>
       <span class="za-lock">🔒</span>
     </div>
+  </div>
+
+  <!-- 売上レポートPINロック：このダッシュボードに入る際、別途PINを要求（トスポス「매출 리포트 PIN 잠금」相当） -->
+  <div id="s-pinlock">
+    <div class="pl-back" onclick="location.href='01_login_main.html'">‹ 戻る</div>
+    <div class="pl-icon">🔒</div>
+    <div class="pl-title">売上レポートはPIN保護されています</div>
+    <div class="pl-sub">権限のあるスタッフのみ閲覧できます</div>
+    <div class="pl-pinbox">
+      <div class="pl-dots" id="plDots">
+        <div class="pl-dot"></div><div class="pl-dot"></div><div class="pl-dot"></div>
+        <div class="pl-dot"></div><div class="pl-dot"></div><div class="pl-dot"></div>
+      </div>
+      <div class="pl-pad">
+        <button class="pl-key" onclick="plKey('1')">1</button>
+        <button class="pl-key" onclick="plKey('2')">2</button>
+        <button class="pl-key" onclick="plKey('3')">3</button>
+        <button class="pl-key" onclick="plKey('4')">4</button>
+        <button class="pl-key" onclick="plKey('5')">5</button>
+        <button class="pl-key" onclick="plKey('6')">6</button>
+        <button class="pl-key" onclick="plKey('7')">7</button>
+        <button class="pl-key" onclick="plKey('8')">8</button>
+        <button class="pl-key" onclick="plKey('9')">9</button>
+        <button class="pl-key del" onclick="plDel()">⌫</button>
+        <button class="pl-key" onclick="plKey('0')">0</button>
+        <button class="pl-key enter" onclick="plConfirm()">→</button>
+      </div>
+    </div>
+    <div class="pl-hint">PIN 123456（デモ）</div>
   </div>
 
   <!-- ══ ZONE B：기간/지점 공통 필터 ══ -->
@@ -655,6 +707,36 @@ function renderCalendar(){
   });
   document.getElementById('calendarBody').innerHTML = `<div class="cal-grid">${cells}</div>
     <div class="week-total-row"><span>2026年6月 累計（6/21時点）</span><b>${fmtY(CAL_DAYS.reduce((s,d)=>s+d.sales,0))}</b></div>`;
+}
+
+// ── 売上レポートPINロック ───────────────────────────────────────────────
+const REPORT_PIN='123456';
+let reportLockEnabled=true, plPin='';
+function plKey(k){
+  if(plPin.length>=6) return;
+  plPin+=k;
+  document.querySelectorAll('#plDots .pl-dot').forEach((d,i)=>d.classList.toggle('filled',i<plPin.length));
+  if(plPin.length===6) setTimeout(plConfirm,200);
+}
+function plDel(){
+  plPin=plPin.slice(0,-1);
+  document.querySelectorAll('#plDots .pl-dot').forEach((d,i)=>d.classList.toggle('filled',i<plPin.length));
+}
+function plConfirm(){
+  if(plPin!==REPORT_PIN){
+    plPin='';
+    document.querySelectorAll('#plDots .pl-dot').forEach(d=>d.classList.remove('filled'));
+    return;
+  }
+  document.getElementById('s-pinlock').classList.add('hidden');
+}
+// 設定上の「売上レポートPINロック」ON/OFF（デモ用 — 実際はOFFにすると次回から画面進入時の認証をスキップ）
+function toggleReportLock(){
+  reportLockEnabled=!reportLockEnabled;
+  const el=document.getElementById('reportLockBadge');
+  el.textContent = reportLockEnabled? '🔒 レポート保護: ON' : '🔓 レポート保護: OFF';
+  el.classList.toggle('off', !reportLockEnabled);
+  toast(reportLockEnabled? 'レポート保護をONにしました（次回進入時にPINを要求）' : 'レポート保護をOFFにしました（次回進入時はPIN不要）');
 }
 
 // ── Actions ──────────────────────────────────────────────────────────────
