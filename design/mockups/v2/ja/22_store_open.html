@@ -88,7 +88,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 .cash-table .denom{font-weight:600;color:#333;}
 .cash-table input{width:48px;padding:6px 4px;border-radius:7px;border:.5px solid #D0D0CC;font-size:13px;font-family:inherit;text-align:center;}
 .cash-table input:focus{outline:none;border-color:#117A65;}
-.cash-table .subtotal{color:#555;font-variant-numeric:tabular-nums;display:inline-block;min-width:64px;}
+.cash-table .subtotal{color:#555;font-variant-numeric:tabular-nums;}
 .qty-control{display:flex;align-items:center;gap:5px;}
 .qty-btn{width:24px;height:24px;border-radius:6px;border:.5px solid #D0D0CC;background:#F8F8F6;color:#555;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:inherit;transition:background .1s;}
 .qty-btn:hover{background:#EFEFEC;}
@@ -175,7 +175,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
         <div class="card-body">
           <table class="cash-table">
             <colgroup><col class="c-denom"><col class="c-qty"><col class="c-sub"></colgroup>
-            <tr><th>金種</th><th>枚数・個数</th><th>小計</th></tr>
+            <thead><tr><th>金種</th><th>枚数・個数</th><th>小計</th></tr></thead>
             <tbody id="cashRows"></tbody>
           </table>
           <div class="cash-summary">
