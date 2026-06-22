@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1024">
+<title>25 · 商品一覧</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neue',sans-serif;background:#0F1D5C;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;}
+.ipad{width:1024px;height:768px;background:#F0F2F7;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.55);position:relative;}
+
+.zone-a{height:44px;flex-shrink:0;background:#fff;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 14px;gap:10px;z-index:10;}
+.za-menu{font-size:18px;color:#1E3A8A;cursor:pointer;padding:4px 6px;border-radius:6px;line-height:1;user-select:none;}
+.za-menu:hover{background:#EEF2FF;}
+.za-logo{font-size:13px;color:#1E3A8A;font-weight:700;letter-spacing:.08em;}
+.za-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.za-sep{width:.5px;height:14px;background:#D0D0CC;}
+.za-avatar{width:24px;height:24px;border-radius:50%;background:#8E44AD;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;}
+.za-name{font-size:12px;color:#333;font-weight:500;}
+.za-branch{font-size:11px;color:#888;}
+.za-time{font-size:11px;color:#555;font-weight:500;}
+.za-lock{font-size:13px;color:#bbb;cursor:pointer;}
+
+.sb-overlay{position:absolute;inset:0;background:rgba(0,0,0,.38);z-index:200;opacity:0;pointer-events:none;transition:opacity .2s;}
+.sb-overlay.open{opacity:1;pointer-events:all;}
+.sidebar{position:absolute;left:0;top:0;bottom:0;width:224px;background:#1E3A8A;z-index:201;transform:translateX(-100%);transition:transform .22s cubic-bezier(.25,.46,.45,.94);display:flex;flex-direction:column;}
+.sidebar.open{transform:translateX(0);}
+.sb-head{padding:20px 16px 14px;border-bottom:.5px solid rgba(255,255,255,.1);}
+.sb-logo{font-size:14px;color:#fff;font-weight:700;letter-spacing:.06em;}
+.sb-sub{font-size:10px;color:rgba(255,255,255,.3);margin-top:3px;}
+.sb-nav{flex:1;padding:8px 0;overflow-y:auto;}
+.sb-item{display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;transition:background .12s;}
+.sb-item:hover{background:rgba(255,255,255,.07);}
+.sb-item.active{background:rgba(255,255,255,.13);}
+.sb-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.sb-label{font-size:13px;color:rgba(255,255,255,.65);}
+.sb-item.active .sb-label{color:#fff;font-weight:600;}
+.sb-foot{padding:12px 16px;border-top:.5px solid rgba(255,255,255,.1);}
+.sb-ver{font-size:10px;color:rgba(255,255,255,.2);}
+
+.wrap{flex:1;display:flex;overflow:hidden;}
+.left{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+
+/* ══ ZONE B：카테고리 탭 (토스포스 §3-3 카테고리 구조) ══ */
+.zone-b{height:46px;flex-shrink:0;background:#fff;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 12px;gap:6px;}
+.zb-tabs{display:flex;background:#F0F2F7;border-radius:9px;padding:3px;gap:2px;flex-shrink:1;overflow-x:auto;max-width:360px;}
+.zb-tab{padding:6px 10px;font-size:11px;font-weight:600;color:#999;cursor:pointer;border-radius:7px;background:transparent;border:none;font-family:inherit;white-space:nowrap;transition:all .15s;}
+.zb-tab.active{background:#fff;color:#7D3C98;box-shadow:0 1px 4px rgba(0,0,0,.1);}
+.zb-search{width:120px;flex-shrink:0;}
+.zb-search input{width:100%;padding:7px 10px;border-radius:8px;border:.5px solid #E0E0DC;font-size:11.5px;font-family:inherit;color:#333;background:#FAFAFA;}
+.zb-search input:focus{outline:none;border-color:#7D3C98;background:#fff;}
+.zb-spacer{flex:1;min-width:4px;}
+.zb-bulk-btn{padding:7px 10px;border-radius:9px;border:.5px solid #E0E0DC;background:#fff;color:#555;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0;}
+.zb-bulk-btn:hover{background:#F4F4F0;}
+.zb-add-btn{display:flex;align-items:center;gap:4px;padding:7px 12px;border-radius:9px;background:#7D3C98;color:#fff;font-size:11.5px;font-weight:700;border:none;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0;box-shadow:0 2px 8px rgba(125,60,152,.3);}
+.zb-add-btn:hover{background:#6C3483;}
+
+/* ══ ZONE B2：카테고리 관리 보조줄 (편집모드 진입 + 즐겨찾는 메뉴 안내) ══ */
+.zone-b2{height:36px;flex-shrink:0;background:#FAFAF8;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 12px;gap:10px;}
+.zb2-hint{font-size:10.5px;color:#999;}
+.zb2-spacer{flex:1;}
+.zb2-link{font-size:11px;color:#7D3C98;font-weight:600;cursor:pointer;}
+.zb2-link:hover{text-decoration:underline;}
+
+.zone-c{flex:1;overflow-y:auto;background:#F0F2F7;}
+.zone-c::-webkit-scrollbar{width:4px;}
+.zone-c::-webkit-scrollbar-thumb{background:#D0D0CC;border-radius:2px;}
+.zc-inner{padding:12px 14px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+
+.p-card{background:#fff;border:.5px solid #E5E5E0;border-radius:11px;padding:11px;cursor:pointer;transition:box-shadow .12s,border-color .12s;position:relative;}
+.p-card:hover{box-shadow:0 2px 10px rgba(0,0,0,.06);border-color:#D8B9E3;}
+.p-thumb{width:100%;height:64px;border-radius:8px;background:#F4F0F7;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:8px;}
+.p-name{font-size:12.5px;font-weight:700;color:#1A1A1A;}
+.p-cat{font-size:10px;color:#999;margin-top:2px;}
+.p-bottom{display:flex;justify-content:space-between;align-items:center;margin-top:8px;}
+.p-price{font-size:13px;font-weight:800;color:#1A1A1A;}
+.p-badge{font-size:9px;font-weight:700;padding:2px 6px;border-radius:5px;white-space:nowrap;}
+.p-badge.instock{background:#EAFAF1;color:#117A65;}
+.p-badge.low{background:#FEF9E7;color:#B7950B;}
+.p-badge.out{background:#FDEDEC;color:#C0392B;}
+.p-opt-badge{position:absolute;top:9px;right:9px;font-size:8.5px;font-weight:700;padding:2px 6px;border-radius:5px;background:#EBF5FB;color:#2E86C1;}
+
+.zone-d{width:210px;flex-shrink:0;border-left:.5px solid #E5E5E0;background:#fff;display:flex;flex-direction:column;overflow-y:auto;}
+.zd-sec{padding:14px 14px;border-bottom:.5px solid #F0F0EC;}
+.zd-title{font-size:9px;font-weight:700;color:#C8C8C4;letter-spacing:.08em;text-transform:uppercase;margin-bottom:9px;}
+.zd-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:.5px solid #F8F8F6;font-size:12px;}
+.zd-row:last-child{border-bottom:none;}
+.zd-label{color:#999;}
+.zd-val{font-weight:700;color:#1A1A1A;}
+.zd-val.r{color:#E74C3C;}
+.zd-cat-item{display:flex;align-items:center;justify-content:space-between;padding:6px 0;font-size:11.5px;color:#555;}
+.zd-cat-count{color:#aaa;font-size:10.5px;}
+
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(12px);background:#1A1A1A;color:#fff;font-size:12px;font-weight:500;padding:10px 18px;border-radius:10px;z-index:9999;opacity:0;pointer-events:none;transition:all .22s;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+
+<div class="ipad">
+  <div class="sb-overlay" id="sbOverlay" onclick="closeSb()"></div>
+  <div class="sidebar" id="sidebar">
+    <div class="sb-head">
+      <div class="sb-logo">✂ salon pos</div>
+      <div class="sb-sub">Hair Salon Yuki · 渋谷区道玄坂</div>
+    </div>
+    <div class="sb-nav">
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#3B5BDB"></div><span class="sb-label">会計 · POS</span></div>
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#8E44AD"></div><span class="sb-label">予約カレンダー</span></div>
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#2E86C1"></div><span class="sb-label">顧客管理</span></div>
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#C0392B"></div><span class="sb-label">スタッフ</span></div>
+      <div class="sb-item active" onclick="closeSb()"><div class="sb-dot" style="background:#7D3C98"></div><span class="sb-label">商品 · 在庫管理</span></div>
+      <div class="sb-item" onclick="closeSb()"><div class="sb-dot" style="background:#117A65"></div><span class="sb-label">店舗設定</span></div>
+    </div>
+    <div class="sb-foot"><div class="sb-ver">v2.0.0</div></div>
+  </div>
+
+  <div class="zone-a">
+    <span class="za-menu" onclick="openSb()">☰</span>
+    <span class="za-logo" style="cursor:pointer;" onclick="location.href='01_login_main.html'">✂ salon pos</span>
+    <div class="za-right">
+      <div class="za-avatar">由</div>
+      <span class="za-name">Yuki</span>
+      <span class="za-branch">渋谷店</span>
+      <div class="za-sep"></div>
+      <span class="za-time" id="tbTime">06.21 日　10:24</span>
+      <span class="za-lock">🔒</span>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="left">
+      <div class="zone-b">
+        <div class="zb-tabs" id="zbTabs"></div>
+        <div class="zb-search"><input type="text" id="searchInput" placeholder="商品名で検索" oninput="onSearch(this.value)"></div>
+        <div class="zb-spacer"></div>
+        <button class="zb-bulk-btn" onclick="toast('エクセルダウンロード → 内容入力 → アップロードで一括編集（モック）')">商品 一括編集</button>
+        <button class="zb-add-btn" onclick="location.href='26_product_form.html'">＋商品追加</button>
+      </div>
+      <div class="zone-b2">
+        <span class="zb2-hint">💡 カテゴリ削除時、連結商品は「未分類」に移動します</span>
+        <div class="zb2-spacer"></div>
+        <span class="zb2-link" onclick="location.href='27_product_layout.html'">商品の並び順を編集 →</span>
+      </div>
+
+      <div class="zone-c"><div class="zc-inner" id="zcInner"></div></div>
+    </div>
+
+    <div class="zone-d">
+      <div class="zd-sec">
+        <div class="zd-title">商品状況</div>
+        <div class="zd-row"><span class="zd-label">総商品数</span><span class="zd-val" id="statTotal">-</span></div>
+        <div class="zd-row"><span class="zd-label">在庫不足</span><span class="zd-val r" id="statLow">-</span></div>
+        <div class="zd-row"><span class="zd-label">品切れ</span><span class="zd-val r" id="statOut">-</span></div>
+      </div>
+      <div class="zd-sec">
+        <div class="zd-title">カテゴリ別 商品数</div>
+        <div id="catList"></div>
+      </div>
+      <div class="zd-sec">
+        <div class="zd-title">在庫管理</div>
+        <div class="zd-cat-item" style="cursor:pointer;color:#7D3C98;font-weight:600;" onclick="location.href='14_inventory_list.html'">在庫現況を見る →</div>
+        <div class="zd-cat-item" style="cursor:pointer;color:#7D3C98;font-weight:600;" onclick="location.href='15_inventory_history.html'">在庫変動履歴を見る →</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Data ─────────────────────────────────────────────────────────────────
+// 토스포스 §3-3「카테고리·옵션·상품 설정」그대로: 카테고리 + 상품(이름/가격/사진/옵션연결) + 재고관리(§4-6)
+const CATEGORIES=['すべて','カラー剤','パーマ剤','シャンプー','トリートメント','スタイリング剤','販売用シャンプー'];
+
+let PRODUCTS=[
+  {id:1, name:'カラー剤（ブラウン系）', cat:'カラー剤', price:1800, icon:'🎨', hasOption:true,  stock:24, lowAt:10},
+  {id:2, name:'カラー剤（アッシュ系）', cat:'カラー剤', price:1800, icon:'🎨', hasOption:true,  stock:6,  lowAt:10},
+  {id:3, name:'パーマ液 1剤',          cat:'パーマ剤', price:1200, icon:'🧪', hasOption:false, stock:18, lowAt:8},
+  {id:4, name:'パーマ液 2剤',          cat:'パーマ剤', price:1200, icon:'🧪', hasOption:false, stock:0,  lowAt:8},
+  {id:5, name:'シャンプー（業務用）',   cat:'シャンプー', price:2400, icon:'🧴', hasOption:false, stock:9,  lowAt:5},
+  {id:6, name:'トリートメント（業務用）', cat:'トリートメント', price:2600, icon:'💆', hasOption:true,  stock:14, lowAt:6},
+  {id:7, name:'ワックス',              cat:'スタイリング剤', price:1500, icon:'✨', hasOption:true,  stock:3,  lowAt:5},
+  {id:8, name:'ヘアスプレー',          cat:'スタイリング剤', price:1300, icon:'💨', hasOption:false, stock:11, lowAt:5},
+  {id:9, name:'販売用シャンプー（顧客用）', cat:'販売用シャンプー', price:3200, icon:'🛍️', hasOption:true,  stock:7,  lowAt:5},
+];
+
+let curCat='すべて', filterText='';
+
+function stockStatus(p){
+  if(p.stock<=0) return {cls:'out', label:'品切れ'};
+  if(p.stock<=p.lowAt) return {cls:'low', label:`残り${p.stock}`};
+  return {cls:'instock', label:`残り${p.stock}`};
+}
+
+function renderTabs(){
+  document.getElementById('zbTabs').innerHTML = CATEGORIES.map(c=>
+    `<div class="zb-tab ${c===curCat?'active':''}" onclick="switchCat('${c}',this)">${c}</div>`).join('');
+}
+
+function render(){
+  let list=[...PRODUCTS];
+  if(curCat!=='すべて') list=list.filter(p=>p.cat===curCat);
+  if(filterText) list=list.filter(p=>p.name.includes(filterText));
+
+  document.getElementById('zcInner').innerHTML = list.map(p=>{
+    const st=stockStatus(p);
+    return `<div class="p-card" onclick="location.href='26_product_form.html?id=${p.id}'">
+      ${p.hasOption?'<span class="p-opt-badge">オプション</span>':''}
+      <div class="p-thumb">${p.icon}</div>
+      <div class="p-name">${p.name}</div>
+      <div class="p-cat">${p.cat}</div>
+      <div class="p-bottom">
+        <span class="p-price">¥${p.price.toLocaleString()}</span>
+        <span class="p-badge ${st.cls}">${st.label}</span>
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('statTotal').textContent=PRODUCTS.length+'点';
+  document.getElementById('statLow').textContent=PRODUCTS.filter(p=>p.stock>0&&p.stock<=p.lowAt).length+'点';
+  document.getElementById('statOut').textContent=PRODUCTS.filter(p=>p.stock<=0).length+'点';
+
+  const byCat={};
+  PRODUCTS.forEach(p=>{ byCat[p.cat]=(byCat[p.cat]||0)+1; });
+  document.getElementById('catList').innerHTML = CATEGORIES.filter(c=>c!=='すべて').map(c=>
+    `<div class="zd-cat-item"><span>${c}</span><span class="zd-cat-count">${byCat[c]||0}点</span></div>`).join('');
+}
+
+function switchCat(c,el){
+  curCat=c;
+  renderTabs();
+  render();
+}
+function onSearch(v){ filterText=v.trim(); render(); }
+
+function openSb(){ document.getElementById('sidebar').classList.add('open'); document.getElementById('sbOverlay').classList.add('open'); }
+function closeSb(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('sbOverlay').classList.remove('open'); }
+
+let _tt;
+function toast(msg){ const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); clearTimeout(_tt); _tt=setTimeout(()=>el.classList.remove('show'),2400); }
+
+const DOW=['日','月','火','水','木','金','土'];
+function tick(){
+  const d=new Date();
+  const el=document.getElementById('tbTime');
+  if(el) el.textContent=`${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} ${DOW[d.getDay()]}　${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
+
+renderTabs();
+render();
+tick();
+setInterval(tick,30000);
+</script>
+</body>
+</html>
