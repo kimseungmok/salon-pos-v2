@@ -4,7 +4,7 @@
 > **목적**: 카테고리별 상품(소모품/판매상품) 조회·검색, 재고상태 한눈에 확인, 등록 진입점.
 > **벤치마킹**: **토스포스 100% 기반** — `salon_pos/doc/benchmarking/01_tosspos_analysis.md` §3-2(상품 대량등록) §3-3(카테고리·옵션·상품 설정) §4-6(재고관리) 그대로 구현. 프레샤 요소 가미 없음.
 > **진입**: 사이드바 → 商品 · 在庫管理
-> **이동**: 카드 클릭 / ＋商品追加 → `26_product_form`, 並び順を編集 → `27_product_layout`, 在庫 링크 → `14_inventory_list`/`15_inventory_history`
+> **이동**: 카드 클릭 / ＋商品追加 → `26_product_form`, 並び順を編集 → `02_pos_order`의 グリッド編集모드(토스 §3-1, 27번 요구사항 충족), 在庫 링크 → `14_inventory_list`/`15_inventory_history`
 
 ---
 
@@ -27,7 +27,7 @@
 |------|------|
 | `25_product_list.html` | 이 화면 |
 | `26_product_form.html` | 상품 등록/수정 |
-| `27_product_layout.html` | 상품 배치(즐겨찾기 편집모드) 편집 |
+| `02_pos_order.html` | 商品の並び順を編集 → グリッド編집모드(27 요구사항 충족, 별도 화면 없음) |
 | `14_inventory_list.html` | 재고현황(빠른수정) |
 | `15_inventory_history.html` | 재고변동 히스토리 |
 
