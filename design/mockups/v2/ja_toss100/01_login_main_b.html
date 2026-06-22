@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>01b ログイン · レジ開店ゲート型 — salon-pos-v2 JA mockup</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#e8e8e8;display:flex;flex-direction:column;align-items:center;padding:32px 16px;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;gap:16px;}
+h1{font-size:13px;font-weight:500;color:#666;letter-spacing:.05em;}
+.ipad{width:min(960px,100%);aspect-ratio:1024/768;background:#1a1a1a;border-radius:22px;padding:24px 18px;position:relative;display:flex;align-items:center;justify-content:center;}
+.ipad::after{content:'';position:absolute;bottom:5px;left:50%;transform:translateX(-50%);width:34px;height:34px;border-radius:50%;border:1.5px solid #3a3a3a;background:#222;}
+.screen{width:100%;height:100%;border-radius:6px;overflow:hidden;position:relative;}
+#s-login{position:absolute;inset:0;background:linear-gradient(160deg,#1C2833 0%,#2C3E50 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .35s,transform .35s;}
+.login-logo{font-size:22px;font-weight:300;color:white;letter-spacing:.15em;margin-bottom:4px;}
+.login-sub{font-size:11px;color:rgba(255,255,255,.35);letter-spacing:.2em;margin-bottom:36px;}
+.staff-label{font-size:11px;color:rgba(255,255,255,.45);margin-bottom:14px;}
+.staff-row{display:flex;gap:14px;margin-bottom:32px;}
+.staff-btn{display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;opacity:.55;transition:opacity .15s;}
+.staff-btn.selected{opacity:1;}
+.staff-avatar{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:500;color:white;border:2px solid transparent;transition:border-color .15s;}
+.staff-btn.selected .staff-avatar{border-color:rgba(255,255,255,.7);}
+.staff-name{font-size:11px;color:rgba(255,255,255,.7);}
+.staff-role{font-size:8.5px;color:rgba(255,255,255,.35);margin-top:-3px;}
+.pin-box{background:rgba(255,255,255,.07);border:.5px solid rgba(255,255,255,.15);border-radius:14px;padding:20px 24px;display:flex;flex-direction:column;align-items:center;gap:14px;}
+.pin-dots{display:flex;gap:12px;}
+.pin-dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.2);transition:background .15s;}
+.pin-dot.filled{background:white;}
+.pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.pin-key{width:52px;height:40px;border-radius:8px;background:rgba(255,255,255,.1);color:white;font-size:15px;border:none;cursor:pointer;transition:background .1s;}
+.pin-key:hover{background:rgba(255,255,255,.2);}
+.pin-key.del{font-size:12px;background:transparent;color:rgba(255,255,255,.5);}
+.pin-key.enter{background:#2E86C1;font-size:11px;}
+.login-hint{font-size:10px;color:rgba(255,255,255,.25);margin-top:8px;}
+#s-main{position:absolute;inset:0;background:#F4F4F0;display:flex;flex-direction:column;opacity:0;transform:scale(.97);pointer-events:none;transition:opacity .35s,transform .35s;}
+#s-main.visible{opacity:1;transform:scale(1);pointer-events:all;}
+#s-login.hidden{opacity:0;pointer-events:none;}
+.topbar{height:46px;background:#1C2833;display:flex;align-items:center;padding:0 20px;gap:12px;flex-shrink:0;}
+.topbar-logo{font-size:13px;font-weight:400;color:white;letter-spacing:.1em;}
+.topbar-sep{width:.5px;height:16px;background:rgba(255,255,255,.2);}
+.topbar-store{font-size:12px;color:rgba(255,255,255,.6);}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:14px;}
+.topbar-staff{display:flex;align-items:center;gap:7px;}
+.topbar-avatar{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;color:white;}
+.topbar-staffname{font-size:12px;color:rgba(255,255,255,.75);}
+.topbar-role{font-size:9px;color:rgba(255,255,255,.4);background:rgba(255,255,255,.08);padding:2px 7px;border-radius:5px;}
+.punch-toast{position:absolute;top:14px;left:50%;transform:translateX(-50%) translateY(-10px);background:rgba(20,20,20,.92);color:#fff;font-size:11px;padding:8px 16px;border-radius:8px;opacity:0;transition:all .25s;pointer-events:none;z-index:50;white-space:nowrap;}
+.punch-toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.topbar-time{font-size:11px;color:rgba(255,255,255,.4);}
+.topbar-bell{font-size:16px;color:rgba(255,255,255,.5);position:relative;cursor:pointer;}
+.bell-badge{position:absolute;top:-3px;right:-3px;width:8px;height:8px;border-radius:50%;background:#E74C3C;}
+.topbar-lock{font-size:13px;color:rgba(255,255,255,.4);cursor:pointer;}
+.topbar-logout{font-size:10px;color:rgba(255,255,255,.4);cursor:pointer;border:.5px solid rgba(255,255,255,.2);padding:4px 9px;border-radius:6px;}
+.topbar-logout:hover{background:rgba(255,255,255,.08);}
+
+/* クイックロック画面 — レジ/セッションは維持したまま画面だけ施錠 */
+#s-lock{position:absolute;inset:0;background:rgba(10,14,20,.94);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s;z-index:40;}
+#s-lock.show{opacity:1;pointer-events:all;}
+.lock-name{font-size:15px;color:#fff;font-weight:500;margin-bottom:3px;}
+.lock-sub{font-size:10px;color:rgba(255,255,255,.4);letter-spacing:.15em;margin-bottom:22px;}
+.lock-back{position:absolute;top:18px;left:18px;font-size:11px;color:rgba(255,255,255,.4);cursor:pointer;}
+
+/* レジ開店ゲート — 当日まだ未開店の場合、ログイン直後にこの画面を強制表示 */
+#s-gate{position:absolute;inset:0;background:linear-gradient(160deg,#1C2833 0%,#2C3E50 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;transform:scale(.97);pointer-events:none;transition:opacity .35s,transform .35s;}
+#s-gate.visible{opacity:1;transform:scale(1);pointer-events:all;}
+.gate-icon{font-size:34px;margin-bottom:14px;}
+.gate-title{font-size:16px;color:#fff;font-weight:500;margin-bottom:6px;}
+.gate-sub{font-size:11px;color:rgba(255,255,255,.45);margin-bottom:28px;text-align:center;line-height:1.7;}
+.gate-card{background:rgba(255,255,255,.07);border:.5px solid rgba(255,255,255,.15);border-radius:14px;padding:22px 28px;display:flex;flex-direction:column;align-items:center;gap:16px;width:300px;}
+.gate-row{display:flex;align-items:center;justify-content:space-between;width:100%;}
+.gate-label{font-size:11px;color:rgba(255,255,255,.5);}
+.gate-amount{font-size:22px;color:#fff;font-weight:600;}
+.gate-stepper{display:flex;align-items:center;gap:8px;}
+.gate-step-btn{width:30px;height:30px;border-radius:7px;background:rgba(255,255,255,.12);color:#fff;border:none;font-size:15px;cursor:pointer;}
+.gate-step-btn:hover{background:rgba(255,255,255,.22);}
+.gate-open-btn{margin-top:6px;width:100%;padding:11px;border-radius:9px;background:#2E86C1;color:#fff;border:none;font-size:13px;font-weight:500;cursor:pointer;}
+.gate-skip{font-size:10px;color:rgba(255,255,255,.3);margin-top:14px;cursor:pointer;}
+.main-body{flex:1;padding:20px 24px;display:flex;flex-direction:column;gap:16px;overflow:hidden;}
+.stats-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
+.stat-card{background:white;border-radius:10px;padding:12px 14px;border:.5px solid rgba(0,0,0,.07);}
+.stat-label{font-size:10px;color:#888;margin-bottom:4px;}
+.stat-val{font-size:20px;font-weight:500;color:#1a1a1a;}
+.stat-sub{font-size:10px;color:#aaa;margin-top:2px;}
+.stat-val.warn{color:#E74C3C;}
+.stat-val.good{color:#1E8449;}
+.tiles-grid{flex:1;display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
+.tile{background:white;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;border:.5px solid rgba(0,0,0,.07);transition:transform .12s;padding:12px 8px;}
+.tile:hover{transform:translateY(-2px);}
+.tile-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;}
+.tile-icon i{font-size:20px;}
+.tile-name{font-size:12px;font-weight:500;color:#333;text-align:center;}
+.tile.big{flex-direction:row;justify-content:flex-start;padding:14px 18px;gap:14px;grid-column:span 2;}
+.tile.big .tile-icon{width:46px;height:46px;border-radius:12px;flex-shrink:0;}
+.tile.big .tile-icon i{font-size:22px;}
+.tile.big .tile-text{display:flex;flex-direction:column;gap:3px;}
+.tile.big .tile-name{font-size:14px;}
+.tile.big .tile-sub{font-size:11px;color:#999;}
+.apt-strip{background:white;border-radius:10px;padding:10px 14px;border:.5px solid rgba(0,0,0,.07);}
+.apt-strip-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.apt-strip-title{font-size:11px;font-weight:500;color:#333;}
+.apt-strip-more{font-size:10px;color:#2E86C1;cursor:pointer;}
+.apt-list{display:flex;gap:8px;}
+.apt-chip{background:#F8F8F6;border-radius:7px;padding:6px 10px;flex-shrink:0;border:.5px solid rgba(0,0,0,.06);}
+.apt-chip-time{font-size:10px;color:#888;}
+.apt-chip-name{font-size:11px;font-weight:500;color:#1a1a1a;margin-top:1px;}
+.apt-chip-menu{font-size:10px;color:#aaa;margin-top:1px;}
+.apt-chip-staff{display:inline-block;width:14px;height:14px;border-radius:50%;margin-top:3px;}
+</style>
+</head>
+<body>
+<h1>salon-pos-v2 · 01b ログイン / レジ開店ゲート型モックアップ</h1>
+<div class="ipad">
+<div class="screen">
+<div id="s-login">
+  <div class="login-logo">✂ salon pos</div>
+  <div class="login-sub">STAFF LOGIN</div>
+  <div class="staff-label">担当者を選んでください</div>
+  <div class="staff-row">
+    <div class="staff-btn selected" onclick="selStaff(this,'#C0392B','管','Admin','オーナー')">
+      <div class="staff-avatar" style="background:#C0392B;">管</div>
+      <span class="staff-name">Admin</span>
+      <span class="staff-role">オーナー</span>
+    </div>
+    <div class="staff-btn" onclick="selStaff(this,'#8E44AD','由','Yuki','店長')">
+      <div class="staff-avatar" style="background:#8E44AD;">由</div>
+      <span class="staff-name">Yuki</span>
+      <span class="staff-role">店長</span>
+    </div>
+    <div class="staff-btn" onclick="selStaff(this,'#2E86C1','花','Hana','主任')">
+      <div class="staff-avatar" style="background:#2E86C1;">花</div>
+      <span class="staff-name">Hana</span>
+      <span class="staff-role">主任</span>
+    </div>
+    <div class="staff-btn" onclick="selStaff(this,'#1E8449','蓮','Ren','スタッフ')">
+      <div class="staff-avatar" style="background:#1E8449;">蓮</div>
+      <span class="staff-name">Ren</span>
+      <span class="staff-role">スタッフ</span>
+    </div>
+  </div>
+  <div class="pin-box">
+    <div class="pin-dots" id="pindots">
+      <div class="pin-dot"></div><div class="pin-dot"></div>
+      <div class="pin-dot"></div><div class="pin-dot"></div>
+      <div class="pin-dot"></div><div class="pin-dot"></div>
+    </div>
+    <div class="pin-pad">
+      <button class="pin-key" onclick="pinKey('1')">1</button>
+      <button class="pin-key" onclick="pinKey('2')">2</button>
+      <button class="pin-key" onclick="pinKey('3')">3</button>
+      <button class="pin-key" onclick="pinKey('4')">4</button>
+      <button class="pin-key" onclick="pinKey('5')">5</button>
+      <button class="pin-key" onclick="pinKey('6')">6</button>
+      <button class="pin-key" onclick="pinKey('7')">7</button>
+      <button class="pin-key" onclick="pinKey('8')">8</button>
+      <button class="pin-key" onclick="pinKey('9')">9</button>
+      <button class="pin-key del" onclick="pinDel()">⌫</button>
+      <button class="pin-key" onclick="pinKey('0')">0</button>
+      <button class="pin-key enter" onclick="doLogin()">→</button>
+    </div>
+  </div>
+  <div class="login-hint">PIN 123456 でログイン（デモ）</div>
+</div>
+<div id="s-gate">
+  <div class="gate-icon">🔓</div>
+  <div class="gate-title">本日のレジはまだ開店していません</div>
+  <div class="gate-sub">渋谷店の端末は本日未開店です。<br>開始金を確認してから営業を開始してください。</div>
+  <div class="gate-card">
+    <div class="gate-row">
+      <span class="gate-label">レジ開始金（現金）</span>
+      <span class="gate-amount" id="gateAmount">¥30,000</span>
+    </div>
+    <div class="gate-stepper">
+      <button class="gate-step-btn" onclick="gateStep(-10000)">−</button>
+      <span style="font-size:11px;color:rgba(255,255,255,.4);">¥10,000 単位</span>
+      <button class="gate-step-btn" onclick="gateStep(10000)">＋</button>
+    </div>
+    <button class="gate-open-btn" onclick="confirmOpen()">この金額で開店する</button>
+  </div>
+  <div class="gate-skip">※ 詳細な権種別カウントは「22 開店準備」で後から記録できます</div>
+</div>
+<div id="s-main">
+  <div id="s-lock">
+    <div class="lock-back" onclick="cancelUnlock()">‹ 戻る</div>
+    <div class="topbar-avatar" id="lockAvatar" style="background:#8E44AD;width:48px;height:48px;font-size:16px;margin-bottom:10px;">由</div>
+    <div class="lock-name" id="lockName">Yuki</div>
+    <div class="lock-sub">ロック中 · PINを入力</div>
+    <div class="pin-box">
+      <div class="pin-dots" id="lockdots">
+        <div class="pin-dot"></div><div class="pin-dot"></div>
+        <div class="pin-dot"></div><div class="pin-dot"></div>
+        <div class="pin-dot"></div><div class="pin-dot"></div>
+      </div>
+      <div class="pin-pad">
+        <button class="pin-key" onclick="lockPinKey('1')">1</button>
+        <button class="pin-key" onclick="lockPinKey('2')">2</button>
+        <button class="pin-key" onclick="lockPinKey('3')">3</button>
+        <button class="pin-key" onclick="lockPinKey('4')">4</button>
+        <button class="pin-key" onclick="lockPinKey('5')">5</button>
+        <button class="pin-key" onclick="lockPinKey('6')">6</button>
+        <button class="pin-key" onclick="lockPinKey('7')">7</button>
+        <button class="pin-key" onclick="lockPinKey('8')">8</button>
+        <button class="pin-key" onclick="lockPinKey('9')">9</button>
+        <button class="pin-key del" onclick="lockPinDel()">⌫</button>
+        <button class="pin-key" onclick="lockPinKey('0')">0</button>
+        <button class="pin-key enter" onclick="doUnlock()">→</button>
+      </div>
+    </div>
+  </div>
+  <div class="punch-toast" id="punchToast"></div>
+  <div class="topbar">
+    <span class="topbar-logo">✂ salon pos</span>
+    <div class="topbar-sep"></div>
+    <span class="topbar-store">Bloom Hair Salon</span>
+    <div class="topbar-right">
+      <div class="topbar-staff">
+        <div class="topbar-avatar" id="topAvatar" style="background:#8E44AD;">由</div>
+        <span class="topbar-staffname" id="topName">Yuki</span>
+        <span class="topbar-role" id="topRole">店長</span>
+      </div>
+      <div class="topbar-sep"></div>
+      <span class="topbar-time">2026.06.12 木　10:24</span>
+      <div class="topbar-bell"><i class="ti ti-bell"></i><div class="bell-badge"></div></div>
+      <div class="topbar-lock" onclick="lockScreen()" title="ロック（レジは開いたまま）"><i class="ti ti-lock"></i></div>
+      <div class="topbar-logout" onclick="doLogout()" title="完全ログアウト（退勤）">退勤</div>
+    </div>
+  </div>
+  <div class="main-body">
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-label">本日売上</div><div class="stat-val good">¥87,400</div><div class="stat-sub">前日比 +12%</div></div>
+      <div class="stat-card"><div class="stat-label">予約合計</div><div class="stat-val">12件</div><div class="stat-sub">完了 8 · 残り 4</div></div>
+      <div class="stat-card"><div class="stat-label">ウェイティング予約</div><div class="stat-val warn">2件</div><div class="stat-sub">確認が必要</div></div>
+      <div class="stat-card"><div class="stat-label">新規顧客</div><div class="stat-val">3名</div><div class="stat-sub">今月累計 18名</div></div>
+      <div class="stat-card"><div class="stat-label">在庫警告</div><div class="stat-val warn">2種</div><div class="stat-sub">発注が必要</div></div>
+    </div>
+    <div class="tiles-grid">
+      <div class="tile big" style="background:#EBF5FB;">
+        <div class="tile-icon" style="background:#2E86C1;"><i class="ti ti-credit-card" style="color:white;"></i></div>
+        <div class="tile-text"><div class="tile-name">会計</div><div class="tile-sub">注文 · 会計 · 履歴</div></div>
+      </div>
+      <div class="tile big" style="background:#F5EEF8;">
+        <div class="tile-icon" style="background:#8E44AD;"><i class="ti ti-calendar" style="color:white;"></i></div>
+        <div class="tile-text"><div class="tile-name">予約管理</div><div class="tile-sub">今日 12件 予約</div></div>
+      </div>
+      <div class="tile"><div class="tile-icon" style="background:#EAFAF1;"><i class="ti ti-users" style="color:#1E8449;"></i></div><div class="tile-name">顧客管理</div></div>
+      <div class="tile"><div class="tile-icon" style="background:#FEF9E7;"><i class="ti ti-chart-bar" style="color:#D4AC0D;"></i></div><div class="tile-name">売上状況</div></div>
+      <div class="tile"><div class="tile-icon" style="background:#FDEDEC;"><i class="ti ti-id-badge" style="color:#C0392B;"></i></div><div class="tile-name">スタッフ管理</div></div>
+      <div class="tile"><div class="tile-icon" style="background:#F4ECF7;"><i class="ti ti-package" style="color:#7D3C98;"></i></div><div class="tile-name">在庫管理</div></div>
+      <div class="tile"><div class="tile-icon" style="background:#FEF5E7;"><i class="ti ti-speakerphone" style="color:#D35400;"></i></div><div class="tile-name">マーケティング</div></div>
+      <div class="tile"><div class="tile-icon" style="background:#EAFAF1;"><i class="ti ti-building-store" style="color:#1E8449;"></i></div><div class="tile-name">店舗管理</div></div>
+      <div class="tile"><div class="tile-icon" style="background:#F2F3F4;"><i class="ti ti-settings" style="color:#666;"></i></div><div class="tile-name">設定</div></div>
+    </div>
+    <div class="apt-strip">
+      <div class="apt-strip-head"><span class="apt-strip-title">これから予約</span><span class="apt-strip-more">全て見る →</span></div>
+      <div class="apt-list">
+        <div class="apt-chip"><div class="apt-chip-time">10:30</div><div class="apt-chip-name">田中 美咲</div><div class="apt-chip-menu">カット + カラー</div><div class="apt-chip-staff" style="background:#8E44AD;"></div></div>
+        <div class="apt-chip"><div class="apt-chip-time">11:00</div><div class="apt-chip-name">佐藤 花子</div><div class="apt-chip-menu">パーマ</div><div class="apt-chip-staff" style="background:#2E86C1;"></div></div>
+        <div class="apt-chip"><div class="apt-chip-time">11:30</div><div class="apt-chip-name">山田 恵</div><div class="apt-chip-menu">トリートメント</div><div class="apt-chip-staff" style="background:#1E8449;"></div></div>
+        <div class="apt-chip"><div class="apt-chip-time">12:00</div><div class="apt-chip-name">鈴木 陽子</div><div class="apt-chip-menu">カット</div><div class="apt-chip-staff" style="background:#8E44AD;"></div></div>
+        <div class="apt-chip"><div class="apt-chip-time">13:30</div><div class="apt-chip-name">高橋 さくら</div><div class="apt-chip-menu">ヘッドスパ</div><div class="apt-chip-staff" style="background:#C0392B;"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+<p style="font-size:11px;color:#999;">PIN 123456 入力後ログイン　/　当日未開店なら開店ゲートを強制表示（一度開店すれば他スタッフはスキップ）　/　🔒=ロック　/　「退勤」=完全ログアウト</p>
+<script>
+const DEMO_PIN='123456';
+const PIN_LEN=6;
+let pin='',lockPin='',selColor='#8E44AD',selInitial='由',selNameStr='Yuki',selRole='店長';
+const THIS_BRANCH_NAME='渋谷店';
+// この端末が本日すでに開店済みか（一度開店すれば、以後ログインする他スタッフはゲートをスキップ）
+let registerOpen=false;
+let gateAmount=30000;
+function gateStep(d){ gateAmount=Math.max(0,gateAmount+d); document.getElementById('gateAmount').textContent='¥'+gateAmount.toLocaleString(); }
+function confirmOpen(){
+  registerOpen=true;
+  document.getElementById('s-gate').classList.remove('visible');
+  enterMain();
+  setTimeout(()=>punch(`✓ レジ開店（開始金 ¥${gateAmount.toLocaleString()}）`),400);
+}
+function selStaff(el,c,i,n,r){document.querySelectorAll('.staff-btn').forEach(b=>b.classList.remove('selected'));el.classList.add('selected');selColor=c;selInitial=i;selNameStr=n;selRole=r;pin='';updateDots();}
+function pinKey(k){if(pin.length>=PIN_LEN)return;pin+=k;updateDots();if(pin.length===PIN_LEN)setTimeout(doLogin,250);}
+function pinDel(){pin=pin.slice(0,-1);updateDots();}
+function updateDots(){document.querySelectorAll('#pindots .pin-dot').forEach((d,i)=>d.classList.toggle('filled',i<pin.length));}
+function nowHM(){const d=new Date();return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;}
+function punch(msg){
+  const el=document.getElementById('punchToast');
+  el.textContent=msg; el.classList.add('show');
+  clearTimeout(window._punchT); window._punchT=setTimeout(()=>el.classList.remove('show'),2600);
+}
+function doLogin(){
+  if(pin!==DEMO_PIN){pin='';updateDots();return;}
+  document.getElementById('topAvatar').style.background=selColor;
+  document.getElementById('topAvatar').textContent=selInitial;
+  document.getElementById('topName').textContent=selNameStr;
+  document.getElementById('topRole').textContent=selRole;
+  document.getElementById('s-login').classList.add('hidden');
+  if(!registerOpen){
+    // 当日まだ未開店 → メイン画面の前にレジ開店ゲートを強制表示
+    document.getElementById('s-gate').classList.add('visible');
+    return;
+  }
+  enterMain();
+  // PINログイン = この拠点へチェックイン (別拠点で直前にログイン中だった場合は自動チェックアウト)
+  setTimeout(()=>punch(`✓ ${selNameStr} さん ${THIS_BRANCH_NAME} にチェックイン（${nowHM()}）`),400);
+}
+function enterMain(){
+  document.getElementById('s-login').classList.add('hidden');
+  document.getElementById('s-main').classList.add('visible');
+}
+// ── クイックロック: レジ/チェックインは維持したまま画面だけ施錠 ──────────
+function lockScreen(){
+  lockPin='';
+  document.querySelectorAll('#lockdots .pin-dot').forEach(d=>d.classList.remove('filled'));
+  document.getElementById('lockAvatar').style.background=selColor;
+  document.getElementById('lockAvatar').textContent=selInitial;
+  document.getElementById('lockName').textContent=selNameStr;
+  document.getElementById('s-lock').classList.add('show');
+}
+function lockPinKey(k){
+  if(lockPin.length>=PIN_LEN)return;
+  lockPin+=k;
+  document.querySelectorAll('#lockdots .pin-dot').forEach((d,i)=>d.classList.toggle('filled',i<lockPin.length));
+  if(lockPin.length===PIN_LEN)setTimeout(doUnlock,250);
+}
+function lockPinDel(){
+  lockPin=lockPin.slice(0,-1);
+  document.querySelectorAll('#lockdots .pin-dot').forEach((d,i)=>d.classList.toggle('filled',i<lockPin.length));
+}
+function doUnlock(){
+  if(lockPin!==DEMO_PIN){lockPin='';document.querySelectorAll('#lockdots .pin-dot').forEach(d=>d.classList.remove('filled'));return;}
+  document.getElementById('s-lock').classList.remove('show');
+}
+function cancelUnlock(){
+  // ロック解除をやめて完全ログアウトに切り替える場合の導線（モック）
+  document.getElementById('s-lock').classList.remove('show');
+}
+// ── 完全ログアウト(退勤): チェックアウトを記録し、スタッフ選択画面に戻る ──
+function doLogout(){
+  punch(`${selNameStr} さん ${THIS_BRANCH_NAME} からチェックアウト（${nowHM()}）`);
+  setTimeout(()=>{
+    pin='';updateDots();
+    document.getElementById('s-lock').classList.remove('show');
+    document.getElementById('s-login').classList.remove('hidden');
+    document.getElementById('s-main').classList.remove('visible');
+  },900);
+}
+</script>
+</body>
+</html>

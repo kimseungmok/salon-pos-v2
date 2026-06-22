@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1024">
+<title>12 · スタッフ詳細</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neue',sans-serif;background:#0F1D5C;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;}
+.ipad{width:1024px;height:768px;background:#F0F2F7;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.55);position:relative;}
+
+.zone-a{height:44px;flex-shrink:0;background:#fff;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 14px;gap:10px;z-index:10;}
+.za-menu{font-size:18px;color:#1E3A8A;cursor:pointer;padding:4px 6px;border-radius:6px;line-height:1;user-select:none;}
+.za-logo{font-size:13px;color:#1E3A8A;font-weight:700;letter-spacing:.08em;}
+.za-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.za-sep{width:.5px;height:14px;background:#D0D0CC;}
+.za-avatar{width:24px;height:24px;border-radius:50%;background:#8E44AD;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;}
+.za-name{font-size:12px;color:#333;font-weight:500;}
+.za-branch{font-size:11px;color:#888;}
+.za-time{font-size:11px;color:#555;font-weight:500;}
+.za-lock{font-size:13px;color:#bbb;cursor:pointer;}
+
+.zone-b{height:48px;flex-shrink:0;background:#fff;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 14px;gap:10px;}
+.back-btn{font-size:12px;color:#C0392B;cursor:pointer;padding:5px 9px;border-radius:7px;font-weight:600;white-space:nowrap;}
+.back-btn:hover{background:#FDEDEC;}
+.zb-sep{width:.5px;height:16px;background:#D0D0CC;}
+.zb-name{font-size:15px;font-weight:700;color:#1A1A1A;}
+.zb-role{font-size:9px;font-weight:700;padding:3px 8px;border-radius:6px;}
+.zb-role.owner{background:#FDEDEC;color:#C0392B;}
+.zb-role.manager{background:#F5EEF8;color:#8E44AD;}
+.zb-role.senior{background:#EBF5FB;color:#2E86C1;}
+.zb-role.staff{background:#F4F4F0;color:#888;}
+.zb-spacer{flex:1;}
+.zb-actions{display:flex;gap:7px;}
+.zb-btn{padding:7px 13px;border-radius:8px;font-size:12px;font-weight:700;border:none;cursor:pointer;font-family:inherit;white-space:nowrap;}
+.zb-btn.primary{background:#C0392B;color:#fff;}
+.zb-btn.outline{background:#fff;border:.5px solid #D0D0CC;color:#666;}
+
+.zone-c{flex-shrink:0;background:#fff;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:14px 18px;gap:24px;}
+.zc-avatar{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#fff;flex-shrink:0;}
+.zc-phone{font-size:12px;color:#999;}
+.zc-meta{font-size:11px;color:#aaa;margin-top:3px;display:flex;gap:10px;}
+.zc-meta b{color:#666;font-weight:600;}
+.zc-stats{display:flex;gap:22px;flex-shrink:0;margin-left:auto;}
+.zc-stat{text-align:center;}
+.zc-stat-val{font-size:17px;font-weight:800;color:#1A1A1A;}
+.zc-stat-lbl{font-size:10px;color:#aaa;margin-top:2px;}
+
+.zone-d{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.zd-tabs{display:flex;background:#fff;border-bottom:.5px solid #E5E5E0;padding:0 18px;gap:4px;flex-shrink:0;}
+.zd-tab{padding:11px 6px;font-size:13px;font-weight:600;color:#999;cursor:pointer;border-bottom:2.5px solid transparent;margin-right:18px;}
+.zd-tab.active{color:#C0392B;border-bottom-color:#C0392B;}
+.zd-content{flex:1;overflow-y:auto;padding:16px 18px;}
+.zd-content::-webkit-scrollbar{width:4px;}
+.zd-content::-webkit-scrollbar-thumb{background:#D0D0CC;}
+
+.info-card{background:#fff;border:.5px solid #E5E5E0;border-radius:12px;padding:16px;max-width:520px;}
+.info-row{display:flex;align-items:center;padding:9px 0;border-bottom:.5px solid #F8F8F6;font-size:13px;}
+.info-row:last-child{border-bottom:none;}
+.info-label{width:120px;color:#999;flex-shrink:0;}
+.info-val{color:#1A1A1A;font-weight:500;flex:1;}
+.info-val.masked{font-family:monospace;letter-spacing:2px;}
+.edit-btn{margin-top:14px;padding:8px 16px;border-radius:8px;background:#F4F4F0;border:.5px solid #D0D0CC;font-size:12px;color:#555;cursor:pointer;font-family:inherit;}
+.perm-hint{font-size:11px;color:#bbb;margin-top:10px;max-width:520px;}
+
+.log-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:.5px solid #F0F0EC;}
+.log-item:last-child{border-bottom:none;}
+.log-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.log-dot.in{background:#117A65;}
+.log-dot.out{background:#bbb;}
+.log-body{flex:1;}
+.log-label{font-size:12.5px;font-weight:600;color:#1A1A1A;}
+.log-date{font-size:10px;color:#aaa;margin-top:1px;}
+.log-help-tag{font-size:9px;font-weight:700;background:#FEF9E7;color:#B7950B;padding:1px 6px;border-radius:5px;margin-left:6px;}
+
+.sales-bar-row{display:flex;align-items:center;gap:10px;padding:6px 0;}
+.sales-bar-month{width:40px;font-size:11px;color:#888;}
+.sales-bar-track{flex:1;height:14px;border-radius:4px;background:#F0F0EC;overflow:hidden;}
+.sales-bar-fill{height:100%;background:#C0392B;border-radius:4px;}
+.sales-bar-val{width:80px;text-align:right;font-size:11px;font-weight:600;color:#1A1A1A;}
+
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(12px);background:#1A1A1A;color:#fff;font-size:12px;font-weight:500;padding:10px 18px;border-radius:10px;z-index:9999;opacity:0;pointer-events:none;transition:all .22s;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+
+<div class="ipad">
+  <div class="zone-a">
+    <span class="za-menu" onclick="toast('サイドバー（モック）')">☰</span>
+    <span class="za-logo">✂ salon pos</span>
+    <div class="za-right">
+      <div class="za-avatar">由</div>
+      <span class="za-name">Yuki</span>
+      <span class="za-branch">渋谷店</span>
+      <div class="za-sep"></div>
+      <span class="za-time" id="tbTime">06.21 日　10:24</span>
+      <span class="za-lock">🔒</span>
+    </div>
+  </div>
+
+  <div class="zone-b">
+    <span class="back-btn" onclick="location.href='11_staff_list.html'">‹ スタッフ一覧</span>
+    <div class="zb-sep"></div>
+    <span class="zb-name" id="zbName">-</span>
+    <span class="zb-role" id="zbRole">-</span>
+    <div class="zb-spacer"></div>
+    <div class="zb-actions">
+      <button class="zb-btn primary" onclick="toast('連絡先を保存しました')">保存</button>
+    </div>
+  </div>
+
+  <div class="zone-c">
+    <div class="zc-avatar" id="zcAvatar">-</div>
+    <div>
+      <div class="zc-phone" id="zcPhone">-</div>
+      <div class="zc-meta"><span>所属: <b id="zcBranch">-</b></span><span>入社日: <b id="zcJoined">-</b></span></div>
+    </div>
+    <div class="zc-stats">
+      <div class="zc-stat"><div class="zc-stat-val" id="zcSales">-</div><div class="zc-stat-lbl">今月売上</div></div>
+      <div class="zc-stat"><div class="zc-stat-val" id="zcCount">-</div><div class="zc-stat-lbl">今月件数</div></div>
+    </div>
+  </div>
+
+  <div class="zone-d">
+    <div class="zd-tabs">
+      <div class="zd-tab active" data-t="basic" onclick="switchTab('basic',this)">基本情報・権限</div>
+      <div class="zd-tab" data-t="log" onclick="switchTab('log',this)">勤怠ログ</div>
+      <div class="zd-tab" data-t="sales" onclick="switchTab('sales',this)">売上</div>
+    </div>
+    <div class="zd-content" id="zdContent"></div>
+  </div>
+</div>
+
+<script>
+const ROLE_LABEL={owner:'オーナー',manager:'店長',senior:'主任',staff:'スタッフ'};
+const ROLE_COLOR={owner:'#C0392B',manager:'#8E44AD',senior:'#2E86C1',staff:'#117A65'};
+
+const STAFFS=[
+  {id:1, name:'Admin', initial:'管', role:'owner',   branch:'渋谷店', phone:'090-0000-0001', joined:'2018-04-01', loginId:'admin',   pin:'9999', sales:0,      count:0},
+  {id:2, name:'Yuki',  initial:'由', role:'manager', branch:'渋谷店', phone:'090-1111-2222', joined:'2019-06-12', loginId:'yuki01',  pin:'1234', sales:482000, count:64},
+  {id:3, name:'Mika',  initial:'美', role:'senior',  branch:'渋谷店', phone:'080-2222-3333', joined:'2021-03-02', loginId:'mika01',  pin:'2345', sales:355000, count:58},
+  {id:4, name:'Kenji', initial:'健', role:'staff',   branch:'渋谷店', phone:'080-3333-4444', joined:'2022-09-15', loginId:'kenji01', pin:'3456', sales:198000, count:41},
+  {id:5, name:'Rio',   initial:'里', role:'staff',   branch:'池袋店', phone:'070-4444-5555', joined:'2023-01-10', loginId:'rio01',   pin:'4567', sales:144000, count:33},
+  {id:6, name:'Hana',  initial:'花', role:'senior',  branch:'渋谷店', phone:'070-5555-6666', joined:'2020-11-20', loginId:'hana01',  pin:'5678', sales:0,      count:0},
+];
+
+const LOGS=[
+  {date:'2026/06/21', name:'渋谷店', checkIn:'09:02', checkOut:null, help:false},
+  {date:'2026/06/20', name:'渋谷店', checkIn:'09:00', checkOut:'18:30', help:false},
+  {date:'2026/06/19', name:'池袋店', checkIn:'13:00', checkOut:'19:00', help:true},
+  {date:'2026/06/19', name:'渋谷店', checkIn:'09:05', checkOut:'13:00', help:false},
+  {date:'2026/06/18', name:'渋谷店', checkIn:'09:10', checkOut:'18:00', help:false},
+];
+
+const SALES_HISTORY=[
+  {month:'1月', val:320000},{month:'2月', val:298000},{month:'3月', val:410000},
+  {month:'4月', val:355000},{month:'5月', val:402000},{month:'6月', val:482000},
+];
+
+let curStaff=null, curTab='basic';
+
+function getIdFromUrl(){
+  const m=window.location.search.match(/id=(\d+)/);
+  return m?parseInt(m[1]):2;
+}
+
+function renderHeader(){
+  const s=curStaff;
+  document.getElementById('zbName').textContent=s.name;
+  document.getElementById('zbRole').textContent=ROLE_LABEL[s.role];
+  document.getElementById('zbRole').className='zb-role '+s.role;
+  document.getElementById('zcAvatar').textContent=s.initial;
+  document.getElementById('zcAvatar').style.background=ROLE_COLOR[s.role];
+  document.getElementById('zcPhone').textContent=s.phone;
+  document.getElementById('zcBranch').textContent=s.branch;
+  document.getElementById('zcJoined').textContent=s.joined;
+  document.getElementById('zcSales').textContent='¥'+s.sales.toLocaleString();
+  document.getElementById('zcCount').textContent=s.count+'件';
+}
+
+function renderBasic(){
+  const s=curStaff;
+  return `
+    <div class="info-card">
+      <div class="info-row"><span class="info-label">ログインID</span><span class="info-val">${s.loginId}</span></div>
+      <div class="info-row"><span class="info-label">電話番号</span><span class="info-val">${s.phone}</span></div>
+      <div class="info-row"><span class="info-label">所属店舗</span><span class="info-val">${s.branch}</span></div>
+      <div class="info-row"><span class="info-label">入社日</span><span class="info-val">${s.joined}</span></div>
+      <div class="info-row"><span class="info-label">権限レベル</span><span class="zb-role ${s.role}" style="display:inline-block;">${ROLE_LABEL[s.role]}</span></div>
+      <button class="edit-btn" onclick="toast('編集フォームを開く（モック）')">連絡先を編集</button>
+    </div>
+    <div class="perm-hint">※ ログインID・PIN・権限レベルの変更は勤怠管理サイト（管理者専用）で行います。</div>`;
+}
+
+function renderLog(){
+  return LOGS.map(l=>`
+    <div class="log-item">
+      <div class="log-dot ${l.checkOut?'out':'in'}"></div>
+      <div class="log-body">
+        <div class="log-label">${l.name}${l.help?'<span class="log-help-tag">ヘルプ</span>':''}</div>
+        <div class="log-date">${l.date} ${l.checkIn}〜${l.checkOut||'在店中'}</div>
+      </div>
+    </div>`).join('');
+}
+
+function renderSales(){
+  const max=Math.max(...SALES_HISTORY.map(s=>s.val));
+  return SALES_HISTORY.map(s=>`
+    <div class="sales-bar-row">
+      <div class="sales-bar-month">${s.month}</div>
+      <div class="sales-bar-track"><div class="sales-bar-fill" style="width:${s.val/max*100}%;"></div></div>
+      <div class="sales-bar-val">¥${s.val.toLocaleString()}</div>
+    </div>`).join('');
+}
+
+function renderTab(){
+  const el=document.getElementById('zdContent');
+  if(curTab==='basic') el.innerHTML=renderBasic();
+  else if(curTab==='log') el.innerHTML=renderLog();
+  else el.innerHTML=renderSales();
+}
+function switchTab(t,el){
+  curTab=t;
+  document.querySelectorAll('.zd-tab').forEach(x=>x.classList.remove('active'));
+  if(el) el.classList.add('active');
+  renderTab();
+}
+
+let _tt;
+function toast(msg){ const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); clearTimeout(_tt); _tt=setTimeout(()=>el.classList.remove('show'),2400); }
+
+const DOW=['日','月','火','水','木','金','土'];
+function tick(){
+  const d=new Date();
+  const el=document.getElementById('tbTime');
+  if(el) el.textContent=`${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} ${DOW[d.getDay()]}　${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
+
+curStaff=STAFFS.find(s=>s.id===getIdFromUrl())||STAFFS[1];
+renderHeader();
+renderTab();
+tick();
+setInterval(tick,30000);
+</script>
+</body>
+</html>
