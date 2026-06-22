@@ -51,6 +51,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 .zb-spacer{flex:1;}
 .zb-add-btn{display:flex;align-items:center;gap:4px;padding:7px 13px;border-radius:9px;background:#C0392B;color:#fff;font-size:12px;font-weight:700;border:none;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0;box-shadow:0 2px 8px rgba(192,57,43,.3);}
 .zb-add-btn:hover{background:#A93226;}
+.zb-shift-btn{padding:7px 13px;border-radius:9px;border:.5px solid #E0E0DC;background:#fff;color:#555;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0;}
+.zb-shift-btn:hover{background:#F4F4F0;}
 
 .zone-c{flex:1;overflow-y:auto;background:#F0F2F7;}
 .zone-c::-webkit-scrollbar{width:4px;}
@@ -138,6 +140,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
         </div>
         <div class="zb-search"><input type="text" id="searchInput" placeholder="名前で検索" oninput="onSearch(this.value)"></div>
         <div class="zb-spacer"></div>
+        <button class="zb-shift-btn" onclick="location.href='13_staff_shift.html'">勤怠ログ（全店舗）</button>
         <button class="zb-add-btn" onclick="toast('新規スタッフ登録フォーム（モック）')">＋スタッフ追加</button>
       </div>
 
