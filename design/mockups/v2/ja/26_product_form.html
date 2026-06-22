@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1024">
+<title>26 · 商品登録・編集</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neue',sans-serif;background:#0F1D5C;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;}
+.ipad{width:1024px;height:768px;background:#F0F2F7;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.55);position:relative;}
+
+.zone-a{height:44px;flex-shrink:0;background:#fff;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 14px;gap:10px;z-index:10;}
+.za-logo{font-size:13px;color:#1E3A8A;font-weight:700;letter-spacing:.08em;cursor:pointer;}
+.za-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.za-time{font-size:11px;color:#555;font-weight:500;}
+
+.zone-b{height:50px;flex-shrink:0;background:#fff;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 16px;gap:10px;}
+.zb-back{font-size:12px;color:#999;cursor:pointer;flex-shrink:0;}
+.zb-back:hover{color:#555;}
+.zb-title{font-size:14px;font-weight:700;color:#1A1A1A;}
+.zb-spacer{flex:1;}
+.zb-del-btn{padding:8px 14px;border-radius:9px;border:.5px solid #F1B9B2;background:#fff;color:#C0392B;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;}
+.zb-del-btn:hover{background:#FDEDEC;}
+.zb-save-btn{padding:8px 18px;border-radius:9px;background:#7D3C98;color:#fff;font-size:12px;font-weight:700;border:none;cursor:pointer;font-family:inherit;box-shadow:0 2px 8px rgba(125,60,152,.3);}
+.zb-save-btn:hover{background:#6C3483;}
+
+.main{flex:1;overflow-y:auto;padding:18px;display:flex;justify-content:center;}
+.form-wrap{width:760px;display:flex;flex-direction:column;gap:12px;}
+
+.card{background:#fff;border:.5px solid #E5E5E0;border-radius:12px;overflow:hidden;}
+.card-head{padding:11px 16px;border-bottom:.5px solid #F0F0EC;font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.06em;}
+.card-body{padding:16px;}
+
+.f-row{display:flex;gap:14px;margin-bottom:14px;}
+.f-row:last-child{margin-bottom:0;}
+.f-col{flex:1;display:flex;flex-direction:column;gap:6px;}
+.f-label{font-size:11.5px;font-weight:600;color:#555;}
+.f-input{padding:9px 11px;border-radius:8px;border:.5px solid #D8D8D4;font-size:13px;font-family:inherit;color:#1A1A1A;}
+.f-input:focus{outline:none;border-color:#7D3C98;}
+.f-select{padding:9px 11px;border-radius:8px;border:.5px solid #D8D8D4;font-size:13px;font-family:inherit;color:#1A1A1A;background:#fff;}
+
+.f-photo{width:100%;display:flex;gap:12px;align-items:center;}
+.f-photo-box{width:84px;height:84px;border-radius:10px;background:#F4F0F7;border:1.5px dashed #D8C2E0;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;cursor:pointer;}
+.f-photo-hint{font-size:11px;color:#999;line-height:1.6;}
+
+.f-toggle-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:.5px solid #F8F8F6;}
+.f-toggle-row:last-child{border-bottom:none;}
+.f-toggle-label{font-size:13px;color:#333;font-weight:600;}
+.f-toggle-sub{font-size:10.5px;color:#999;margin-top:2px;}
+.f-switch{width:40px;height:23px;border-radius:12px;background:#E0E0DC;position:relative;cursor:pointer;flex-shrink:0;transition:background .15s;}
+.f-switch.on{background:#7D3C98;}
+.f-switch-knob{width:19px;height:19px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:left .15s;box-shadow:0 1px 3px rgba(0,0,0,.2);}
+.f-switch.on .f-switch-knob{left:19px;}
+
+.stock-extra{display:none;margin-top:10px;padding-top:10px;border-top:.5px solid #F0F0EC;}
+.stock-extra.show{display:flex;gap:14px;}
+
+.opt-group-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:.5px solid #F8F8F6;}
+.opt-group-row:last-child{border-bottom:none;}
+.opt-check{width:18px;height:18px;border-radius:5px;border:1.5px solid #D0D0CC;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;cursor:pointer;flex-shrink:0;}
+.opt-check.on{background:#7D3C98;border-color:#7D3C98;}
+.opt-body{flex:1;}
+.opt-name{font-size:13px;font-weight:600;color:#1A1A1A;}
+.opt-items{font-size:10.5px;color:#999;margin-top:2px;}
+.opt-required{font-size:9px;font-weight:700;padding:2px 6px;border-radius:5px;background:#FEF9E7;color:#B7950B;flex-shrink:0;}
+.opt-add-link{font-size:11.5px;color:#7D3C98;font-weight:600;cursor:pointer;margin-top:8px;display:inline-block;}
+.opt-add-link:hover{text-decoration:underline;}
+
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(12px);background:#1A1A1A;color:#fff;font-size:12px;font-weight:500;padding:10px 18px;border-radius:10px;z-index:9999;opacity:0;pointer-events:none;transition:all .22s;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+
+<div class="ipad">
+  <div class="zone-a">
+    <span class="za-logo" onclick="location.href='01_login_main.html'">✂ salon pos</span>
+    <div class="za-right">
+      <span class="za-time" id="tbTime">06.21 日　10:24</span>
+    </div>
+  </div>
+
+  <div class="zone-b">
+    <span class="zb-back" onclick="location.href='25_product_list.html'">‹ 戻る</span>
+    <span class="zb-title" id="formTitle">商品を追加</span>
+    <div class="zb-spacer"></div>
+    <button class="zb-del-btn" id="delBtn" style="display:none;" onclick="toast('商品を削除しました（モック）')">削除</button>
+    <button class="zb-save-btn" onclick="toast('商品を保存しました（モック）')">保存</button>
+  </div>
+
+  <div class="main">
+    <div class="form-wrap">
+
+      <!-- 基本情報（토스 §3-3「상품 추가하기」: 이름/가격/사진/카테고리/옵션） -->
+      <div class="card">
+        <div class="card-head">基本情報</div>
+        <div class="card-body">
+          <div class="f-row">
+            <div class="f-col" style="flex:2;">
+              <span class="f-label">商品名</span>
+              <input class="f-input" id="fName" placeholder="例）カラー剤（ブラウン系）">
+            </div>
+            <div class="f-col">
+              <span class="f-label">カテゴリ</span>
+              <select class="f-select" id="fCat">
+                <option>カラー剤</option><option>パーマ剤</option><option>シャンプー</option>
+                <option>トリートメント</option><option>スタイリング剤</option><option>販売用シャンプー</option>
+              </select>
+            </div>
+          </div>
+          <div class="f-row">
+            <div class="f-col">
+              <span class="f-label">価格（¥）</span>
+              <input class="f-input" id="fPrice" type="number" placeholder="1800" oninput="onPriceInput()">
+            </div>
+            <div class="f-col" style="flex:2;">
+              <span class="f-label">写真</span>
+              <div class="f-photo">
+                <div class="f-photo-box" onclick="toast('写真を選択（モック）')">📷</div>
+                <div class="f-photo-hint">タップして写真を追加<br>推奨サイズ: 600×600px</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 시가 설정（토스 §4-3「시가 설정」: 가격 미정 상품 — 주문 시 가격 입력） -->
+      <div class="card">
+        <div class="card-body" style="padding:0 16px;">
+          <div class="f-toggle-row">
+            <div>
+              <div class="f-toggle-label">時価設定</div>
+              <div class="f-toggle-sub">価格を固定せず、注文時にスタッフが金額を入力します（カウンセリング後に価格が決まる施術用）</div>
+            </div>
+            <div class="f-switch" id="swPriceless" onclick="toggleSwitch('swPriceless')"><div class="f-switch-knob"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 표시 설정（토스 §3-1「즐겨찾는 메뉴 편집모드」: 표시/숨기기 토글） -->
+      <div class="card">
+        <div class="card-body" style="padding:0 16px;">
+          <div class="f-toggle-row">
+            <div>
+              <div class="f-toggle-label">お気に入りメニューに表示</div>
+              <div class="f-toggle-sub">ONにするとPOS画面の最初のタブに固定表示されます</div>
+            </div>
+            <div class="f-switch on" id="swFavorite" onclick="toggleSwitch('swFavorite')"><div class="f-switch-knob"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 재고관리（토스 §4-6 그대로: 재고 활성화 시 자동차감 + 부족알림 + 0개시 자동 품절） -->
+      <div class="card">
+        <div class="card-body" style="padding:0 16px;">
+          <div class="f-toggle-row" style="border-bottom:none;padding-bottom:0;">
+            <div>
+              <div class="f-toggle-label">在庫管理を有効にする</div>
+              <div class="f-toggle-sub">販売ごとに自動で在庫を減算し、在庫0になると自動的に品切れ表示します</div>
+            </div>
+            <div class="f-switch on" id="swStock" onclick="toggleStock()"><div class="f-switch-knob"></div></div>
+          </div>
+          <div class="stock-extra show" id="stockExtra">
+            <div class="f-col">
+              <span class="f-label">現在の在庫数</span>
+              <input class="f-input" id="fStock" type="number" value="24">
+            </div>
+            <div class="f-col">
+              <span class="f-label">在庫不足アラートのしきい値</span>
+              <input class="f-input" id="fLowAt" type="number" value="10">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 옵션 연결（토스 §3-3「옵션 추가하기」: 그룹명 + 필수/선택 + 옵션 항목） -->
+      <div class="card">
+        <div class="card-head">オプション連携</div>
+        <div class="card-body" id="optBody"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+function getIdFromUrl(){ const m=location.search.match(/id=(\d+)/); return m? m[1] : null; }
+
+const OPTION_GROUPS=[
+  {id:1, name:'長さ', required:true,  items:['ショート','ミディアム','ロング'], linked:true},
+  {id:2, name:'コース追加', required:false, items:['トリートメント付き','ヘッドスパ付き'], linked:false},
+  {id:3, name:'色の濃さ', required:false, items:['ライト','スタンダード','ダーク'], linked:false},
+];
+
+function renderOptions(){
+  document.getElementById('optBody').innerHTML = OPTION_GROUPS.map(g=>`
+    <div class="opt-group-row">
+      <div class="opt-check ${g.linked?'on':''}" onclick="toggleOpt(${g.id},this)">${g.linked?'✓':''}</div>
+      <div class="opt-body">
+        <div class="opt-name">${g.name}</div>
+        <div class="opt-items">${g.items.join(' / ')}</div>
+      </div>
+      ${g.required?'<span class="opt-required">必須</span>':''}
+    </div>`).join('') + `<span class="opt-add-link" onclick="toast('新しいオプショングループを作成（モック）')">＋ 新しいオプショングループを作成</span>`;
+}
+function toggleOpt(id,el){
+  const g=OPTION_GROUPS.find(x=>x.id===id);
+  g.linked=!g.linked;
+  el.classList.toggle('on',g.linked);
+  el.textContent=g.linked?'✓':'';
+}
+
+function toggleSwitch(id){
+  document.getElementById(id).classList.toggle('on');
+}
+function toggleStock(){
+  const sw=document.getElementById('swStock');
+  sw.classList.toggle('on');
+  document.getElementById('stockExtra').classList.toggle('show', sw.classList.contains('on'));
+}
+function onPriceInput(){
+  // 시가설정이 켜져 있으면 직접입력가는 참고용 표시로만 남김(모크 단순화)
+}
+
+let _tt;
+function toast(msg){ const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); clearTimeout(_tt); _tt=setTimeout(()=>el.classList.remove('show'),2400); }
+
+const DOW=['日','月','火','水','木','金','土'];
+function tick(){
+  const d=new Date();
+  const el=document.getElementById('tbTime');
+  if(el) el.textContent=`${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} ${DOW[d.getDay()]}　${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
+
+// ── Init: ?id= があれば編集モード ──
+const editId=getIdFromUrl();
+if(editId){
+  document.getElementById('formTitle').textContent='商品を編集';
+  document.getElementById('delBtn').style.display='inline-block';
+  document.getElementById('fName').value='カラー剤（ブラウン系）';
+  document.getElementById('fPrice').value='1800';
+}
+renderOptions();
+tick();
+setInterval(tick,30000);
+</script>
+</body>
+</html>
