@@ -57,7 +57,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 .zb-sort{padding:7px 9px;border-radius:8px;border:.5px solid #E0E0DC;font-size:12px;font-family:inherit;color:#555;background:#fff;flex-shrink:0;}
 .zb-spacer{flex:1;}
 .zb-csv{padding:7px 12px;border-radius:8px;background:#F4F4F0;border:.5px solid #D0D0CC;font-size:12px;color:#555;cursor:pointer;font-family:inherit;flex-shrink:0;}
-.zb-add-btn{display:flex;align-items:center;gap:4px;padding:7px 13px;border-radius:9px;background:#10B981;color:#fff;font-size:12px;font-weight:700;border:none;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0;box-shadow:0 2px 8px rgba(16,185,129,.3);transition:background .12s;}
+.zb-add-btn{display:flex;align-items:center;gap:4px;padding:7px 13px;border-radius:9px;background:#1E3A8A;color:#fff;font-size:12px;font-weight:700;border:none;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0;box-shadow:0 2px 8px rgba(30,58,138,.3);transition:background .12s;}
+.zb-add-btn:hover{background:#16285F;}
 .zb-add-btn:hover{background:#0E9F6E;}
 
 /* ══ ZONE C ══ */
@@ -158,20 +159,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
       <div class="zone-b">
         <div class="zb-tabs" id="zbTabs">
           <div class="zb-tab active" data-t="all" onclick="switchTab('all',this)">すべて</div>
-          <div class="zb-tab" data-t="vip" onclick="switchTab('vip',this)">VIP</div>
-          <div class="zb-tab" data-t="dormant" onclick="switchTab('dormant',this)">休眠</div>
-          <div class="zb-tab" data-t="black" onclick="switchTab('black',this)">ブラック</div>
-          <div class="zb-tab" data-t="bday" onclick="switchTab('bday',this)">今月誕生日</div>
+          <div class="zb-tab" data-t="first" onclick="switchTab('first',this)">🐣 初回来店</div>
+          <div class="zb-tab" data-t="prelike" onclick="switchTab('prelike',this)">🟡 予備常連</div>
+          <div class="zb-tab" data-t="regular" onclick="switchTab('regular',this)">🔴 常連</div>
+          <div class="zb-tab" data-t="cold" onclick="switchTab('cold',this)">⚪ 休眠ぎみ</div>
         </div>
-        <div class="zb-search"><input type="text" id="searchInput" placeholder="名前・電話番号で検索" oninput="onSearch(this.value)"></div>
+        <div class="zb-search"><input type="text" id="searchInput" placeholder="番号、名前、メモで検索" oninput="onSearch(this.value)"></div>
         <select class="zb-sort" id="sortSelect" onchange="onSort(this.value)">
+          <option value="recent">最近来店順</option>
           <option value="visit">来店頻度順</option>
-          <option value="recent">最終来店順</option>
           <option value="name">名前順</option>
         </select>
         <div class="zb-spacer"></div>
-        <button class="zb-csv" onclick="toast('CSV出力（モック）')">CSV出力</button>
-        <button class="zb-add-btn" onclick="toggleAddForm()">＋新規顧客</button>
+        <button class="zb-add-btn" onclick="toggleAddForm()">直接積立・チャージ</button>
       </div>
 
       <!-- ══ ZONE C ══ -->
@@ -184,23 +184,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
       <div class="zd-sec">
         <div class="zd-title">顧客状況</div>
         <div class="zd-row"><span class="zd-label">総顧客数</span><span class="zd-val" id="statTotal">-</span></div>
-        <div class="zd-row"><span class="zd-label">VIP</span><span class="zd-val vip" id="statVip">-</span></div>
-        <div class="zd-row"><span class="zd-label">休眠</span><span class="zd-val dormant" id="statDormant">-</span></div>
-        <div class="zd-row"><span class="zd-label">ブラック</span><span class="zd-val black" id="statBlack">-</span></div>
-        <div class="zd-row"><span class="zd-label">今月誕生日</span><span class="zd-val bday" id="statBday">-</span></div>
+        <div class="zd-row"><span class="zd-label">初回来店</span><span class="zd-val" id="statFirst">-</span></div>
+        <div class="zd-row"><span class="zd-label">予備常連</span><span class="zd-val" id="statPrelike">-</span></div>
+        <div class="zd-row"><span class="zd-label">常連</span><span class="zd-val" id="statRegular">-</span></div>
+        <div class="zd-row"><span class="zd-label">休眠ぎみ</span><span class="zd-val" id="statCold">-</span></div>
       </div>
       <div class="zd-sec">
-        <div class="zd-title">平均来店周期</div>
-        <div style="text-align:center;padding:6px 0;">
-          <span style="font-size:26px;font-weight:800;color:#10B981;">34</span>
-          <span style="font-size:11px;color:#999;">日</span>
-        </div>
-      </div>
-      <div class="zd-sec">
-        <div class="zd-title">タグ凡例</div>
-        <div class="zd-legend-item"><div class="zd-legend-dot" style="background:#D4AC0D"></div>VIP（来店10回以上）</div>
-        <div class="zd-legend-item"><div class="zd-legend-dot" style="background:#999"></div>休眠（90日以上来店なし）</div>
-        <div class="zd-legend-item"><div class="zd-legend-dot" style="background:#E74C3C"></div>ブラック（ノーショー等）</div>
+        <div class="zd-title">顧客グループ定義<span style="font-size:9px;color:#bbb;font-weight:400;"> ※トスプレイス基準</span></div>
+        <div class="zd-legend-item"><div class="zd-legend-dot" style="background:#F0C75E"></div>初回来店：初めて来店した顧客</div>
+        <div class="zd-legend-item"><div class="zd-legend-dot" style="background:#F0C75E"></div>予備常連：2回以上来店、まだ常連ではない</div>
+        <div class="zd-legend-item"><div class="zd-legend-dot" style="background:#E74C3C"></div>常連：3ヶ月間に7回以上来店</div>
+        <div class="zd-legend-item"><div class="zd-legend-dot" style="background:#9AA5B1"></div>休眠ぎみ：予備常連／常連で45日来店なし</div>
       </div>
     </div>
 
@@ -211,41 +205,51 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 // ── Data ─────────────────────────────────────────────────────────────────
 const AVATAR_COLORS=['#8E44AD','#3B5BDB','#E67E22','#10B981','#E91E8C','#2E86C1','#D4AC0D'];
 
+// 토스플레이스 실제 고객 그룹 로직 그대로: 첫방문/예비단골/단골(3개월7회+)/뜸한고객(45일미방문)
 let CUSTOMERS = [
-  {id:1, name:'田中 美咲',   phone:'090-1234-5678', tag:null,     lastVisit:'2026-06-21', visitCount:14, points:320, bdayMonth:6},
-  {id:2, name:'佐藤 里奈',   phone:'080-2222-3333', tag:'vip',    lastVisit:'2026-06-21', visitCount:22, points:1280,bdayMonth:9},
-  {id:3, name:'中村 はな',   phone:'070-4444-5555', tag:null,     lastVisit:'2026-06-21', visitCount:3,  points:40,  bdayMonth:1},
-  {id:4, name:'小林 なつ',   phone:'090-5555-6666', tag:'vip',    lastVisit:'2026-06-20', visitCount:18, points:980, bdayMonth:6},
-  {id:5, name:'高橋 あおい', phone:'080-6666-7777', tag:null,     lastVisit:'2026-06-20', visitCount:6,  points:120, bdayMonth:11},
-  {id:6, name:'渡辺 ゆき',   phone:'070-7777-8888', tag:null,     lastVisit:'2026-06-19', visitCount:9,  points:210, bdayMonth:6},
-  {id:7, name:'山田 花子',   phone:'090-8888-9999', tag:'dormant',lastVisit:'2026-02-10', visitCount:5,  points:60,  bdayMonth:3},
-  {id:8, name:'伊藤 さくら', phone:'080-9999-0000', tag:'vip',    lastVisit:'2026-06-18', visitCount:31, points:2100,bdayMonth:6},
-  {id:9, name:'木村 あや',   phone:'070-0000-1111', tag:null,     lastVisit:'2026-06-18', visitCount:4,  points:55,  bdayMonth:8},
-  {id:10,name:'森 かれん',   phone:'090-1111-2222', tag:'black',  lastVisit:'2026-05-01', visitCount:2,  points:0,   bdayMonth:4},
-  {id:11,name:'清水 まい',   phone:'080-3333-4444', tag:'dormant',lastVisit:'2026-01-20', visitCount:7,  points:90,  bdayMonth:6},
-  {id:12,name:'橋本 ゆな',   phone:'070-5555-1111', tag:null,     lastVisit:'2026-06-17', visitCount:11, points:340, bdayMonth:10},
+  {id:1, name:'田中 美咲',   phone:'090-1234-5678', lastVisit:'2026-06-21', visitCount:14, recentVisits90d:8, points:320},
+  {id:2, name:'佐藤 里奈',   phone:'080-2222-3333', lastVisit:'2026-06-21', visitCount:22, recentVisits90d:9, points:1280},
+  {id:3, name:'中村 はな',   phone:'070-4444-5555', lastVisit:'2026-06-21', visitCount:1,  recentVisits90d:1, points:0},
+  {id:4, name:'小林 なつ',   phone:'090-5555-6666', lastVisit:'2026-06-20', visitCount:18, recentVisits90d:7, points:980},
+  {id:5, name:'高橋 あおい', phone:'080-6666-7777', lastVisit:'2026-06-20', visitCount:2,  recentVisits90d:2, points:120},
+  {id:6, name:'渡辺 ゆき',   phone:'070-7777-8888', lastVisit:'2026-06-19', visitCount:3,  recentVisits90d:3, points:210},
+  {id:7, name:'山田 花子',   phone:'090-8888-9999', lastVisit:'2026-02-10', visitCount:5,  recentVisits90d:0, points:60},
+  {id:8, name:'伊藤 さくら', phone:'080-9999-0000', lastVisit:'2026-06-18', visitCount:31, recentVisits90d:10,points:2100},
+  {id:9, name:'木村 あや',   phone:'070-0000-1111', lastVisit:'2026-06-18', visitCount:1,  recentVisits90d:1, points:0},
+  {id:10,name:'森 かれん',   phone:'090-1111-2222', lastVisit:'2026-05-01', visitCount:2,  recentVisits90d:2, points:0},
+  {id:11,name:'清水 まい',   phone:'080-3333-4444', lastVisit:'2026-01-20', visitCount:7,  recentVisits90d:0, points:90},
+  {id:12,name:'橋本 ゆな',   phone:'070-5555-1111', lastVisit:'2026-06-17', visitCount:11, recentVisits90d:7, points:340},
 ];
 
-let curTab='all', filterText='', sortBy='visit', addFormOpen=false, nextId=13;
-const CUR_MONTH=6;
+let curTab='all', filterText='', sortBy='recent', addFormOpen=false, nextId=13;
+const TODAY=new Date(2026,5,21);
 
 function initial(name){ return name[0]; }
 function avatarColor(id){ return AVATAR_COLORS[id % AVATAR_COLORS.length]; }
 function daysAgo(dateStr){
-  const d=new Date(dateStr), now=new Date(2026,5,21);
-  return Math.round((now-d)/(1000*60*60*24));
+  const d=new Date(dateStr);
+  return Math.round((TODAY-d)/(1000*60*60*24));
 }
 function fmtDate(dateStr){
   const d=new Date(dateStr);
   return `${d.getMonth()+1}/${d.getDate()}`;
 }
+// グループ判定：常連(3ヶ月7回+) → 予備常連(2回+) → 初回来店。常連/予備常連で45日来店なしは休眠ぎみ
+function groupOf(c){
+  const idle = daysAgo(c.lastVisit) >= 45;
+  let base;
+  if(c.visitCount<=1) base='first';
+  else if(c.recentVisits90d>=7) base='regular';
+  else base='prelike';
+  if(idle && base!=='first') return 'cold';
+  return base;
+}
+const GROUP_LABEL={first:'初回来店',prelike:'予備常連',regular:'常連',cold:'休眠ぎみ'};
+const GROUP_ICON={first:'🐣',prelike:'🟡',regular:'🔴',cold:'⚪'};
 
 function render(){
   let list=[...CUSTOMERS];
-  if(curTab==='vip') list=list.filter(c=>c.tag==='vip');
-  else if(curTab==='dormant') list=list.filter(c=>c.tag==='dormant');
-  else if(curTab==='black') list=list.filter(c=>c.tag==='black');
-  else if(curTab==='bday') list=list.filter(c=>c.bdayMonth===CUR_MONTH);
+  if(curTab!=='all') list=list.filter(c=>groupOf(c)===curTab);
 
   if(filterText) list=list.filter(c=>c.name.includes(filterText)||c.phone.includes(filterText));
 
@@ -267,20 +271,17 @@ function render(){
     html+=`<div class="zc-empty">該当する顧客はいません</div>`;
   } else {
     html+=list.map(c=>{
-      const tagHtml = c.tag==='vip'?`<span class="c-tag vip">VIP</span>`
-        : c.tag==='dormant'?`<span class="c-tag dormant">休眠</span>`
-        : c.tag==='black'?`<span class="c-tag black">ブラック</span>`:'';
-      const bdayHtml = c.bdayMonth===CUR_MONTH?`<span class="c-bday">🎂</span>`:'';
+      const g=groupOf(c);
       return `<div class="c-card" onclick="openDetail(${c.id})">
         <div class="c-avatar" style="background:${avatarColor(c.id)}">${initial(c.name)}</div>
         <div class="c-body">
-          <div class="c-top"><span class="c-name">${c.name}</span>${tagHtml}${bdayHtml}</div>
+          <div class="c-top"><span class="c-tag-icon">${GROUP_ICON[g]}</span><span class="c-name">${GROUP_LABEL[g]} | ${c.name}</span></div>
           <div class="c-phone">${c.phone}</div>
         </div>
         <div class="c-stats">
           <div class="c-stat"><div class="c-stat-val">${fmtDate(c.lastVisit)}</div><div class="c-stat-lbl">最終来店</div></div>
           <div class="c-stat"><div class="c-stat-val">${c.visitCount}回</div><div class="c-stat-lbl">来店回数</div></div>
-          <div class="c-stat"><div class="c-stat-val">${c.points}pt</div><div class="c-stat-lbl">ポイント</div></div>
+          <div class="c-stat"><div class="c-stat-val">${c.points}P</div><div class="c-stat-lbl">ポイント</div></div>
         </div>
         <div class="c-actions">
           <button class="c-btn" onclick="event.stopPropagation(); toast('${c.name} 様の予約フォームへ → 07_booking_form')">予約</button>
@@ -294,10 +295,10 @@ function render(){
 
 function renderStats(){
   document.getElementById('statTotal').textContent=CUSTOMERS.length+'名';
-  document.getElementById('statVip').textContent=CUSTOMERS.filter(c=>c.tag==='vip').length+'名';
-  document.getElementById('statDormant').textContent=CUSTOMERS.filter(c=>c.tag==='dormant').length+'名';
-  document.getElementById('statBlack').textContent=CUSTOMERS.filter(c=>c.tag==='black').length+'名';
-  document.getElementById('statBday').textContent=CUSTOMERS.filter(c=>c.bdayMonth===CUR_MONTH).length+'名';
+  document.getElementById('statFirst').textContent=CUSTOMERS.filter(c=>groupOf(c)==='first').length+'名';
+  document.getElementById('statPrelike').textContent=CUSTOMERS.filter(c=>groupOf(c)==='prelike').length+'名';
+  document.getElementById('statRegular').textContent=CUSTOMERS.filter(c=>groupOf(c)==='regular').length+'名';
+  document.getElementById('statCold').textContent=CUSTOMERS.filter(c=>groupOf(c)==='cold').length+'名';
 }
 
 // ── Actions ──────────────────────────────────────────────────────────────
