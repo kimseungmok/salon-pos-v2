@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'features/customer/screens/customer_list_screen.dart';
 import 'features/product/screens/product_list_screen.dart';
 import 'features/staff/screens/staff_invite_screen.dart';
 
@@ -51,6 +52,7 @@ class _DevHomeTabsState extends State<_DevHomeTabs> {
     final screens = [
       const ProductListScreen(),
       const StaffInviteScreen(),
+      const CustomerListScreen(),
     ];
     return Scaffold(
       body: IndexedStack(index: _index, children: screens),
@@ -60,6 +62,7 @@ class _DevHomeTabsState extends State<_DevHomeTabs> {
         destinations: const [
           NavigationDestination(icon: Icon(Icons.spa), label: '商品'),
           NavigationDestination(icon: Icon(Icons.people), label: 'スタッフ'),
+          NavigationDestination(icon: Icon(Icons.groups), label: '顧客'),
         ],
       ),
     );
