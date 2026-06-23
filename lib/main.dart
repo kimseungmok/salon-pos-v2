@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'features/booking/screens/waiting_list_screen.dart';
 import 'features/customer/screens/customer_list_screen.dart';
+import 'features/payment_pos/screens/pos_order_screen.dart';
 import 'features/product/screens/product_list_screen.dart';
 import 'features/staff/screens/staff_invite_screen.dart';
 
@@ -51,6 +52,7 @@ class _DevHomeTabsState extends State<_DevHomeTabs> {
   @override
   Widget build(BuildContext context) {
     final screens = [
+      const PosOrderScreen(),
       const ProductListScreen(),
       const StaffInviteScreen(),
       const CustomerListScreen(),
@@ -62,6 +64,7 @@ class _DevHomeTabsState extends State<_DevHomeTabs> {
         selectedIndex: _index,
         onDestinationSelected: (i) => setState(() => _index = i),
         destinations: const [
+          NavigationDestination(icon: Icon(Icons.point_of_sale), label: '注文'),
           NavigationDestination(icon: Icon(Icons.spa), label: '商品'),
           NavigationDestination(icon: Icon(Icons.people), label: 'スタッフ'),
           NavigationDestination(icon: Icon(Icons.groups), label: '顧客'),

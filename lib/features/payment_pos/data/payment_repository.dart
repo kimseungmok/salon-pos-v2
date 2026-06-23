@@ -1,0 +1,244 @@
+import 'package:drift/drift.dart';
+import 'package:uuid/uuid.dart';
+
+import '../../../core/errors.dart';
+import '../../../db/app_database.dart';
+import '../../customer/data/customer_repository.dart';
+import '../logic/payment_logic.dart';
+
+const _uuid = Uuid();
+
+/// design/spec/v3/payment_pos/feature_spec.md F-PAY-01~05 그대로 구현.
+class PaymentRepository {
+  PaymentRepository(this._db, this._customerRepository);
+
+  final AppDatabase _db;
+  final CustomerRepository _customerRepository;
+
+  static const _validMethods = {
+    'cash',
+    'card',
+    'paypay',
+    'linepay',
+    'bank_transfer',
+    'credit',
+    'kakeuri',
+    'prepaid_pass',
+  };
+
+  Stream<List<OrderRow>> watchOrders() {
+    return (_db.select(_db.orders)
+          ..orderBy([(o) => OrderingTerm.desc(o.createdAt)]))
+        .watch();
+  }
+
+  Future<List<OrderItemRow>> itemsOf(String orderId) async {
+    try {
+      return await (_db.select(_db.orderItems)
+            ..where((i) => i.orderId.equals(orderId)))
+          .get();
+    } catch (e) {
+      throw DatabaseException.readFailed('$e');
+    }
+  }
+
+  /// F-PAY-01: 주문(카트) 생성. 아이템이 1개 이상 있어야 한다.
+  Future<OrderRow> createOrder({
+    String? customerId,
+    required List<({String productId, String productName, int quantity, int unitPrice, String? staffId})>
+        items,
+    int discountAmount = 0,
+  }) async {
+    if (items.isEmpty) {
+      throw const ValidationException('商品が選択されていません。');
+    }
+    if (items.any((i) => i.quantity <= 0)) {
+      throw const ValidationException('数量は1以上にしてください。');
+    }
+
+    try {
+      final total = items.fold<int>(0, (sum, i) => sum + i.unitPrice * i.quantity);
+      if (discountAmount > total) {
+        throw const ValidationException('割引額が合計金額を超えています。');
+      }
+
+      final orderId = _uuid.v4();
+      final now = DateTime.now();
+      await _db.into(_db.orders).insert(
+            OrdersCompanion.insert(
+              id: orderId,
+              customerId: Value(customerId),
+              totalAmount: total,
+              discountAmount: Value(discountAmount),
+              createdAt: now,
+            ),
+          );
+      for (final i in items) {
+        await _db.into(_db.orderItems).insert(
+              OrderItemsCompanion.insert(
+                id: _uuid.v4(),
+                orderId: orderId,
+                productId: i.productId,
+                productName: i.productName,
+                quantity: i.quantity,
+                unitPrice: i.unitPrice,
+                staffId: Value(i.staffId),
+              ),
+            );
+      }
+      return OrderRow(
+        id: orderId,
+        customerId: customerId,
+        totalAmount: total,
+        discountAmount: discountAmount,
+        pointsUsed: 0,
+        prepaidUsedJson: '[]',
+        status: 'pending',
+        createdAt: now,
+      );
+    } on AppException {
+      rethrow;
+    } catch (e) {
+      throw DatabaseException.writeFailed('$e');
+    }
+  }
+
+  /// F-PAY-02: 결제 1건 처리(분할결제 시 여러 번 호출). 결제수단이
+  /// cash면 거스름돈을 같이 계산해 저장한다(F-PAY-02a).
+  Future<PaymentRow> pay({
+    required String orderId,
+    required String method,
+    required int amount,
+    String? splitType,
+    int? cashReceived,
+  }) async {
+    if (!_validMethods.contains(method)) {
+      throw const ValidationException('決済方法の値が正しくありません。');
+    }
+    if (amount <= 0) {
+      throw const ValidationException('決済金額は1円以上にしてください。');
+    }
+    if (method == 'cash') {
+      if (cashReceived == null) {
+        throw const ValidationException('受取金額を入力してください。');
+      }
+      if (!canPayWithCash(cashReceived, amount)) {
+        throw const ValidationException('受取金額が決済金額より少ないです。');
+      }
+    }
+
+    try {
+      final order = await (_db.select(_db.orders)
+            ..where((o) => o.id.equals(orderId)))
+          .getSingleOrNull();
+      if (order == null) {
+        throw const NotFoundException('注文が見つかりませんでした。');
+      }
+      if (order.status == 'cancelled') {
+        throw const BusinessRuleException('この注文は既にキャンセルされています。');
+      }
+
+      final paidSoFar = await _paidAmount(orderId);
+      final netTotal = order.totalAmount - order.discountAmount;
+      if (paidSoFar + amount > netTotal) {
+        throw const BusinessRuleException('決済金額が残りの注文金額を超えています。');
+      }
+
+      final id = _uuid.v4();
+      final now = DateTime.now();
+      final change = method == 'cash' ? computeChange(cashReceived!, amount) : null;
+      await _db.into(_db.payments).insert(
+            PaymentsCompanion.insert(
+              id: id,
+              orderId: orderId,
+              method: method,
+              amount: amount,
+              splitType: Value(splitType),
+              cashReceived: Value(cashReceived),
+              cashChange: Value(change),
+              createdAt: now,
+            ),
+          );
+
+      final newPaidTotal = paidSoFar + amount;
+      final newStatus = newPaidTotal >= netTotal ? 'completed' : 'partially_paid';
+      await (_db.update(_db.orders)..where((o) => o.id.equals(orderId)))
+          .write(OrdersCompanion(status: Value(newStatus)));
+
+      return PaymentRow(
+        id: id,
+        orderId: orderId,
+        method: method,
+        amount: amount,
+        splitType: splitType,
+        cashReceived: cashReceived,
+        cashChange: change,
+        status: 'completed',
+        createdAt: now,
+      );
+    } on AppException {
+      rethrow;
+    } catch (e) {
+      throw DatabaseException.writeFailed('$e');
+    }
+  }
+
+  Future<int> _paidAmount(String orderId) async {
+    final payments = await (_db.select(_db.payments)
+          ..where((p) => p.orderId.equals(orderId) & p.status.equals('completed')))
+        .get();
+    return payments.fold<int>(0, (sum, p) => sum + p.amount);
+  }
+
+  /// 잔여 결제금액(분할결제 진행 중 "총 N원 중 M원 남음" 표시용).
+  Future<int> remainingAmount(String orderId) async {
+    try {
+      final order = await (_db.select(_db.orders)
+            ..where((o) => o.id.equals(orderId)))
+          .getSingleOrNull();
+      if (order == null) {
+        throw const NotFoundException('注文が見つかりませんでした。');
+      }
+      final netTotal = order.totalAmount - order.discountAmount;
+      final paid = await _paidAmount(orderId);
+      return netTotal - paid;
+    } on AppException {
+      rethrow;
+    } catch (e) {
+      throw DatabaseException.readFailed('$e');
+    }
+  }
+
+  /// F-PAY-05: 결제 취소(환불) — 원자적 처리.
+  /// prepaid_pass(M6) 연동은 아직 없어 포인트 환원만 실제로 수행하고,
+  /// 선불권 환원은 TODO로 남긴다(주석 참조, CROSS_VALIDATION.md 수정2).
+  Future<void> cancelOrder(String orderId) async {
+    try {
+      await _db.transaction(() async {
+        final order = await (_db.select(_db.orders)
+              ..where((o) => o.id.equals(orderId)))
+            .getSingleOrNull();
+        if (order == null) {
+          throw const NotFoundException('注文が見つかりませんでした。');
+        }
+        if (order.status == 'cancelled') {
+          throw const BusinessRuleException('この注文は既にキャンセルされています。');
+        }
+
+        if (order.pointsUsed > 0 && order.customerId != null) {
+          await _customerRepository.restorePoints(order.customerId!, order.pointsUsed);
+        }
+        // TODO(M6): order.prepaidUsedJson을 파싱해 voidChargeTransaction() 호출.
+
+        await (_db.update(_db.payments)..where((p) => p.orderId.equals(orderId)))
+            .write(const PaymentsCompanion(status: Value('refunded')));
+        await (_db.update(_db.orders)..where((o) => o.id.equals(orderId)))
+            .write(const OrdersCompanion(status: Value('cancelled')));
+      });
+    } on AppException {
+      rethrow;
+    } catch (e) {
+      throw DatabaseException.writeFailed('$e');
+    }
+  }
+}

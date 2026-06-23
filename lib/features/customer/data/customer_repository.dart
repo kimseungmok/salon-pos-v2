@@ -88,6 +88,34 @@ class CustomerRepository {
     }
   }
 
+  /// payment_pos의 cancelOrder()(F-PAY-05)·marketing의 포인트 환원
+  /// 로직(F-MKT-03)이 공통으로 호출하는 포인트 가감 메서드. 적립/사용은
+  /// 양수, 환원/회수는 음수로 [delta]를 넘긴다.
+  Future<void> adjustPoints(String customerId, int delta) async {
+    try {
+      final customer = await (_db.select(_db.customers)
+            ..where((c) => c.id.equals(customerId)))
+          .getSingleOrNull();
+      if (customer == null) {
+        throw const NotFoundException('お客様情報が見つかりませんでした。');
+      }
+      final newPoints = customer.points + delta;
+      if (newPoints < 0) {
+        throw const BusinessRuleException('ポイント残高が不足しています。');
+      }
+      await (_db.update(_db.customers)..where((c) => c.id.equals(customerId)))
+          .write(CustomersCompanion(points: Value(newPoints)));
+    } on AppException {
+      rethrow;
+    } catch (e) {
+      throw DatabaseException.writeFailed('$e');
+    }
+  }
+
+  /// F-PAY-05 결제취소 시 사용한 포인트를 되돌려준다(양수 가산).
+  Future<void> restorePoints(String customerId, int usedPoints) =>
+      adjustPoints(customerId, usedPoints);
+
   /// F-CUST-02: 메모 저장. 권한 체크(오너만)는 화면단(호출 측)에서
   /// 로그인 정보로 판단 — 레포지토리는 저장만 책임진다.
   Future<void> updateMemo(String customerId, String memo) async {
