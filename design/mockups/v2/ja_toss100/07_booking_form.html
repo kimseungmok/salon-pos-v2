@@ -315,6 +315,30 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','Hiragino San
         </div>
       </div>
 
+      <!-- 토스플레이스 실제「예약 넣기」화면 그대로(2026-06-23 검증): 예약금 토글+결제수단+금액+받았어요+환불안내문구 -->
+      <div class="sc">
+        <div class="sc-header">
+          <span class="sc-title">予約金</span>
+          <div class="toggle on" id="depositToggle" onclick="toggleDeposit()"><div class="toggle-knob"></div></div>
+        </div>
+        <div class="sc-body" id="depositBody" style="padding:4px 14px;">
+          <div style="display:flex;gap:8px;margin-bottom:8px;">
+            <select class="inp" id="depositMethod" style="flex:1;">
+              <option>銀行振込</option>
+              <option>カード</option>
+            </select>
+            <input class="inp" id="depositAmount" type="text" value="20,000" style="flex:1;text-align:right;" placeholder="金額">
+          </div>
+          <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;margin-bottom:10px;">
+            <input type="checkbox" id="depositReceived"> 受け取りました
+          </label>
+          <div class="field">
+            <div class="field-label">キャンセル案内文（任意）</div>
+            <textarea class="inp" id="depositRefundNote" rows="2" style="resize:none;" placeholder="例：返金は24時間以内に可能です。">返金は24時間以内に可能です。</textarea>
+          </div>
+        </div>
+      </div>
+
       <!-- options -->
       <div class="sc">
         <div class="sc-header"><span class="sc-title">追加 設定</span></div>
@@ -454,6 +478,11 @@ function addService() {
   calcDuration();
 }
 
+function toggleDeposit(){
+  const t=document.getElementById('depositToggle');
+  t.classList.toggle('on');
+  document.getElementById('depositBody').style.display = t.classList.contains('on')?'block':'none';
+}
 function selectStaff(el) {
   document.querySelectorAll('.staff-chip').forEach(c=>c.classList.remove('selected'));
   el.classList.add('selected');
