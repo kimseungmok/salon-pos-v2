@@ -7,6 +7,7 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
 import '../features/product/data/product_tables.dart';
+import '../features/staff/data/staff_tables.dart';
 
 part 'app_database.g.dart';
 
@@ -15,7 +16,7 @@ part 'app_database.g.dart';
 ///
 /// 모듈을 추가할 때마다 해당 모듈의 테이블 파일을 import하고
 /// [tables] 목록에 추가한다(M2~M10 진행 시 동일 패턴 반복).
-@DriftDatabase(tables: [Categories, Products])
+@DriftDatabase(tables: [Categories, Products, Staff, Shifts])
 class AppDatabase extends _$AppDatabase {
   AppDatabase._(super.e);
 

@@ -926,16 +926,811 @@ class ProductsCompanion extends UpdateCompanion<ProductRow> {
   }
 }
 
+class $StaffTable extends Staff with TableInfo<$StaffTable, StaffRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $StaffTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 30,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _phoneMeta = const VerificationMeta('phone');
+  @override
+  late final GeneratedColumn<String> phone = GeneratedColumn<String>(
+    'phone',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _roleMeta = const VerificationMeta('role');
+  @override
+  late final GeneratedColumn<String> role = GeneratedColumn<String>(
+    'role',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('スタイリスト'),
+  );
+  static const VerificationMeta _accountStatusMeta = const VerificationMeta(
+    'accountStatus',
+  );
+  @override
+  late final GeneratedColumn<String> accountStatus = GeneratedColumn<String>(
+    'account_status',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _invitedAtMeta = const VerificationMeta(
+    'invitedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> invitedAt = GeneratedColumn<DateTime>(
+    'invited_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    name,
+    phone,
+    role,
+    accountStatus,
+    invitedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'staff';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<StaffRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('phone')) {
+      context.handle(
+        _phoneMeta,
+        phone.isAcceptableOrUnknown(data['phone']!, _phoneMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_phoneMeta);
+    }
+    if (data.containsKey('role')) {
+      context.handle(
+        _roleMeta,
+        role.isAcceptableOrUnknown(data['role']!, _roleMeta),
+      );
+    }
+    if (data.containsKey('account_status')) {
+      context.handle(
+        _accountStatusMeta,
+        accountStatus.isAcceptableOrUnknown(
+          data['account_status']!,
+          _accountStatusMeta,
+        ),
+      );
+    }
+    if (data.containsKey('invited_at')) {
+      context.handle(
+        _invitedAtMeta,
+        invitedAt.isAcceptableOrUnknown(data['invited_at']!, _invitedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  StaffRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return StaffRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      phone: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}phone'],
+      )!,
+      role: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}role'],
+      )!,
+      accountStatus: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}account_status'],
+      ),
+      invitedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}invited_at'],
+      ),
+    );
+  }
+
+  @override
+  $StaffTable createAlias(String alias) {
+    return $StaffTable(attachedDatabase, alias);
+  }
+}
+
+class StaffRow extends DataClass implements Insertable<StaffRow> {
+  final String id;
+  final String name;
+  final String phone;
+
+  /// 표시 전용. 본 앱(POS)에서는 절대 수정 UI를 만들지 않는다.
+  final String role;
+
+  /// F-STAFF-01: 招待 흐름 결과. 초대 안 한 스태프는 null.
+  final String? accountStatus;
+  final DateTime? invitedAt;
+  const StaffRow({
+    required this.id,
+    required this.name,
+    required this.phone,
+    required this.role,
+    this.accountStatus,
+    this.invitedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['name'] = Variable<String>(name);
+    map['phone'] = Variable<String>(phone);
+    map['role'] = Variable<String>(role);
+    if (!nullToAbsent || accountStatus != null) {
+      map['account_status'] = Variable<String>(accountStatus);
+    }
+    if (!nullToAbsent || invitedAt != null) {
+      map['invited_at'] = Variable<DateTime>(invitedAt);
+    }
+    return map;
+  }
+
+  StaffCompanion toCompanion(bool nullToAbsent) {
+    return StaffCompanion(
+      id: Value(id),
+      name: Value(name),
+      phone: Value(phone),
+      role: Value(role),
+      accountStatus: accountStatus == null && nullToAbsent
+          ? const Value.absent()
+          : Value(accountStatus),
+      invitedAt: invitedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(invitedAt),
+    );
+  }
+
+  factory StaffRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return StaffRow(
+      id: serializer.fromJson<String>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      phone: serializer.fromJson<String>(json['phone']),
+      role: serializer.fromJson<String>(json['role']),
+      accountStatus: serializer.fromJson<String?>(json['accountStatus']),
+      invitedAt: serializer.fromJson<DateTime?>(json['invitedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'name': serializer.toJson<String>(name),
+      'phone': serializer.toJson<String>(phone),
+      'role': serializer.toJson<String>(role),
+      'accountStatus': serializer.toJson<String?>(accountStatus),
+      'invitedAt': serializer.toJson<DateTime?>(invitedAt),
+    };
+  }
+
+  StaffRow copyWith({
+    String? id,
+    String? name,
+    String? phone,
+    String? role,
+    Value<String?> accountStatus = const Value.absent(),
+    Value<DateTime?> invitedAt = const Value.absent(),
+  }) => StaffRow(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    phone: phone ?? this.phone,
+    role: role ?? this.role,
+    accountStatus: accountStatus.present
+        ? accountStatus.value
+        : this.accountStatus,
+    invitedAt: invitedAt.present ? invitedAt.value : this.invitedAt,
+  );
+  StaffRow copyWithCompanion(StaffCompanion data) {
+    return StaffRow(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      phone: data.phone.present ? data.phone.value : this.phone,
+      role: data.role.present ? data.role.value : this.role,
+      accountStatus: data.accountStatus.present
+          ? data.accountStatus.value
+          : this.accountStatus,
+      invitedAt: data.invitedAt.present ? data.invitedAt.value : this.invitedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StaffRow(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('phone: $phone, ')
+          ..write('role: $role, ')
+          ..write('accountStatus: $accountStatus, ')
+          ..write('invitedAt: $invitedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, name, phone, role, accountStatus, invitedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is StaffRow &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.phone == this.phone &&
+          other.role == this.role &&
+          other.accountStatus == this.accountStatus &&
+          other.invitedAt == this.invitedAt);
+}
+
+class StaffCompanion extends UpdateCompanion<StaffRow> {
+  final Value<String> id;
+  final Value<String> name;
+  final Value<String> phone;
+  final Value<String> role;
+  final Value<String?> accountStatus;
+  final Value<DateTime?> invitedAt;
+  final Value<int> rowid;
+  const StaffCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.phone = const Value.absent(),
+    this.role = const Value.absent(),
+    this.accountStatus = const Value.absent(),
+    this.invitedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  StaffCompanion.insert({
+    required String id,
+    required String name,
+    required String phone,
+    this.role = const Value.absent(),
+    this.accountStatus = const Value.absent(),
+    this.invitedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       name = Value(name),
+       phone = Value(phone);
+  static Insertable<StaffRow> custom({
+    Expression<String>? id,
+    Expression<String>? name,
+    Expression<String>? phone,
+    Expression<String>? role,
+    Expression<String>? accountStatus,
+    Expression<DateTime>? invitedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (phone != null) 'phone': phone,
+      if (role != null) 'role': role,
+      if (accountStatus != null) 'account_status': accountStatus,
+      if (invitedAt != null) 'invited_at': invitedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  StaffCompanion copyWith({
+    Value<String>? id,
+    Value<String>? name,
+    Value<String>? phone,
+    Value<String>? role,
+    Value<String?>? accountStatus,
+    Value<DateTime?>? invitedAt,
+    Value<int>? rowid,
+  }) {
+    return StaffCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      phone: phone ?? this.phone,
+      role: role ?? this.role,
+      accountStatus: accountStatus ?? this.accountStatus,
+      invitedAt: invitedAt ?? this.invitedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (phone.present) {
+      map['phone'] = Variable<String>(phone.value);
+    }
+    if (role.present) {
+      map['role'] = Variable<String>(role.value);
+    }
+    if (accountStatus.present) {
+      map['account_status'] = Variable<String>(accountStatus.value);
+    }
+    if (invitedAt.present) {
+      map['invited_at'] = Variable<DateTime>(invitedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StaffCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('phone: $phone, ')
+          ..write('role: $role, ')
+          ..write('accountStatus: $accountStatus, ')
+          ..write('invitedAt: $invitedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ShiftsTable extends Shifts with TableInfo<$ShiftsTable, ShiftRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ShiftsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _staffIdMeta = const VerificationMeta(
+    'staffId',
+  );
+  @override
+  late final GeneratedColumn<String> staffId = GeneratedColumn<String>(
+    'staff_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES staff (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _dateMeta = const VerificationMeta('date');
+  @override
+  late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
+    'date',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _startTimeMeta = const VerificationMeta(
+    'startTime',
+  );
+  @override
+  late final GeneratedColumn<DateTime> startTime = GeneratedColumn<DateTime>(
+    'start_time',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _endTimeMeta = const VerificationMeta(
+    'endTime',
+  );
+  @override
+  late final GeneratedColumn<DateTime> endTime = GeneratedColumn<DateTime>(
+    'end_time',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, staffId, date, startTime, endTime];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'shifts';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ShiftRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('staff_id')) {
+      context.handle(
+        _staffIdMeta,
+        staffId.isAcceptableOrUnknown(data['staff_id']!, _staffIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_staffIdMeta);
+    }
+    if (data.containsKey('date')) {
+      context.handle(
+        _dateMeta,
+        date.isAcceptableOrUnknown(data['date']!, _dateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dateMeta);
+    }
+    if (data.containsKey('start_time')) {
+      context.handle(
+        _startTimeMeta,
+        startTime.isAcceptableOrUnknown(data['start_time']!, _startTimeMeta),
+      );
+    }
+    if (data.containsKey('end_time')) {
+      context.handle(
+        _endTimeMeta,
+        endTime.isAcceptableOrUnknown(data['end_time']!, _endTimeMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ShiftRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ShiftRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      staffId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}staff_id'],
+      )!,
+      date: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}date'],
+      )!,
+      startTime: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}start_time'],
+      ),
+      endTime: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}end_time'],
+      ),
+    );
+  }
+
+  @override
+  $ShiftsTable createAlias(String alias) {
+    return $ShiftsTable(attachedDatabase, alias);
+  }
+}
+
+class ShiftRow extends DataClass implements Insertable<ShiftRow> {
+  final String id;
+  final String staffId;
+  final DateTime date;
+
+  /// null이면 휴무일.
+  final DateTime? startTime;
+  final DateTime? endTime;
+  const ShiftRow({
+    required this.id,
+    required this.staffId,
+    required this.date,
+    this.startTime,
+    this.endTime,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['staff_id'] = Variable<String>(staffId);
+    map['date'] = Variable<DateTime>(date);
+    if (!nullToAbsent || startTime != null) {
+      map['start_time'] = Variable<DateTime>(startTime);
+    }
+    if (!nullToAbsent || endTime != null) {
+      map['end_time'] = Variable<DateTime>(endTime);
+    }
+    return map;
+  }
+
+  ShiftsCompanion toCompanion(bool nullToAbsent) {
+    return ShiftsCompanion(
+      id: Value(id),
+      staffId: Value(staffId),
+      date: Value(date),
+      startTime: startTime == null && nullToAbsent
+          ? const Value.absent()
+          : Value(startTime),
+      endTime: endTime == null && nullToAbsent
+          ? const Value.absent()
+          : Value(endTime),
+    );
+  }
+
+  factory ShiftRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ShiftRow(
+      id: serializer.fromJson<String>(json['id']),
+      staffId: serializer.fromJson<String>(json['staffId']),
+      date: serializer.fromJson<DateTime>(json['date']),
+      startTime: serializer.fromJson<DateTime?>(json['startTime']),
+      endTime: serializer.fromJson<DateTime?>(json['endTime']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'staffId': serializer.toJson<String>(staffId),
+      'date': serializer.toJson<DateTime>(date),
+      'startTime': serializer.toJson<DateTime?>(startTime),
+      'endTime': serializer.toJson<DateTime?>(endTime),
+    };
+  }
+
+  ShiftRow copyWith({
+    String? id,
+    String? staffId,
+    DateTime? date,
+    Value<DateTime?> startTime = const Value.absent(),
+    Value<DateTime?> endTime = const Value.absent(),
+  }) => ShiftRow(
+    id: id ?? this.id,
+    staffId: staffId ?? this.staffId,
+    date: date ?? this.date,
+    startTime: startTime.present ? startTime.value : this.startTime,
+    endTime: endTime.present ? endTime.value : this.endTime,
+  );
+  ShiftRow copyWithCompanion(ShiftsCompanion data) {
+    return ShiftRow(
+      id: data.id.present ? data.id.value : this.id,
+      staffId: data.staffId.present ? data.staffId.value : this.staffId,
+      date: data.date.present ? data.date.value : this.date,
+      startTime: data.startTime.present ? data.startTime.value : this.startTime,
+      endTime: data.endTime.present ? data.endTime.value : this.endTime,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ShiftRow(')
+          ..write('id: $id, ')
+          ..write('staffId: $staffId, ')
+          ..write('date: $date, ')
+          ..write('startTime: $startTime, ')
+          ..write('endTime: $endTime')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, staffId, date, startTime, endTime);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ShiftRow &&
+          other.id == this.id &&
+          other.staffId == this.staffId &&
+          other.date == this.date &&
+          other.startTime == this.startTime &&
+          other.endTime == this.endTime);
+}
+
+class ShiftsCompanion extends UpdateCompanion<ShiftRow> {
+  final Value<String> id;
+  final Value<String> staffId;
+  final Value<DateTime> date;
+  final Value<DateTime?> startTime;
+  final Value<DateTime?> endTime;
+  final Value<int> rowid;
+  const ShiftsCompanion({
+    this.id = const Value.absent(),
+    this.staffId = const Value.absent(),
+    this.date = const Value.absent(),
+    this.startTime = const Value.absent(),
+    this.endTime = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ShiftsCompanion.insert({
+    required String id,
+    required String staffId,
+    required DateTime date,
+    this.startTime = const Value.absent(),
+    this.endTime = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       staffId = Value(staffId),
+       date = Value(date);
+  static Insertable<ShiftRow> custom({
+    Expression<String>? id,
+    Expression<String>? staffId,
+    Expression<DateTime>? date,
+    Expression<DateTime>? startTime,
+    Expression<DateTime>? endTime,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (staffId != null) 'staff_id': staffId,
+      if (date != null) 'date': date,
+      if (startTime != null) 'start_time': startTime,
+      if (endTime != null) 'end_time': endTime,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ShiftsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? staffId,
+    Value<DateTime>? date,
+    Value<DateTime?>? startTime,
+    Value<DateTime?>? endTime,
+    Value<int>? rowid,
+  }) {
+    return ShiftsCompanion(
+      id: id ?? this.id,
+      staffId: staffId ?? this.staffId,
+      date: date ?? this.date,
+      startTime: startTime ?? this.startTime,
+      endTime: endTime ?? this.endTime,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (staffId.present) {
+      map['staff_id'] = Variable<String>(staffId.value);
+    }
+    if (date.present) {
+      map['date'] = Variable<DateTime>(date.value);
+    }
+    if (startTime.present) {
+      map['start_time'] = Variable<DateTime>(startTime.value);
+    }
+    if (endTime.present) {
+      map['end_time'] = Variable<DateTime>(endTime.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ShiftsCompanion(')
+          ..write('id: $id, ')
+          ..write('staffId: $staffId, ')
+          ..write('date: $date, ')
+          ..write('startTime: $startTime, ')
+          ..write('endTime: $endTime, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $CategoriesTable categories = $CategoriesTable(this);
   late final $ProductsTable products = $ProductsTable(this);
+  late final $StaffTable staff = $StaffTable(this);
+  late final $ShiftsTable shifts = $ShiftsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [categories, products];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+    categories,
+    products,
+    staff,
+    shifts,
+  ];
+  @override
+  StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'staff',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('shifts', kind: UpdateKind.delete)],
+    ),
+  ]);
 }
 
 typedef $$CategoriesTableCreateCompanionBuilder =
@@ -1623,6 +2418,634 @@ typedef $$ProductsTableProcessedTableManager =
       ProductRow,
       PrefetchHooks Function({bool categoryId})
     >;
+typedef $$StaffTableCreateCompanionBuilder =
+    StaffCompanion Function({
+      required String id,
+      required String name,
+      required String phone,
+      Value<String> role,
+      Value<String?> accountStatus,
+      Value<DateTime?> invitedAt,
+      Value<int> rowid,
+    });
+typedef $$StaffTableUpdateCompanionBuilder =
+    StaffCompanion Function({
+      Value<String> id,
+      Value<String> name,
+      Value<String> phone,
+      Value<String> role,
+      Value<String?> accountStatus,
+      Value<DateTime?> invitedAt,
+      Value<int> rowid,
+    });
+
+final class $$StaffTableReferences
+    extends BaseReferences<_$AppDatabase, $StaffTable, StaffRow> {
+  $$StaffTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$ShiftsTable, List<ShiftRow>> _shiftsRefsTable(
+    _$AppDatabase db,
+  ) => MultiTypedResultKey.fromTable(
+    db.shifts,
+    aliasName: 'staff__id__shifts__staff_id',
+  );
+
+  $$ShiftsTableProcessedTableManager get shiftsRefs {
+    final manager = $$ShiftsTableTableManager(
+      $_db,
+      $_db.shifts,
+    ).filter((f) => f.staffId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_shiftsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$StaffTableFilterComposer extends Composer<_$AppDatabase, $StaffTable> {
+  $$StaffTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get phone => $composableBuilder(
+    column: $table.phone,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get role => $composableBuilder(
+    column: $table.role,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get accountStatus => $composableBuilder(
+    column: $table.accountStatus,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get invitedAt => $composableBuilder(
+    column: $table.invitedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  Expression<bool> shiftsRefs(
+    Expression<bool> Function($$ShiftsTableFilterComposer f) f,
+  ) {
+    final $$ShiftsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.shifts,
+      getReferencedColumn: (t) => t.staffId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ShiftsTableFilterComposer(
+            $db: $db,
+            $table: $db.shifts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$StaffTableOrderingComposer
+    extends Composer<_$AppDatabase, $StaffTable> {
+  $$StaffTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get phone => $composableBuilder(
+    column: $table.phone,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get role => $composableBuilder(
+    column: $table.role,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get accountStatus => $composableBuilder(
+    column: $table.accountStatus,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get invitedAt => $composableBuilder(
+    column: $table.invitedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$StaffTableAnnotationComposer
+    extends Composer<_$AppDatabase, $StaffTable> {
+  $$StaffTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get phone =>
+      $composableBuilder(column: $table.phone, builder: (column) => column);
+
+  GeneratedColumn<String> get role =>
+      $composableBuilder(column: $table.role, builder: (column) => column);
+
+  GeneratedColumn<String> get accountStatus => $composableBuilder(
+    column: $table.accountStatus,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get invitedAt =>
+      $composableBuilder(column: $table.invitedAt, builder: (column) => column);
+
+  Expression<T> shiftsRefs<T extends Object>(
+    Expression<T> Function($$ShiftsTableAnnotationComposer a) f,
+  ) {
+    final $$ShiftsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.shifts,
+      getReferencedColumn: (t) => t.staffId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ShiftsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.shifts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$StaffTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $StaffTable,
+          StaffRow,
+          $$StaffTableFilterComposer,
+          $$StaffTableOrderingComposer,
+          $$StaffTableAnnotationComposer,
+          $$StaffTableCreateCompanionBuilder,
+          $$StaffTableUpdateCompanionBuilder,
+          (StaffRow, $$StaffTableReferences),
+          StaffRow,
+          PrefetchHooks Function({bool shiftsRefs})
+        > {
+  $$StaffTableTableManager(_$AppDatabase db, $StaffTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$StaffTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$StaffTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$StaffTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> phone = const Value.absent(),
+                Value<String> role = const Value.absent(),
+                Value<String?> accountStatus = const Value.absent(),
+                Value<DateTime?> invitedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => StaffCompanion(
+                id: id,
+                name: name,
+                phone: phone,
+                role: role,
+                accountStatus: accountStatus,
+                invitedAt: invitedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String name,
+                required String phone,
+                Value<String> role = const Value.absent(),
+                Value<String?> accountStatus = const Value.absent(),
+                Value<DateTime?> invitedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => StaffCompanion.insert(
+                id: id,
+                name: name,
+                phone: phone,
+                role: role,
+                accountStatus: accountStatus,
+                invitedAt: invitedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) =>
+                    (e.readTable(table), $$StaffTableReferences(db, table, e)),
+              )
+              .toList(),
+          prefetchHooksCallback: ({shiftsRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [if (shiftsRefs) db.shifts],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (shiftsRefs)
+                    await $_getPrefetchedData<StaffRow, $StaffTable, ShiftRow>(
+                      currentTable: table,
+                      referencedTable: $$StaffTableReferences._shiftsRefsTable(
+                        db,
+                      ),
+                      managerFromTypedResult: (p0) =>
+                          $$StaffTableReferences(db, table, p0).shiftsRefs,
+                      referencedItemsForCurrentItem: (item, referencedItems) =>
+                          referencedItems.where((e) => e.staffId == item.id),
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$StaffTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $StaffTable,
+      StaffRow,
+      $$StaffTableFilterComposer,
+      $$StaffTableOrderingComposer,
+      $$StaffTableAnnotationComposer,
+      $$StaffTableCreateCompanionBuilder,
+      $$StaffTableUpdateCompanionBuilder,
+      (StaffRow, $$StaffTableReferences),
+      StaffRow,
+      PrefetchHooks Function({bool shiftsRefs})
+    >;
+typedef $$ShiftsTableCreateCompanionBuilder =
+    ShiftsCompanion Function({
+      required String id,
+      required String staffId,
+      required DateTime date,
+      Value<DateTime?> startTime,
+      Value<DateTime?> endTime,
+      Value<int> rowid,
+    });
+typedef $$ShiftsTableUpdateCompanionBuilder =
+    ShiftsCompanion Function({
+      Value<String> id,
+      Value<String> staffId,
+      Value<DateTime> date,
+      Value<DateTime?> startTime,
+      Value<DateTime?> endTime,
+      Value<int> rowid,
+    });
+
+final class $$ShiftsTableReferences
+    extends BaseReferences<_$AppDatabase, $ShiftsTable, ShiftRow> {
+  $$ShiftsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $StaffTable _staffIdTable(_$AppDatabase db) =>
+      db.staff.createAlias('shifts__staff_id__staff__id');
+
+  $$StaffTableProcessedTableManager get staffId {
+    final $_column = $_itemColumn<String>('staff_id')!;
+
+    final manager = $$StaffTableTableManager(
+      $_db,
+      $_db.staff,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_staffIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$ShiftsTableFilterComposer
+    extends Composer<_$AppDatabase, $ShiftsTable> {
+  $$ShiftsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get date => $composableBuilder(
+    column: $table.date,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get startTime => $composableBuilder(
+    column: $table.startTime,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get endTime => $composableBuilder(
+    column: $table.endTime,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$StaffTableFilterComposer get staffId {
+    final $$StaffTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.staffId,
+      referencedTable: $db.staff,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$StaffTableFilterComposer(
+            $db: $db,
+            $table: $db.staff,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ShiftsTableOrderingComposer
+    extends Composer<_$AppDatabase, $ShiftsTable> {
+  $$ShiftsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get date => $composableBuilder(
+    column: $table.date,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get startTime => $composableBuilder(
+    column: $table.startTime,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get endTime => $composableBuilder(
+    column: $table.endTime,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$StaffTableOrderingComposer get staffId {
+    final $$StaffTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.staffId,
+      referencedTable: $db.staff,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$StaffTableOrderingComposer(
+            $db: $db,
+            $table: $db.staff,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ShiftsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ShiftsTable> {
+  $$ShiftsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get date =>
+      $composableBuilder(column: $table.date, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get startTime =>
+      $composableBuilder(column: $table.startTime, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get endTime =>
+      $composableBuilder(column: $table.endTime, builder: (column) => column);
+
+  $$StaffTableAnnotationComposer get staffId {
+    final $$StaffTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.staffId,
+      referencedTable: $db.staff,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$StaffTableAnnotationComposer(
+            $db: $db,
+            $table: $db.staff,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ShiftsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ShiftsTable,
+          ShiftRow,
+          $$ShiftsTableFilterComposer,
+          $$ShiftsTableOrderingComposer,
+          $$ShiftsTableAnnotationComposer,
+          $$ShiftsTableCreateCompanionBuilder,
+          $$ShiftsTableUpdateCompanionBuilder,
+          (ShiftRow, $$ShiftsTableReferences),
+          ShiftRow,
+          PrefetchHooks Function({bool staffId})
+        > {
+  $$ShiftsTableTableManager(_$AppDatabase db, $ShiftsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ShiftsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ShiftsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ShiftsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> staffId = const Value.absent(),
+                Value<DateTime> date = const Value.absent(),
+                Value<DateTime?> startTime = const Value.absent(),
+                Value<DateTime?> endTime = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ShiftsCompanion(
+                id: id,
+                staffId: staffId,
+                date: date,
+                startTime: startTime,
+                endTime: endTime,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String staffId,
+                required DateTime date,
+                Value<DateTime?> startTime = const Value.absent(),
+                Value<DateTime?> endTime = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ShiftsCompanion.insert(
+                id: id,
+                staffId: staffId,
+                date: date,
+                startTime: startTime,
+                endTime: endTime,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) =>
+                    (e.readTable(table), $$ShiftsTableReferences(db, table, e)),
+              )
+              .toList(),
+          prefetchHooksCallback: ({staffId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (staffId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.staffId,
+                                referencedTable: $$ShiftsTableReferences
+                                    ._staffIdTable(db),
+                                referencedColumn: $$ShiftsTableReferences
+                                    ._staffIdTable(db)
+                                    .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$ShiftsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ShiftsTable,
+      ShiftRow,
+      $$ShiftsTableFilterComposer,
+      $$ShiftsTableOrderingComposer,
+      $$ShiftsTableAnnotationComposer,
+      $$ShiftsTableCreateCompanionBuilder,
+      $$ShiftsTableUpdateCompanionBuilder,
+      (ShiftRow, $$ShiftsTableReferences),
+      ShiftRow,
+      PrefetchHooks Function({bool staffId})
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -1631,4 +3054,8 @@ class $AppDatabaseManager {
       $$CategoriesTableTableManager(_db, _db.categories);
   $$ProductsTableTableManager get products =>
       $$ProductsTableTableManager(_db, _db.products);
+  $$StaffTableTableManager get staff =>
+      $$StaffTableTableManager(_db, _db.staff);
+  $$ShiftsTableTableManager get shifts =>
+      $$ShiftsTableTableManager(_db, _db.shifts);
 }
