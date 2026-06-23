@@ -2565,6 +2565,1466 @@ class VisitRecordsCompanion extends UpdateCompanion<VisitRecordRow> {
   }
 }
 
+class $BookingsTable extends Bookings
+    with TableInfo<$BookingsTable, BookingRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $BookingsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _customerIdMeta = const VerificationMeta(
+    'customerId',
+  );
+  @override
+  late final GeneratedColumn<String> customerId = GeneratedColumn<String>(
+    'customer_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _staffIdMeta = const VerificationMeta(
+    'staffId',
+  );
+  @override
+  late final GeneratedColumn<String> staffId = GeneratedColumn<String>(
+    'staff_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _productIdsCsvMeta = const VerificationMeta(
+    'productIdsCsv',
+  );
+  @override
+  late final GeneratedColumn<String> productIdsCsv = GeneratedColumn<String>(
+    'product_ids_csv',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _startAtMeta = const VerificationMeta(
+    'startAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> startAt = GeneratedColumn<DateTime>(
+    'start_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _endAtMeta = const VerificationMeta('endAt');
+  @override
+  late final GeneratedColumn<DateTime> endAt = GeneratedColumn<DateTime>(
+    'end_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _depositEnabledMeta = const VerificationMeta(
+    'depositEnabled',
+  );
+  @override
+  late final GeneratedColumn<bool> depositEnabled = GeneratedColumn<bool>(
+    'deposit_enabled',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("deposit_enabled" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _depositMethodMeta = const VerificationMeta(
+    'depositMethod',
+  );
+  @override
+  late final GeneratedColumn<String> depositMethod = GeneratedColumn<String>(
+    'deposit_method',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _depositAmountMeta = const VerificationMeta(
+    'depositAmount',
+  );
+  @override
+  late final GeneratedColumn<int> depositAmount = GeneratedColumn<int>(
+    'deposit_amount',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _depositReceivedMeta = const VerificationMeta(
+    'depositReceived',
+  );
+  @override
+  late final GeneratedColumn<bool> depositReceived = GeneratedColumn<bool>(
+    'deposit_received',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("deposit_received" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _depositRefundedMeta = const VerificationMeta(
+    'depositRefunded',
+  );
+  @override
+  late final GeneratedColumn<bool> depositRefunded = GeneratedColumn<bool>(
+    'deposit_refunded',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("deposit_refunded" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _refundNoteMeta = const VerificationMeta(
+    'refundNote',
+  );
+  @override
+  late final GeneratedColumn<String> refundNote = GeneratedColumn<String>(
+    'refund_note',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('返金は24時間以内に可能です。'),
+  );
+  static const VerificationMeta _repeatRuleMeta = const VerificationMeta(
+    'repeatRule',
+  );
+  @override
+  late final GeneratedColumn<String> repeatRule = GeneratedColumn<String>(
+    'repeat_rule',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('none'),
+  );
+  static const VerificationMeta _memoMeta = const VerificationMeta('memo');
+  @override
+  late final GeneratedColumn<String> memo = GeneratedColumn<String>(
+    'memo',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _requiresApprovalMeta = const VerificationMeta(
+    'requiresApproval',
+  );
+  @override
+  late final GeneratedColumn<bool> requiresApproval = GeneratedColumn<bool>(
+    'requires_approval',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("requires_approval" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('confirmed'),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    customerId,
+    staffId,
+    productIdsCsv,
+    startAt,
+    endAt,
+    depositEnabled,
+    depositMethod,
+    depositAmount,
+    depositReceived,
+    depositRefunded,
+    refundNote,
+    repeatRule,
+    memo,
+    requiresApproval,
+    status,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'bookings';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<BookingRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('customer_id')) {
+      context.handle(
+        _customerIdMeta,
+        customerId.isAcceptableOrUnknown(data['customer_id']!, _customerIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_customerIdMeta);
+    }
+    if (data.containsKey('staff_id')) {
+      context.handle(
+        _staffIdMeta,
+        staffId.isAcceptableOrUnknown(data['staff_id']!, _staffIdMeta),
+      );
+    }
+    if (data.containsKey('product_ids_csv')) {
+      context.handle(
+        _productIdsCsvMeta,
+        productIdsCsv.isAcceptableOrUnknown(
+          data['product_ids_csv']!,
+          _productIdsCsvMeta,
+        ),
+      );
+    }
+    if (data.containsKey('start_at')) {
+      context.handle(
+        _startAtMeta,
+        startAt.isAcceptableOrUnknown(data['start_at']!, _startAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_startAtMeta);
+    }
+    if (data.containsKey('end_at')) {
+      context.handle(
+        _endAtMeta,
+        endAt.isAcceptableOrUnknown(data['end_at']!, _endAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_endAtMeta);
+    }
+    if (data.containsKey('deposit_enabled')) {
+      context.handle(
+        _depositEnabledMeta,
+        depositEnabled.isAcceptableOrUnknown(
+          data['deposit_enabled']!,
+          _depositEnabledMeta,
+        ),
+      );
+    }
+    if (data.containsKey('deposit_method')) {
+      context.handle(
+        _depositMethodMeta,
+        depositMethod.isAcceptableOrUnknown(
+          data['deposit_method']!,
+          _depositMethodMeta,
+        ),
+      );
+    }
+    if (data.containsKey('deposit_amount')) {
+      context.handle(
+        _depositAmountMeta,
+        depositAmount.isAcceptableOrUnknown(
+          data['deposit_amount']!,
+          _depositAmountMeta,
+        ),
+      );
+    }
+    if (data.containsKey('deposit_received')) {
+      context.handle(
+        _depositReceivedMeta,
+        depositReceived.isAcceptableOrUnknown(
+          data['deposit_received']!,
+          _depositReceivedMeta,
+        ),
+      );
+    }
+    if (data.containsKey('deposit_refunded')) {
+      context.handle(
+        _depositRefundedMeta,
+        depositRefunded.isAcceptableOrUnknown(
+          data['deposit_refunded']!,
+          _depositRefundedMeta,
+        ),
+      );
+    }
+    if (data.containsKey('refund_note')) {
+      context.handle(
+        _refundNoteMeta,
+        refundNote.isAcceptableOrUnknown(data['refund_note']!, _refundNoteMeta),
+      );
+    }
+    if (data.containsKey('repeat_rule')) {
+      context.handle(
+        _repeatRuleMeta,
+        repeatRule.isAcceptableOrUnknown(data['repeat_rule']!, _repeatRuleMeta),
+      );
+    }
+    if (data.containsKey('memo')) {
+      context.handle(
+        _memoMeta,
+        memo.isAcceptableOrUnknown(data['memo']!, _memoMeta),
+      );
+    }
+    if (data.containsKey('requires_approval')) {
+      context.handle(
+        _requiresApprovalMeta,
+        requiresApproval.isAcceptableOrUnknown(
+          data['requires_approval']!,
+          _requiresApprovalMeta,
+        ),
+      );
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  BookingRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return BookingRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      customerId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}customer_id'],
+      )!,
+      staffId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}staff_id'],
+      ),
+      productIdsCsv: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}product_ids_csv'],
+      )!,
+      startAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}start_at'],
+      )!,
+      endAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}end_at'],
+      )!,
+      depositEnabled: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}deposit_enabled'],
+      )!,
+      depositMethod: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}deposit_method'],
+      ),
+      depositAmount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}deposit_amount'],
+      ),
+      depositReceived: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}deposit_received'],
+      )!,
+      depositRefunded: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}deposit_refunded'],
+      )!,
+      refundNote: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}refund_note'],
+      )!,
+      repeatRule: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}repeat_rule'],
+      )!,
+      memo: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}memo'],
+      ),
+      requiresApproval: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}requires_approval'],
+      )!,
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+    );
+  }
+
+  @override
+  $BookingsTable createAlias(String alias) {
+    return $BookingsTable(attachedDatabase, alias);
+  }
+}
+
+class BookingRow extends DataClass implements Insertable<BookingRow> {
+  final String id;
+  final String customerId;
+  final String? staffId;
+
+  /// 쉼표구분 Product.id 목록(위 메모 참조).
+  final String productIdsCsv;
+  final DateTime startAt;
+  final DateTime endAt;
+  final bool depositEnabled;
+  final String? depositMethod;
+  final int? depositAmount;
+  final bool depositReceived;
+  final bool depositRefunded;
+  final String refundNote;
+  final String repeatRule;
+  final String? memo;
+  final bool requiresApproval;
+
+  /// confirmed/completed/noshow/cancelled.
+  final String status;
+  const BookingRow({
+    required this.id,
+    required this.customerId,
+    this.staffId,
+    required this.productIdsCsv,
+    required this.startAt,
+    required this.endAt,
+    required this.depositEnabled,
+    this.depositMethod,
+    this.depositAmount,
+    required this.depositReceived,
+    required this.depositRefunded,
+    required this.refundNote,
+    required this.repeatRule,
+    this.memo,
+    required this.requiresApproval,
+    required this.status,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['customer_id'] = Variable<String>(customerId);
+    if (!nullToAbsent || staffId != null) {
+      map['staff_id'] = Variable<String>(staffId);
+    }
+    map['product_ids_csv'] = Variable<String>(productIdsCsv);
+    map['start_at'] = Variable<DateTime>(startAt);
+    map['end_at'] = Variable<DateTime>(endAt);
+    map['deposit_enabled'] = Variable<bool>(depositEnabled);
+    if (!nullToAbsent || depositMethod != null) {
+      map['deposit_method'] = Variable<String>(depositMethod);
+    }
+    if (!nullToAbsent || depositAmount != null) {
+      map['deposit_amount'] = Variable<int>(depositAmount);
+    }
+    map['deposit_received'] = Variable<bool>(depositReceived);
+    map['deposit_refunded'] = Variable<bool>(depositRefunded);
+    map['refund_note'] = Variable<String>(refundNote);
+    map['repeat_rule'] = Variable<String>(repeatRule);
+    if (!nullToAbsent || memo != null) {
+      map['memo'] = Variable<String>(memo);
+    }
+    map['requires_approval'] = Variable<bool>(requiresApproval);
+    map['status'] = Variable<String>(status);
+    return map;
+  }
+
+  BookingsCompanion toCompanion(bool nullToAbsent) {
+    return BookingsCompanion(
+      id: Value(id),
+      customerId: Value(customerId),
+      staffId: staffId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(staffId),
+      productIdsCsv: Value(productIdsCsv),
+      startAt: Value(startAt),
+      endAt: Value(endAt),
+      depositEnabled: Value(depositEnabled),
+      depositMethod: depositMethod == null && nullToAbsent
+          ? const Value.absent()
+          : Value(depositMethod),
+      depositAmount: depositAmount == null && nullToAbsent
+          ? const Value.absent()
+          : Value(depositAmount),
+      depositReceived: Value(depositReceived),
+      depositRefunded: Value(depositRefunded),
+      refundNote: Value(refundNote),
+      repeatRule: Value(repeatRule),
+      memo: memo == null && nullToAbsent ? const Value.absent() : Value(memo),
+      requiresApproval: Value(requiresApproval),
+      status: Value(status),
+    );
+  }
+
+  factory BookingRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return BookingRow(
+      id: serializer.fromJson<String>(json['id']),
+      customerId: serializer.fromJson<String>(json['customerId']),
+      staffId: serializer.fromJson<String?>(json['staffId']),
+      productIdsCsv: serializer.fromJson<String>(json['productIdsCsv']),
+      startAt: serializer.fromJson<DateTime>(json['startAt']),
+      endAt: serializer.fromJson<DateTime>(json['endAt']),
+      depositEnabled: serializer.fromJson<bool>(json['depositEnabled']),
+      depositMethod: serializer.fromJson<String?>(json['depositMethod']),
+      depositAmount: serializer.fromJson<int?>(json['depositAmount']),
+      depositReceived: serializer.fromJson<bool>(json['depositReceived']),
+      depositRefunded: serializer.fromJson<bool>(json['depositRefunded']),
+      refundNote: serializer.fromJson<String>(json['refundNote']),
+      repeatRule: serializer.fromJson<String>(json['repeatRule']),
+      memo: serializer.fromJson<String?>(json['memo']),
+      requiresApproval: serializer.fromJson<bool>(json['requiresApproval']),
+      status: serializer.fromJson<String>(json['status']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'customerId': serializer.toJson<String>(customerId),
+      'staffId': serializer.toJson<String?>(staffId),
+      'productIdsCsv': serializer.toJson<String>(productIdsCsv),
+      'startAt': serializer.toJson<DateTime>(startAt),
+      'endAt': serializer.toJson<DateTime>(endAt),
+      'depositEnabled': serializer.toJson<bool>(depositEnabled),
+      'depositMethod': serializer.toJson<String?>(depositMethod),
+      'depositAmount': serializer.toJson<int?>(depositAmount),
+      'depositReceived': serializer.toJson<bool>(depositReceived),
+      'depositRefunded': serializer.toJson<bool>(depositRefunded),
+      'refundNote': serializer.toJson<String>(refundNote),
+      'repeatRule': serializer.toJson<String>(repeatRule),
+      'memo': serializer.toJson<String?>(memo),
+      'requiresApproval': serializer.toJson<bool>(requiresApproval),
+      'status': serializer.toJson<String>(status),
+    };
+  }
+
+  BookingRow copyWith({
+    String? id,
+    String? customerId,
+    Value<String?> staffId = const Value.absent(),
+    String? productIdsCsv,
+    DateTime? startAt,
+    DateTime? endAt,
+    bool? depositEnabled,
+    Value<String?> depositMethod = const Value.absent(),
+    Value<int?> depositAmount = const Value.absent(),
+    bool? depositReceived,
+    bool? depositRefunded,
+    String? refundNote,
+    String? repeatRule,
+    Value<String?> memo = const Value.absent(),
+    bool? requiresApproval,
+    String? status,
+  }) => BookingRow(
+    id: id ?? this.id,
+    customerId: customerId ?? this.customerId,
+    staffId: staffId.present ? staffId.value : this.staffId,
+    productIdsCsv: productIdsCsv ?? this.productIdsCsv,
+    startAt: startAt ?? this.startAt,
+    endAt: endAt ?? this.endAt,
+    depositEnabled: depositEnabled ?? this.depositEnabled,
+    depositMethod: depositMethod.present
+        ? depositMethod.value
+        : this.depositMethod,
+    depositAmount: depositAmount.present
+        ? depositAmount.value
+        : this.depositAmount,
+    depositReceived: depositReceived ?? this.depositReceived,
+    depositRefunded: depositRefunded ?? this.depositRefunded,
+    refundNote: refundNote ?? this.refundNote,
+    repeatRule: repeatRule ?? this.repeatRule,
+    memo: memo.present ? memo.value : this.memo,
+    requiresApproval: requiresApproval ?? this.requiresApproval,
+    status: status ?? this.status,
+  );
+  BookingRow copyWithCompanion(BookingsCompanion data) {
+    return BookingRow(
+      id: data.id.present ? data.id.value : this.id,
+      customerId: data.customerId.present
+          ? data.customerId.value
+          : this.customerId,
+      staffId: data.staffId.present ? data.staffId.value : this.staffId,
+      productIdsCsv: data.productIdsCsv.present
+          ? data.productIdsCsv.value
+          : this.productIdsCsv,
+      startAt: data.startAt.present ? data.startAt.value : this.startAt,
+      endAt: data.endAt.present ? data.endAt.value : this.endAt,
+      depositEnabled: data.depositEnabled.present
+          ? data.depositEnabled.value
+          : this.depositEnabled,
+      depositMethod: data.depositMethod.present
+          ? data.depositMethod.value
+          : this.depositMethod,
+      depositAmount: data.depositAmount.present
+          ? data.depositAmount.value
+          : this.depositAmount,
+      depositReceived: data.depositReceived.present
+          ? data.depositReceived.value
+          : this.depositReceived,
+      depositRefunded: data.depositRefunded.present
+          ? data.depositRefunded.value
+          : this.depositRefunded,
+      refundNote: data.refundNote.present
+          ? data.refundNote.value
+          : this.refundNote,
+      repeatRule: data.repeatRule.present
+          ? data.repeatRule.value
+          : this.repeatRule,
+      memo: data.memo.present ? data.memo.value : this.memo,
+      requiresApproval: data.requiresApproval.present
+          ? data.requiresApproval.value
+          : this.requiresApproval,
+      status: data.status.present ? data.status.value : this.status,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BookingRow(')
+          ..write('id: $id, ')
+          ..write('customerId: $customerId, ')
+          ..write('staffId: $staffId, ')
+          ..write('productIdsCsv: $productIdsCsv, ')
+          ..write('startAt: $startAt, ')
+          ..write('endAt: $endAt, ')
+          ..write('depositEnabled: $depositEnabled, ')
+          ..write('depositMethod: $depositMethod, ')
+          ..write('depositAmount: $depositAmount, ')
+          ..write('depositReceived: $depositReceived, ')
+          ..write('depositRefunded: $depositRefunded, ')
+          ..write('refundNote: $refundNote, ')
+          ..write('repeatRule: $repeatRule, ')
+          ..write('memo: $memo, ')
+          ..write('requiresApproval: $requiresApproval, ')
+          ..write('status: $status')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    customerId,
+    staffId,
+    productIdsCsv,
+    startAt,
+    endAt,
+    depositEnabled,
+    depositMethod,
+    depositAmount,
+    depositReceived,
+    depositRefunded,
+    refundNote,
+    repeatRule,
+    memo,
+    requiresApproval,
+    status,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is BookingRow &&
+          other.id == this.id &&
+          other.customerId == this.customerId &&
+          other.staffId == this.staffId &&
+          other.productIdsCsv == this.productIdsCsv &&
+          other.startAt == this.startAt &&
+          other.endAt == this.endAt &&
+          other.depositEnabled == this.depositEnabled &&
+          other.depositMethod == this.depositMethod &&
+          other.depositAmount == this.depositAmount &&
+          other.depositReceived == this.depositReceived &&
+          other.depositRefunded == this.depositRefunded &&
+          other.refundNote == this.refundNote &&
+          other.repeatRule == this.repeatRule &&
+          other.memo == this.memo &&
+          other.requiresApproval == this.requiresApproval &&
+          other.status == this.status);
+}
+
+class BookingsCompanion extends UpdateCompanion<BookingRow> {
+  final Value<String> id;
+  final Value<String> customerId;
+  final Value<String?> staffId;
+  final Value<String> productIdsCsv;
+  final Value<DateTime> startAt;
+  final Value<DateTime> endAt;
+  final Value<bool> depositEnabled;
+  final Value<String?> depositMethod;
+  final Value<int?> depositAmount;
+  final Value<bool> depositReceived;
+  final Value<bool> depositRefunded;
+  final Value<String> refundNote;
+  final Value<String> repeatRule;
+  final Value<String?> memo;
+  final Value<bool> requiresApproval;
+  final Value<String> status;
+  final Value<int> rowid;
+  const BookingsCompanion({
+    this.id = const Value.absent(),
+    this.customerId = const Value.absent(),
+    this.staffId = const Value.absent(),
+    this.productIdsCsv = const Value.absent(),
+    this.startAt = const Value.absent(),
+    this.endAt = const Value.absent(),
+    this.depositEnabled = const Value.absent(),
+    this.depositMethod = const Value.absent(),
+    this.depositAmount = const Value.absent(),
+    this.depositReceived = const Value.absent(),
+    this.depositRefunded = const Value.absent(),
+    this.refundNote = const Value.absent(),
+    this.repeatRule = const Value.absent(),
+    this.memo = const Value.absent(),
+    this.requiresApproval = const Value.absent(),
+    this.status = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  BookingsCompanion.insert({
+    required String id,
+    required String customerId,
+    this.staffId = const Value.absent(),
+    this.productIdsCsv = const Value.absent(),
+    required DateTime startAt,
+    required DateTime endAt,
+    this.depositEnabled = const Value.absent(),
+    this.depositMethod = const Value.absent(),
+    this.depositAmount = const Value.absent(),
+    this.depositReceived = const Value.absent(),
+    this.depositRefunded = const Value.absent(),
+    this.refundNote = const Value.absent(),
+    this.repeatRule = const Value.absent(),
+    this.memo = const Value.absent(),
+    this.requiresApproval = const Value.absent(),
+    this.status = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       customerId = Value(customerId),
+       startAt = Value(startAt),
+       endAt = Value(endAt);
+  static Insertable<BookingRow> custom({
+    Expression<String>? id,
+    Expression<String>? customerId,
+    Expression<String>? staffId,
+    Expression<String>? productIdsCsv,
+    Expression<DateTime>? startAt,
+    Expression<DateTime>? endAt,
+    Expression<bool>? depositEnabled,
+    Expression<String>? depositMethod,
+    Expression<int>? depositAmount,
+    Expression<bool>? depositReceived,
+    Expression<bool>? depositRefunded,
+    Expression<String>? refundNote,
+    Expression<String>? repeatRule,
+    Expression<String>? memo,
+    Expression<bool>? requiresApproval,
+    Expression<String>? status,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (customerId != null) 'customer_id': customerId,
+      if (staffId != null) 'staff_id': staffId,
+      if (productIdsCsv != null) 'product_ids_csv': productIdsCsv,
+      if (startAt != null) 'start_at': startAt,
+      if (endAt != null) 'end_at': endAt,
+      if (depositEnabled != null) 'deposit_enabled': depositEnabled,
+      if (depositMethod != null) 'deposit_method': depositMethod,
+      if (depositAmount != null) 'deposit_amount': depositAmount,
+      if (depositReceived != null) 'deposit_received': depositReceived,
+      if (depositRefunded != null) 'deposit_refunded': depositRefunded,
+      if (refundNote != null) 'refund_note': refundNote,
+      if (repeatRule != null) 'repeat_rule': repeatRule,
+      if (memo != null) 'memo': memo,
+      if (requiresApproval != null) 'requires_approval': requiresApproval,
+      if (status != null) 'status': status,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  BookingsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? customerId,
+    Value<String?>? staffId,
+    Value<String>? productIdsCsv,
+    Value<DateTime>? startAt,
+    Value<DateTime>? endAt,
+    Value<bool>? depositEnabled,
+    Value<String?>? depositMethod,
+    Value<int?>? depositAmount,
+    Value<bool>? depositReceived,
+    Value<bool>? depositRefunded,
+    Value<String>? refundNote,
+    Value<String>? repeatRule,
+    Value<String?>? memo,
+    Value<bool>? requiresApproval,
+    Value<String>? status,
+    Value<int>? rowid,
+  }) {
+    return BookingsCompanion(
+      id: id ?? this.id,
+      customerId: customerId ?? this.customerId,
+      staffId: staffId ?? this.staffId,
+      productIdsCsv: productIdsCsv ?? this.productIdsCsv,
+      startAt: startAt ?? this.startAt,
+      endAt: endAt ?? this.endAt,
+      depositEnabled: depositEnabled ?? this.depositEnabled,
+      depositMethod: depositMethod ?? this.depositMethod,
+      depositAmount: depositAmount ?? this.depositAmount,
+      depositReceived: depositReceived ?? this.depositReceived,
+      depositRefunded: depositRefunded ?? this.depositRefunded,
+      refundNote: refundNote ?? this.refundNote,
+      repeatRule: repeatRule ?? this.repeatRule,
+      memo: memo ?? this.memo,
+      requiresApproval: requiresApproval ?? this.requiresApproval,
+      status: status ?? this.status,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (customerId.present) {
+      map['customer_id'] = Variable<String>(customerId.value);
+    }
+    if (staffId.present) {
+      map['staff_id'] = Variable<String>(staffId.value);
+    }
+    if (productIdsCsv.present) {
+      map['product_ids_csv'] = Variable<String>(productIdsCsv.value);
+    }
+    if (startAt.present) {
+      map['start_at'] = Variable<DateTime>(startAt.value);
+    }
+    if (endAt.present) {
+      map['end_at'] = Variable<DateTime>(endAt.value);
+    }
+    if (depositEnabled.present) {
+      map['deposit_enabled'] = Variable<bool>(depositEnabled.value);
+    }
+    if (depositMethod.present) {
+      map['deposit_method'] = Variable<String>(depositMethod.value);
+    }
+    if (depositAmount.present) {
+      map['deposit_amount'] = Variable<int>(depositAmount.value);
+    }
+    if (depositReceived.present) {
+      map['deposit_received'] = Variable<bool>(depositReceived.value);
+    }
+    if (depositRefunded.present) {
+      map['deposit_refunded'] = Variable<bool>(depositRefunded.value);
+    }
+    if (refundNote.present) {
+      map['refund_note'] = Variable<String>(refundNote.value);
+    }
+    if (repeatRule.present) {
+      map['repeat_rule'] = Variable<String>(repeatRule.value);
+    }
+    if (memo.present) {
+      map['memo'] = Variable<String>(memo.value);
+    }
+    if (requiresApproval.present) {
+      map['requires_approval'] = Variable<bool>(requiresApproval.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BookingsCompanion(')
+          ..write('id: $id, ')
+          ..write('customerId: $customerId, ')
+          ..write('staffId: $staffId, ')
+          ..write('productIdsCsv: $productIdsCsv, ')
+          ..write('startAt: $startAt, ')
+          ..write('endAt: $endAt, ')
+          ..write('depositEnabled: $depositEnabled, ')
+          ..write('depositMethod: $depositMethod, ')
+          ..write('depositAmount: $depositAmount, ')
+          ..write('depositReceived: $depositReceived, ')
+          ..write('depositRefunded: $depositRefunded, ')
+          ..write('refundNote: $refundNote, ')
+          ..write('repeatRule: $repeatRule, ')
+          ..write('memo: $memo, ')
+          ..write('requiresApproval: $requiresApproval, ')
+          ..write('status: $status, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $WaitingEntriesTable extends WaitingEntries
+    with TableInfo<$WaitingEntriesTable, WaitingEntryRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $WaitingEntriesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _customerNameMeta = const VerificationMeta(
+    'customerName',
+  );
+  @override
+  late final GeneratedColumn<String> customerName = GeneratedColumn<String>(
+    'customer_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _phoneMeta = const VerificationMeta('phone');
+  @override
+  late final GeneratedColumn<String> phone = GeneratedColumn<String>(
+    'phone',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _menuNoteMeta = const VerificationMeta(
+    'menuNote',
+  );
+  @override
+  late final GeneratedColumn<String> menuNote = GeneratedColumn<String>(
+    'menu_note',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _preferredStaffIdMeta = const VerificationMeta(
+    'preferredStaffId',
+  );
+  @override
+  late final GeneratedColumn<String> preferredStaffId = GeneratedColumn<String>(
+    'preferred_staff_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _checkInAtMeta = const VerificationMeta(
+    'checkInAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> checkInAt = GeneratedColumn<DateTime>(
+    'check_in_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('waiting'),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    customerName,
+    phone,
+    menuNote,
+    preferredStaffId,
+    checkInAt,
+    sortOrder,
+    status,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'waiting_entries';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<WaitingEntryRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('customer_name')) {
+      context.handle(
+        _customerNameMeta,
+        customerName.isAcceptableOrUnknown(
+          data['customer_name']!,
+          _customerNameMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_customerNameMeta);
+    }
+    if (data.containsKey('phone')) {
+      context.handle(
+        _phoneMeta,
+        phone.isAcceptableOrUnknown(data['phone']!, _phoneMeta),
+      );
+    }
+    if (data.containsKey('menu_note')) {
+      context.handle(
+        _menuNoteMeta,
+        menuNote.isAcceptableOrUnknown(data['menu_note']!, _menuNoteMeta),
+      );
+    }
+    if (data.containsKey('preferred_staff_id')) {
+      context.handle(
+        _preferredStaffIdMeta,
+        preferredStaffId.isAcceptableOrUnknown(
+          data['preferred_staff_id']!,
+          _preferredStaffIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('check_in_at')) {
+      context.handle(
+        _checkInAtMeta,
+        checkInAt.isAcceptableOrUnknown(data['check_in_at']!, _checkInAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_checkInAtMeta);
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sortOrderMeta);
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  WaitingEntryRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return WaitingEntryRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      customerName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}customer_name'],
+      )!,
+      phone: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}phone'],
+      ),
+      menuNote: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}menu_note'],
+      ),
+      preferredStaffId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}preferred_staff_id'],
+      ),
+      checkInAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}check_in_at'],
+      )!,
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+    );
+  }
+
+  @override
+  $WaitingEntriesTable createAlias(String alias) {
+    return $WaitingEntriesTable(attachedDatabase, alias);
+  }
+}
+
+class WaitingEntryRow extends DataClass implements Insertable<WaitingEntryRow> {
+  final String id;
+  final String customerName;
+  final String? phone;
+  final String? menuNote;
+  final String? preferredStaffId;
+  final DateTime checkInAt;
+  final int sortOrder;
+
+  /// waiting/called/seated/cancelled.
+  final String status;
+  const WaitingEntryRow({
+    required this.id,
+    required this.customerName,
+    this.phone,
+    this.menuNote,
+    this.preferredStaffId,
+    required this.checkInAt,
+    required this.sortOrder,
+    required this.status,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['customer_name'] = Variable<String>(customerName);
+    if (!nullToAbsent || phone != null) {
+      map['phone'] = Variable<String>(phone);
+    }
+    if (!nullToAbsent || menuNote != null) {
+      map['menu_note'] = Variable<String>(menuNote);
+    }
+    if (!nullToAbsent || preferredStaffId != null) {
+      map['preferred_staff_id'] = Variable<String>(preferredStaffId);
+    }
+    map['check_in_at'] = Variable<DateTime>(checkInAt);
+    map['sort_order'] = Variable<int>(sortOrder);
+    map['status'] = Variable<String>(status);
+    return map;
+  }
+
+  WaitingEntriesCompanion toCompanion(bool nullToAbsent) {
+    return WaitingEntriesCompanion(
+      id: Value(id),
+      customerName: Value(customerName),
+      phone: phone == null && nullToAbsent
+          ? const Value.absent()
+          : Value(phone),
+      menuNote: menuNote == null && nullToAbsent
+          ? const Value.absent()
+          : Value(menuNote),
+      preferredStaffId: preferredStaffId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(preferredStaffId),
+      checkInAt: Value(checkInAt),
+      sortOrder: Value(sortOrder),
+      status: Value(status),
+    );
+  }
+
+  factory WaitingEntryRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return WaitingEntryRow(
+      id: serializer.fromJson<String>(json['id']),
+      customerName: serializer.fromJson<String>(json['customerName']),
+      phone: serializer.fromJson<String?>(json['phone']),
+      menuNote: serializer.fromJson<String?>(json['menuNote']),
+      preferredStaffId: serializer.fromJson<String?>(json['preferredStaffId']),
+      checkInAt: serializer.fromJson<DateTime>(json['checkInAt']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+      status: serializer.fromJson<String>(json['status']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'customerName': serializer.toJson<String>(customerName),
+      'phone': serializer.toJson<String?>(phone),
+      'menuNote': serializer.toJson<String?>(menuNote),
+      'preferredStaffId': serializer.toJson<String?>(preferredStaffId),
+      'checkInAt': serializer.toJson<DateTime>(checkInAt),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+      'status': serializer.toJson<String>(status),
+    };
+  }
+
+  WaitingEntryRow copyWith({
+    String? id,
+    String? customerName,
+    Value<String?> phone = const Value.absent(),
+    Value<String?> menuNote = const Value.absent(),
+    Value<String?> preferredStaffId = const Value.absent(),
+    DateTime? checkInAt,
+    int? sortOrder,
+    String? status,
+  }) => WaitingEntryRow(
+    id: id ?? this.id,
+    customerName: customerName ?? this.customerName,
+    phone: phone.present ? phone.value : this.phone,
+    menuNote: menuNote.present ? menuNote.value : this.menuNote,
+    preferredStaffId: preferredStaffId.present
+        ? preferredStaffId.value
+        : this.preferredStaffId,
+    checkInAt: checkInAt ?? this.checkInAt,
+    sortOrder: sortOrder ?? this.sortOrder,
+    status: status ?? this.status,
+  );
+  WaitingEntryRow copyWithCompanion(WaitingEntriesCompanion data) {
+    return WaitingEntryRow(
+      id: data.id.present ? data.id.value : this.id,
+      customerName: data.customerName.present
+          ? data.customerName.value
+          : this.customerName,
+      phone: data.phone.present ? data.phone.value : this.phone,
+      menuNote: data.menuNote.present ? data.menuNote.value : this.menuNote,
+      preferredStaffId: data.preferredStaffId.present
+          ? data.preferredStaffId.value
+          : this.preferredStaffId,
+      checkInAt: data.checkInAt.present ? data.checkInAt.value : this.checkInAt,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+      status: data.status.present ? data.status.value : this.status,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WaitingEntryRow(')
+          ..write('id: $id, ')
+          ..write('customerName: $customerName, ')
+          ..write('phone: $phone, ')
+          ..write('menuNote: $menuNote, ')
+          ..write('preferredStaffId: $preferredStaffId, ')
+          ..write('checkInAt: $checkInAt, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('status: $status')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    customerName,
+    phone,
+    menuNote,
+    preferredStaffId,
+    checkInAt,
+    sortOrder,
+    status,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is WaitingEntryRow &&
+          other.id == this.id &&
+          other.customerName == this.customerName &&
+          other.phone == this.phone &&
+          other.menuNote == this.menuNote &&
+          other.preferredStaffId == this.preferredStaffId &&
+          other.checkInAt == this.checkInAt &&
+          other.sortOrder == this.sortOrder &&
+          other.status == this.status);
+}
+
+class WaitingEntriesCompanion extends UpdateCompanion<WaitingEntryRow> {
+  final Value<String> id;
+  final Value<String> customerName;
+  final Value<String?> phone;
+  final Value<String?> menuNote;
+  final Value<String?> preferredStaffId;
+  final Value<DateTime> checkInAt;
+  final Value<int> sortOrder;
+  final Value<String> status;
+  final Value<int> rowid;
+  const WaitingEntriesCompanion({
+    this.id = const Value.absent(),
+    this.customerName = const Value.absent(),
+    this.phone = const Value.absent(),
+    this.menuNote = const Value.absent(),
+    this.preferredStaffId = const Value.absent(),
+    this.checkInAt = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.status = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  WaitingEntriesCompanion.insert({
+    required String id,
+    required String customerName,
+    this.phone = const Value.absent(),
+    this.menuNote = const Value.absent(),
+    this.preferredStaffId = const Value.absent(),
+    required DateTime checkInAt,
+    required int sortOrder,
+    this.status = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       customerName = Value(customerName),
+       checkInAt = Value(checkInAt),
+       sortOrder = Value(sortOrder);
+  static Insertable<WaitingEntryRow> custom({
+    Expression<String>? id,
+    Expression<String>? customerName,
+    Expression<String>? phone,
+    Expression<String>? menuNote,
+    Expression<String>? preferredStaffId,
+    Expression<DateTime>? checkInAt,
+    Expression<int>? sortOrder,
+    Expression<String>? status,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (customerName != null) 'customer_name': customerName,
+      if (phone != null) 'phone': phone,
+      if (menuNote != null) 'menu_note': menuNote,
+      if (preferredStaffId != null) 'preferred_staff_id': preferredStaffId,
+      if (checkInAt != null) 'check_in_at': checkInAt,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (status != null) 'status': status,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  WaitingEntriesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? customerName,
+    Value<String?>? phone,
+    Value<String?>? menuNote,
+    Value<String?>? preferredStaffId,
+    Value<DateTime>? checkInAt,
+    Value<int>? sortOrder,
+    Value<String>? status,
+    Value<int>? rowid,
+  }) {
+    return WaitingEntriesCompanion(
+      id: id ?? this.id,
+      customerName: customerName ?? this.customerName,
+      phone: phone ?? this.phone,
+      menuNote: menuNote ?? this.menuNote,
+      preferredStaffId: preferredStaffId ?? this.preferredStaffId,
+      checkInAt: checkInAt ?? this.checkInAt,
+      sortOrder: sortOrder ?? this.sortOrder,
+      status: status ?? this.status,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (customerName.present) {
+      map['customer_name'] = Variable<String>(customerName.value);
+    }
+    if (phone.present) {
+      map['phone'] = Variable<String>(phone.value);
+    }
+    if (menuNote.present) {
+      map['menu_note'] = Variable<String>(menuNote.value);
+    }
+    if (preferredStaffId.present) {
+      map['preferred_staff_id'] = Variable<String>(preferredStaffId.value);
+    }
+    if (checkInAt.present) {
+      map['check_in_at'] = Variable<DateTime>(checkInAt.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WaitingEntriesCompanion(')
+          ..write('id: $id, ')
+          ..write('customerName: $customerName, ')
+          ..write('phone: $phone, ')
+          ..write('menuNote: $menuNote, ')
+          ..write('preferredStaffId: $preferredStaffId, ')
+          ..write('checkInAt: $checkInAt, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('status: $status, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -2574,6 +4034,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $ShiftsTable shifts = $ShiftsTable(this);
   late final $CustomersTable customers = $CustomersTable(this);
   late final $VisitRecordsTable visitRecords = $VisitRecordsTable(this);
+  late final $BookingsTable bookings = $BookingsTable(this);
+  late final $WaitingEntriesTable waitingEntries = $WaitingEntriesTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -2585,6 +4047,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     shifts,
     customers,
     visitRecords,
+    bookings,
+    waitingEntries,
   ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
@@ -4593,6 +6057,699 @@ typedef $$VisitRecordsTableProcessedTableManager =
       VisitRecordRow,
       PrefetchHooks Function({bool customerId})
     >;
+typedef $$BookingsTableCreateCompanionBuilder =
+    BookingsCompanion Function({
+      required String id,
+      required String customerId,
+      Value<String?> staffId,
+      Value<String> productIdsCsv,
+      required DateTime startAt,
+      required DateTime endAt,
+      Value<bool> depositEnabled,
+      Value<String?> depositMethod,
+      Value<int?> depositAmount,
+      Value<bool> depositReceived,
+      Value<bool> depositRefunded,
+      Value<String> refundNote,
+      Value<String> repeatRule,
+      Value<String?> memo,
+      Value<bool> requiresApproval,
+      Value<String> status,
+      Value<int> rowid,
+    });
+typedef $$BookingsTableUpdateCompanionBuilder =
+    BookingsCompanion Function({
+      Value<String> id,
+      Value<String> customerId,
+      Value<String?> staffId,
+      Value<String> productIdsCsv,
+      Value<DateTime> startAt,
+      Value<DateTime> endAt,
+      Value<bool> depositEnabled,
+      Value<String?> depositMethod,
+      Value<int?> depositAmount,
+      Value<bool> depositReceived,
+      Value<bool> depositRefunded,
+      Value<String> refundNote,
+      Value<String> repeatRule,
+      Value<String?> memo,
+      Value<bool> requiresApproval,
+      Value<String> status,
+      Value<int> rowid,
+    });
+
+class $$BookingsTableFilterComposer
+    extends Composer<_$AppDatabase, $BookingsTable> {
+  $$BookingsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get customerId => $composableBuilder(
+    column: $table.customerId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get staffId => $composableBuilder(
+    column: $table.staffId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get productIdsCsv => $composableBuilder(
+    column: $table.productIdsCsv,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get startAt => $composableBuilder(
+    column: $table.startAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get endAt => $composableBuilder(
+    column: $table.endAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get depositEnabled => $composableBuilder(
+    column: $table.depositEnabled,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get depositMethod => $composableBuilder(
+    column: $table.depositMethod,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get depositAmount => $composableBuilder(
+    column: $table.depositAmount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get depositReceived => $composableBuilder(
+    column: $table.depositReceived,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get depositRefunded => $composableBuilder(
+    column: $table.depositRefunded,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get refundNote => $composableBuilder(
+    column: $table.refundNote,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get repeatRule => $composableBuilder(
+    column: $table.repeatRule,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get memo => $composableBuilder(
+    column: $table.memo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get requiresApproval => $composableBuilder(
+    column: $table.requiresApproval,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$BookingsTableOrderingComposer
+    extends Composer<_$AppDatabase, $BookingsTable> {
+  $$BookingsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get customerId => $composableBuilder(
+    column: $table.customerId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get staffId => $composableBuilder(
+    column: $table.staffId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get productIdsCsv => $composableBuilder(
+    column: $table.productIdsCsv,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get startAt => $composableBuilder(
+    column: $table.startAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get endAt => $composableBuilder(
+    column: $table.endAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get depositEnabled => $composableBuilder(
+    column: $table.depositEnabled,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get depositMethod => $composableBuilder(
+    column: $table.depositMethod,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get depositAmount => $composableBuilder(
+    column: $table.depositAmount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get depositReceived => $composableBuilder(
+    column: $table.depositReceived,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get depositRefunded => $composableBuilder(
+    column: $table.depositRefunded,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get refundNote => $composableBuilder(
+    column: $table.refundNote,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get repeatRule => $composableBuilder(
+    column: $table.repeatRule,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get memo => $composableBuilder(
+    column: $table.memo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get requiresApproval => $composableBuilder(
+    column: $table.requiresApproval,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$BookingsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $BookingsTable> {
+  $$BookingsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get customerId => $composableBuilder(
+    column: $table.customerId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get staffId =>
+      $composableBuilder(column: $table.staffId, builder: (column) => column);
+
+  GeneratedColumn<String> get productIdsCsv => $composableBuilder(
+    column: $table.productIdsCsv,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get startAt =>
+      $composableBuilder(column: $table.startAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get endAt =>
+      $composableBuilder(column: $table.endAt, builder: (column) => column);
+
+  GeneratedColumn<bool> get depositEnabled => $composableBuilder(
+    column: $table.depositEnabled,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get depositMethod => $composableBuilder(
+    column: $table.depositMethod,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get depositAmount => $composableBuilder(
+    column: $table.depositAmount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get depositReceived => $composableBuilder(
+    column: $table.depositReceived,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get depositRefunded => $composableBuilder(
+    column: $table.depositRefunded,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get refundNote => $composableBuilder(
+    column: $table.refundNote,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get repeatRule => $composableBuilder(
+    column: $table.repeatRule,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get memo =>
+      $composableBuilder(column: $table.memo, builder: (column) => column);
+
+  GeneratedColumn<bool> get requiresApproval => $composableBuilder(
+    column: $table.requiresApproval,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+}
+
+class $$BookingsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $BookingsTable,
+          BookingRow,
+          $$BookingsTableFilterComposer,
+          $$BookingsTableOrderingComposer,
+          $$BookingsTableAnnotationComposer,
+          $$BookingsTableCreateCompanionBuilder,
+          $$BookingsTableUpdateCompanionBuilder,
+          (
+            BookingRow,
+            BaseReferences<_$AppDatabase, $BookingsTable, BookingRow>,
+          ),
+          BookingRow,
+          PrefetchHooks Function()
+        > {
+  $$BookingsTableTableManager(_$AppDatabase db, $BookingsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$BookingsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$BookingsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$BookingsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> customerId = const Value.absent(),
+                Value<String?> staffId = const Value.absent(),
+                Value<String> productIdsCsv = const Value.absent(),
+                Value<DateTime> startAt = const Value.absent(),
+                Value<DateTime> endAt = const Value.absent(),
+                Value<bool> depositEnabled = const Value.absent(),
+                Value<String?> depositMethod = const Value.absent(),
+                Value<int?> depositAmount = const Value.absent(),
+                Value<bool> depositReceived = const Value.absent(),
+                Value<bool> depositRefunded = const Value.absent(),
+                Value<String> refundNote = const Value.absent(),
+                Value<String> repeatRule = const Value.absent(),
+                Value<String?> memo = const Value.absent(),
+                Value<bool> requiresApproval = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => BookingsCompanion(
+                id: id,
+                customerId: customerId,
+                staffId: staffId,
+                productIdsCsv: productIdsCsv,
+                startAt: startAt,
+                endAt: endAt,
+                depositEnabled: depositEnabled,
+                depositMethod: depositMethod,
+                depositAmount: depositAmount,
+                depositReceived: depositReceived,
+                depositRefunded: depositRefunded,
+                refundNote: refundNote,
+                repeatRule: repeatRule,
+                memo: memo,
+                requiresApproval: requiresApproval,
+                status: status,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String customerId,
+                Value<String?> staffId = const Value.absent(),
+                Value<String> productIdsCsv = const Value.absent(),
+                required DateTime startAt,
+                required DateTime endAt,
+                Value<bool> depositEnabled = const Value.absent(),
+                Value<String?> depositMethod = const Value.absent(),
+                Value<int?> depositAmount = const Value.absent(),
+                Value<bool> depositReceived = const Value.absent(),
+                Value<bool> depositRefunded = const Value.absent(),
+                Value<String> refundNote = const Value.absent(),
+                Value<String> repeatRule = const Value.absent(),
+                Value<String?> memo = const Value.absent(),
+                Value<bool> requiresApproval = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => BookingsCompanion.insert(
+                id: id,
+                customerId: customerId,
+                staffId: staffId,
+                productIdsCsv: productIdsCsv,
+                startAt: startAt,
+                endAt: endAt,
+                depositEnabled: depositEnabled,
+                depositMethod: depositMethod,
+                depositAmount: depositAmount,
+                depositReceived: depositReceived,
+                depositRefunded: depositRefunded,
+                refundNote: refundNote,
+                repeatRule: repeatRule,
+                memo: memo,
+                requiresApproval: requiresApproval,
+                status: status,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$BookingsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $BookingsTable,
+      BookingRow,
+      $$BookingsTableFilterComposer,
+      $$BookingsTableOrderingComposer,
+      $$BookingsTableAnnotationComposer,
+      $$BookingsTableCreateCompanionBuilder,
+      $$BookingsTableUpdateCompanionBuilder,
+      (BookingRow, BaseReferences<_$AppDatabase, $BookingsTable, BookingRow>),
+      BookingRow,
+      PrefetchHooks Function()
+    >;
+typedef $$WaitingEntriesTableCreateCompanionBuilder =
+    WaitingEntriesCompanion Function({
+      required String id,
+      required String customerName,
+      Value<String?> phone,
+      Value<String?> menuNote,
+      Value<String?> preferredStaffId,
+      required DateTime checkInAt,
+      required int sortOrder,
+      Value<String> status,
+      Value<int> rowid,
+    });
+typedef $$WaitingEntriesTableUpdateCompanionBuilder =
+    WaitingEntriesCompanion Function({
+      Value<String> id,
+      Value<String> customerName,
+      Value<String?> phone,
+      Value<String?> menuNote,
+      Value<String?> preferredStaffId,
+      Value<DateTime> checkInAt,
+      Value<int> sortOrder,
+      Value<String> status,
+      Value<int> rowid,
+    });
+
+class $$WaitingEntriesTableFilterComposer
+    extends Composer<_$AppDatabase, $WaitingEntriesTable> {
+  $$WaitingEntriesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get customerName => $composableBuilder(
+    column: $table.customerName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get phone => $composableBuilder(
+    column: $table.phone,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get menuNote => $composableBuilder(
+    column: $table.menuNote,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get preferredStaffId => $composableBuilder(
+    column: $table.preferredStaffId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get checkInAt => $composableBuilder(
+    column: $table.checkInAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$WaitingEntriesTableOrderingComposer
+    extends Composer<_$AppDatabase, $WaitingEntriesTable> {
+  $$WaitingEntriesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get customerName => $composableBuilder(
+    column: $table.customerName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get phone => $composableBuilder(
+    column: $table.phone,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get menuNote => $composableBuilder(
+    column: $table.menuNote,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get preferredStaffId => $composableBuilder(
+    column: $table.preferredStaffId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get checkInAt => $composableBuilder(
+    column: $table.checkInAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$WaitingEntriesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $WaitingEntriesTable> {
+  $$WaitingEntriesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get customerName => $composableBuilder(
+    column: $table.customerName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get phone =>
+      $composableBuilder(column: $table.phone, builder: (column) => column);
+
+  GeneratedColumn<String> get menuNote =>
+      $composableBuilder(column: $table.menuNote, builder: (column) => column);
+
+  GeneratedColumn<String> get preferredStaffId => $composableBuilder(
+    column: $table.preferredStaffId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get checkInAt =>
+      $composableBuilder(column: $table.checkInAt, builder: (column) => column);
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+}
+
+class $$WaitingEntriesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $WaitingEntriesTable,
+          WaitingEntryRow,
+          $$WaitingEntriesTableFilterComposer,
+          $$WaitingEntriesTableOrderingComposer,
+          $$WaitingEntriesTableAnnotationComposer,
+          $$WaitingEntriesTableCreateCompanionBuilder,
+          $$WaitingEntriesTableUpdateCompanionBuilder,
+          (
+            WaitingEntryRow,
+            BaseReferences<
+              _$AppDatabase,
+              $WaitingEntriesTable,
+              WaitingEntryRow
+            >,
+          ),
+          WaitingEntryRow,
+          PrefetchHooks Function()
+        > {
+  $$WaitingEntriesTableTableManager(
+    _$AppDatabase db,
+    $WaitingEntriesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$WaitingEntriesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$WaitingEntriesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$WaitingEntriesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> customerName = const Value.absent(),
+                Value<String?> phone = const Value.absent(),
+                Value<String?> menuNote = const Value.absent(),
+                Value<String?> preferredStaffId = const Value.absent(),
+                Value<DateTime> checkInAt = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => WaitingEntriesCompanion(
+                id: id,
+                customerName: customerName,
+                phone: phone,
+                menuNote: menuNote,
+                preferredStaffId: preferredStaffId,
+                checkInAt: checkInAt,
+                sortOrder: sortOrder,
+                status: status,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String customerName,
+                Value<String?> phone = const Value.absent(),
+                Value<String?> menuNote = const Value.absent(),
+                Value<String?> preferredStaffId = const Value.absent(),
+                required DateTime checkInAt,
+                required int sortOrder,
+                Value<String> status = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => WaitingEntriesCompanion.insert(
+                id: id,
+                customerName: customerName,
+                phone: phone,
+                menuNote: menuNote,
+                preferredStaffId: preferredStaffId,
+                checkInAt: checkInAt,
+                sortOrder: sortOrder,
+                status: status,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$WaitingEntriesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $WaitingEntriesTable,
+      WaitingEntryRow,
+      $$WaitingEntriesTableFilterComposer,
+      $$WaitingEntriesTableOrderingComposer,
+      $$WaitingEntriesTableAnnotationComposer,
+      $$WaitingEntriesTableCreateCompanionBuilder,
+      $$WaitingEntriesTableUpdateCompanionBuilder,
+      (
+        WaitingEntryRow,
+        BaseReferences<_$AppDatabase, $WaitingEntriesTable, WaitingEntryRow>,
+      ),
+      WaitingEntryRow,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -4609,4 +6766,8 @@ class $AppDatabaseManager {
       $$CustomersTableTableManager(_db, _db.customers);
   $$VisitRecordsTableTableManager get visitRecords =>
       $$VisitRecordsTableTableManager(_db, _db.visitRecords);
+  $$BookingsTableTableManager get bookings =>
+      $$BookingsTableTableManager(_db, _db.bookings);
+  $$WaitingEntriesTableTableManager get waitingEntries =>
+      $$WaitingEntriesTableTableManager(_db, _db.waitingEntries);
 }
