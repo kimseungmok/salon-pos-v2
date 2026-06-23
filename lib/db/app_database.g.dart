@@ -5101,6 +5101,17 @@ class $PaymentsTable extends Payments
     type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _prepaidBalanceIdMeta = const VerificationMeta(
+    'prepaidBalanceId',
+  );
+  @override
+  late final GeneratedColumn<String> prepaidBalanceId = GeneratedColumn<String>(
+    'prepaid_balance_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _statusMeta = const VerificationMeta('status');
   @override
   late final GeneratedColumn<String> status = GeneratedColumn<String>(
@@ -5131,6 +5142,7 @@ class $PaymentsTable extends Payments
     splitType,
     cashReceived,
     cashChange,
+    prepaidBalanceId,
     status,
     createdAt,
   ];
@@ -5196,6 +5208,15 @@ class $PaymentsTable extends Payments
         cashChange.isAcceptableOrUnknown(data['cash_change']!, _cashChangeMeta),
       );
     }
+    if (data.containsKey('prepaid_balance_id')) {
+      context.handle(
+        _prepaidBalanceIdMeta,
+        prepaidBalanceId.isAcceptableOrUnknown(
+          data['prepaid_balance_id']!,
+          _prepaidBalanceIdMeta,
+        ),
+      );
+    }
     if (data.containsKey('status')) {
       context.handle(
         _statusMeta,
@@ -5247,6 +5268,10 @@ class $PaymentsTable extends Payments
         DriftSqlType.int,
         data['${effectivePrefix}cash_change'],
       ),
+      prepaidBalanceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}prepaid_balance_id'],
+      ),
       status: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}status'],
@@ -5273,6 +5298,11 @@ class PaymentRow extends DataClass implements Insertable<PaymentRow> {
   final int? cashReceived;
   final int? cashChange;
 
+  /// method='prepaid_pass'일 때만 사용 — 어느 PrepaidPassBalance에서
+  /// 차감했는지 추적(M5의 TODO를 M6에서 이 컬럼으로 해소,
+  /// CROSS_VALIDATION.md 수정2 후속).
+  final String? prepaidBalanceId;
+
   /// completed/refunded.
   final String status;
   final DateTime createdAt;
@@ -5284,6 +5314,7 @@ class PaymentRow extends DataClass implements Insertable<PaymentRow> {
     this.splitType,
     this.cashReceived,
     this.cashChange,
+    this.prepaidBalanceId,
     required this.status,
     required this.createdAt,
   });
@@ -5302,6 +5333,9 @@ class PaymentRow extends DataClass implements Insertable<PaymentRow> {
     }
     if (!nullToAbsent || cashChange != null) {
       map['cash_change'] = Variable<int>(cashChange);
+    }
+    if (!nullToAbsent || prepaidBalanceId != null) {
+      map['prepaid_balance_id'] = Variable<String>(prepaidBalanceId);
     }
     map['status'] = Variable<String>(status);
     map['created_at'] = Variable<DateTime>(createdAt);
@@ -5323,6 +5357,9 @@ class PaymentRow extends DataClass implements Insertable<PaymentRow> {
       cashChange: cashChange == null && nullToAbsent
           ? const Value.absent()
           : Value(cashChange),
+      prepaidBalanceId: prepaidBalanceId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(prepaidBalanceId),
       status: Value(status),
       createdAt: Value(createdAt),
     );
@@ -5341,6 +5378,7 @@ class PaymentRow extends DataClass implements Insertable<PaymentRow> {
       splitType: serializer.fromJson<String?>(json['splitType']),
       cashReceived: serializer.fromJson<int?>(json['cashReceived']),
       cashChange: serializer.fromJson<int?>(json['cashChange']),
+      prepaidBalanceId: serializer.fromJson<String?>(json['prepaidBalanceId']),
       status: serializer.fromJson<String>(json['status']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
@@ -5356,6 +5394,7 @@ class PaymentRow extends DataClass implements Insertable<PaymentRow> {
       'splitType': serializer.toJson<String?>(splitType),
       'cashReceived': serializer.toJson<int?>(cashReceived),
       'cashChange': serializer.toJson<int?>(cashChange),
+      'prepaidBalanceId': serializer.toJson<String?>(prepaidBalanceId),
       'status': serializer.toJson<String>(status),
       'createdAt': serializer.toJson<DateTime>(createdAt),
     };
@@ -5369,6 +5408,7 @@ class PaymentRow extends DataClass implements Insertable<PaymentRow> {
     Value<String?> splitType = const Value.absent(),
     Value<int?> cashReceived = const Value.absent(),
     Value<int?> cashChange = const Value.absent(),
+    Value<String?> prepaidBalanceId = const Value.absent(),
     String? status,
     DateTime? createdAt,
   }) => PaymentRow(
@@ -5379,6 +5419,9 @@ class PaymentRow extends DataClass implements Insertable<PaymentRow> {
     splitType: splitType.present ? splitType.value : this.splitType,
     cashReceived: cashReceived.present ? cashReceived.value : this.cashReceived,
     cashChange: cashChange.present ? cashChange.value : this.cashChange,
+    prepaidBalanceId: prepaidBalanceId.present
+        ? prepaidBalanceId.value
+        : this.prepaidBalanceId,
     status: status ?? this.status,
     createdAt: createdAt ?? this.createdAt,
   );
@@ -5395,6 +5438,9 @@ class PaymentRow extends DataClass implements Insertable<PaymentRow> {
       cashChange: data.cashChange.present
           ? data.cashChange.value
           : this.cashChange,
+      prepaidBalanceId: data.prepaidBalanceId.present
+          ? data.prepaidBalanceId.value
+          : this.prepaidBalanceId,
       status: data.status.present ? data.status.value : this.status,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
     );
@@ -5410,6 +5456,7 @@ class PaymentRow extends DataClass implements Insertable<PaymentRow> {
           ..write('splitType: $splitType, ')
           ..write('cashReceived: $cashReceived, ')
           ..write('cashChange: $cashChange, ')
+          ..write('prepaidBalanceId: $prepaidBalanceId, ')
           ..write('status: $status, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
@@ -5425,6 +5472,7 @@ class PaymentRow extends DataClass implements Insertable<PaymentRow> {
     splitType,
     cashReceived,
     cashChange,
+    prepaidBalanceId,
     status,
     createdAt,
   );
@@ -5439,6 +5487,7 @@ class PaymentRow extends DataClass implements Insertable<PaymentRow> {
           other.splitType == this.splitType &&
           other.cashReceived == this.cashReceived &&
           other.cashChange == this.cashChange &&
+          other.prepaidBalanceId == this.prepaidBalanceId &&
           other.status == this.status &&
           other.createdAt == this.createdAt);
 }
@@ -5451,6 +5500,7 @@ class PaymentsCompanion extends UpdateCompanion<PaymentRow> {
   final Value<String?> splitType;
   final Value<int?> cashReceived;
   final Value<int?> cashChange;
+  final Value<String?> prepaidBalanceId;
   final Value<String> status;
   final Value<DateTime> createdAt;
   final Value<int> rowid;
@@ -5462,6 +5512,7 @@ class PaymentsCompanion extends UpdateCompanion<PaymentRow> {
     this.splitType = const Value.absent(),
     this.cashReceived = const Value.absent(),
     this.cashChange = const Value.absent(),
+    this.prepaidBalanceId = const Value.absent(),
     this.status = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -5474,6 +5525,7 @@ class PaymentsCompanion extends UpdateCompanion<PaymentRow> {
     this.splitType = const Value.absent(),
     this.cashReceived = const Value.absent(),
     this.cashChange = const Value.absent(),
+    this.prepaidBalanceId = const Value.absent(),
     this.status = const Value.absent(),
     required DateTime createdAt,
     this.rowid = const Value.absent(),
@@ -5490,6 +5542,7 @@ class PaymentsCompanion extends UpdateCompanion<PaymentRow> {
     Expression<String>? splitType,
     Expression<int>? cashReceived,
     Expression<int>? cashChange,
+    Expression<String>? prepaidBalanceId,
     Expression<String>? status,
     Expression<DateTime>? createdAt,
     Expression<int>? rowid,
@@ -5502,6 +5555,7 @@ class PaymentsCompanion extends UpdateCompanion<PaymentRow> {
       if (splitType != null) 'split_type': splitType,
       if (cashReceived != null) 'cash_received': cashReceived,
       if (cashChange != null) 'cash_change': cashChange,
+      if (prepaidBalanceId != null) 'prepaid_balance_id': prepaidBalanceId,
       if (status != null) 'status': status,
       if (createdAt != null) 'created_at': createdAt,
       if (rowid != null) 'rowid': rowid,
@@ -5516,6 +5570,7 @@ class PaymentsCompanion extends UpdateCompanion<PaymentRow> {
     Value<String?>? splitType,
     Value<int?>? cashReceived,
     Value<int?>? cashChange,
+    Value<String?>? prepaidBalanceId,
     Value<String>? status,
     Value<DateTime>? createdAt,
     Value<int>? rowid,
@@ -5528,6 +5583,7 @@ class PaymentsCompanion extends UpdateCompanion<PaymentRow> {
       splitType: splitType ?? this.splitType,
       cashReceived: cashReceived ?? this.cashReceived,
       cashChange: cashChange ?? this.cashChange,
+      prepaidBalanceId: prepaidBalanceId ?? this.prepaidBalanceId,
       status: status ?? this.status,
       createdAt: createdAt ?? this.createdAt,
       rowid: rowid ?? this.rowid,
@@ -5558,6 +5614,9 @@ class PaymentsCompanion extends UpdateCompanion<PaymentRow> {
     if (cashChange.present) {
       map['cash_change'] = Variable<int>(cashChange.value);
     }
+    if (prepaidBalanceId.present) {
+      map['prepaid_balance_id'] = Variable<String>(prepaidBalanceId.value);
+    }
     if (status.present) {
       map['status'] = Variable<String>(status.value);
     }
@@ -5580,7 +5639,1819 @@ class PaymentsCompanion extends UpdateCompanion<PaymentRow> {
           ..write('splitType: $splitType, ')
           ..write('cashReceived: $cashReceived, ')
           ..write('cashChange: $cashChange, ')
+          ..write('prepaidBalanceId: $prepaidBalanceId, ')
           ..write('status: $status, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $PrepaidPassMenusTable extends PrepaidPassMenus
+    with TableInfo<$PrepaidPassMenusTable, PrepaidPassMenuRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PrepaidPassMenusTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _typeMeta = const VerificationMeta('type');
+  @override
+  late final GeneratedColumn<String> type = GeneratedColumn<String>(
+    'type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 40,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _linkedProductIdMeta = const VerificationMeta(
+    'linkedProductId',
+  );
+  @override
+  late final GeneratedColumn<String> linkedProductId = GeneratedColumn<String>(
+    'linked_product_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _priceMeta = const VerificationMeta('price');
+  @override
+  late final GeneratedColumn<int> price = GeneratedColumn<int>(
+    'price',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _allowCustomPriceMeta = const VerificationMeta(
+    'allowCustomPrice',
+  );
+  @override
+  late final GeneratedColumn<bool> allowCustomPrice = GeneratedColumn<bool>(
+    'allow_custom_price',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("allow_custom_price" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _countPerPurchaseMeta = const VerificationMeta(
+    'countPerPurchase',
+  );
+  @override
+  late final GeneratedColumn<int> countPerPurchase = GeneratedColumn<int>(
+    'count_per_purchase',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _bonusTypeMeta = const VerificationMeta(
+    'bonusType',
+  );
+  @override
+  late final GeneratedColumn<String> bonusType = GeneratedColumn<String>(
+    'bonus_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('none'),
+  );
+  static const VerificationMeta _bonusAmountMeta = const VerificationMeta(
+    'bonusAmount',
+  );
+  @override
+  late final GeneratedColumn<int> bonusAmount = GeneratedColumn<int>(
+    'bonus_amount',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _bonusCountMeta = const VerificationMeta(
+    'bonusCount',
+  );
+  @override
+  late final GeneratedColumn<int> bonusCount = GeneratedColumn<int>(
+    'bonus_count',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _expiryTypeMeta = const VerificationMeta(
+    'expiryType',
+  );
+  @override
+  late final GeneratedColumn<String> expiryType = GeneratedColumn<String>(
+    'expiry_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('none'),
+  );
+  static const VerificationMeta _expiryCustomDaysMeta = const VerificationMeta(
+    'expiryCustomDays',
+  );
+  @override
+  late final GeneratedColumn<int> expiryCustomDays = GeneratedColumn<int>(
+    'expiry_custom_days',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('active'),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    type,
+    name,
+    linkedProductId,
+    price,
+    allowCustomPrice,
+    countPerPurchase,
+    bonusType,
+    bonusAmount,
+    bonusCount,
+    expiryType,
+    expiryCustomDays,
+    status,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'prepaid_pass_menus';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<PrepaidPassMenuRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('type')) {
+      context.handle(
+        _typeMeta,
+        type.isAcceptableOrUnknown(data['type']!, _typeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_typeMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('linked_product_id')) {
+      context.handle(
+        _linkedProductIdMeta,
+        linkedProductId.isAcceptableOrUnknown(
+          data['linked_product_id']!,
+          _linkedProductIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('price')) {
+      context.handle(
+        _priceMeta,
+        price.isAcceptableOrUnknown(data['price']!, _priceMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_priceMeta);
+    }
+    if (data.containsKey('allow_custom_price')) {
+      context.handle(
+        _allowCustomPriceMeta,
+        allowCustomPrice.isAcceptableOrUnknown(
+          data['allow_custom_price']!,
+          _allowCustomPriceMeta,
+        ),
+      );
+    }
+    if (data.containsKey('count_per_purchase')) {
+      context.handle(
+        _countPerPurchaseMeta,
+        countPerPurchase.isAcceptableOrUnknown(
+          data['count_per_purchase']!,
+          _countPerPurchaseMeta,
+        ),
+      );
+    }
+    if (data.containsKey('bonus_type')) {
+      context.handle(
+        _bonusTypeMeta,
+        bonusType.isAcceptableOrUnknown(data['bonus_type']!, _bonusTypeMeta),
+      );
+    }
+    if (data.containsKey('bonus_amount')) {
+      context.handle(
+        _bonusAmountMeta,
+        bonusAmount.isAcceptableOrUnknown(
+          data['bonus_amount']!,
+          _bonusAmountMeta,
+        ),
+      );
+    }
+    if (data.containsKey('bonus_count')) {
+      context.handle(
+        _bonusCountMeta,
+        bonusCount.isAcceptableOrUnknown(data['bonus_count']!, _bonusCountMeta),
+      );
+    }
+    if (data.containsKey('expiry_type')) {
+      context.handle(
+        _expiryTypeMeta,
+        expiryType.isAcceptableOrUnknown(data['expiry_type']!, _expiryTypeMeta),
+      );
+    }
+    if (data.containsKey('expiry_custom_days')) {
+      context.handle(
+        _expiryCustomDaysMeta,
+        expiryCustomDays.isAcceptableOrUnknown(
+          data['expiry_custom_days']!,
+          _expiryCustomDaysMeta,
+        ),
+      );
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  PrepaidPassMenuRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PrepaidPassMenuRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      type: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}type'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      linkedProductId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}linked_product_id'],
+      ),
+      price: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}price'],
+      )!,
+      allowCustomPrice: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}allow_custom_price'],
+      )!,
+      countPerPurchase: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}count_per_purchase'],
+      ),
+      bonusType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}bonus_type'],
+      )!,
+      bonusAmount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}bonus_amount'],
+      ),
+      bonusCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}bonus_count'],
+      ),
+      expiryType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}expiry_type'],
+      )!,
+      expiryCustomDays: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}expiry_custom_days'],
+      ),
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+    );
+  }
+
+  @override
+  $PrepaidPassMenusTable createAlias(String alias) {
+    return $PrepaidPassMenusTable(attachedDatabase, alias);
+  }
+}
+
+class PrepaidPassMenuRow extends DataClass
+    implements Insertable<PrepaidPassMenuRow> {
+  final String id;
+
+  /// amount(금액권) / count(횟수권). 생성 후 변경 불가(앱에서 강제).
+  final String type;
+  final String name;
+
+  /// count 타입만 필수, 1개만.
+  final String? linkedProductId;
+  final int price;
+  final bool allowCustomPrice;
+
+  /// count 타입만. 1회 구매시 제공 횟수.
+  final int? countPerPurchase;
+
+  /// none / bonus.
+  final String bonusType;
+  final int? bonusAmount;
+  final int? bonusCount;
+
+  /// none/90d/180d/1y/2y/3y/fixedDate/custom.
+  final String expiryType;
+
+  /// fixedDate면 날짜, custom이면 일수(밀리초가 아니라 "일" 단위 정수를
+  /// dateTime 컬럼에 epoch 변환 없이 별도 보관하기보단, 둘 다 단순화해
+  /// "일수"로 통일 저장한다 — fixedDate는 호출측에서 일수로 환산해 넘김.
+  final int? expiryCustomDays;
+
+  /// active/disabled.
+  final String status;
+  const PrepaidPassMenuRow({
+    required this.id,
+    required this.type,
+    required this.name,
+    this.linkedProductId,
+    required this.price,
+    required this.allowCustomPrice,
+    this.countPerPurchase,
+    required this.bonusType,
+    this.bonusAmount,
+    this.bonusCount,
+    required this.expiryType,
+    this.expiryCustomDays,
+    required this.status,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['type'] = Variable<String>(type);
+    map['name'] = Variable<String>(name);
+    if (!nullToAbsent || linkedProductId != null) {
+      map['linked_product_id'] = Variable<String>(linkedProductId);
+    }
+    map['price'] = Variable<int>(price);
+    map['allow_custom_price'] = Variable<bool>(allowCustomPrice);
+    if (!nullToAbsent || countPerPurchase != null) {
+      map['count_per_purchase'] = Variable<int>(countPerPurchase);
+    }
+    map['bonus_type'] = Variable<String>(bonusType);
+    if (!nullToAbsent || bonusAmount != null) {
+      map['bonus_amount'] = Variable<int>(bonusAmount);
+    }
+    if (!nullToAbsent || bonusCount != null) {
+      map['bonus_count'] = Variable<int>(bonusCount);
+    }
+    map['expiry_type'] = Variable<String>(expiryType);
+    if (!nullToAbsent || expiryCustomDays != null) {
+      map['expiry_custom_days'] = Variable<int>(expiryCustomDays);
+    }
+    map['status'] = Variable<String>(status);
+    return map;
+  }
+
+  PrepaidPassMenusCompanion toCompanion(bool nullToAbsent) {
+    return PrepaidPassMenusCompanion(
+      id: Value(id),
+      type: Value(type),
+      name: Value(name),
+      linkedProductId: linkedProductId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(linkedProductId),
+      price: Value(price),
+      allowCustomPrice: Value(allowCustomPrice),
+      countPerPurchase: countPerPurchase == null && nullToAbsent
+          ? const Value.absent()
+          : Value(countPerPurchase),
+      bonusType: Value(bonusType),
+      bonusAmount: bonusAmount == null && nullToAbsent
+          ? const Value.absent()
+          : Value(bonusAmount),
+      bonusCount: bonusCount == null && nullToAbsent
+          ? const Value.absent()
+          : Value(bonusCount),
+      expiryType: Value(expiryType),
+      expiryCustomDays: expiryCustomDays == null && nullToAbsent
+          ? const Value.absent()
+          : Value(expiryCustomDays),
+      status: Value(status),
+    );
+  }
+
+  factory PrepaidPassMenuRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PrepaidPassMenuRow(
+      id: serializer.fromJson<String>(json['id']),
+      type: serializer.fromJson<String>(json['type']),
+      name: serializer.fromJson<String>(json['name']),
+      linkedProductId: serializer.fromJson<String?>(json['linkedProductId']),
+      price: serializer.fromJson<int>(json['price']),
+      allowCustomPrice: serializer.fromJson<bool>(json['allowCustomPrice']),
+      countPerPurchase: serializer.fromJson<int?>(json['countPerPurchase']),
+      bonusType: serializer.fromJson<String>(json['bonusType']),
+      bonusAmount: serializer.fromJson<int?>(json['bonusAmount']),
+      bonusCount: serializer.fromJson<int?>(json['bonusCount']),
+      expiryType: serializer.fromJson<String>(json['expiryType']),
+      expiryCustomDays: serializer.fromJson<int?>(json['expiryCustomDays']),
+      status: serializer.fromJson<String>(json['status']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'type': serializer.toJson<String>(type),
+      'name': serializer.toJson<String>(name),
+      'linkedProductId': serializer.toJson<String?>(linkedProductId),
+      'price': serializer.toJson<int>(price),
+      'allowCustomPrice': serializer.toJson<bool>(allowCustomPrice),
+      'countPerPurchase': serializer.toJson<int?>(countPerPurchase),
+      'bonusType': serializer.toJson<String>(bonusType),
+      'bonusAmount': serializer.toJson<int?>(bonusAmount),
+      'bonusCount': serializer.toJson<int?>(bonusCount),
+      'expiryType': serializer.toJson<String>(expiryType),
+      'expiryCustomDays': serializer.toJson<int?>(expiryCustomDays),
+      'status': serializer.toJson<String>(status),
+    };
+  }
+
+  PrepaidPassMenuRow copyWith({
+    String? id,
+    String? type,
+    String? name,
+    Value<String?> linkedProductId = const Value.absent(),
+    int? price,
+    bool? allowCustomPrice,
+    Value<int?> countPerPurchase = const Value.absent(),
+    String? bonusType,
+    Value<int?> bonusAmount = const Value.absent(),
+    Value<int?> bonusCount = const Value.absent(),
+    String? expiryType,
+    Value<int?> expiryCustomDays = const Value.absent(),
+    String? status,
+  }) => PrepaidPassMenuRow(
+    id: id ?? this.id,
+    type: type ?? this.type,
+    name: name ?? this.name,
+    linkedProductId: linkedProductId.present
+        ? linkedProductId.value
+        : this.linkedProductId,
+    price: price ?? this.price,
+    allowCustomPrice: allowCustomPrice ?? this.allowCustomPrice,
+    countPerPurchase: countPerPurchase.present
+        ? countPerPurchase.value
+        : this.countPerPurchase,
+    bonusType: bonusType ?? this.bonusType,
+    bonusAmount: bonusAmount.present ? bonusAmount.value : this.bonusAmount,
+    bonusCount: bonusCount.present ? bonusCount.value : this.bonusCount,
+    expiryType: expiryType ?? this.expiryType,
+    expiryCustomDays: expiryCustomDays.present
+        ? expiryCustomDays.value
+        : this.expiryCustomDays,
+    status: status ?? this.status,
+  );
+  PrepaidPassMenuRow copyWithCompanion(PrepaidPassMenusCompanion data) {
+    return PrepaidPassMenuRow(
+      id: data.id.present ? data.id.value : this.id,
+      type: data.type.present ? data.type.value : this.type,
+      name: data.name.present ? data.name.value : this.name,
+      linkedProductId: data.linkedProductId.present
+          ? data.linkedProductId.value
+          : this.linkedProductId,
+      price: data.price.present ? data.price.value : this.price,
+      allowCustomPrice: data.allowCustomPrice.present
+          ? data.allowCustomPrice.value
+          : this.allowCustomPrice,
+      countPerPurchase: data.countPerPurchase.present
+          ? data.countPerPurchase.value
+          : this.countPerPurchase,
+      bonusType: data.bonusType.present ? data.bonusType.value : this.bonusType,
+      bonusAmount: data.bonusAmount.present
+          ? data.bonusAmount.value
+          : this.bonusAmount,
+      bonusCount: data.bonusCount.present
+          ? data.bonusCount.value
+          : this.bonusCount,
+      expiryType: data.expiryType.present
+          ? data.expiryType.value
+          : this.expiryType,
+      expiryCustomDays: data.expiryCustomDays.present
+          ? data.expiryCustomDays.value
+          : this.expiryCustomDays,
+      status: data.status.present ? data.status.value : this.status,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PrepaidPassMenuRow(')
+          ..write('id: $id, ')
+          ..write('type: $type, ')
+          ..write('name: $name, ')
+          ..write('linkedProductId: $linkedProductId, ')
+          ..write('price: $price, ')
+          ..write('allowCustomPrice: $allowCustomPrice, ')
+          ..write('countPerPurchase: $countPerPurchase, ')
+          ..write('bonusType: $bonusType, ')
+          ..write('bonusAmount: $bonusAmount, ')
+          ..write('bonusCount: $bonusCount, ')
+          ..write('expiryType: $expiryType, ')
+          ..write('expiryCustomDays: $expiryCustomDays, ')
+          ..write('status: $status')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    type,
+    name,
+    linkedProductId,
+    price,
+    allowCustomPrice,
+    countPerPurchase,
+    bonusType,
+    bonusAmount,
+    bonusCount,
+    expiryType,
+    expiryCustomDays,
+    status,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PrepaidPassMenuRow &&
+          other.id == this.id &&
+          other.type == this.type &&
+          other.name == this.name &&
+          other.linkedProductId == this.linkedProductId &&
+          other.price == this.price &&
+          other.allowCustomPrice == this.allowCustomPrice &&
+          other.countPerPurchase == this.countPerPurchase &&
+          other.bonusType == this.bonusType &&
+          other.bonusAmount == this.bonusAmount &&
+          other.bonusCount == this.bonusCount &&
+          other.expiryType == this.expiryType &&
+          other.expiryCustomDays == this.expiryCustomDays &&
+          other.status == this.status);
+}
+
+class PrepaidPassMenusCompanion extends UpdateCompanion<PrepaidPassMenuRow> {
+  final Value<String> id;
+  final Value<String> type;
+  final Value<String> name;
+  final Value<String?> linkedProductId;
+  final Value<int> price;
+  final Value<bool> allowCustomPrice;
+  final Value<int?> countPerPurchase;
+  final Value<String> bonusType;
+  final Value<int?> bonusAmount;
+  final Value<int?> bonusCount;
+  final Value<String> expiryType;
+  final Value<int?> expiryCustomDays;
+  final Value<String> status;
+  final Value<int> rowid;
+  const PrepaidPassMenusCompanion({
+    this.id = const Value.absent(),
+    this.type = const Value.absent(),
+    this.name = const Value.absent(),
+    this.linkedProductId = const Value.absent(),
+    this.price = const Value.absent(),
+    this.allowCustomPrice = const Value.absent(),
+    this.countPerPurchase = const Value.absent(),
+    this.bonusType = const Value.absent(),
+    this.bonusAmount = const Value.absent(),
+    this.bonusCount = const Value.absent(),
+    this.expiryType = const Value.absent(),
+    this.expiryCustomDays = const Value.absent(),
+    this.status = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  PrepaidPassMenusCompanion.insert({
+    required String id,
+    required String type,
+    required String name,
+    this.linkedProductId = const Value.absent(),
+    required int price,
+    this.allowCustomPrice = const Value.absent(),
+    this.countPerPurchase = const Value.absent(),
+    this.bonusType = const Value.absent(),
+    this.bonusAmount = const Value.absent(),
+    this.bonusCount = const Value.absent(),
+    this.expiryType = const Value.absent(),
+    this.expiryCustomDays = const Value.absent(),
+    this.status = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       type = Value(type),
+       name = Value(name),
+       price = Value(price);
+  static Insertable<PrepaidPassMenuRow> custom({
+    Expression<String>? id,
+    Expression<String>? type,
+    Expression<String>? name,
+    Expression<String>? linkedProductId,
+    Expression<int>? price,
+    Expression<bool>? allowCustomPrice,
+    Expression<int>? countPerPurchase,
+    Expression<String>? bonusType,
+    Expression<int>? bonusAmount,
+    Expression<int>? bonusCount,
+    Expression<String>? expiryType,
+    Expression<int>? expiryCustomDays,
+    Expression<String>? status,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (type != null) 'type': type,
+      if (name != null) 'name': name,
+      if (linkedProductId != null) 'linked_product_id': linkedProductId,
+      if (price != null) 'price': price,
+      if (allowCustomPrice != null) 'allow_custom_price': allowCustomPrice,
+      if (countPerPurchase != null) 'count_per_purchase': countPerPurchase,
+      if (bonusType != null) 'bonus_type': bonusType,
+      if (bonusAmount != null) 'bonus_amount': bonusAmount,
+      if (bonusCount != null) 'bonus_count': bonusCount,
+      if (expiryType != null) 'expiry_type': expiryType,
+      if (expiryCustomDays != null) 'expiry_custom_days': expiryCustomDays,
+      if (status != null) 'status': status,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  PrepaidPassMenusCompanion copyWith({
+    Value<String>? id,
+    Value<String>? type,
+    Value<String>? name,
+    Value<String?>? linkedProductId,
+    Value<int>? price,
+    Value<bool>? allowCustomPrice,
+    Value<int?>? countPerPurchase,
+    Value<String>? bonusType,
+    Value<int?>? bonusAmount,
+    Value<int?>? bonusCount,
+    Value<String>? expiryType,
+    Value<int?>? expiryCustomDays,
+    Value<String>? status,
+    Value<int>? rowid,
+  }) {
+    return PrepaidPassMenusCompanion(
+      id: id ?? this.id,
+      type: type ?? this.type,
+      name: name ?? this.name,
+      linkedProductId: linkedProductId ?? this.linkedProductId,
+      price: price ?? this.price,
+      allowCustomPrice: allowCustomPrice ?? this.allowCustomPrice,
+      countPerPurchase: countPerPurchase ?? this.countPerPurchase,
+      bonusType: bonusType ?? this.bonusType,
+      bonusAmount: bonusAmount ?? this.bonusAmount,
+      bonusCount: bonusCount ?? this.bonusCount,
+      expiryType: expiryType ?? this.expiryType,
+      expiryCustomDays: expiryCustomDays ?? this.expiryCustomDays,
+      status: status ?? this.status,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (type.present) {
+      map['type'] = Variable<String>(type.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (linkedProductId.present) {
+      map['linked_product_id'] = Variable<String>(linkedProductId.value);
+    }
+    if (price.present) {
+      map['price'] = Variable<int>(price.value);
+    }
+    if (allowCustomPrice.present) {
+      map['allow_custom_price'] = Variable<bool>(allowCustomPrice.value);
+    }
+    if (countPerPurchase.present) {
+      map['count_per_purchase'] = Variable<int>(countPerPurchase.value);
+    }
+    if (bonusType.present) {
+      map['bonus_type'] = Variable<String>(bonusType.value);
+    }
+    if (bonusAmount.present) {
+      map['bonus_amount'] = Variable<int>(bonusAmount.value);
+    }
+    if (bonusCount.present) {
+      map['bonus_count'] = Variable<int>(bonusCount.value);
+    }
+    if (expiryType.present) {
+      map['expiry_type'] = Variable<String>(expiryType.value);
+    }
+    if (expiryCustomDays.present) {
+      map['expiry_custom_days'] = Variable<int>(expiryCustomDays.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PrepaidPassMenusCompanion(')
+          ..write('id: $id, ')
+          ..write('type: $type, ')
+          ..write('name: $name, ')
+          ..write('linkedProductId: $linkedProductId, ')
+          ..write('price: $price, ')
+          ..write('allowCustomPrice: $allowCustomPrice, ')
+          ..write('countPerPurchase: $countPerPurchase, ')
+          ..write('bonusType: $bonusType, ')
+          ..write('bonusAmount: $bonusAmount, ')
+          ..write('bonusCount: $bonusCount, ')
+          ..write('expiryType: $expiryType, ')
+          ..write('expiryCustomDays: $expiryCustomDays, ')
+          ..write('status: $status, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $PrepaidPassBalancesTable extends PrepaidPassBalances
+    with TableInfo<$PrepaidPassBalancesTable, PrepaidPassBalanceRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PrepaidPassBalancesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _customerIdMeta = const VerificationMeta(
+    'customerId',
+  );
+  @override
+  late final GeneratedColumn<String> customerId = GeneratedColumn<String>(
+    'customer_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _menuIdMeta = const VerificationMeta('menuId');
+  @override
+  late final GeneratedColumn<String> menuId = GeneratedColumn<String>(
+    'menu_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _remainingAmountMeta = const VerificationMeta(
+    'remainingAmount',
+  );
+  @override
+  late final GeneratedColumn<int> remainingAmount = GeneratedColumn<int>(
+    'remaining_amount',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _remainingCountMeta = const VerificationMeta(
+    'remainingCount',
+  );
+  @override
+  late final GeneratedColumn<int> remainingCount = GeneratedColumn<int>(
+    'remaining_count',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _purchasedAtMeta = const VerificationMeta(
+    'purchasedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> purchasedAt = GeneratedColumn<DateTime>(
+    'purchased_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _expiresAtMeta = const VerificationMeta(
+    'expiresAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> expiresAt = GeneratedColumn<DateTime>(
+    'expires_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('active'),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    customerId,
+    menuId,
+    remainingAmount,
+    remainingCount,
+    purchasedAt,
+    expiresAt,
+    status,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'prepaid_pass_balances';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<PrepaidPassBalanceRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('customer_id')) {
+      context.handle(
+        _customerIdMeta,
+        customerId.isAcceptableOrUnknown(data['customer_id']!, _customerIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_customerIdMeta);
+    }
+    if (data.containsKey('menu_id')) {
+      context.handle(
+        _menuIdMeta,
+        menuId.isAcceptableOrUnknown(data['menu_id']!, _menuIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_menuIdMeta);
+    }
+    if (data.containsKey('remaining_amount')) {
+      context.handle(
+        _remainingAmountMeta,
+        remainingAmount.isAcceptableOrUnknown(
+          data['remaining_amount']!,
+          _remainingAmountMeta,
+        ),
+      );
+    }
+    if (data.containsKey('remaining_count')) {
+      context.handle(
+        _remainingCountMeta,
+        remainingCount.isAcceptableOrUnknown(
+          data['remaining_count']!,
+          _remainingCountMeta,
+        ),
+      );
+    }
+    if (data.containsKey('purchased_at')) {
+      context.handle(
+        _purchasedAtMeta,
+        purchasedAt.isAcceptableOrUnknown(
+          data['purchased_at']!,
+          _purchasedAtMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_purchasedAtMeta);
+    }
+    if (data.containsKey('expires_at')) {
+      context.handle(
+        _expiresAtMeta,
+        expiresAt.isAcceptableOrUnknown(data['expires_at']!, _expiresAtMeta),
+      );
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  PrepaidPassBalanceRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PrepaidPassBalanceRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      customerId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}customer_id'],
+      )!,
+      menuId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}menu_id'],
+      )!,
+      remainingAmount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}remaining_amount'],
+      ),
+      remainingCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}remaining_count'],
+      ),
+      purchasedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}purchased_at'],
+      )!,
+      expiresAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}expires_at'],
+      ),
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+    );
+  }
+
+  @override
+  $PrepaidPassBalancesTable createAlias(String alias) {
+    return $PrepaidPassBalancesTable(attachedDatabase, alias);
+  }
+}
+
+class PrepaidPassBalanceRow extends DataClass
+    implements Insertable<PrepaidPassBalanceRow> {
+  final String id;
+  final String customerId;
+  final String menuId;
+  final int? remainingAmount;
+  final int? remainingCount;
+  final DateTime purchasedAt;
+  final DateTime? expiresAt;
+
+  /// active/expired/voided.
+  final String status;
+  const PrepaidPassBalanceRow({
+    required this.id,
+    required this.customerId,
+    required this.menuId,
+    this.remainingAmount,
+    this.remainingCount,
+    required this.purchasedAt,
+    this.expiresAt,
+    required this.status,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['customer_id'] = Variable<String>(customerId);
+    map['menu_id'] = Variable<String>(menuId);
+    if (!nullToAbsent || remainingAmount != null) {
+      map['remaining_amount'] = Variable<int>(remainingAmount);
+    }
+    if (!nullToAbsent || remainingCount != null) {
+      map['remaining_count'] = Variable<int>(remainingCount);
+    }
+    map['purchased_at'] = Variable<DateTime>(purchasedAt);
+    if (!nullToAbsent || expiresAt != null) {
+      map['expires_at'] = Variable<DateTime>(expiresAt);
+    }
+    map['status'] = Variable<String>(status);
+    return map;
+  }
+
+  PrepaidPassBalancesCompanion toCompanion(bool nullToAbsent) {
+    return PrepaidPassBalancesCompanion(
+      id: Value(id),
+      customerId: Value(customerId),
+      menuId: Value(menuId),
+      remainingAmount: remainingAmount == null && nullToAbsent
+          ? const Value.absent()
+          : Value(remainingAmount),
+      remainingCount: remainingCount == null && nullToAbsent
+          ? const Value.absent()
+          : Value(remainingCount),
+      purchasedAt: Value(purchasedAt),
+      expiresAt: expiresAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(expiresAt),
+      status: Value(status),
+    );
+  }
+
+  factory PrepaidPassBalanceRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PrepaidPassBalanceRow(
+      id: serializer.fromJson<String>(json['id']),
+      customerId: serializer.fromJson<String>(json['customerId']),
+      menuId: serializer.fromJson<String>(json['menuId']),
+      remainingAmount: serializer.fromJson<int?>(json['remainingAmount']),
+      remainingCount: serializer.fromJson<int?>(json['remainingCount']),
+      purchasedAt: serializer.fromJson<DateTime>(json['purchasedAt']),
+      expiresAt: serializer.fromJson<DateTime?>(json['expiresAt']),
+      status: serializer.fromJson<String>(json['status']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'customerId': serializer.toJson<String>(customerId),
+      'menuId': serializer.toJson<String>(menuId),
+      'remainingAmount': serializer.toJson<int?>(remainingAmount),
+      'remainingCount': serializer.toJson<int?>(remainingCount),
+      'purchasedAt': serializer.toJson<DateTime>(purchasedAt),
+      'expiresAt': serializer.toJson<DateTime?>(expiresAt),
+      'status': serializer.toJson<String>(status),
+    };
+  }
+
+  PrepaidPassBalanceRow copyWith({
+    String? id,
+    String? customerId,
+    String? menuId,
+    Value<int?> remainingAmount = const Value.absent(),
+    Value<int?> remainingCount = const Value.absent(),
+    DateTime? purchasedAt,
+    Value<DateTime?> expiresAt = const Value.absent(),
+    String? status,
+  }) => PrepaidPassBalanceRow(
+    id: id ?? this.id,
+    customerId: customerId ?? this.customerId,
+    menuId: menuId ?? this.menuId,
+    remainingAmount: remainingAmount.present
+        ? remainingAmount.value
+        : this.remainingAmount,
+    remainingCount: remainingCount.present
+        ? remainingCount.value
+        : this.remainingCount,
+    purchasedAt: purchasedAt ?? this.purchasedAt,
+    expiresAt: expiresAt.present ? expiresAt.value : this.expiresAt,
+    status: status ?? this.status,
+  );
+  PrepaidPassBalanceRow copyWithCompanion(PrepaidPassBalancesCompanion data) {
+    return PrepaidPassBalanceRow(
+      id: data.id.present ? data.id.value : this.id,
+      customerId: data.customerId.present
+          ? data.customerId.value
+          : this.customerId,
+      menuId: data.menuId.present ? data.menuId.value : this.menuId,
+      remainingAmount: data.remainingAmount.present
+          ? data.remainingAmount.value
+          : this.remainingAmount,
+      remainingCount: data.remainingCount.present
+          ? data.remainingCount.value
+          : this.remainingCount,
+      purchasedAt: data.purchasedAt.present
+          ? data.purchasedAt.value
+          : this.purchasedAt,
+      expiresAt: data.expiresAt.present ? data.expiresAt.value : this.expiresAt,
+      status: data.status.present ? data.status.value : this.status,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PrepaidPassBalanceRow(')
+          ..write('id: $id, ')
+          ..write('customerId: $customerId, ')
+          ..write('menuId: $menuId, ')
+          ..write('remainingAmount: $remainingAmount, ')
+          ..write('remainingCount: $remainingCount, ')
+          ..write('purchasedAt: $purchasedAt, ')
+          ..write('expiresAt: $expiresAt, ')
+          ..write('status: $status')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    customerId,
+    menuId,
+    remainingAmount,
+    remainingCount,
+    purchasedAt,
+    expiresAt,
+    status,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PrepaidPassBalanceRow &&
+          other.id == this.id &&
+          other.customerId == this.customerId &&
+          other.menuId == this.menuId &&
+          other.remainingAmount == this.remainingAmount &&
+          other.remainingCount == this.remainingCount &&
+          other.purchasedAt == this.purchasedAt &&
+          other.expiresAt == this.expiresAt &&
+          other.status == this.status);
+}
+
+class PrepaidPassBalancesCompanion
+    extends UpdateCompanion<PrepaidPassBalanceRow> {
+  final Value<String> id;
+  final Value<String> customerId;
+  final Value<String> menuId;
+  final Value<int?> remainingAmount;
+  final Value<int?> remainingCount;
+  final Value<DateTime> purchasedAt;
+  final Value<DateTime?> expiresAt;
+  final Value<String> status;
+  final Value<int> rowid;
+  const PrepaidPassBalancesCompanion({
+    this.id = const Value.absent(),
+    this.customerId = const Value.absent(),
+    this.menuId = const Value.absent(),
+    this.remainingAmount = const Value.absent(),
+    this.remainingCount = const Value.absent(),
+    this.purchasedAt = const Value.absent(),
+    this.expiresAt = const Value.absent(),
+    this.status = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  PrepaidPassBalancesCompanion.insert({
+    required String id,
+    required String customerId,
+    required String menuId,
+    this.remainingAmount = const Value.absent(),
+    this.remainingCount = const Value.absent(),
+    required DateTime purchasedAt,
+    this.expiresAt = const Value.absent(),
+    this.status = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       customerId = Value(customerId),
+       menuId = Value(menuId),
+       purchasedAt = Value(purchasedAt);
+  static Insertable<PrepaidPassBalanceRow> custom({
+    Expression<String>? id,
+    Expression<String>? customerId,
+    Expression<String>? menuId,
+    Expression<int>? remainingAmount,
+    Expression<int>? remainingCount,
+    Expression<DateTime>? purchasedAt,
+    Expression<DateTime>? expiresAt,
+    Expression<String>? status,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (customerId != null) 'customer_id': customerId,
+      if (menuId != null) 'menu_id': menuId,
+      if (remainingAmount != null) 'remaining_amount': remainingAmount,
+      if (remainingCount != null) 'remaining_count': remainingCount,
+      if (purchasedAt != null) 'purchased_at': purchasedAt,
+      if (expiresAt != null) 'expires_at': expiresAt,
+      if (status != null) 'status': status,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  PrepaidPassBalancesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? customerId,
+    Value<String>? menuId,
+    Value<int?>? remainingAmount,
+    Value<int?>? remainingCount,
+    Value<DateTime>? purchasedAt,
+    Value<DateTime?>? expiresAt,
+    Value<String>? status,
+    Value<int>? rowid,
+  }) {
+    return PrepaidPassBalancesCompanion(
+      id: id ?? this.id,
+      customerId: customerId ?? this.customerId,
+      menuId: menuId ?? this.menuId,
+      remainingAmount: remainingAmount ?? this.remainingAmount,
+      remainingCount: remainingCount ?? this.remainingCount,
+      purchasedAt: purchasedAt ?? this.purchasedAt,
+      expiresAt: expiresAt ?? this.expiresAt,
+      status: status ?? this.status,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (customerId.present) {
+      map['customer_id'] = Variable<String>(customerId.value);
+    }
+    if (menuId.present) {
+      map['menu_id'] = Variable<String>(menuId.value);
+    }
+    if (remainingAmount.present) {
+      map['remaining_amount'] = Variable<int>(remainingAmount.value);
+    }
+    if (remainingCount.present) {
+      map['remaining_count'] = Variable<int>(remainingCount.value);
+    }
+    if (purchasedAt.present) {
+      map['purchased_at'] = Variable<DateTime>(purchasedAt.value);
+    }
+    if (expiresAt.present) {
+      map['expires_at'] = Variable<DateTime>(expiresAt.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PrepaidPassBalancesCompanion(')
+          ..write('id: $id, ')
+          ..write('customerId: $customerId, ')
+          ..write('menuId: $menuId, ')
+          ..write('remainingAmount: $remainingAmount, ')
+          ..write('remainingCount: $remainingCount, ')
+          ..write('purchasedAt: $purchasedAt, ')
+          ..write('expiresAt: $expiresAt, ')
+          ..write('status: $status, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $PrepaidPassTransactionsTable extends PrepaidPassTransactions
+    with TableInfo<$PrepaidPassTransactionsTable, PrepaidPassTransactionRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PrepaidPassTransactionsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _balanceIdMeta = const VerificationMeta(
+    'balanceId',
+  );
+  @override
+  late final GeneratedColumn<String> balanceId = GeneratedColumn<String>(
+    'balance_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _typeMeta = const VerificationMeta('type');
+  @override
+  late final GeneratedColumn<String> type = GeneratedColumn<String>(
+    'type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _amountMeta = const VerificationMeta('amount');
+  @override
+  late final GeneratedColumn<int> amount = GeneratedColumn<int>(
+    'amount',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _countMeta = const VerificationMeta('count');
+  @override
+  late final GeneratedColumn<int> count = GeneratedColumn<int>(
+    'count',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _relatedOrderIdMeta = const VerificationMeta(
+    'relatedOrderId',
+  );
+  @override
+  late final GeneratedColumn<String> relatedOrderId = GeneratedColumn<String>(
+    'related_order_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    balanceId,
+    type,
+    amount,
+    count,
+    relatedOrderId,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'prepaid_pass_transactions';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<PrepaidPassTransactionRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('balance_id')) {
+      context.handle(
+        _balanceIdMeta,
+        balanceId.isAcceptableOrUnknown(data['balance_id']!, _balanceIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_balanceIdMeta);
+    }
+    if (data.containsKey('type')) {
+      context.handle(
+        _typeMeta,
+        type.isAcceptableOrUnknown(data['type']!, _typeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_typeMeta);
+    }
+    if (data.containsKey('amount')) {
+      context.handle(
+        _amountMeta,
+        amount.isAcceptableOrUnknown(data['amount']!, _amountMeta),
+      );
+    }
+    if (data.containsKey('count')) {
+      context.handle(
+        _countMeta,
+        count.isAcceptableOrUnknown(data['count']!, _countMeta),
+      );
+    }
+    if (data.containsKey('related_order_id')) {
+      context.handle(
+        _relatedOrderIdMeta,
+        relatedOrderId.isAcceptableOrUnknown(
+          data['related_order_id']!,
+          _relatedOrderIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  PrepaidPassTransactionRow map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PrepaidPassTransactionRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      balanceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}balance_id'],
+      )!,
+      type: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}type'],
+      )!,
+      amount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}amount'],
+      ),
+      count: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}count'],
+      ),
+      relatedOrderId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}related_order_id'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $PrepaidPassTransactionsTable createAlias(String alias) {
+    return $PrepaidPassTransactionsTable(attachedDatabase, alias);
+  }
+}
+
+class PrepaidPassTransactionRow extends DataClass
+    implements Insertable<PrepaidPassTransactionRow> {
+  final String id;
+  final String balanceId;
+
+  /// charge/use/refund.
+  final String type;
+  final int? amount;
+  final int? count;
+  final String? relatedOrderId;
+  final DateTime createdAt;
+  const PrepaidPassTransactionRow({
+    required this.id,
+    required this.balanceId,
+    required this.type,
+    this.amount,
+    this.count,
+    this.relatedOrderId,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['balance_id'] = Variable<String>(balanceId);
+    map['type'] = Variable<String>(type);
+    if (!nullToAbsent || amount != null) {
+      map['amount'] = Variable<int>(amount);
+    }
+    if (!nullToAbsent || count != null) {
+      map['count'] = Variable<int>(count);
+    }
+    if (!nullToAbsent || relatedOrderId != null) {
+      map['related_order_id'] = Variable<String>(relatedOrderId);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  PrepaidPassTransactionsCompanion toCompanion(bool nullToAbsent) {
+    return PrepaidPassTransactionsCompanion(
+      id: Value(id),
+      balanceId: Value(balanceId),
+      type: Value(type),
+      amount: amount == null && nullToAbsent
+          ? const Value.absent()
+          : Value(amount),
+      count: count == null && nullToAbsent
+          ? const Value.absent()
+          : Value(count),
+      relatedOrderId: relatedOrderId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(relatedOrderId),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory PrepaidPassTransactionRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PrepaidPassTransactionRow(
+      id: serializer.fromJson<String>(json['id']),
+      balanceId: serializer.fromJson<String>(json['balanceId']),
+      type: serializer.fromJson<String>(json['type']),
+      amount: serializer.fromJson<int?>(json['amount']),
+      count: serializer.fromJson<int?>(json['count']),
+      relatedOrderId: serializer.fromJson<String?>(json['relatedOrderId']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'balanceId': serializer.toJson<String>(balanceId),
+      'type': serializer.toJson<String>(type),
+      'amount': serializer.toJson<int?>(amount),
+      'count': serializer.toJson<int?>(count),
+      'relatedOrderId': serializer.toJson<String?>(relatedOrderId),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  PrepaidPassTransactionRow copyWith({
+    String? id,
+    String? balanceId,
+    String? type,
+    Value<int?> amount = const Value.absent(),
+    Value<int?> count = const Value.absent(),
+    Value<String?> relatedOrderId = const Value.absent(),
+    DateTime? createdAt,
+  }) => PrepaidPassTransactionRow(
+    id: id ?? this.id,
+    balanceId: balanceId ?? this.balanceId,
+    type: type ?? this.type,
+    amount: amount.present ? amount.value : this.amount,
+    count: count.present ? count.value : this.count,
+    relatedOrderId: relatedOrderId.present
+        ? relatedOrderId.value
+        : this.relatedOrderId,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  PrepaidPassTransactionRow copyWithCompanion(
+    PrepaidPassTransactionsCompanion data,
+  ) {
+    return PrepaidPassTransactionRow(
+      id: data.id.present ? data.id.value : this.id,
+      balanceId: data.balanceId.present ? data.balanceId.value : this.balanceId,
+      type: data.type.present ? data.type.value : this.type,
+      amount: data.amount.present ? data.amount.value : this.amount,
+      count: data.count.present ? data.count.value : this.count,
+      relatedOrderId: data.relatedOrderId.present
+          ? data.relatedOrderId.value
+          : this.relatedOrderId,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PrepaidPassTransactionRow(')
+          ..write('id: $id, ')
+          ..write('balanceId: $balanceId, ')
+          ..write('type: $type, ')
+          ..write('amount: $amount, ')
+          ..write('count: $count, ')
+          ..write('relatedOrderId: $relatedOrderId, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    balanceId,
+    type,
+    amount,
+    count,
+    relatedOrderId,
+    createdAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PrepaidPassTransactionRow &&
+          other.id == this.id &&
+          other.balanceId == this.balanceId &&
+          other.type == this.type &&
+          other.amount == this.amount &&
+          other.count == this.count &&
+          other.relatedOrderId == this.relatedOrderId &&
+          other.createdAt == this.createdAt);
+}
+
+class PrepaidPassTransactionsCompanion
+    extends UpdateCompanion<PrepaidPassTransactionRow> {
+  final Value<String> id;
+  final Value<String> balanceId;
+  final Value<String> type;
+  final Value<int?> amount;
+  final Value<int?> count;
+  final Value<String?> relatedOrderId;
+  final Value<DateTime> createdAt;
+  final Value<int> rowid;
+  const PrepaidPassTransactionsCompanion({
+    this.id = const Value.absent(),
+    this.balanceId = const Value.absent(),
+    this.type = const Value.absent(),
+    this.amount = const Value.absent(),
+    this.count = const Value.absent(),
+    this.relatedOrderId = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  PrepaidPassTransactionsCompanion.insert({
+    required String id,
+    required String balanceId,
+    required String type,
+    this.amount = const Value.absent(),
+    this.count = const Value.absent(),
+    this.relatedOrderId = const Value.absent(),
+    required DateTime createdAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       balanceId = Value(balanceId),
+       type = Value(type),
+       createdAt = Value(createdAt);
+  static Insertable<PrepaidPassTransactionRow> custom({
+    Expression<String>? id,
+    Expression<String>? balanceId,
+    Expression<String>? type,
+    Expression<int>? amount,
+    Expression<int>? count,
+    Expression<String>? relatedOrderId,
+    Expression<DateTime>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (balanceId != null) 'balance_id': balanceId,
+      if (type != null) 'type': type,
+      if (amount != null) 'amount': amount,
+      if (count != null) 'count': count,
+      if (relatedOrderId != null) 'related_order_id': relatedOrderId,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  PrepaidPassTransactionsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? balanceId,
+    Value<String>? type,
+    Value<int?>? amount,
+    Value<int?>? count,
+    Value<String?>? relatedOrderId,
+    Value<DateTime>? createdAt,
+    Value<int>? rowid,
+  }) {
+    return PrepaidPassTransactionsCompanion(
+      id: id ?? this.id,
+      balanceId: balanceId ?? this.balanceId,
+      type: type ?? this.type,
+      amount: amount ?? this.amount,
+      count: count ?? this.count,
+      relatedOrderId: relatedOrderId ?? this.relatedOrderId,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (balanceId.present) {
+      map['balance_id'] = Variable<String>(balanceId.value);
+    }
+    if (type.present) {
+      map['type'] = Variable<String>(type.value);
+    }
+    if (amount.present) {
+      map['amount'] = Variable<int>(amount.value);
+    }
+    if (count.present) {
+      map['count'] = Variable<int>(count.value);
+    }
+    if (relatedOrderId.present) {
+      map['related_order_id'] = Variable<String>(relatedOrderId.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PrepaidPassTransactionsCompanion(')
+          ..write('id: $id, ')
+          ..write('balanceId: $balanceId, ')
+          ..write('type: $type, ')
+          ..write('amount: $amount, ')
+          ..write('count: $count, ')
+          ..write('relatedOrderId: $relatedOrderId, ')
           ..write('createdAt: $createdAt, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -5602,6 +7473,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $OrdersTable orders = $OrdersTable(this);
   late final $OrderItemsTable orderItems = $OrderItemsTable(this);
   late final $PaymentsTable payments = $PaymentsTable(this);
+  late final $PrepaidPassMenusTable prepaidPassMenus = $PrepaidPassMenusTable(
+    this,
+  );
+  late final $PrepaidPassBalancesTable prepaidPassBalances =
+      $PrepaidPassBalancesTable(this);
+  late final $PrepaidPassTransactionsTable prepaidPassTransactions =
+      $PrepaidPassTransactionsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -5618,6 +7496,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     orders,
     orderItems,
     payments,
+    prepaidPassMenus,
+    prepaidPassBalances,
+    prepaidPassTransactions,
   ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
@@ -9160,6 +11041,7 @@ typedef $$PaymentsTableCreateCompanionBuilder =
       Value<String?> splitType,
       Value<int?> cashReceived,
       Value<int?> cashChange,
+      Value<String?> prepaidBalanceId,
       Value<String> status,
       required DateTime createdAt,
       Value<int> rowid,
@@ -9173,6 +11055,7 @@ typedef $$PaymentsTableUpdateCompanionBuilder =
       Value<String?> splitType,
       Value<int?> cashReceived,
       Value<int?> cashChange,
+      Value<String?> prepaidBalanceId,
       Value<String> status,
       Value<DateTime> createdAt,
       Value<int> rowid,
@@ -9236,6 +11119,11 @@ class $$PaymentsTableFilterComposer
 
   ColumnFilters<int> get cashChange => $composableBuilder(
     column: $table.cashChange,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get prepaidBalanceId => $composableBuilder(
+    column: $table.prepaidBalanceId,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -9312,6 +11200,11 @@ class $$PaymentsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get prepaidBalanceId => $composableBuilder(
+    column: $table.prepaidBalanceId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get status => $composableBuilder(
     column: $table.status,
     builder: (column) => ColumnOrderings(column),
@@ -9374,6 +11267,11 @@ class $$PaymentsTableAnnotationComposer
 
   GeneratedColumn<int> get cashChange => $composableBuilder(
     column: $table.cashChange,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get prepaidBalanceId => $composableBuilder(
+    column: $table.prepaidBalanceId,
     builder: (column) => column,
   );
 
@@ -9442,6 +11340,7 @@ class $$PaymentsTableTableManager
                 Value<String?> splitType = const Value.absent(),
                 Value<int?> cashReceived = const Value.absent(),
                 Value<int?> cashChange = const Value.absent(),
+                Value<String?> prepaidBalanceId = const Value.absent(),
                 Value<String> status = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
@@ -9453,6 +11352,7 @@ class $$PaymentsTableTableManager
                 splitType: splitType,
                 cashReceived: cashReceived,
                 cashChange: cashChange,
+                prepaidBalanceId: prepaidBalanceId,
                 status: status,
                 createdAt: createdAt,
                 rowid: rowid,
@@ -9466,6 +11366,7 @@ class $$PaymentsTableTableManager
                 Value<String?> splitType = const Value.absent(),
                 Value<int?> cashReceived = const Value.absent(),
                 Value<int?> cashChange = const Value.absent(),
+                Value<String?> prepaidBalanceId = const Value.absent(),
                 Value<String> status = const Value.absent(),
                 required DateTime createdAt,
                 Value<int> rowid = const Value.absent(),
@@ -9477,6 +11378,7 @@ class $$PaymentsTableTableManager
                 splitType: splitType,
                 cashReceived: cashReceived,
                 cashChange: cashChange,
+                prepaidBalanceId: prepaidBalanceId,
                 status: status,
                 createdAt: createdAt,
                 rowid: rowid,
@@ -9548,6 +11450,922 @@ typedef $$PaymentsTableProcessedTableManager =
       PaymentRow,
       PrefetchHooks Function({bool orderId})
     >;
+typedef $$PrepaidPassMenusTableCreateCompanionBuilder =
+    PrepaidPassMenusCompanion Function({
+      required String id,
+      required String type,
+      required String name,
+      Value<String?> linkedProductId,
+      required int price,
+      Value<bool> allowCustomPrice,
+      Value<int?> countPerPurchase,
+      Value<String> bonusType,
+      Value<int?> bonusAmount,
+      Value<int?> bonusCount,
+      Value<String> expiryType,
+      Value<int?> expiryCustomDays,
+      Value<String> status,
+      Value<int> rowid,
+    });
+typedef $$PrepaidPassMenusTableUpdateCompanionBuilder =
+    PrepaidPassMenusCompanion Function({
+      Value<String> id,
+      Value<String> type,
+      Value<String> name,
+      Value<String?> linkedProductId,
+      Value<int> price,
+      Value<bool> allowCustomPrice,
+      Value<int?> countPerPurchase,
+      Value<String> bonusType,
+      Value<int?> bonusAmount,
+      Value<int?> bonusCount,
+      Value<String> expiryType,
+      Value<int?> expiryCustomDays,
+      Value<String> status,
+      Value<int> rowid,
+    });
+
+class $$PrepaidPassMenusTableFilterComposer
+    extends Composer<_$AppDatabase, $PrepaidPassMenusTable> {
+  $$PrepaidPassMenusTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get linkedProductId => $composableBuilder(
+    column: $table.linkedProductId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get price => $composableBuilder(
+    column: $table.price,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get allowCustomPrice => $composableBuilder(
+    column: $table.allowCustomPrice,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get countPerPurchase => $composableBuilder(
+    column: $table.countPerPurchase,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get bonusType => $composableBuilder(
+    column: $table.bonusType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get bonusAmount => $composableBuilder(
+    column: $table.bonusAmount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get bonusCount => $composableBuilder(
+    column: $table.bonusCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get expiryType => $composableBuilder(
+    column: $table.expiryType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get expiryCustomDays => $composableBuilder(
+    column: $table.expiryCustomDays,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$PrepaidPassMenusTableOrderingComposer
+    extends Composer<_$AppDatabase, $PrepaidPassMenusTable> {
+  $$PrepaidPassMenusTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get linkedProductId => $composableBuilder(
+    column: $table.linkedProductId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get price => $composableBuilder(
+    column: $table.price,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get allowCustomPrice => $composableBuilder(
+    column: $table.allowCustomPrice,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get countPerPurchase => $composableBuilder(
+    column: $table.countPerPurchase,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get bonusType => $composableBuilder(
+    column: $table.bonusType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get bonusAmount => $composableBuilder(
+    column: $table.bonusAmount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get bonusCount => $composableBuilder(
+    column: $table.bonusCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get expiryType => $composableBuilder(
+    column: $table.expiryType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get expiryCustomDays => $composableBuilder(
+    column: $table.expiryCustomDays,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$PrepaidPassMenusTableAnnotationComposer
+    extends Composer<_$AppDatabase, $PrepaidPassMenusTable> {
+  $$PrepaidPassMenusTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get type =>
+      $composableBuilder(column: $table.type, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get linkedProductId => $composableBuilder(
+    column: $table.linkedProductId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get price =>
+      $composableBuilder(column: $table.price, builder: (column) => column);
+
+  GeneratedColumn<bool> get allowCustomPrice => $composableBuilder(
+    column: $table.allowCustomPrice,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get countPerPurchase => $composableBuilder(
+    column: $table.countPerPurchase,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get bonusType =>
+      $composableBuilder(column: $table.bonusType, builder: (column) => column);
+
+  GeneratedColumn<int> get bonusAmount => $composableBuilder(
+    column: $table.bonusAmount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get bonusCount => $composableBuilder(
+    column: $table.bonusCount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get expiryType => $composableBuilder(
+    column: $table.expiryType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get expiryCustomDays => $composableBuilder(
+    column: $table.expiryCustomDays,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+}
+
+class $$PrepaidPassMenusTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $PrepaidPassMenusTable,
+          PrepaidPassMenuRow,
+          $$PrepaidPassMenusTableFilterComposer,
+          $$PrepaidPassMenusTableOrderingComposer,
+          $$PrepaidPassMenusTableAnnotationComposer,
+          $$PrepaidPassMenusTableCreateCompanionBuilder,
+          $$PrepaidPassMenusTableUpdateCompanionBuilder,
+          (
+            PrepaidPassMenuRow,
+            BaseReferences<
+              _$AppDatabase,
+              $PrepaidPassMenusTable,
+              PrepaidPassMenuRow
+            >,
+          ),
+          PrepaidPassMenuRow,
+          PrefetchHooks Function()
+        > {
+  $$PrepaidPassMenusTableTableManager(
+    _$AppDatabase db,
+    $PrepaidPassMenusTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$PrepaidPassMenusTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$PrepaidPassMenusTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$PrepaidPassMenusTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> type = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String?> linkedProductId = const Value.absent(),
+                Value<int> price = const Value.absent(),
+                Value<bool> allowCustomPrice = const Value.absent(),
+                Value<int?> countPerPurchase = const Value.absent(),
+                Value<String> bonusType = const Value.absent(),
+                Value<int?> bonusAmount = const Value.absent(),
+                Value<int?> bonusCount = const Value.absent(),
+                Value<String> expiryType = const Value.absent(),
+                Value<int?> expiryCustomDays = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => PrepaidPassMenusCompanion(
+                id: id,
+                type: type,
+                name: name,
+                linkedProductId: linkedProductId,
+                price: price,
+                allowCustomPrice: allowCustomPrice,
+                countPerPurchase: countPerPurchase,
+                bonusType: bonusType,
+                bonusAmount: bonusAmount,
+                bonusCount: bonusCount,
+                expiryType: expiryType,
+                expiryCustomDays: expiryCustomDays,
+                status: status,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String type,
+                required String name,
+                Value<String?> linkedProductId = const Value.absent(),
+                required int price,
+                Value<bool> allowCustomPrice = const Value.absent(),
+                Value<int?> countPerPurchase = const Value.absent(),
+                Value<String> bonusType = const Value.absent(),
+                Value<int?> bonusAmount = const Value.absent(),
+                Value<int?> bonusCount = const Value.absent(),
+                Value<String> expiryType = const Value.absent(),
+                Value<int?> expiryCustomDays = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => PrepaidPassMenusCompanion.insert(
+                id: id,
+                type: type,
+                name: name,
+                linkedProductId: linkedProductId,
+                price: price,
+                allowCustomPrice: allowCustomPrice,
+                countPerPurchase: countPerPurchase,
+                bonusType: bonusType,
+                bonusAmount: bonusAmount,
+                bonusCount: bonusCount,
+                expiryType: expiryType,
+                expiryCustomDays: expiryCustomDays,
+                status: status,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$PrepaidPassMenusTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $PrepaidPassMenusTable,
+      PrepaidPassMenuRow,
+      $$PrepaidPassMenusTableFilterComposer,
+      $$PrepaidPassMenusTableOrderingComposer,
+      $$PrepaidPassMenusTableAnnotationComposer,
+      $$PrepaidPassMenusTableCreateCompanionBuilder,
+      $$PrepaidPassMenusTableUpdateCompanionBuilder,
+      (
+        PrepaidPassMenuRow,
+        BaseReferences<
+          _$AppDatabase,
+          $PrepaidPassMenusTable,
+          PrepaidPassMenuRow
+        >,
+      ),
+      PrepaidPassMenuRow,
+      PrefetchHooks Function()
+    >;
+typedef $$PrepaidPassBalancesTableCreateCompanionBuilder =
+    PrepaidPassBalancesCompanion Function({
+      required String id,
+      required String customerId,
+      required String menuId,
+      Value<int?> remainingAmount,
+      Value<int?> remainingCount,
+      required DateTime purchasedAt,
+      Value<DateTime?> expiresAt,
+      Value<String> status,
+      Value<int> rowid,
+    });
+typedef $$PrepaidPassBalancesTableUpdateCompanionBuilder =
+    PrepaidPassBalancesCompanion Function({
+      Value<String> id,
+      Value<String> customerId,
+      Value<String> menuId,
+      Value<int?> remainingAmount,
+      Value<int?> remainingCount,
+      Value<DateTime> purchasedAt,
+      Value<DateTime?> expiresAt,
+      Value<String> status,
+      Value<int> rowid,
+    });
+
+class $$PrepaidPassBalancesTableFilterComposer
+    extends Composer<_$AppDatabase, $PrepaidPassBalancesTable> {
+  $$PrepaidPassBalancesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get customerId => $composableBuilder(
+    column: $table.customerId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get menuId => $composableBuilder(
+    column: $table.menuId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get remainingAmount => $composableBuilder(
+    column: $table.remainingAmount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get remainingCount => $composableBuilder(
+    column: $table.remainingCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get purchasedAt => $composableBuilder(
+    column: $table.purchasedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get expiresAt => $composableBuilder(
+    column: $table.expiresAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$PrepaidPassBalancesTableOrderingComposer
+    extends Composer<_$AppDatabase, $PrepaidPassBalancesTable> {
+  $$PrepaidPassBalancesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get customerId => $composableBuilder(
+    column: $table.customerId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get menuId => $composableBuilder(
+    column: $table.menuId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get remainingAmount => $composableBuilder(
+    column: $table.remainingAmount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get remainingCount => $composableBuilder(
+    column: $table.remainingCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get purchasedAt => $composableBuilder(
+    column: $table.purchasedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get expiresAt => $composableBuilder(
+    column: $table.expiresAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$PrepaidPassBalancesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $PrepaidPassBalancesTable> {
+  $$PrepaidPassBalancesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get customerId => $composableBuilder(
+    column: $table.customerId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get menuId =>
+      $composableBuilder(column: $table.menuId, builder: (column) => column);
+
+  GeneratedColumn<int> get remainingAmount => $composableBuilder(
+    column: $table.remainingAmount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get remainingCount => $composableBuilder(
+    column: $table.remainingCount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get purchasedAt => $composableBuilder(
+    column: $table.purchasedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get expiresAt =>
+      $composableBuilder(column: $table.expiresAt, builder: (column) => column);
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+}
+
+class $$PrepaidPassBalancesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $PrepaidPassBalancesTable,
+          PrepaidPassBalanceRow,
+          $$PrepaidPassBalancesTableFilterComposer,
+          $$PrepaidPassBalancesTableOrderingComposer,
+          $$PrepaidPassBalancesTableAnnotationComposer,
+          $$PrepaidPassBalancesTableCreateCompanionBuilder,
+          $$PrepaidPassBalancesTableUpdateCompanionBuilder,
+          (
+            PrepaidPassBalanceRow,
+            BaseReferences<
+              _$AppDatabase,
+              $PrepaidPassBalancesTable,
+              PrepaidPassBalanceRow
+            >,
+          ),
+          PrepaidPassBalanceRow,
+          PrefetchHooks Function()
+        > {
+  $$PrepaidPassBalancesTableTableManager(
+    _$AppDatabase db,
+    $PrepaidPassBalancesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$PrepaidPassBalancesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$PrepaidPassBalancesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$PrepaidPassBalancesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> customerId = const Value.absent(),
+                Value<String> menuId = const Value.absent(),
+                Value<int?> remainingAmount = const Value.absent(),
+                Value<int?> remainingCount = const Value.absent(),
+                Value<DateTime> purchasedAt = const Value.absent(),
+                Value<DateTime?> expiresAt = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => PrepaidPassBalancesCompanion(
+                id: id,
+                customerId: customerId,
+                menuId: menuId,
+                remainingAmount: remainingAmount,
+                remainingCount: remainingCount,
+                purchasedAt: purchasedAt,
+                expiresAt: expiresAt,
+                status: status,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String customerId,
+                required String menuId,
+                Value<int?> remainingAmount = const Value.absent(),
+                Value<int?> remainingCount = const Value.absent(),
+                required DateTime purchasedAt,
+                Value<DateTime?> expiresAt = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => PrepaidPassBalancesCompanion.insert(
+                id: id,
+                customerId: customerId,
+                menuId: menuId,
+                remainingAmount: remainingAmount,
+                remainingCount: remainingCount,
+                purchasedAt: purchasedAt,
+                expiresAt: expiresAt,
+                status: status,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$PrepaidPassBalancesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $PrepaidPassBalancesTable,
+      PrepaidPassBalanceRow,
+      $$PrepaidPassBalancesTableFilterComposer,
+      $$PrepaidPassBalancesTableOrderingComposer,
+      $$PrepaidPassBalancesTableAnnotationComposer,
+      $$PrepaidPassBalancesTableCreateCompanionBuilder,
+      $$PrepaidPassBalancesTableUpdateCompanionBuilder,
+      (
+        PrepaidPassBalanceRow,
+        BaseReferences<
+          _$AppDatabase,
+          $PrepaidPassBalancesTable,
+          PrepaidPassBalanceRow
+        >,
+      ),
+      PrepaidPassBalanceRow,
+      PrefetchHooks Function()
+    >;
+typedef $$PrepaidPassTransactionsTableCreateCompanionBuilder =
+    PrepaidPassTransactionsCompanion Function({
+      required String id,
+      required String balanceId,
+      required String type,
+      Value<int?> amount,
+      Value<int?> count,
+      Value<String?> relatedOrderId,
+      required DateTime createdAt,
+      Value<int> rowid,
+    });
+typedef $$PrepaidPassTransactionsTableUpdateCompanionBuilder =
+    PrepaidPassTransactionsCompanion Function({
+      Value<String> id,
+      Value<String> balanceId,
+      Value<String> type,
+      Value<int?> amount,
+      Value<int?> count,
+      Value<String?> relatedOrderId,
+      Value<DateTime> createdAt,
+      Value<int> rowid,
+    });
+
+class $$PrepaidPassTransactionsTableFilterComposer
+    extends Composer<_$AppDatabase, $PrepaidPassTransactionsTable> {
+  $$PrepaidPassTransactionsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get balanceId => $composableBuilder(
+    column: $table.balanceId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get amount => $composableBuilder(
+    column: $table.amount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get count => $composableBuilder(
+    column: $table.count,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get relatedOrderId => $composableBuilder(
+    column: $table.relatedOrderId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$PrepaidPassTransactionsTableOrderingComposer
+    extends Composer<_$AppDatabase, $PrepaidPassTransactionsTable> {
+  $$PrepaidPassTransactionsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get balanceId => $composableBuilder(
+    column: $table.balanceId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get amount => $composableBuilder(
+    column: $table.amount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get count => $composableBuilder(
+    column: $table.count,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get relatedOrderId => $composableBuilder(
+    column: $table.relatedOrderId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$PrepaidPassTransactionsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $PrepaidPassTransactionsTable> {
+  $$PrepaidPassTransactionsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get balanceId =>
+      $composableBuilder(column: $table.balanceId, builder: (column) => column);
+
+  GeneratedColumn<String> get type =>
+      $composableBuilder(column: $table.type, builder: (column) => column);
+
+  GeneratedColumn<int> get amount =>
+      $composableBuilder(column: $table.amount, builder: (column) => column);
+
+  GeneratedColumn<int> get count =>
+      $composableBuilder(column: $table.count, builder: (column) => column);
+
+  GeneratedColumn<String> get relatedOrderId => $composableBuilder(
+    column: $table.relatedOrderId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$PrepaidPassTransactionsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $PrepaidPassTransactionsTable,
+          PrepaidPassTransactionRow,
+          $$PrepaidPassTransactionsTableFilterComposer,
+          $$PrepaidPassTransactionsTableOrderingComposer,
+          $$PrepaidPassTransactionsTableAnnotationComposer,
+          $$PrepaidPassTransactionsTableCreateCompanionBuilder,
+          $$PrepaidPassTransactionsTableUpdateCompanionBuilder,
+          (
+            PrepaidPassTransactionRow,
+            BaseReferences<
+              _$AppDatabase,
+              $PrepaidPassTransactionsTable,
+              PrepaidPassTransactionRow
+            >,
+          ),
+          PrepaidPassTransactionRow,
+          PrefetchHooks Function()
+        > {
+  $$PrepaidPassTransactionsTableTableManager(
+    _$AppDatabase db,
+    $PrepaidPassTransactionsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$PrepaidPassTransactionsTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$PrepaidPassTransactionsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$PrepaidPassTransactionsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> balanceId = const Value.absent(),
+                Value<String> type = const Value.absent(),
+                Value<int?> amount = const Value.absent(),
+                Value<int?> count = const Value.absent(),
+                Value<String?> relatedOrderId = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => PrepaidPassTransactionsCompanion(
+                id: id,
+                balanceId: balanceId,
+                type: type,
+                amount: amount,
+                count: count,
+                relatedOrderId: relatedOrderId,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String balanceId,
+                required String type,
+                Value<int?> amount = const Value.absent(),
+                Value<int?> count = const Value.absent(),
+                Value<String?> relatedOrderId = const Value.absent(),
+                required DateTime createdAt,
+                Value<int> rowid = const Value.absent(),
+              }) => PrepaidPassTransactionsCompanion.insert(
+                id: id,
+                balanceId: balanceId,
+                type: type,
+                amount: amount,
+                count: count,
+                relatedOrderId: relatedOrderId,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$PrepaidPassTransactionsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $PrepaidPassTransactionsTable,
+      PrepaidPassTransactionRow,
+      $$PrepaidPassTransactionsTableFilterComposer,
+      $$PrepaidPassTransactionsTableOrderingComposer,
+      $$PrepaidPassTransactionsTableAnnotationComposer,
+      $$PrepaidPassTransactionsTableCreateCompanionBuilder,
+      $$PrepaidPassTransactionsTableUpdateCompanionBuilder,
+      (
+        PrepaidPassTransactionRow,
+        BaseReferences<
+          _$AppDatabase,
+          $PrepaidPassTransactionsTable,
+          PrepaidPassTransactionRow
+        >,
+      ),
+      PrepaidPassTransactionRow,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -9574,4 +12392,13 @@ class $AppDatabaseManager {
       $$OrderItemsTableTableManager(_db, _db.orderItems);
   $$PaymentsTableTableManager get payments =>
       $$PaymentsTableTableManager(_db, _db.payments);
+  $$PrepaidPassMenusTableTableManager get prepaidPassMenus =>
+      $$PrepaidPassMenusTableTableManager(_db, _db.prepaidPassMenus);
+  $$PrepaidPassBalancesTableTableManager get prepaidPassBalances =>
+      $$PrepaidPassBalancesTableTableManager(_db, _db.prepaidPassBalances);
+  $$PrepaidPassTransactionsTableTableManager get prepaidPassTransactions =>
+      $$PrepaidPassTransactionsTableTableManager(
+        _db,
+        _db.prepaidPassTransactions,
+      );
 }

@@ -9,6 +9,7 @@ import 'package:path_provider/path_provider.dart';
 import '../features/booking/data/booking_tables.dart';
 import '../features/customer/data/customer_tables.dart';
 import '../features/payment_pos/data/payment_tables.dart';
+import '../features/prepaid_pass/data/prepaid_pass_tables.dart';
 import '../features/product/data/product_tables.dart';
 import '../features/staff/data/staff_tables.dart';
 
@@ -32,6 +33,9 @@ part 'app_database.g.dart';
     Orders,
     OrderItems,
     Payments,
+    PrepaidPassMenus,
+    PrepaidPassBalances,
+    PrepaidPassTransactions,
   ],
 )
 class AppDatabase extends _$AppDatabase {

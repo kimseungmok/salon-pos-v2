@@ -53,6 +53,11 @@ class Payments extends Table {
   IntColumn get cashReceived => integer().nullable()();
   IntColumn get cashChange => integer().nullable()();
 
+  /// method='prepaid_pass'일 때만 사용 — 어느 PrepaidPassBalance에서
+  /// 차감했는지 추적(M5의 TODO를 M6에서 이 컬럼으로 해소,
+  /// CROSS_VALIDATION.md 수정2 후속).
+  TextColumn get prepaidBalanceId => text().nullable()();
+
   /// completed/refunded.
   TextColumn get status => text().withDefault(const Constant('completed'))();
   DateTimeColumn get createdAt => dateTime()();

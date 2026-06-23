@@ -4,16 +4,19 @@ import 'package:salon_pos_v2/core/errors.dart';
 import 'package:salon_pos_v2/db/app_database.dart';
 import 'package:salon_pos_v2/features/customer/data/customer_repository.dart';
 import 'package:salon_pos_v2/features/payment_pos/data/payment_repository.dart';
+import 'package:salon_pos_v2/features/prepaid_pass/data/prepaid_pass_repository.dart';
 
 void main() {
   late AppDatabase db;
   late PaymentRepository repo;
   late CustomerRepository customerRepo;
+  late PrepaidPassRepository prepaidPassRepo;
 
   setUp(() {
     db = AppDatabase.forTesting();
     customerRepo = CustomerRepository(db);
-    repo = PaymentRepository(db, customerRepo);
+    prepaidPassRepo = PrepaidPassRepository(db);
+    repo = PaymentRepository(db, customerRepo, prepaidPassRepo);
   });
 
   tearDown(() => db.close());
@@ -177,6 +180,32 @@ void main() {
       final updatedCustomer =
           await (db.select(db.customers)..where((c) => c.id.equals(customer.id))).getSingle();
       expect(updatedCustomer.points, 300);
+    });
+
+    test('プリペイド券 결제분이 있으면 사용분을 잔액에 복원(M6 연동)', () async {
+      final customer = await customerRepo.createCustomer(name: '田中美咲', phone: '090-1234-5678');
+      final menu = await prepaidPassRepo.createMenu(type: 'amount', name: '10万円券', price: 100000);
+      final balance = await prepaidPassRepo.chargeMenu(customerId: customer.id, menuId: menu.id);
+
+      final order = await repo.createOrder(customerId: customer.id, items: [item]);
+      final result = await prepaidPassRepo.useAmountBalance(
+        balanceId: balance.id,
+        requestedAmount: 5000,
+        relatedOrderId: order.id,
+      );
+      await repo.pay(
+        orderId: order.id,
+        method: 'prepaid_pass',
+        amount: result.usedFromPrepaid,
+        prepaidBalanceId: balance.id,
+      );
+
+      await repo.cancelOrder(order.id);
+
+      final updatedBalance = await (db.select(db.prepaidPassBalances)
+            ..where((b) => b.id.equals(balance.id)))
+          .getSingle();
+      expect(updatedBalance.remainingAmount, 100000); // 5000 사용 후 취소로 복원
     });
 
     test('존재하지 않는 주문 취소 → NotFoundException', () async {

@@ -4,16 +4,18 @@ import 'package:uuid/uuid.dart';
 import '../../../core/errors.dart';
 import '../../../db/app_database.dart';
 import '../../customer/data/customer_repository.dart';
+import '../../prepaid_pass/data/prepaid_pass_repository.dart';
 import '../logic/payment_logic.dart';
 
 const _uuid = Uuid();
 
 /// design/spec/v3/payment_pos/feature_spec.md F-PAY-01~05 그대로 구현.
 class PaymentRepository {
-  PaymentRepository(this._db, this._customerRepository);
+  PaymentRepository(this._db, this._customerRepository, this._prepaidPassRepository);
 
   final AppDatabase _db;
   final CustomerRepository _customerRepository;
+  final PrepaidPassRepository _prepaidPassRepository;
 
   static const _validMethods = {
     'cash',
@@ -105,12 +107,19 @@ class PaymentRepository {
 
   /// F-PAY-02: 결제 1건 처리(분할결제 시 여러 번 호출). 결제수단이
   /// cash면 거스름돈을 같이 계산해 저장한다(F-PAY-02a).
+  ///
+  /// **method='prepaid_pass'일 때 호출 순서 주의**: 이 메서드는 결제
+  /// "기록"만 남긴다 — 실제 잔액 차감은 호출 전에
+  /// `PrepaidPassRepository.useAmountBalance()`/`useCountBalance()`를
+  /// 먼저 호출해서 끝내고, 그 결과(usedFromPrepaid)를 [amount]로 넘겨야
+  /// 한다(F-PP-03). 두 레포지토리를 강하게 결합하지 않기 위한 설계.
   Future<PaymentRow> pay({
     required String orderId,
     required String method,
     required int amount,
     String? splitType,
     int? cashReceived,
+    String? prepaidBalanceId,
   }) async {
     if (!_validMethods.contains(method)) {
       throw const ValidationException('決済方法の値が正しくありません。');
@@ -125,6 +134,13 @@ class PaymentRepository {
       if (!canPayWithCash(cashReceived, amount)) {
         throw const ValidationException('受取金額が決済金額より少ないです。');
       }
+    }
+    if (method == 'prepaid_pass' && (prepaidBalanceId == null || prepaidBalanceId.isEmpty)) {
+      throw const ValidationException('使用するプリペイド券を選択してください。');
+    }
+    if (method == 'prepaid_pass' && splitType != null) {
+      // F-PP-02: 선불권은 분할결제(F-PAY-04) 대상에서 제외.
+      throw const BusinessRuleException('プリペイド券は分割決済に使用できません。');
     }
 
     try {
@@ -156,6 +172,7 @@ class PaymentRepository {
               splitType: Value(splitType),
               cashReceived: Value(cashReceived),
               cashChange: Value(change),
+              prepaidBalanceId: Value(prepaidBalanceId),
               createdAt: now,
             ),
           );
@@ -173,6 +190,7 @@ class PaymentRepository {
         splitType: splitType,
         cashReceived: cashReceived,
         cashChange: change,
+        prepaidBalanceId: prepaidBalanceId,
         status: 'completed',
         createdAt: now,
       );
@@ -210,8 +228,9 @@ class PaymentRepository {
   }
 
   /// F-PAY-05: 결제 취소(환불) — 원자적 처리.
-  /// prepaid_pass(M6) 연동은 아직 없어 포인트 환원만 실제로 수행하고,
-  /// 선불권 환원은 TODO로 남긴다(주석 참조, CROSS_VALIDATION.md 수정2).
+  /// M6에서 선불권 환원 연동 완료(이전 TODO 해소, CROSS_VALIDATION.md
+  /// 수정2 후속) — method='prepaid_pass'인 결제는 해당 잔액에
+  /// `restoreUse()`로 사용분을 되돌려준다.
   Future<void> cancelOrder(String orderId) async {
     try {
       await _db.transaction(() async {
@@ -228,7 +247,21 @@ class PaymentRepository {
         if (order.pointsUsed > 0 && order.customerId != null) {
           await _customerRepository.restorePoints(order.customerId!, order.pointsUsed);
         }
-        // TODO(M6): order.prepaidUsedJson을 파싱해 voidChargeTransaction() 호출.
+
+        final prepaidPayments = await (_db.select(_db.payments)
+              ..where((p) =>
+                  p.orderId.equals(orderId) &
+                  p.method.equals('prepaid_pass') &
+                  p.status.equals('completed')))
+            .get();
+        for (final p in prepaidPayments) {
+          if (p.prepaidBalanceId != null) {
+            await _prepaidPassRepository.restoreUse(
+              balanceId: p.prepaidBalanceId!,
+              amount: p.amount,
+            );
+          }
+        }
 
         await (_db.update(_db.payments)..where((p) => p.orderId.equals(orderId)))
             .write(const PaymentsCompanion(status: Value('refunded')));
