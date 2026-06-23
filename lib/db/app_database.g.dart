@@ -7459,6 +7459,1596 @@ class PrepaidPassTransactionsCompanion
   }
 }
 
+class $CouponsTable extends Coupons with TableInfo<$CouponsTable, CouponRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CouponsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _codeMeta = const VerificationMeta('code');
+  @override
+  late final GeneratedColumn<String> code = GeneratedColumn<String>(
+    'code',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _seasonMeta = const VerificationMeta('season');
+  @override
+  late final GeneratedColumn<String> season = GeneratedColumn<String>(
+    'season',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _benefitTypeMeta = const VerificationMeta(
+    'benefitType',
+  );
+  @override
+  late final GeneratedColumn<String> benefitType = GeneratedColumn<String>(
+    'benefit_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _discountValueMeta = const VerificationMeta(
+    'discountValue',
+  );
+  @override
+  late final GeneratedColumn<String> discountValue = GeneratedColumn<String>(
+    'discount_value',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _discountScopeMeta = const VerificationMeta(
+    'discountScope',
+  );
+  @override
+  late final GeneratedColumn<String> discountScope = GeneratedColumn<String>(
+    'discount_scope',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _minOrderAmountMeta = const VerificationMeta(
+    'minOrderAmount',
+  );
+  @override
+  late final GeneratedColumn<int> minOrderAmount = GeneratedColumn<int>(
+    'min_order_amount',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _giftProductIdMeta = const VerificationMeta(
+    'giftProductId',
+  );
+  @override
+  late final GeneratedColumn<String> giftProductId = GeneratedColumn<String>(
+    'gift_product_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _expiryDaysMeta = const VerificationMeta(
+    'expiryDays',
+  );
+  @override
+  late final GeneratedColumn<String> expiryDays = GeneratedColumn<String>(
+    'expiry_days',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('active'),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    code,
+    season,
+    benefitType,
+    discountValue,
+    discountScope,
+    minOrderAmount,
+    giftProductId,
+    expiryDays,
+    status,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'coupons';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CouponRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('code')) {
+      context.handle(
+        _codeMeta,
+        code.isAcceptableOrUnknown(data['code']!, _codeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_codeMeta);
+    }
+    if (data.containsKey('season')) {
+      context.handle(
+        _seasonMeta,
+        season.isAcceptableOrUnknown(data['season']!, _seasonMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_seasonMeta);
+    }
+    if (data.containsKey('benefit_type')) {
+      context.handle(
+        _benefitTypeMeta,
+        benefitType.isAcceptableOrUnknown(
+          data['benefit_type']!,
+          _benefitTypeMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_benefitTypeMeta);
+    }
+    if (data.containsKey('discount_value')) {
+      context.handle(
+        _discountValueMeta,
+        discountValue.isAcceptableOrUnknown(
+          data['discount_value']!,
+          _discountValueMeta,
+        ),
+      );
+    }
+    if (data.containsKey('discount_scope')) {
+      context.handle(
+        _discountScopeMeta,
+        discountScope.isAcceptableOrUnknown(
+          data['discount_scope']!,
+          _discountScopeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('min_order_amount')) {
+      context.handle(
+        _minOrderAmountMeta,
+        minOrderAmount.isAcceptableOrUnknown(
+          data['min_order_amount']!,
+          _minOrderAmountMeta,
+        ),
+      );
+    }
+    if (data.containsKey('gift_product_id')) {
+      context.handle(
+        _giftProductIdMeta,
+        giftProductId.isAcceptableOrUnknown(
+          data['gift_product_id']!,
+          _giftProductIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('expiry_days')) {
+      context.handle(
+        _expiryDaysMeta,
+        expiryDays.isAcceptableOrUnknown(data['expiry_days']!, _expiryDaysMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_expiryDaysMeta);
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  CouponRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CouponRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      code: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}code'],
+      )!,
+      season: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}season'],
+      )!,
+      benefitType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}benefit_type'],
+      )!,
+      discountValue: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}discount_value'],
+      ),
+      discountScope: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}discount_scope'],
+      ),
+      minOrderAmount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}min_order_amount'],
+      ),
+      giftProductId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}gift_product_id'],
+      ),
+      expiryDays: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}expiry_days'],
+      )!,
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $CouponsTable createAlias(String alias) {
+    return $CouponsTable(attachedDatabase, alias);
+  }
+}
+
+class CouponRow extends DataClass implements Insertable<CouponRow> {
+  final String id;
+  final String code;
+
+  /// 시즌 템플릿 키(christmas/valentine/rainy 등) — 자유 텍스트 아님,
+  /// 기본 제공 템플릿 내에서만 선택(F-MKT-01 "현재 제공되는 기본
+  /// 템플릿 내에서만").
+  final String season;
+
+  /// discount / gift.
+  final String benefitType;
+  final String? discountValue;
+
+  /// total / specific_product.
+  final String? discountScope;
+  final int? minOrderAmount;
+  final String? giftProductId;
+
+  /// '7' / '14' / '30' / 'always'.
+  final String expiryDays;
+
+  /// active/upcoming/expired.
+  final String status;
+  final DateTime createdAt;
+  const CouponRow({
+    required this.id,
+    required this.code,
+    required this.season,
+    required this.benefitType,
+    this.discountValue,
+    this.discountScope,
+    this.minOrderAmount,
+    this.giftProductId,
+    required this.expiryDays,
+    required this.status,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['code'] = Variable<String>(code);
+    map['season'] = Variable<String>(season);
+    map['benefit_type'] = Variable<String>(benefitType);
+    if (!nullToAbsent || discountValue != null) {
+      map['discount_value'] = Variable<String>(discountValue);
+    }
+    if (!nullToAbsent || discountScope != null) {
+      map['discount_scope'] = Variable<String>(discountScope);
+    }
+    if (!nullToAbsent || minOrderAmount != null) {
+      map['min_order_amount'] = Variable<int>(minOrderAmount);
+    }
+    if (!nullToAbsent || giftProductId != null) {
+      map['gift_product_id'] = Variable<String>(giftProductId);
+    }
+    map['expiry_days'] = Variable<String>(expiryDays);
+    map['status'] = Variable<String>(status);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  CouponsCompanion toCompanion(bool nullToAbsent) {
+    return CouponsCompanion(
+      id: Value(id),
+      code: Value(code),
+      season: Value(season),
+      benefitType: Value(benefitType),
+      discountValue: discountValue == null && nullToAbsent
+          ? const Value.absent()
+          : Value(discountValue),
+      discountScope: discountScope == null && nullToAbsent
+          ? const Value.absent()
+          : Value(discountScope),
+      minOrderAmount: minOrderAmount == null && nullToAbsent
+          ? const Value.absent()
+          : Value(minOrderAmount),
+      giftProductId: giftProductId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(giftProductId),
+      expiryDays: Value(expiryDays),
+      status: Value(status),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory CouponRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CouponRow(
+      id: serializer.fromJson<String>(json['id']),
+      code: serializer.fromJson<String>(json['code']),
+      season: serializer.fromJson<String>(json['season']),
+      benefitType: serializer.fromJson<String>(json['benefitType']),
+      discountValue: serializer.fromJson<String?>(json['discountValue']),
+      discountScope: serializer.fromJson<String?>(json['discountScope']),
+      minOrderAmount: serializer.fromJson<int?>(json['minOrderAmount']),
+      giftProductId: serializer.fromJson<String?>(json['giftProductId']),
+      expiryDays: serializer.fromJson<String>(json['expiryDays']),
+      status: serializer.fromJson<String>(json['status']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'code': serializer.toJson<String>(code),
+      'season': serializer.toJson<String>(season),
+      'benefitType': serializer.toJson<String>(benefitType),
+      'discountValue': serializer.toJson<String?>(discountValue),
+      'discountScope': serializer.toJson<String?>(discountScope),
+      'minOrderAmount': serializer.toJson<int?>(minOrderAmount),
+      'giftProductId': serializer.toJson<String?>(giftProductId),
+      'expiryDays': serializer.toJson<String>(expiryDays),
+      'status': serializer.toJson<String>(status),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  CouponRow copyWith({
+    String? id,
+    String? code,
+    String? season,
+    String? benefitType,
+    Value<String?> discountValue = const Value.absent(),
+    Value<String?> discountScope = const Value.absent(),
+    Value<int?> minOrderAmount = const Value.absent(),
+    Value<String?> giftProductId = const Value.absent(),
+    String? expiryDays,
+    String? status,
+    DateTime? createdAt,
+  }) => CouponRow(
+    id: id ?? this.id,
+    code: code ?? this.code,
+    season: season ?? this.season,
+    benefitType: benefitType ?? this.benefitType,
+    discountValue: discountValue.present
+        ? discountValue.value
+        : this.discountValue,
+    discountScope: discountScope.present
+        ? discountScope.value
+        : this.discountScope,
+    minOrderAmount: minOrderAmount.present
+        ? minOrderAmount.value
+        : this.minOrderAmount,
+    giftProductId: giftProductId.present
+        ? giftProductId.value
+        : this.giftProductId,
+    expiryDays: expiryDays ?? this.expiryDays,
+    status: status ?? this.status,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  CouponRow copyWithCompanion(CouponsCompanion data) {
+    return CouponRow(
+      id: data.id.present ? data.id.value : this.id,
+      code: data.code.present ? data.code.value : this.code,
+      season: data.season.present ? data.season.value : this.season,
+      benefitType: data.benefitType.present
+          ? data.benefitType.value
+          : this.benefitType,
+      discountValue: data.discountValue.present
+          ? data.discountValue.value
+          : this.discountValue,
+      discountScope: data.discountScope.present
+          ? data.discountScope.value
+          : this.discountScope,
+      minOrderAmount: data.minOrderAmount.present
+          ? data.minOrderAmount.value
+          : this.minOrderAmount,
+      giftProductId: data.giftProductId.present
+          ? data.giftProductId.value
+          : this.giftProductId,
+      expiryDays: data.expiryDays.present
+          ? data.expiryDays.value
+          : this.expiryDays,
+      status: data.status.present ? data.status.value : this.status,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CouponRow(')
+          ..write('id: $id, ')
+          ..write('code: $code, ')
+          ..write('season: $season, ')
+          ..write('benefitType: $benefitType, ')
+          ..write('discountValue: $discountValue, ')
+          ..write('discountScope: $discountScope, ')
+          ..write('minOrderAmount: $minOrderAmount, ')
+          ..write('giftProductId: $giftProductId, ')
+          ..write('expiryDays: $expiryDays, ')
+          ..write('status: $status, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    code,
+    season,
+    benefitType,
+    discountValue,
+    discountScope,
+    minOrderAmount,
+    giftProductId,
+    expiryDays,
+    status,
+    createdAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CouponRow &&
+          other.id == this.id &&
+          other.code == this.code &&
+          other.season == this.season &&
+          other.benefitType == this.benefitType &&
+          other.discountValue == this.discountValue &&
+          other.discountScope == this.discountScope &&
+          other.minOrderAmount == this.minOrderAmount &&
+          other.giftProductId == this.giftProductId &&
+          other.expiryDays == this.expiryDays &&
+          other.status == this.status &&
+          other.createdAt == this.createdAt);
+}
+
+class CouponsCompanion extends UpdateCompanion<CouponRow> {
+  final Value<String> id;
+  final Value<String> code;
+  final Value<String> season;
+  final Value<String> benefitType;
+  final Value<String?> discountValue;
+  final Value<String?> discountScope;
+  final Value<int?> minOrderAmount;
+  final Value<String?> giftProductId;
+  final Value<String> expiryDays;
+  final Value<String> status;
+  final Value<DateTime> createdAt;
+  final Value<int> rowid;
+  const CouponsCompanion({
+    this.id = const Value.absent(),
+    this.code = const Value.absent(),
+    this.season = const Value.absent(),
+    this.benefitType = const Value.absent(),
+    this.discountValue = const Value.absent(),
+    this.discountScope = const Value.absent(),
+    this.minOrderAmount = const Value.absent(),
+    this.giftProductId = const Value.absent(),
+    this.expiryDays = const Value.absent(),
+    this.status = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CouponsCompanion.insert({
+    required String id,
+    required String code,
+    required String season,
+    required String benefitType,
+    this.discountValue = const Value.absent(),
+    this.discountScope = const Value.absent(),
+    this.minOrderAmount = const Value.absent(),
+    this.giftProductId = const Value.absent(),
+    required String expiryDays,
+    this.status = const Value.absent(),
+    required DateTime createdAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       code = Value(code),
+       season = Value(season),
+       benefitType = Value(benefitType),
+       expiryDays = Value(expiryDays),
+       createdAt = Value(createdAt);
+  static Insertable<CouponRow> custom({
+    Expression<String>? id,
+    Expression<String>? code,
+    Expression<String>? season,
+    Expression<String>? benefitType,
+    Expression<String>? discountValue,
+    Expression<String>? discountScope,
+    Expression<int>? minOrderAmount,
+    Expression<String>? giftProductId,
+    Expression<String>? expiryDays,
+    Expression<String>? status,
+    Expression<DateTime>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (code != null) 'code': code,
+      if (season != null) 'season': season,
+      if (benefitType != null) 'benefit_type': benefitType,
+      if (discountValue != null) 'discount_value': discountValue,
+      if (discountScope != null) 'discount_scope': discountScope,
+      if (minOrderAmount != null) 'min_order_amount': minOrderAmount,
+      if (giftProductId != null) 'gift_product_id': giftProductId,
+      if (expiryDays != null) 'expiry_days': expiryDays,
+      if (status != null) 'status': status,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CouponsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? code,
+    Value<String>? season,
+    Value<String>? benefitType,
+    Value<String?>? discountValue,
+    Value<String?>? discountScope,
+    Value<int?>? minOrderAmount,
+    Value<String?>? giftProductId,
+    Value<String>? expiryDays,
+    Value<String>? status,
+    Value<DateTime>? createdAt,
+    Value<int>? rowid,
+  }) {
+    return CouponsCompanion(
+      id: id ?? this.id,
+      code: code ?? this.code,
+      season: season ?? this.season,
+      benefitType: benefitType ?? this.benefitType,
+      discountValue: discountValue ?? this.discountValue,
+      discountScope: discountScope ?? this.discountScope,
+      minOrderAmount: minOrderAmount ?? this.minOrderAmount,
+      giftProductId: giftProductId ?? this.giftProductId,
+      expiryDays: expiryDays ?? this.expiryDays,
+      status: status ?? this.status,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (code.present) {
+      map['code'] = Variable<String>(code.value);
+    }
+    if (season.present) {
+      map['season'] = Variable<String>(season.value);
+    }
+    if (benefitType.present) {
+      map['benefit_type'] = Variable<String>(benefitType.value);
+    }
+    if (discountValue.present) {
+      map['discount_value'] = Variable<String>(discountValue.value);
+    }
+    if (discountScope.present) {
+      map['discount_scope'] = Variable<String>(discountScope.value);
+    }
+    if (minOrderAmount.present) {
+      map['min_order_amount'] = Variable<int>(minOrderAmount.value);
+    }
+    if (giftProductId.present) {
+      map['gift_product_id'] = Variable<String>(giftProductId.value);
+    }
+    if (expiryDays.present) {
+      map['expiry_days'] = Variable<String>(expiryDays.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CouponsCompanion(')
+          ..write('id: $id, ')
+          ..write('code: $code, ')
+          ..write('season: $season, ')
+          ..write('benefitType: $benefitType, ')
+          ..write('discountValue: $discountValue, ')
+          ..write('discountScope: $discountScope, ')
+          ..write('minOrderAmount: $minOrderAmount, ')
+          ..write('giftProductId: $giftProductId, ')
+          ..write('expiryDays: $expiryDays, ')
+          ..write('status: $status, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $CampaignsTable extends Campaigns
+    with TableInfo<$CampaignsTable, CampaignRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CampaignsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _conditionTypeMeta = const VerificationMeta(
+    'conditionType',
+  );
+  @override
+  late final GeneratedColumn<String> conditionType = GeneratedColumn<String>(
+    'condition_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _discountValueMeta = const VerificationMeta(
+    'discountValue',
+  );
+  @override
+  late final GeneratedColumn<String> discountValue = GeneratedColumn<String>(
+    'discount_value',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _enabledMeta = const VerificationMeta(
+    'enabled',
+  );
+  @override
+  late final GeneratedColumn<bool> enabled = GeneratedColumn<bool>(
+    'enabled',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("enabled" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    name,
+    conditionType,
+    discountValue,
+    enabled,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'campaigns';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CampaignRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('condition_type')) {
+      context.handle(
+        _conditionTypeMeta,
+        conditionType.isAcceptableOrUnknown(
+          data['condition_type']!,
+          _conditionTypeMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_conditionTypeMeta);
+    }
+    if (data.containsKey('discount_value')) {
+      context.handle(
+        _discountValueMeta,
+        discountValue.isAcceptableOrUnknown(
+          data['discount_value']!,
+          _discountValueMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_discountValueMeta);
+    }
+    if (data.containsKey('enabled')) {
+      context.handle(
+        _enabledMeta,
+        enabled.isAcceptableOrUnknown(data['enabled']!, _enabledMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  CampaignRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CampaignRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      conditionType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}condition_type'],
+      )!,
+      discountValue: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}discount_value'],
+      )!,
+      enabled: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}enabled'],
+      )!,
+    );
+  }
+
+  @override
+  $CampaignsTable createAlias(String alias) {
+    return $CampaignsTable(attachedDatabase, alias);
+  }
+}
+
+class CampaignRow extends DataClass implements Insertable<CampaignRow> {
+  final String id;
+  final String name;
+  final String conditionType;
+  final String discountValue;
+  final bool enabled;
+  const CampaignRow({
+    required this.id,
+    required this.name,
+    required this.conditionType,
+    required this.discountValue,
+    required this.enabled,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['name'] = Variable<String>(name);
+    map['condition_type'] = Variable<String>(conditionType);
+    map['discount_value'] = Variable<String>(discountValue);
+    map['enabled'] = Variable<bool>(enabled);
+    return map;
+  }
+
+  CampaignsCompanion toCompanion(bool nullToAbsent) {
+    return CampaignsCompanion(
+      id: Value(id),
+      name: Value(name),
+      conditionType: Value(conditionType),
+      discountValue: Value(discountValue),
+      enabled: Value(enabled),
+    );
+  }
+
+  factory CampaignRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CampaignRow(
+      id: serializer.fromJson<String>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      conditionType: serializer.fromJson<String>(json['conditionType']),
+      discountValue: serializer.fromJson<String>(json['discountValue']),
+      enabled: serializer.fromJson<bool>(json['enabled']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'name': serializer.toJson<String>(name),
+      'conditionType': serializer.toJson<String>(conditionType),
+      'discountValue': serializer.toJson<String>(discountValue),
+      'enabled': serializer.toJson<bool>(enabled),
+    };
+  }
+
+  CampaignRow copyWith({
+    String? id,
+    String? name,
+    String? conditionType,
+    String? discountValue,
+    bool? enabled,
+  }) => CampaignRow(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    conditionType: conditionType ?? this.conditionType,
+    discountValue: discountValue ?? this.discountValue,
+    enabled: enabled ?? this.enabled,
+  );
+  CampaignRow copyWithCompanion(CampaignsCompanion data) {
+    return CampaignRow(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      conditionType: data.conditionType.present
+          ? data.conditionType.value
+          : this.conditionType,
+      discountValue: data.discountValue.present
+          ? data.discountValue.value
+          : this.discountValue,
+      enabled: data.enabled.present ? data.enabled.value : this.enabled,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CampaignRow(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('conditionType: $conditionType, ')
+          ..write('discountValue: $discountValue, ')
+          ..write('enabled: $enabled')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, name, conditionType, discountValue, enabled);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CampaignRow &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.conditionType == this.conditionType &&
+          other.discountValue == this.discountValue &&
+          other.enabled == this.enabled);
+}
+
+class CampaignsCompanion extends UpdateCompanion<CampaignRow> {
+  final Value<String> id;
+  final Value<String> name;
+  final Value<String> conditionType;
+  final Value<String> discountValue;
+  final Value<bool> enabled;
+  final Value<int> rowid;
+  const CampaignsCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.conditionType = const Value.absent(),
+    this.discountValue = const Value.absent(),
+    this.enabled = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CampaignsCompanion.insert({
+    required String id,
+    required String name,
+    required String conditionType,
+    required String discountValue,
+    this.enabled = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       name = Value(name),
+       conditionType = Value(conditionType),
+       discountValue = Value(discountValue);
+  static Insertable<CampaignRow> custom({
+    Expression<String>? id,
+    Expression<String>? name,
+    Expression<String>? conditionType,
+    Expression<String>? discountValue,
+    Expression<bool>? enabled,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (conditionType != null) 'condition_type': conditionType,
+      if (discountValue != null) 'discount_value': discountValue,
+      if (enabled != null) 'enabled': enabled,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CampaignsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? name,
+    Value<String>? conditionType,
+    Value<String>? discountValue,
+    Value<bool>? enabled,
+    Value<int>? rowid,
+  }) {
+    return CampaignsCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      conditionType: conditionType ?? this.conditionType,
+      discountValue: discountValue ?? this.discountValue,
+      enabled: enabled ?? this.enabled,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (conditionType.present) {
+      map['condition_type'] = Variable<String>(conditionType.value);
+    }
+    if (discountValue.present) {
+      map['discount_value'] = Variable<String>(discountValue.value);
+    }
+    if (enabled.present) {
+      map['enabled'] = Variable<bool>(enabled.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CampaignsCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('conditionType: $conditionType, ')
+          ..write('discountValue: $discountValue, ')
+          ..write('enabled: $enabled, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $PointPoliciesTable extends PointPolicies
+    with TableInfo<$PointPoliciesTable, PointPolicyRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PointPoliciesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _enabledMeta = const VerificationMeta(
+    'enabled',
+  );
+  @override
+  late final GeneratedColumn<bool> enabled = GeneratedColumn<bool>(
+    'enabled',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("enabled" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _earnRateMeta = const VerificationMeta(
+    'earnRate',
+  );
+  @override
+  late final GeneratedColumn<double> earnRate = GeneratedColumn<double>(
+    'earn_rate',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _minUsablePointsMeta = const VerificationMeta(
+    'minUsablePoints',
+  );
+  @override
+  late final GeneratedColumn<int> minUsablePoints = GeneratedColumn<int>(
+    'min_usable_points',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _earnScopeMeta = const VerificationMeta(
+    'earnScope',
+  );
+  @override
+  late final GeneratedColumn<String> earnScope = GeneratedColumn<String>(
+    'earn_scope',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('all'),
+  );
+  static const VerificationMeta _useScopeMeta = const VerificationMeta(
+    'useScope',
+  );
+  @override
+  late final GeneratedColumn<String> useScope = GeneratedColumn<String>(
+    'use_scope',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('all'),
+  );
+  static const VerificationMeta _pointValueYenMeta = const VerificationMeta(
+    'pointValueYen',
+  );
+  @override
+  late final GeneratedColumn<double> pointValueYen = GeneratedColumn<double>(
+    'point_value_yen',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(1),
+  );
+  static const VerificationMeta _expiryDaysMeta = const VerificationMeta(
+    'expiryDays',
+  );
+  @override
+  late final GeneratedColumn<int> expiryDays = GeneratedColumn<int>(
+    'expiry_days',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    enabled,
+    earnRate,
+    minUsablePoints,
+    earnScope,
+    useScope,
+    pointValueYen,
+    expiryDays,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'point_policies';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<PointPolicyRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('enabled')) {
+      context.handle(
+        _enabledMeta,
+        enabled.isAcceptableOrUnknown(data['enabled']!, _enabledMeta),
+      );
+    }
+    if (data.containsKey('earn_rate')) {
+      context.handle(
+        _earnRateMeta,
+        earnRate.isAcceptableOrUnknown(data['earn_rate']!, _earnRateMeta),
+      );
+    }
+    if (data.containsKey('min_usable_points')) {
+      context.handle(
+        _minUsablePointsMeta,
+        minUsablePoints.isAcceptableOrUnknown(
+          data['min_usable_points']!,
+          _minUsablePointsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('earn_scope')) {
+      context.handle(
+        _earnScopeMeta,
+        earnScope.isAcceptableOrUnknown(data['earn_scope']!, _earnScopeMeta),
+      );
+    }
+    if (data.containsKey('use_scope')) {
+      context.handle(
+        _useScopeMeta,
+        useScope.isAcceptableOrUnknown(data['use_scope']!, _useScopeMeta),
+      );
+    }
+    if (data.containsKey('point_value_yen')) {
+      context.handle(
+        _pointValueYenMeta,
+        pointValueYen.isAcceptableOrUnknown(
+          data['point_value_yen']!,
+          _pointValueYenMeta,
+        ),
+      );
+    }
+    if (data.containsKey('expiry_days')) {
+      context.handle(
+        _expiryDaysMeta,
+        expiryDays.isAcceptableOrUnknown(data['expiry_days']!, _expiryDaysMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  PointPolicyRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PointPolicyRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      enabled: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}enabled'],
+      )!,
+      earnRate: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}earn_rate'],
+      )!,
+      minUsablePoints: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}min_usable_points'],
+      )!,
+      earnScope: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}earn_scope'],
+      )!,
+      useScope: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}use_scope'],
+      )!,
+      pointValueYen: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}point_value_yen'],
+      )!,
+      expiryDays: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}expiry_days'],
+      ),
+    );
+  }
+
+  @override
+  $PointPoliciesTable createAlias(String alias) {
+    return $PointPoliciesTable(attachedDatabase, alias);
+  }
+}
+
+class PointPolicyRow extends DataClass implements Insertable<PointPolicyRow> {
+  final String id;
+  final bool enabled;
+  final double earnRate;
+  final int minUsablePoints;
+
+  /// all / exclude_some.
+  final String earnScope;
+  final String useScope;
+
+  /// 보너스(プレシャ参考) — 토스 기본화면에 없는 보조정보.
+  final double pointValueYen;
+  final int? expiryDays;
+  const PointPolicyRow({
+    required this.id,
+    required this.enabled,
+    required this.earnRate,
+    required this.minUsablePoints,
+    required this.earnScope,
+    required this.useScope,
+    required this.pointValueYen,
+    this.expiryDays,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['enabled'] = Variable<bool>(enabled);
+    map['earn_rate'] = Variable<double>(earnRate);
+    map['min_usable_points'] = Variable<int>(minUsablePoints);
+    map['earn_scope'] = Variable<String>(earnScope);
+    map['use_scope'] = Variable<String>(useScope);
+    map['point_value_yen'] = Variable<double>(pointValueYen);
+    if (!nullToAbsent || expiryDays != null) {
+      map['expiry_days'] = Variable<int>(expiryDays);
+    }
+    return map;
+  }
+
+  PointPoliciesCompanion toCompanion(bool nullToAbsent) {
+    return PointPoliciesCompanion(
+      id: Value(id),
+      enabled: Value(enabled),
+      earnRate: Value(earnRate),
+      minUsablePoints: Value(minUsablePoints),
+      earnScope: Value(earnScope),
+      useScope: Value(useScope),
+      pointValueYen: Value(pointValueYen),
+      expiryDays: expiryDays == null && nullToAbsent
+          ? const Value.absent()
+          : Value(expiryDays),
+    );
+  }
+
+  factory PointPolicyRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PointPolicyRow(
+      id: serializer.fromJson<String>(json['id']),
+      enabled: serializer.fromJson<bool>(json['enabled']),
+      earnRate: serializer.fromJson<double>(json['earnRate']),
+      minUsablePoints: serializer.fromJson<int>(json['minUsablePoints']),
+      earnScope: serializer.fromJson<String>(json['earnScope']),
+      useScope: serializer.fromJson<String>(json['useScope']),
+      pointValueYen: serializer.fromJson<double>(json['pointValueYen']),
+      expiryDays: serializer.fromJson<int?>(json['expiryDays']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'enabled': serializer.toJson<bool>(enabled),
+      'earnRate': serializer.toJson<double>(earnRate),
+      'minUsablePoints': serializer.toJson<int>(minUsablePoints),
+      'earnScope': serializer.toJson<String>(earnScope),
+      'useScope': serializer.toJson<String>(useScope),
+      'pointValueYen': serializer.toJson<double>(pointValueYen),
+      'expiryDays': serializer.toJson<int?>(expiryDays),
+    };
+  }
+
+  PointPolicyRow copyWith({
+    String? id,
+    bool? enabled,
+    double? earnRate,
+    int? minUsablePoints,
+    String? earnScope,
+    String? useScope,
+    double? pointValueYen,
+    Value<int?> expiryDays = const Value.absent(),
+  }) => PointPolicyRow(
+    id: id ?? this.id,
+    enabled: enabled ?? this.enabled,
+    earnRate: earnRate ?? this.earnRate,
+    minUsablePoints: minUsablePoints ?? this.minUsablePoints,
+    earnScope: earnScope ?? this.earnScope,
+    useScope: useScope ?? this.useScope,
+    pointValueYen: pointValueYen ?? this.pointValueYen,
+    expiryDays: expiryDays.present ? expiryDays.value : this.expiryDays,
+  );
+  PointPolicyRow copyWithCompanion(PointPoliciesCompanion data) {
+    return PointPolicyRow(
+      id: data.id.present ? data.id.value : this.id,
+      enabled: data.enabled.present ? data.enabled.value : this.enabled,
+      earnRate: data.earnRate.present ? data.earnRate.value : this.earnRate,
+      minUsablePoints: data.minUsablePoints.present
+          ? data.minUsablePoints.value
+          : this.minUsablePoints,
+      earnScope: data.earnScope.present ? data.earnScope.value : this.earnScope,
+      useScope: data.useScope.present ? data.useScope.value : this.useScope,
+      pointValueYen: data.pointValueYen.present
+          ? data.pointValueYen.value
+          : this.pointValueYen,
+      expiryDays: data.expiryDays.present
+          ? data.expiryDays.value
+          : this.expiryDays,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PointPolicyRow(')
+          ..write('id: $id, ')
+          ..write('enabled: $enabled, ')
+          ..write('earnRate: $earnRate, ')
+          ..write('minUsablePoints: $minUsablePoints, ')
+          ..write('earnScope: $earnScope, ')
+          ..write('useScope: $useScope, ')
+          ..write('pointValueYen: $pointValueYen, ')
+          ..write('expiryDays: $expiryDays')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    enabled,
+    earnRate,
+    minUsablePoints,
+    earnScope,
+    useScope,
+    pointValueYen,
+    expiryDays,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PointPolicyRow &&
+          other.id == this.id &&
+          other.enabled == this.enabled &&
+          other.earnRate == this.earnRate &&
+          other.minUsablePoints == this.minUsablePoints &&
+          other.earnScope == this.earnScope &&
+          other.useScope == this.useScope &&
+          other.pointValueYen == this.pointValueYen &&
+          other.expiryDays == this.expiryDays);
+}
+
+class PointPoliciesCompanion extends UpdateCompanion<PointPolicyRow> {
+  final Value<String> id;
+  final Value<bool> enabled;
+  final Value<double> earnRate;
+  final Value<int> minUsablePoints;
+  final Value<String> earnScope;
+  final Value<String> useScope;
+  final Value<double> pointValueYen;
+  final Value<int?> expiryDays;
+  final Value<int> rowid;
+  const PointPoliciesCompanion({
+    this.id = const Value.absent(),
+    this.enabled = const Value.absent(),
+    this.earnRate = const Value.absent(),
+    this.minUsablePoints = const Value.absent(),
+    this.earnScope = const Value.absent(),
+    this.useScope = const Value.absent(),
+    this.pointValueYen = const Value.absent(),
+    this.expiryDays = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  PointPoliciesCompanion.insert({
+    required String id,
+    this.enabled = const Value.absent(),
+    this.earnRate = const Value.absent(),
+    this.minUsablePoints = const Value.absent(),
+    this.earnScope = const Value.absent(),
+    this.useScope = const Value.absent(),
+    this.pointValueYen = const Value.absent(),
+    this.expiryDays = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id);
+  static Insertable<PointPolicyRow> custom({
+    Expression<String>? id,
+    Expression<bool>? enabled,
+    Expression<double>? earnRate,
+    Expression<int>? minUsablePoints,
+    Expression<String>? earnScope,
+    Expression<String>? useScope,
+    Expression<double>? pointValueYen,
+    Expression<int>? expiryDays,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (enabled != null) 'enabled': enabled,
+      if (earnRate != null) 'earn_rate': earnRate,
+      if (minUsablePoints != null) 'min_usable_points': minUsablePoints,
+      if (earnScope != null) 'earn_scope': earnScope,
+      if (useScope != null) 'use_scope': useScope,
+      if (pointValueYen != null) 'point_value_yen': pointValueYen,
+      if (expiryDays != null) 'expiry_days': expiryDays,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  PointPoliciesCompanion copyWith({
+    Value<String>? id,
+    Value<bool>? enabled,
+    Value<double>? earnRate,
+    Value<int>? minUsablePoints,
+    Value<String>? earnScope,
+    Value<String>? useScope,
+    Value<double>? pointValueYen,
+    Value<int?>? expiryDays,
+    Value<int>? rowid,
+  }) {
+    return PointPoliciesCompanion(
+      id: id ?? this.id,
+      enabled: enabled ?? this.enabled,
+      earnRate: earnRate ?? this.earnRate,
+      minUsablePoints: minUsablePoints ?? this.minUsablePoints,
+      earnScope: earnScope ?? this.earnScope,
+      useScope: useScope ?? this.useScope,
+      pointValueYen: pointValueYen ?? this.pointValueYen,
+      expiryDays: expiryDays ?? this.expiryDays,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (enabled.present) {
+      map['enabled'] = Variable<bool>(enabled.value);
+    }
+    if (earnRate.present) {
+      map['earn_rate'] = Variable<double>(earnRate.value);
+    }
+    if (minUsablePoints.present) {
+      map['min_usable_points'] = Variable<int>(minUsablePoints.value);
+    }
+    if (earnScope.present) {
+      map['earn_scope'] = Variable<String>(earnScope.value);
+    }
+    if (useScope.present) {
+      map['use_scope'] = Variable<String>(useScope.value);
+    }
+    if (pointValueYen.present) {
+      map['point_value_yen'] = Variable<double>(pointValueYen.value);
+    }
+    if (expiryDays.present) {
+      map['expiry_days'] = Variable<int>(expiryDays.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PointPoliciesCompanion(')
+          ..write('id: $id, ')
+          ..write('enabled: $enabled, ')
+          ..write('earnRate: $earnRate, ')
+          ..write('minUsablePoints: $minUsablePoints, ')
+          ..write('earnScope: $earnScope, ')
+          ..write('useScope: $useScope, ')
+          ..write('pointValueYen: $pointValueYen, ')
+          ..write('expiryDays: $expiryDays, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -7480,6 +9070,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $PrepaidPassBalancesTable(this);
   late final $PrepaidPassTransactionsTable prepaidPassTransactions =
       $PrepaidPassTransactionsTable(this);
+  late final $CouponsTable coupons = $CouponsTable(this);
+  late final $CampaignsTable campaigns = $CampaignsTable(this);
+  late final $PointPoliciesTable pointPolicies = $PointPoliciesTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -7499,6 +9092,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     prepaidPassMenus,
     prepaidPassBalances,
     prepaidPassTransactions,
+    coupons,
+    campaigns,
+    pointPolicies,
   ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
@@ -12366,6 +13962,793 @@ typedef $$PrepaidPassTransactionsTableProcessedTableManager =
       PrepaidPassTransactionRow,
       PrefetchHooks Function()
     >;
+typedef $$CouponsTableCreateCompanionBuilder =
+    CouponsCompanion Function({
+      required String id,
+      required String code,
+      required String season,
+      required String benefitType,
+      Value<String?> discountValue,
+      Value<String?> discountScope,
+      Value<int?> minOrderAmount,
+      Value<String?> giftProductId,
+      required String expiryDays,
+      Value<String> status,
+      required DateTime createdAt,
+      Value<int> rowid,
+    });
+typedef $$CouponsTableUpdateCompanionBuilder =
+    CouponsCompanion Function({
+      Value<String> id,
+      Value<String> code,
+      Value<String> season,
+      Value<String> benefitType,
+      Value<String?> discountValue,
+      Value<String?> discountScope,
+      Value<int?> minOrderAmount,
+      Value<String?> giftProductId,
+      Value<String> expiryDays,
+      Value<String> status,
+      Value<DateTime> createdAt,
+      Value<int> rowid,
+    });
+
+class $$CouponsTableFilterComposer
+    extends Composer<_$AppDatabase, $CouponsTable> {
+  $$CouponsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get code => $composableBuilder(
+    column: $table.code,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get season => $composableBuilder(
+    column: $table.season,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get benefitType => $composableBuilder(
+    column: $table.benefitType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get discountValue => $composableBuilder(
+    column: $table.discountValue,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get discountScope => $composableBuilder(
+    column: $table.discountScope,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get minOrderAmount => $composableBuilder(
+    column: $table.minOrderAmount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get giftProductId => $composableBuilder(
+    column: $table.giftProductId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get expiryDays => $composableBuilder(
+    column: $table.expiryDays,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CouponsTableOrderingComposer
+    extends Composer<_$AppDatabase, $CouponsTable> {
+  $$CouponsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get code => $composableBuilder(
+    column: $table.code,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get season => $composableBuilder(
+    column: $table.season,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get benefitType => $composableBuilder(
+    column: $table.benefitType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get discountValue => $composableBuilder(
+    column: $table.discountValue,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get discountScope => $composableBuilder(
+    column: $table.discountScope,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get minOrderAmount => $composableBuilder(
+    column: $table.minOrderAmount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get giftProductId => $composableBuilder(
+    column: $table.giftProductId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get expiryDays => $composableBuilder(
+    column: $table.expiryDays,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CouponsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $CouponsTable> {
+  $$CouponsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get code =>
+      $composableBuilder(column: $table.code, builder: (column) => column);
+
+  GeneratedColumn<String> get season =>
+      $composableBuilder(column: $table.season, builder: (column) => column);
+
+  GeneratedColumn<String> get benefitType => $composableBuilder(
+    column: $table.benefitType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get discountValue => $composableBuilder(
+    column: $table.discountValue,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get discountScope => $composableBuilder(
+    column: $table.discountScope,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get minOrderAmount => $composableBuilder(
+    column: $table.minOrderAmount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get giftProductId => $composableBuilder(
+    column: $table.giftProductId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get expiryDays => $composableBuilder(
+    column: $table.expiryDays,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$CouponsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $CouponsTable,
+          CouponRow,
+          $$CouponsTableFilterComposer,
+          $$CouponsTableOrderingComposer,
+          $$CouponsTableAnnotationComposer,
+          $$CouponsTableCreateCompanionBuilder,
+          $$CouponsTableUpdateCompanionBuilder,
+          (CouponRow, BaseReferences<_$AppDatabase, $CouponsTable, CouponRow>),
+          CouponRow,
+          PrefetchHooks Function()
+        > {
+  $$CouponsTableTableManager(_$AppDatabase db, $CouponsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CouponsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CouponsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CouponsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> code = const Value.absent(),
+                Value<String> season = const Value.absent(),
+                Value<String> benefitType = const Value.absent(),
+                Value<String?> discountValue = const Value.absent(),
+                Value<String?> discountScope = const Value.absent(),
+                Value<int?> minOrderAmount = const Value.absent(),
+                Value<String?> giftProductId = const Value.absent(),
+                Value<String> expiryDays = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CouponsCompanion(
+                id: id,
+                code: code,
+                season: season,
+                benefitType: benefitType,
+                discountValue: discountValue,
+                discountScope: discountScope,
+                minOrderAmount: minOrderAmount,
+                giftProductId: giftProductId,
+                expiryDays: expiryDays,
+                status: status,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String code,
+                required String season,
+                required String benefitType,
+                Value<String?> discountValue = const Value.absent(),
+                Value<String?> discountScope = const Value.absent(),
+                Value<int?> minOrderAmount = const Value.absent(),
+                Value<String?> giftProductId = const Value.absent(),
+                required String expiryDays,
+                Value<String> status = const Value.absent(),
+                required DateTime createdAt,
+                Value<int> rowid = const Value.absent(),
+              }) => CouponsCompanion.insert(
+                id: id,
+                code: code,
+                season: season,
+                benefitType: benefitType,
+                discountValue: discountValue,
+                discountScope: discountScope,
+                minOrderAmount: minOrderAmount,
+                giftProductId: giftProductId,
+                expiryDays: expiryDays,
+                status: status,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CouponsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $CouponsTable,
+      CouponRow,
+      $$CouponsTableFilterComposer,
+      $$CouponsTableOrderingComposer,
+      $$CouponsTableAnnotationComposer,
+      $$CouponsTableCreateCompanionBuilder,
+      $$CouponsTableUpdateCompanionBuilder,
+      (CouponRow, BaseReferences<_$AppDatabase, $CouponsTable, CouponRow>),
+      CouponRow,
+      PrefetchHooks Function()
+    >;
+typedef $$CampaignsTableCreateCompanionBuilder =
+    CampaignsCompanion Function({
+      required String id,
+      required String name,
+      required String conditionType,
+      required String discountValue,
+      Value<bool> enabled,
+      Value<int> rowid,
+    });
+typedef $$CampaignsTableUpdateCompanionBuilder =
+    CampaignsCompanion Function({
+      Value<String> id,
+      Value<String> name,
+      Value<String> conditionType,
+      Value<String> discountValue,
+      Value<bool> enabled,
+      Value<int> rowid,
+    });
+
+class $$CampaignsTableFilterComposer
+    extends Composer<_$AppDatabase, $CampaignsTable> {
+  $$CampaignsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get conditionType => $composableBuilder(
+    column: $table.conditionType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get discountValue => $composableBuilder(
+    column: $table.discountValue,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get enabled => $composableBuilder(
+    column: $table.enabled,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CampaignsTableOrderingComposer
+    extends Composer<_$AppDatabase, $CampaignsTable> {
+  $$CampaignsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get conditionType => $composableBuilder(
+    column: $table.conditionType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get discountValue => $composableBuilder(
+    column: $table.discountValue,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get enabled => $composableBuilder(
+    column: $table.enabled,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CampaignsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $CampaignsTable> {
+  $$CampaignsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get conditionType => $composableBuilder(
+    column: $table.conditionType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get discountValue => $composableBuilder(
+    column: $table.discountValue,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get enabled =>
+      $composableBuilder(column: $table.enabled, builder: (column) => column);
+}
+
+class $$CampaignsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $CampaignsTable,
+          CampaignRow,
+          $$CampaignsTableFilterComposer,
+          $$CampaignsTableOrderingComposer,
+          $$CampaignsTableAnnotationComposer,
+          $$CampaignsTableCreateCompanionBuilder,
+          $$CampaignsTableUpdateCompanionBuilder,
+          (
+            CampaignRow,
+            BaseReferences<_$AppDatabase, $CampaignsTable, CampaignRow>,
+          ),
+          CampaignRow,
+          PrefetchHooks Function()
+        > {
+  $$CampaignsTableTableManager(_$AppDatabase db, $CampaignsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CampaignsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CampaignsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CampaignsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> conditionType = const Value.absent(),
+                Value<String> discountValue = const Value.absent(),
+                Value<bool> enabled = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CampaignsCompanion(
+                id: id,
+                name: name,
+                conditionType: conditionType,
+                discountValue: discountValue,
+                enabled: enabled,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String name,
+                required String conditionType,
+                required String discountValue,
+                Value<bool> enabled = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CampaignsCompanion.insert(
+                id: id,
+                name: name,
+                conditionType: conditionType,
+                discountValue: discountValue,
+                enabled: enabled,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CampaignsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $CampaignsTable,
+      CampaignRow,
+      $$CampaignsTableFilterComposer,
+      $$CampaignsTableOrderingComposer,
+      $$CampaignsTableAnnotationComposer,
+      $$CampaignsTableCreateCompanionBuilder,
+      $$CampaignsTableUpdateCompanionBuilder,
+      (
+        CampaignRow,
+        BaseReferences<_$AppDatabase, $CampaignsTable, CampaignRow>,
+      ),
+      CampaignRow,
+      PrefetchHooks Function()
+    >;
+typedef $$PointPoliciesTableCreateCompanionBuilder =
+    PointPoliciesCompanion Function({
+      required String id,
+      Value<bool> enabled,
+      Value<double> earnRate,
+      Value<int> minUsablePoints,
+      Value<String> earnScope,
+      Value<String> useScope,
+      Value<double> pointValueYen,
+      Value<int?> expiryDays,
+      Value<int> rowid,
+    });
+typedef $$PointPoliciesTableUpdateCompanionBuilder =
+    PointPoliciesCompanion Function({
+      Value<String> id,
+      Value<bool> enabled,
+      Value<double> earnRate,
+      Value<int> minUsablePoints,
+      Value<String> earnScope,
+      Value<String> useScope,
+      Value<double> pointValueYen,
+      Value<int?> expiryDays,
+      Value<int> rowid,
+    });
+
+class $$PointPoliciesTableFilterComposer
+    extends Composer<_$AppDatabase, $PointPoliciesTable> {
+  $$PointPoliciesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get enabled => $composableBuilder(
+    column: $table.enabled,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get earnRate => $composableBuilder(
+    column: $table.earnRate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get minUsablePoints => $composableBuilder(
+    column: $table.minUsablePoints,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get earnScope => $composableBuilder(
+    column: $table.earnScope,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get useScope => $composableBuilder(
+    column: $table.useScope,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get pointValueYen => $composableBuilder(
+    column: $table.pointValueYen,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get expiryDays => $composableBuilder(
+    column: $table.expiryDays,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$PointPoliciesTableOrderingComposer
+    extends Composer<_$AppDatabase, $PointPoliciesTable> {
+  $$PointPoliciesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get enabled => $composableBuilder(
+    column: $table.enabled,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get earnRate => $composableBuilder(
+    column: $table.earnRate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get minUsablePoints => $composableBuilder(
+    column: $table.minUsablePoints,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get earnScope => $composableBuilder(
+    column: $table.earnScope,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get useScope => $composableBuilder(
+    column: $table.useScope,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get pointValueYen => $composableBuilder(
+    column: $table.pointValueYen,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get expiryDays => $composableBuilder(
+    column: $table.expiryDays,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$PointPoliciesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $PointPoliciesTable> {
+  $$PointPoliciesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<bool> get enabled =>
+      $composableBuilder(column: $table.enabled, builder: (column) => column);
+
+  GeneratedColumn<double> get earnRate =>
+      $composableBuilder(column: $table.earnRate, builder: (column) => column);
+
+  GeneratedColumn<int> get minUsablePoints => $composableBuilder(
+    column: $table.minUsablePoints,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get earnScope =>
+      $composableBuilder(column: $table.earnScope, builder: (column) => column);
+
+  GeneratedColumn<String> get useScope =>
+      $composableBuilder(column: $table.useScope, builder: (column) => column);
+
+  GeneratedColumn<double> get pointValueYen => $composableBuilder(
+    column: $table.pointValueYen,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get expiryDays => $composableBuilder(
+    column: $table.expiryDays,
+    builder: (column) => column,
+  );
+}
+
+class $$PointPoliciesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $PointPoliciesTable,
+          PointPolicyRow,
+          $$PointPoliciesTableFilterComposer,
+          $$PointPoliciesTableOrderingComposer,
+          $$PointPoliciesTableAnnotationComposer,
+          $$PointPoliciesTableCreateCompanionBuilder,
+          $$PointPoliciesTableUpdateCompanionBuilder,
+          (
+            PointPolicyRow,
+            BaseReferences<_$AppDatabase, $PointPoliciesTable, PointPolicyRow>,
+          ),
+          PointPolicyRow,
+          PrefetchHooks Function()
+        > {
+  $$PointPoliciesTableTableManager(_$AppDatabase db, $PointPoliciesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$PointPoliciesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$PointPoliciesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$PointPoliciesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<bool> enabled = const Value.absent(),
+                Value<double> earnRate = const Value.absent(),
+                Value<int> minUsablePoints = const Value.absent(),
+                Value<String> earnScope = const Value.absent(),
+                Value<String> useScope = const Value.absent(),
+                Value<double> pointValueYen = const Value.absent(),
+                Value<int?> expiryDays = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => PointPoliciesCompanion(
+                id: id,
+                enabled: enabled,
+                earnRate: earnRate,
+                minUsablePoints: minUsablePoints,
+                earnScope: earnScope,
+                useScope: useScope,
+                pointValueYen: pointValueYen,
+                expiryDays: expiryDays,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                Value<bool> enabled = const Value.absent(),
+                Value<double> earnRate = const Value.absent(),
+                Value<int> minUsablePoints = const Value.absent(),
+                Value<String> earnScope = const Value.absent(),
+                Value<String> useScope = const Value.absent(),
+                Value<double> pointValueYen = const Value.absent(),
+                Value<int?> expiryDays = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => PointPoliciesCompanion.insert(
+                id: id,
+                enabled: enabled,
+                earnRate: earnRate,
+                minUsablePoints: minUsablePoints,
+                earnScope: earnScope,
+                useScope: useScope,
+                pointValueYen: pointValueYen,
+                expiryDays: expiryDays,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$PointPoliciesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $PointPoliciesTable,
+      PointPolicyRow,
+      $$PointPoliciesTableFilterComposer,
+      $$PointPoliciesTableOrderingComposer,
+      $$PointPoliciesTableAnnotationComposer,
+      $$PointPoliciesTableCreateCompanionBuilder,
+      $$PointPoliciesTableUpdateCompanionBuilder,
+      (
+        PointPolicyRow,
+        BaseReferences<_$AppDatabase, $PointPoliciesTable, PointPolicyRow>,
+      ),
+      PointPolicyRow,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -12401,4 +14784,10 @@ class $AppDatabaseManager {
         _db,
         _db.prepaidPassTransactions,
       );
+  $$CouponsTableTableManager get coupons =>
+      $$CouponsTableTableManager(_db, _db.coupons);
+  $$CampaignsTableTableManager get campaigns =>
+      $$CampaignsTableTableManager(_db, _db.campaigns);
+  $$PointPoliciesTableTableManager get pointPolicies =>
+      $$PointPoliciesTableTableManager(_db, _db.pointPolicies);
 }

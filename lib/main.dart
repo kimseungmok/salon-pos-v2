@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'features/booking/screens/waiting_list_screen.dart';
 import 'features/customer/screens/customer_list_screen.dart';
+import 'features/marketing/screens/coupon_screen.dart';
 import 'features/payment_pos/screens/pos_order_screen.dart';
 import 'features/prepaid_pass/screens/prepaid_pass_menu_screen.dart';
 import 'features/product/screens/product_list_screen.dart';
@@ -59,6 +60,7 @@ class _DevHomeTabsState extends State<_DevHomeTabs> {
       const CustomerListScreen(),
       const WaitingListScreen(),
       const PrepaidPassMenuScreen(),
+      const CouponScreen(),
     ];
     return Scaffold(
       body: IndexedStack(index: _index, children: screens),
@@ -72,6 +74,7 @@ class _DevHomeTabsState extends State<_DevHomeTabs> {
           NavigationDestination(icon: Icon(Icons.groups), label: '顧客'),
           NavigationDestination(icon: Icon(Icons.event_seat), label: '待機'),
           NavigationDestination(icon: Icon(Icons.card_giftcard), label: 'プリペイド'),
+          NavigationDestination(icon: Icon(Icons.local_offer), label: 'クーポン'),
         ],
       ),
     );
