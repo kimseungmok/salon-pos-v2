@@ -30,7 +30,7 @@
 |---|---|---|
 | id | string (PK) | |
 | orderId | string (FK → Order) | |
-| method | enum(`cash`,`card`,`paypay`,`linepay`,`bank_transfer`,`credit`,`kakeuri`,`ticket_count`,`ticket_voucher`,`prepaid_pass`) | F-PAY-02. 8종 전체 명시(교차검증 수정 3) — `kakeuri`=掛け売り, `ticket_count`=回数券, `ticket_voucher`=利用券 |
+| method | enum(`cash`,`card`,`paypay`,`linepay`,`bank_transfer`,`credit`,`kakeuri`,`prepaid_pass`) | F-PAY-02. `kakeuri`=掛け売り. **回数券/利用券은 prepaid_pass로 통합**(미해결 이슈 결정, 2026-06-23 — `CROSS_VALIDATION.md` 참조) |
 | amount | integer | |
 | splitType | enum(`full`,`amount`,`split_bill`,`by_item`) \| null | F-PAY-04, 분할 아니면 null |
 | cashReceived | integer \| null | method=cash일 때만(F-PAY-02a) |
