@@ -81,6 +81,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 .card{background:#fff;border:.5px solid #E5E5E0;border-radius:12px;overflow:hidden;margin-bottom:12px;}
 .card-head{padding:11px 14px;border-bottom:.5px solid #F0F0EC;font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.06em;display:flex;align-items:center;justify-content:space-between;}
 .card-head-hint{font-size:9.5px;color:#bbb;text-transform:none;letter-spacing:0;font-weight:500;}
+
+/* 토스플레이스 실제 매출리포트 화면 그대로(2026-06-23) */
+.toss-report-note{font-size:11px;color:#999;margin-bottom:10px;}
+.toss-stat-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:.5px solid #F4F4F0;}
+.toss-stat-row:last-child{border-bottom:none;}
+.ts-lbl{font-size:13px;color:#666;}
+.ts-val{font-size:14px;font-weight:700;color:#1A1A1A;}
+.ts-val.big{font-size:19px;font-weight:800;}
+.ts-val.r{color:#E74C3C;}
+.toss-report-actions{display:flex;gap:10px;margin-top:12px;}
+.toss-report-actions .m-btn{flex:1;padding:11px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;border:none;font-family:inherit;}
+.toss-report-actions .m-btn-cancel{background:#F4F4F0;color:#555;}
+.toss-report-actions .m-btn-save{background:#1E3A8A;color:#fff;}
+.toss-report-actions .m-btn-save:hover{background:#16285F;}
 .card-body{padding:12px 14px;}
 .row2 .card,.row2b .card,.row3 .card{margin-bottom:0;}
 
@@ -314,16 +328,31 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 
   <div class="main">
 
-    <!-- ① 売上概況 (Toss: 매출현황 시간대/요일/전년비교 + Fresha: Sales Summary) -->
+    <!-- ① 売上概況 — 토스플레이스 実際の「매출 리포트」화면 그대로(2026-06-23 검증): 실매출/주문건수/반품 + 결제수단별 매출 + 결제내역보기/출력하기 -->
     <div class="tab-panel active" id="panel-overview">
-      <div class="grid-kpi" id="kpiRow"></div>
-      <div class="row2">
+      <div class="toss-report-note" id="reportAsOf"></div>
+      <div class="card">
+        <div class="card-body">
+          <div class="toss-stat-row"><span class="ts-lbl">実売上</span><span class="ts-val big" id="tsSales">-</span></div>
+          <div class="toss-stat-row"><span class="ts-lbl">注文件数</span><span class="ts-val" id="tsCount">-</span></div>
+          <div class="toss-stat-row"><span class="ts-lbl">返品</span><span class="ts-val r" id="tsRefund">-</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head">決済手段別売上</div>
+        <div class="card-body"><div class="method-split" id="methodSplitMain"></div></div>
+      </div>
+      <div class="toss-report-actions">
+        <button class="m-btn m-btn-cancel" onclick="toast('決済内訳一覧へ → 05_transaction_history')">決済内訳を見る</button>
+        <button class="m-btn m-btn-save" onclick="toast('レポートを出力しました（モック）')">出力する</button>
+      </div>
+      <div class="row2" style="margin-top:14px;">
         <div class="card">
           <div class="card-head">売上推移<span class="card-head-hint" id="trendHint"></span></div>
           <div class="card-body"><div class="trend-chart" id="trendChart"></div></div>
         </div>
         <div class="card">
-          <div class="card-head">前年同期間比較</div>
+          <div class="card-head">前年同期間比較<span class="card-head-hint">※トス基本画面にはない補助情報</span></div>
           <div class="card-body" id="yoyBody"></div>
         </div>
       </div>
@@ -524,7 +553,7 @@ function render(){
   const f=branchFactor();
   document.getElementById('periodLabel').textContent=d.label;
 
-  renderKpi(d,f);
+  renderTossReport(d,f);
   renderTrend(d,f);
   renderYoy(d,f);
   renderMenuTable(d,f);
@@ -536,6 +565,26 @@ function render(){
   renderStaffPerf(d,f);
   renderBranchCompare(d);
   renderCalendar();
+}
+
+// 토스플레이스 실제 화면：「오늘 OO시 기준」안내 + 실매출/주문건수/반품 + 결제수단별 매출
+function renderTossReport(d,f){
+  const sales=d.sales*f, refund=d.refund*f, count=Math.round(d.count*f);
+  const now=new Date();
+  const hh=String(now.getHours()).padStart(2,'0'), mm=String(now.getMinutes()).padStart(2,'0');
+  const periodNoteMap={today:'本日', week:'今週マークされた週', month:'今月昨日まで', year:'今年'};
+  document.getElementById('reportAsOf').textContent = `${periodNoteMap[curPeriod]||''} ${hh}:${mm}基準の累計データです`;
+  document.getElementById('tsSales').textContent = fmtY(sales-refund);
+  document.getElementById('tsCount').textContent = count+'件';
+  document.getElementById('tsRefund').textContent = '−'+fmtY(refund);
+
+  const max=Math.max(...Object.values(d.byMethod),1);
+  document.getElementById('methodSplitMain').innerHTML = Object.keys(d.byMethod).map(m=>`
+    <div class="method-row">
+      <span style="width:58px;flex-shrink:0;">${METHOD_LABEL[m]}</span>
+      <div class="method-bar"><div class="method-fill" style="width:${d.byMethod[m]/max*100}%;background:${METHOD_COLOR[m]};"></div></div>
+      <span style="width:70px;text-align:right;flex-shrink:0;">${fmtY(d.byMethod[m]*f)}</span>
+    </div>`).join('');
 }
 
 function renderKpi(d,f){
