@@ -54,6 +54,25 @@ function waitColor(checkInAt: Date, now: Date): 'gray' | 'orange' | 'red' {
 }
 ```
 
+## 산출 로직: 예약 취소/노쇼 시 예약금 처리 (F-BOOK-04, payment_pos의 cancelOrder()와 동일 패턴)
+
+```ts
+function cancelBooking(booking: Booking, reason: 'customer_early' | 'customer_late_or_noshow' | 'salon_fault', depositPayment: Payment | null) {
+  // 트랜잭션 시작 — Booking.status 갱신과 환불 처리가 함께 성공/실패해야 함
+  if (booking.depositEnabled && depositPayment) {
+    const shouldRefund = reason !== 'customer_late_or_noshow';
+    if (shouldRefund) {
+      refundPayment(depositPayment); // payment_pos/data_spec.md 패턴 재사용 — 동일 결제수단으로 환불
+    }
+    // shouldRefund=false면 예약금은 매장 매출로 귀속(별도 환불 트랜잭션 없음)
+  }
+  booking.status = reason === 'customer_late_or_noshow' ? 'noshow' : 'cancelled';
+  // 트랜잭션 커밋
+}
+```
+
+> `refundPayment()`는 `payment_pos/data_spec.md`의 환불 처리 로직을 그대로 재사용한다(별도 구현 불필요 — 동일 함수 호출).
+
 ## 화면-데이터 매핑
 
 | 화면 | 읽기 | 쓰기 |

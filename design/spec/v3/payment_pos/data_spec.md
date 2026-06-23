@@ -35,6 +35,7 @@
 | splitType | enum(`full`,`amount`,`split_bill`,`by_item`) \| null | F-PAY-04, 분할 아니면 null |
 | cashReceived | integer \| null | method=cash일 때만(F-PAY-02a) |
 | cashChange | integer \| null | = cashReceived − amount |
+| status | enum(`completed`,`refunded`) | refundPayment() 호출 시 `refunded`로 갱신(교차검증 보강) |
 | createdAt | datetime | |
 
 ## 산출 로직: 거스름돈 (F-PAY-02a)
@@ -53,6 +54,16 @@ function payByItems(order: Order, selectedItemIds: string[]): number {
   return order.items
     .filter(i => selectedItemIds.includes(i.id))
     .reduce((sum, i) => sum + i.unitPrice * i.quantity, 0);
+}
+```
+
+## 산출 로직: 단일 결제 환불 (booking/data_spec.md의 cancelBooking()에서도 재사용)
+
+```ts
+function refundPayment(payment: Payment) {
+  // 환불은 항상 결제 시 사용한 동일 수단(method)으로 처리 — 다른 수단으로 환불 불가
+  payment.status = 'refunded';
+  // 결제수단별 실제 환불 처리(카드 매입취소/계좌 재입금 등)는 인프라 영역, 본 정의서 범위 외
 }
 ```
 
