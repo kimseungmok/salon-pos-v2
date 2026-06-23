@@ -49,6 +49,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 .card-body{padding:14px 16px;}
 
 .f-toggle-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:.5px solid #F8F8F6;}
+.scope-toggle{display:flex;border-radius:8px;background:#F4F4F0;padding:3px;gap:2px;}
+.scope-opt{flex:1;text-align:center;padding:7px;border-radius:6px;font-size:12px;font-weight:700;color:#888;cursor:pointer;}
+.scope-opt.sel{background:#fff;color:#1E3A8A;box-shadow:0 1px 4px rgba(0,0,0,.1);}
 .f-toggle-row:last-child{border-bottom:none;}
 .f-toggle-label{font-size:13px;color:#333;font-weight:600;}
 .f-toggle-sub{font-size:10.5px;color:#999;margin-top:2px;}
@@ -140,32 +143,55 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
         </div>
       </div>
 
-      <!-- 프레샤 보조: 적립/사용 규칙 -->
+      <!-- 토스플레이스 실제「포인트 적립 기능 켜기」화면 그대로(2026-06-23 검증): ①적립률 ②최소사용포인트 ③④적립/사용 가능상품 -->
       <div class="card">
-        <div class="card-head">ポイント付与・利用ルール<span class="fresha-tag">プレシャ参考</span></div>
+        <div class="card-head">ポイント付与・利用ルール</div>
         <div class="card-body">
           <div class="f-row">
             <div class="f-col">
-              <span class="f-label">付与率（購入額に対する%）</span>
+              <span class="f-label">① 付与率（％）</span>
               <input class="f-input" value="5" type="number">
               <span class="f-hint">例）¥10,000のご利用で500ポイント付与</span>
             </div>
+            <div class="f-col">
+              <span class="f-label">② 最低利用ポイント（P）</span>
+              <input class="f-input" value="100" type="number">
+              <span class="f-hint">100ポイント未満は会計時に使用不可</span>
+            </div>
+          </div>
+          <div class="f-row">
+            <div class="f-col">
+              <span class="f-label">③ 付与対象商品</span>
+              <div class="scope-toggle">
+                <div class="scope-opt sel" id="earnScopeAll" onclick="setScope('earn','all')">全商品</div>
+                <div class="scope-opt" id="earnScopeExc" onclick="setScope('earn','exc')">一部除外</div>
+              </div>
+            </div>
+            <div class="f-col">
+              <span class="f-label">④ ポイント利用対象商品</span>
+              <div class="scope-toggle">
+                <div class="scope-opt sel" id="useScopeAll" onclick="setScope('use','all')">全商品</div>
+                <div class="scope-opt" id="useScopeExc" onclick="setScope('use','exc')">一部除外</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 프레샤 보조: 토스 기본화면에 없는 보너스 필드 -->
+      <div class="card">
+        <div class="card-head">ポイント有効期限<span class="fresha-tag">プレシャ参考</span></div>
+        <div class="card-body">
+          <div class="f-row">
             <div class="f-col">
               <span class="f-label">1ポイントの価値</span>
               <input class="f-input" value="1" type="number">
               <span class="f-hint">1ポイント = ¥1として利用可能</span>
             </div>
-          </div>
-          <div class="f-row">
             <div class="f-col">
-              <span class="f-label">最低利用ポイント</span>
-              <input class="f-input" value="100" type="number">
-              <span class="f-hint">100ポイント未満は会計時に使用不可</span>
-            </div>
-            <div class="f-col">
-              <span class="f-label">ポイント有効期限</span>
+              <span class="f-label">ポイント有効期限（日）</span>
               <input class="f-input" value="365" type="number">
-              <span class="f-hint">付与日から日数（日）。期限切れは自動失効</span>
+              <span class="f-hint">付与日から日数。期限切れは自動失効</span>
             </div>
           </div>
         </div>
@@ -202,6 +228,10 @@ function renderTiers(){
 }
 
 function toggleSwitch(id){ document.getElementById(id).classList.toggle('on'); }
+function setScope(group,val){
+  document.getElementById((group==='earn'?'earnScope':'useScope')+'All').classList.toggle('sel', val==='all');
+  document.getElementById((group==='earn'?'earnScope':'useScope')+'Exc').classList.toggle('sel', val==='exc');
+}
 
 function openSb(){ document.getElementById('sidebar').classList.add('open'); document.getElementById('sbOverlay').classList.add('open'); }
 function closeSb(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('sbOverlay').classList.remove('open'); }
