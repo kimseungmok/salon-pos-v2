@@ -91,6 +91,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 .cash-table input{width:48px;padding:6px 4px;border-radius:7px;border:.5px solid #D0D0CC;font-size:13px;font-family:inherit;text-align:center;}
 .cash-table input:focus{outline:none;border-color:#117A65;}
 .cash-table .subtotal{color:#555;font-variant-numeric:tabular-nums;}
+.cash-unit{font-size:10px;color:#aaa;margin-left:3px;}
+/* 토스플레이스 실제「현재 돈통금額」큰 숫자 표시 */
+.cash-total-display{background:#F8F8F6;border-radius:10px;padding:12px 16px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;}
+.ctd-lbl{font-size:12px;color:#888;}
+.ctd-val{font-size:22px;font-weight:800;color:#1A1A1A;font-variant-numeric:tabular-nums;}
 .qty-control{display:flex;align-items:center;gap:5px;}
 .qty-btn{width:24px;height:24px;border-radius:6px;border:.5px solid #D0D0CC;background:#F8F8F6;color:#555;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:inherit;transition:background .1s;}
 .qty-btn:hover{background:#EFEFEC;}
@@ -173,11 +178,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
       </div>
     </div>
 
-    <!-- ══ 우측: 시재 카운트 ══ -->
+    <!-- ══ 우측: 토스플레이스 실제「시재 관리 → 현재 돈통금액」화면 그대로(2026-06-23 검증) ══ -->
     <div class="col-right">
       <div class="card">
-        <div class="card-head">レジ開始金カウント</div>
+        <div class="card-head">現在のレジ金額（開始金カウント）</div>
         <div class="card-body">
+          <div class="cash-total-display"><span class="ctd-lbl">総額</span><span class="ctd-val" id="cashTotalBig">¥0</span></div>
           <table class="cash-table">
             <colgroup><col class="c-denom"><col class="c-qty"><col class="c-sub"></colgroup>
             <thead><tr><th>金種</th><th>枚数・個数</th><th>小計</th></tr></thead>
@@ -209,16 +215,17 @@ let CHECKINS = [
   {name:'Rio',   color:'#10B981', homeBranch:'池袋店', checkIn:'13:05', checkOut:null,    movedTo:null},
 ];
 
+// 토스플레이스 실제「시재 관리」그대로: 지폐=枚、硬貨=個 単位を区別
 let DENOMS = [
-  {value:10000, label:'¥10,000', qty:0},
-  {value:5000,  label:'¥5,000',  qty:0},
-  {value:1000,  label:'¥1,000',  qty:0},
-  {value:500,   label:'¥500',    qty:0},
-  {value:100,   label:'¥100',    qty:0},
-  {value:50,    label:'¥50',     qty:0},
-  {value:10,    label:'¥10',     qty:0},
-  {value:5,     label:'¥5',      qty:0},
-  {value:1,     label:'¥1',      qty:0},
+  {value:10000, label:'¥10,000', unit:'枚', qty:0},
+  {value:5000,  label:'¥5,000',  unit:'枚', qty:0},
+  {value:1000,  label:'¥1,000',  unit:'枚', qty:0},
+  {value:500,   label:'¥500',    unit:'個', qty:0},
+  {value:100,   label:'¥100',    unit:'個', qty:0},
+  {value:50,    label:'¥50',     unit:'個', qty:0},
+  {value:10,    label:'¥10',     unit:'個', qty:0},
+  {value:5,     label:'¥5',      unit:'個', qty:0},
+  {value:1,     label:'¥1',      unit:'個', qty:0},
 ];
 const EXPECTED_START = 50000;
 
@@ -253,6 +260,7 @@ function buildCashRows(){
           <button class="qty-btn" id="dec-${d.value}" onclick="stepQty(${d.value},-1)" disabled>−</button>
           <input type="number" min="0" id="qty-${d.value}" value="" placeholder="0" oninput="updateQty(${d.value}, this.value)">
           <button class="qty-btn" onclick="stepQty(${d.value},1)">＋</button>
+          <span class="cash-unit">${d.unit}</span>
         </div>
       </td>
       <td class="subtotal" id="sub-${d.value}">${fmtY(0)}</td>
@@ -269,6 +277,7 @@ function refreshCash(){
     if(document.activeElement!==inp) inp.value=d.qty||'';
   });
   document.getElementById('cashTotal').textContent = fmtY(total);
+  document.getElementById('cashTotalBig').textContent = fmtY(total);
   document.getElementById('expectedVal').textContent = fmtY(EXPECTED_START);
 
   const diff = total - EXPECTED_START;
