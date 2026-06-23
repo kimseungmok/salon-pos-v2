@@ -43,17 +43,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 .sb-foot{padding:12px 20px;border-top:.5px solid #EBEBE7;}
 .sb-ver{font-size:10px;color:#C4CAD4;}
 
-/* ══ ZONE B ══ */
-.zone-b{height:48px;flex-shrink:0;background:#fff;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 14px;gap:10px;}
-.back-btn{font-size:12px;color:#10B981;cursor:pointer;padding:5px 9px;border-radius:7px;font-weight:600;white-space:nowrap;}
-.back-btn:hover{background:#EAFAF1;}
-.zb-sep{width:.5px;height:16px;background:#D0D0CC;}
-.zb-name{font-size:15px;font-weight:700;color:#1A1A1A;}
+/* ══ ZONE B：토스 실제 고객상세 헤더(2026-06-23 검증) ══ */
+.zone-b{height:64px;flex-shrink:0;background:#fff;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 16px;gap:12px;}
+.back-btn{font-size:18px;color:#8B95A1;cursor:pointer;padding:4px 8px;border-radius:7px;}
+.back-btn:hover{background:#F4F4F0;}
+.zc-avatar{width:38px;height:38px;border-radius:50%;background:#3B5BDB;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0;}
+.zc-info{flex-shrink:0;}
+.zb-name{font-size:14.5px;font-weight:800;color:#1A1A1A;}
+.zc-summary{font-size:11px;color:#999;margin-top:2px;}
 .zb-tag{font-size:9px;font-weight:700;padding:3px 8px;border-radius:6px;}
 .zb-tag.vip{background:#FEF9E7;color:#B7950B;}
 .zb-tag.black{background:#FDEDEC;color:#E74C3C;}
 .zb-spacer{flex:1;}
-.zb-actions{display:flex;gap:7px;}
 .zb-btn{padding:7px 13px;border-radius:8px;font-size:12px;font-weight:700;border:none;cursor:pointer;font-family:inherit;white-space:nowrap;}
 .zb-btn.primary{background:#10B981;color:#fff;}
 .zb-btn.secondary{background:#EEF2FF;color:#1E3A8A;}
@@ -61,18 +62,27 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 .zb-btn.outline.on-vip{background:#FEF9E7;border-color:#F6E29A;color:#B7950B;}
 .zb-btn.outline.on-black{background:#FDEDEC;border-color:#F1B9B2;color:#E74C3C;}
 
-/* ══ ZONE C ══ */
-.zone-c{flex-shrink:0;background:#fff;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:14px 18px;gap:24px;}
-.zc-avatar{width:56px;height:56px;border-radius:50%;background:#3B5BDB;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#fff;flex-shrink:0;}
-.zc-info{flex-shrink:0;}
-.zc-phone{font-size:12px;color:#999;}
-.zc-meta{font-size:11px;color:#aaa;margin-top:3px;display:flex;gap:10px;}
-.zc-meta b{color:#666;font-weight:600;}
+/* ══ ZONE B2：常時表示メモ欄（トス実画面そのまま） ══ */
+.zone-b2{padding:10px 16px;background:#fff;border-bottom:.5px solid #E5E5E0;flex-shrink:0;}
+.memo-input{width:100%;padding:9px 12px;border-radius:9px;border:.5px solid #E0E0DC;background:#FAFAFA;font-size:12px;font-family:inherit;color:#555;}
+.memo-input:focus{outline:none;border-color:#1E3A8A;background:#fff;}
+
+/* ══ ZONE C：ポイント/プリペイド券カード行 + クイックアクション + 統計 ══ */
+.zone-c{flex-shrink:0;background:#fff;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:14px 16px;gap:14px;flex-wrap:wrap;}
+.point-card{flex:1;min-width:180px;background:#F8F8F6;border-radius:10px;padding:10px 14px;}
+.pc-label{font-size:10.5px;color:#999;margin-bottom:4px;}
+.pc-row{display:flex;align-items:center;justify-content:space-between;}
+.pc-val{font-size:15px;font-weight:800;color:#1E3A8A;}
+.pc-val.muted{color:#bbb;font-weight:600;font-size:13px;}
+.pc-btns{display:flex;gap:6px;}
+.pc-btn{width:26px;height:26px;border-radius:7px;border:.5px solid #D0D0CC;background:#fff;color:#555;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;}
+.pc-btn.solid{background:#1E3A8A;border-color:#1E3A8A;color:#fff;}
+.zc-quick-actions{display:flex;gap:7px;flex-wrap:wrap;width:100%;order:3;}
 .zc-stats{display:flex;gap:22px;flex-shrink:0;}
 .zc-stat{text-align:center;}
 .zc-stat-val{font-size:17px;font-weight:800;color:#1A1A1A;}
 .zc-stat-lbl{font-size:10px;color:#aaa;margin-top:2px;}
-.zc-graph{flex:1;display:flex;align-items:flex-end;gap:6px;height:46px;padding-left:10px;border-left:.5px solid #EBEBE7;}
+.zc-graph{flex:1;display:flex;align-items:flex-end;gap:6px;height:46px;padding-left:10px;border-left:.5px solid #EBEBE7;min-width:160px;}
 .zc-bar-col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:3px;}
 .zc-bar{width:14px;border-radius:3px 3px 0 0;background:#A7E8CE;}
 .zc-bar-lbl{font-size:8px;color:#bbb;}
@@ -168,34 +178,46 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
     </div>
   </div>
 
-  <!-- ══ ZONE B ══ -->
+  <!-- ══ ZONE B：토스 실제 고객상세 헤더 그대로(戻る + 마스킹 전화번호 + 그룹/방문요약 + 수정버튼) ══ -->
   <div class="zone-b">
-    <span class="back-btn" onclick="toast('← 09_customer_list')">‹ 顧客一覧</span>
-    <div class="zb-sep"></div>
-    <span class="zb-name">佐藤 里奈</span>
+    <span class="back-btn" onclick="toast('← 09_customer_list')">‹</span>
+    <div class="zc-avatar">佐</div>
+    <div class="zc-info">
+      <div class="zc-name-row"><span class="zb-name">佐藤 里奈（080-****-3333）</span></div>
+      <div class="zc-summary" id="zcSummary">常連、総22回訪問、ノーショー0回</div>
+    </div>
+    <div class="zb-spacer"></div>
     <span class="zb-tag vip" id="vipTag" style="display:none;">VIP</span>
     <span class="zb-tag black" id="blackTag" style="display:none;">ブラック</span>
-    <div class="zb-spacer"></div>
-    <div class="zb-actions">
+    <button class="zb-btn outline" onclick="toast('編集フォーム（モック）')">修正</button>
+  </div>
+
+  <!-- ══ ZONE B2：메모 입력（항상 보이는 메모란） ══ -->
+  <div class="zone-b2">
+    <input type="text" class="memo-input" placeholder="顧客についてのメモを書いてください。オーナーのみ見られます" value="カラーは暖色系希望。肌が敏感なのでパッチテスト必須">
+  </div>
+
+  <!-- ══ ZONE C：토스의 포인트/선불권 2칸 카드 + 부가 액션 ══ -->
+  <div class="zone-c">
+    <div class="point-card">
+      <div class="pc-label">ポイント</div>
+      <div class="pc-row"><span class="pc-val">1,280P</span><div class="pc-btns"><button class="pc-btn" onclick="toast('ポイント減算（モック）')">−</button><button class="pc-btn solid" onclick="toast('ポイント加算（モック）')">＋</button></div></div>
+    </div>
+    <div class="point-card">
+      <div class="pc-label">プリペイド券</div>
+      <div class="pc-row"><span class="pc-val muted">なし</span><div class="pc-btns"><button class="pc-btn solid" onclick="toast('プリペイド券発行（モック）')">＋</button></div></div>
+    </div>
+    <div class="zc-quick-actions">
       <button class="zb-btn primary" onclick="toast('予約フォームへ → 07_booking_form')">予約</button>
       <button class="zb-btn secondary" onclick="toast('POS注文画面へ → 02_pos_order')">会計</button>
       <button class="zb-btn outline" onclick="toast('メッセージ送信（モック）')">メッセージ送信</button>
       <button class="zb-btn outline" id="vipBtn" onclick="toggleVip()">VIP指定</button>
       <button class="zb-btn outline" id="blackBtn" onclick="toggleBlack()">ブラック指定</button>
     </div>
-  </div>
-
-  <!-- ══ ZONE C ══ -->
-  <div class="zone-c">
-    <div class="zc-avatar">佐</div>
-    <div class="zc-info">
-      <div class="zc-phone">080-2222-3333</div>
-      <div class="zc-meta"><span>誕生日: <b>9/12</b></span><span>紹介者: <b>田中 美咲 様</b></span></div>
-    </div>
     <div class="zc-stats">
-      <div class="zc-stat"><div class="zc-stat-val">1,280pt</div><div class="zc-stat-lbl">累計ポイント</div></div>
       <div class="zc-stat"><div class="zc-stat-val">22回</div><div class="zc-stat-lbl">来店回数</div></div>
       <div class="zc-stat"><div class="zc-stat-val">6/21</div><div class="zc-stat-lbl">最終来店</div></div>
+      <div class="zc-stat"><div class="zc-stat-val">9/12</div><div class="zc-stat-lbl">誕生日</div></div>
     </div>
     <div class="zc-graph" id="graphBars"></div>
   </div>
