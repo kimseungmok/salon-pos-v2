@@ -77,6 +77,32 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 
 .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(12px);background:#1A1A1A;color:#fff;font-size:12px;font-weight:500;padding:10px 18px;border-radius:10px;z-index:9999;opacity:0;pointer-events:none;transition:all .22s;white-space:nowrap;}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+
+/* 토스플레이스 실제「시즌널 쿠폰 만들기」3-step 그대로(2026-06-23 검증) */
+.modal-overlay{position:absolute;inset:0;background:rgba(0,0,0,.4);z-index:300;display:none;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal-card{background:#fff;border-radius:16px;width:680px;max-height:660px;overflow-y:auto;padding:22px 26px;}
+.modal-head{font-size:15px;font-weight:800;color:#1A1A1A;margin-bottom:16px;}
+.m-step-lbl{font-size:11px;font-weight:700;color:#888;margin:14px 0 8px;}
+.season-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;}
+.season-item{display:flex;flex-direction:column;align-items:center;gap:4px;padding:9px 2px;border-radius:10px;cursor:pointer;border:1.5px solid transparent;}
+.season-item:hover{background:#F8F8F6;}
+.season-item.sel{background:#FDEDE3;border-color:#D35400;}
+.season-emoji{font-size:19px;}
+.season-name{font-size:9.5px;color:#555;text-align:center;}
+.benefit-toggle{display:flex;gap:8px;margin-bottom:10px;}
+.benefit-opt{flex:1;text-align:center;padding:9px;border-radius:9px;background:#F4F4F0;color:#888;font-size:12.5px;font-weight:700;cursor:pointer;}
+.benefit-opt.sel{background:#D35400;color:#fff;}
+.m-field{margin-bottom:10px;}
+.m-field label{font-size:11px;color:#888;display:block;margin-bottom:4px;}
+.m-input{width:100%;padding:9px 11px;border-radius:9px;border:.5px solid #D8D8D4;font-size:13px;font-family:inherit;}
+.expiry-toggle{display:flex;gap:6px;}
+.expiry-opt{flex:1;text-align:center;padding:8px;border-radius:8px;background:#F4F4F0;color:#888;font-size:12px;font-weight:700;cursor:pointer;}
+.expiry-opt.sel{background:#1A1A1A;color:#fff;}
+.modal-foot{display:flex;gap:10px;margin-top:18px;}
+.modal-foot .m-btn{flex:1;padding:11px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;border:none;font-family:inherit;}
+.modal-foot .m-btn-cancel{background:#F4F4F0;color:#555;}
+.modal-foot .m-btn-save{background:#D35400;color:#fff;}
 </style>
 </head>
 <body>
@@ -120,7 +146,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
           <div class="zb-tab" data-t="expired" onclick="switchTab('expired',this)">終了</div>
         </div>
         <div class="zb-spacer"></div>
-        <button class="zb-add-btn" onclick="toast('新規クーポン発行フォーム（モック）')">＋クーポン発行</button>
+        <button class="zb-add-btn" onclick="openCouponModal()">＋クーポン発行</button>
       </div>
 
       <div class="zone-c">
@@ -147,6 +173,45 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
       </div>
     </div>
   </div>
+
+  <!-- 토스플레이스 実際の「시즌널 쿠폰 만들기」STEP1〜3 그대로 -->
+  <div class="modal-overlay" id="couponModalOverlay">
+    <div class="modal-card">
+      <div class="modal-head">クーポン発行</div>
+
+      <div class="m-step-lbl">1. クーポン発行シーズン</div>
+      <div class="season-grid" id="seasonGrid"></div>
+
+      <div class="m-step-lbl">2. クーポン特典</div>
+      <div class="benefit-toggle">
+        <div class="benefit-opt sel" id="benefitDiscount" onclick="selectBenefit('discount')">割引</div>
+        <div class="benefit-opt" id="benefitGift" onclick="selectBenefit('gift')">プレゼント</div>
+      </div>
+      <div class="m-field" id="discountFields">
+        <label>割引額（％または¥）</label>
+        <input class="m-input" id="discountValue" placeholder="例：10% または ¥1,000" value="10%">
+        <label style="margin-top:8px;">適用範囲</label>
+        <input class="m-input" id="discountScope" placeholder="例：合計金額 ¥3,000以上" value="合計金額 ¥3,000以上">
+      </div>
+      <div class="m-field" id="giftFields" style="display:none;">
+        <label>プレゼント商品</label>
+        <input class="m-input" id="giftItem" placeholder="例：トリートメント1回無料">
+      </div>
+
+      <div class="m-step-lbl">3. クーポン有効期間</div>
+      <div class="expiry-toggle" id="expiryToggle">
+        <div class="expiry-opt" data-v="7">7日</div>
+        <div class="expiry-opt" data-v="14">14日</div>
+        <div class="expiry-opt sel" data-v="30">30日</div>
+        <div class="expiry-opt" data-v="always">常時</div>
+      </div>
+
+      <div class="modal-foot">
+        <button class="m-btn m-btn-cancel" onclick="closeCouponModal()">キャンセル</button>
+        <button class="m-btn m-btn-save" onclick="saveCoupon()">発行する</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -158,6 +223,50 @@ let COUPONS=[
   {code:'RAINYDAY',  name:'雨の日クーポン 5%OFF', sub:'雨天時のみ手動適用', type:'percent', value:5, status:'soon'},
   {code:'SUMMER25',  name:'夏季キャンペーン 15%OFF', sub:'2025/7/1〜8/31（終了）', type:'percent', value:15, status:'expired'},
 ];
+
+// 토스플레이스 실제 시즌 템플릿 아이콘 그대로(화이트데이/벚꽃/졸업/눈오는날/발렌타인/생일/크리스마스/설날/어린이날/어버이날/시험기간/할로윈/비오는날/무더위)
+const SEASONS=[
+  {k:'whiteday',e:'🍬',n:'ホワイトデー'},{k:'sakura',e:'🌸',n:'お花見'},{k:'graduation',e:'🎓',n:'卒業'},
+  {k:'snow',e:'❄️',n:'雪の日'},{k:'valentine',e:'❤️',n:'バレンタイン'},{k:'birthday',e:'🎂',n:'お誕生日'},
+  {k:'christmas',e:'🎄',n:'クリスマス'},{k:'newyear',e:'🎍',n:'お正月'},{k:'kidsday',e:'🧒',n:'こどもの日'},
+  {k:'parentsday',e:'💐',n:'親の日'},{k:'exam',e:'📝',n:'試験期間'},{k:'halloween',e:'🎃',n:'ハロウィン'},
+  {k:'rainy',e:'☔',n:'雨の日'},{k:'summer',e:'🍉',n:'真夏日'},
+];
+let selSeason='rainy', selBenefit='discount';
+
+function renderSeasonGrid(){
+  document.getElementById('seasonGrid').innerHTML = SEASONS.map(s=>`
+    <div class="season-item${s.k===selSeason?' sel':''}" onclick="pickSeason('${s.k}')">
+      <span class="season-emoji">${s.e}</span><span class="season-name">${s.n}</span>
+    </div>`).join('');
+}
+function pickSeason(k){ selSeason=k; renderSeasonGrid(); }
+function selectBenefit(b){
+  selBenefit=b;
+  document.getElementById('benefitDiscount').classList.toggle('sel', b==='discount');
+  document.getElementById('benefitGift').classList.toggle('sel', b==='gift');
+  document.getElementById('discountFields').style.display = b==='discount'?'block':'none';
+  document.getElementById('giftFields').style.display = b==='gift'?'block':'none';
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  renderSeasonGrid();
+  document.querySelectorAll('.expiry-opt').forEach(el=>el.addEventListener('click',()=>{
+    document.querySelectorAll('.expiry-opt').forEach(x=>x.classList.remove('sel'));
+    el.classList.add('sel');
+  }));
+});
+function openCouponModal(){ document.getElementById('couponModalOverlay').classList.add('open'); }
+function closeCouponModal(){ document.getElementById('couponModalOverlay').classList.remove('open'); }
+function saveCoupon(){
+  const s=SEASONS.find(x=>x.k===selSeason);
+  const name = selBenefit==='discount'
+    ? `${s.n}クーポン ${document.getElementById('discountValue').value}OFF`
+    : `${s.n}クーポン ${document.getElementById('giftItem').value||'プレゼント'}`;
+  COUPONS.unshift({code:s.k.toUpperCase()+Math.floor(Math.random()*900+100), name, sub:s.n+'シーズン限定', type:selBenefit==='discount'?'percent':'gift', value:0, status:'active'});
+  closeCouponModal();
+  render();
+  toast(`「${s.n}」クーポンを発行しました`);
+}
 
 let curTab='all';
 
