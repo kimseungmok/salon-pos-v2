@@ -57,6 +57,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
 /* ══ ZONE B · ツールバー ══ */
 .zone-b{height:46px;flex-shrink:0;background:#fff;border-bottom:.5px solid #E5E5E0;display:flex;align-items:center;padding:0 14px;gap:10px;}
 .zb-title{font-size:14px;font-weight:700;color:#1A1A1A;white-space:nowrap;flex-shrink:0;}
+.bonus-badge{font-size:9.5px;font-weight:700;color:#8E44AD;background:#F5EEF8;padding:3px 8px;border-radius:6px;margin-left:8px;cursor:default;flex-shrink:0;}
 .zb-tabs{display:flex;background:#F0F2F7;border-radius:9px;padding:3px;gap:2px;flex-shrink:0;}
 .zb-tab{padding:6px 12px;font-size:12px;font-weight:600;color:#999;cursor:pointer;border-radius:7px;background:transparent;border:none;font-family:inherit;white-space:nowrap;transition:all .15s;}
 .zb-tab.active{background:#fff;color:#8E44AD;box-shadow:0 1px 4px rgba(0,0,0,.1);}
@@ -182,6 +183,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Helvetica Neu
       <!-- ══ ZONE B ══ -->
       <div class="zone-b">
         <span class="zb-title">ウェイティング管理</span>
+        <span class="bonus-badge" title="トスプレイス確認済み：ウォークイン待機列の機能は存在せず、「대기 예약」は予約金未入金状態を指す別概念">※トスにない独自機能</span>
         <div class="zb-tabs" id="zbTabs">
           <div class="zb-tab active" data-tab="waiting" onclick="switchTab('waiting',this)">待機中 <span id="cnt-waiting"></span></div>
           <div class="zb-tab" data-tab="called" onclick="switchTab('called',this)">呼び出し済み <span id="cnt-called"></span></div>
