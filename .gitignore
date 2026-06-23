@@ -4,3 +4,16 @@
 .flutter-plugins-dependencies
 .dart_tool/
 build/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# iOS 빌드 산출물(소스는 커밋, Pods/생성물은 제외)
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/Flutter/ephemeral/
+**/Pods/
