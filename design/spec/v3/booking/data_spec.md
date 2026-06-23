@@ -36,8 +36,9 @@
 ## 산출 로직: 예약 종료시각
 
 ```ts
-function computeEndAt(startAt: Date, menuIds: string[], menus: Menu[]): Date {
-  const totalMinutes = menuIds.reduce((sum, id) => sum + menus.find(m => m.id === id)!.durationMin, 0);
+// menuIds는 화면 표기상 "메뉴"이지만 실제 엔티티는 product/data_spec.md의 Product를 가리킨다(교차검증 수정 1).
+function computeEndAt(startAt: Date, menuIds: string[], products: Product[]): Date {
+  const totalMinutes = menuIds.reduce((sum, id) => sum + products.find(p => p.id === id)!.durationMin, 0);
   return addMinutes(startAt, totalMinutes);
 }
 ```

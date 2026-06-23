@@ -30,7 +30,7 @@
 |---|---|---|
 | id | string (PK) | |
 | orderId | string (FK → Order) | |
-| method | enum(`cash`,`card`,`paypay`,`linepay`,`bank_transfer`,`credit`,`prepaid_pass`,...) | F-PAY-02 |
+| method | enum(`cash`,`card`,`paypay`,`linepay`,`bank_transfer`,`credit`,`kakeuri`,`ticket_count`,`ticket_voucher`,`prepaid_pass`) | F-PAY-02. 8종 전체 명시(교차검증 수정 3) — `kakeuri`=掛け売り, `ticket_count`=回数券, `ticket_voucher`=利用券 |
 | amount | integer | |
 | splitType | enum(`full`,`amount`,`split_bill`,`by_item`) \| null | F-PAY-04, 분할 아니면 null |
 | cashReceived | integer \| null | method=cash일 때만(F-PAY-02a) |
@@ -65,7 +65,7 @@ function cancelOrder(order: Order) {
     voidChargeTransaction(/* balance, tx */); // prepaid_pass/data_spec.md 참조
   }
   if (order.pointsUsed > 0) {
-    restorePoints(order.customerId, order.pointsUsed);
+    restorePoints(customer, order.pointsUsed); // 정의: marketing/data_spec.md（교차검증 수정 2）
   }
   order.status = 'cancelled';
   // 트랜잭션 커밋 — 하나라도 실패하면 전체 롤백

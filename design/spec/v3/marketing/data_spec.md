@@ -51,6 +51,27 @@ function applyCoupon(coupon: Coupon, orderTotal: number): { discount: number } {
 }
 ```
 
+## 산출 로직: 포인트 적립 (F-MKT-03, 결제완료 트리거 — 교차검증 수정 2)
+
+```ts
+// payment_pos의 결제완료 처리(F-PAY-03)에서 호출된다. 적립 대상 상품 범위는
+// PointPolicy.earnScope(F-MKT-03 ③)에 따라 호출 측에서 미리 필터링한 금액을 넘긴다.
+function computeEarnedPoints(eligibleAmount: number, policy: PointPolicy): number {
+  if (!policy.enabled) return 0;
+  return Math.floor(eligibleAmount * policy.earnRate / 100);
+}
+```
+
+## 산출 로직: 포인트 환원 (F-PAY-05 결제취소 시 — 교차검증 수정 2)
+
+```ts
+// payment_pos/data_spec.md의 cancelOrder()에서 호출되는 restorePoints()의 정의는 여기.
+function restorePoints(customer: Customer, usedPoints: number): void {
+  customer.points += usedPoints;
+  // 적립되었던 포인트(이 주문으로 얻은 적립분)도 함께 회수해야 하면 별도 트랜잭션 기록 필요(향후 검토)
+}
+```
+
 ## 화면-데이터 매핑
 
 | 화면 | 읽기 | 쓰기 |
