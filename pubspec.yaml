@@ -31,6 +31,13 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # 일본어 MaterialLocalizations/CupertinoLocalizations 제공(현지화 필수
+  # 원칙 — locale을 ja_JP로 고정해도 이 패키지 없으면 AppBar 등 기본
+  # 위젯이 깨진다. 위젯테스트로 처음 발견된 버그, test/app_smoke_test.dart
+  # 참조).
+  flutter_localizations:
+    sdk: flutter
+
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
@@ -48,7 +55,7 @@ dependencies:
   path: ^1.9.1
 
   # 일본어 단일 로케일 날짜/숫자 포맷
-  intl: ^0.19.0
+  intl: ^0.20.2
 
   # ID 생성
   uuid: ^4.5.1

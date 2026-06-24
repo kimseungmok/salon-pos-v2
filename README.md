@@ -53,6 +53,10 @@ lib/          Flutter 소스 코드 (구현 단계에서 추가)
 - **정의서**: `design/spec/v3/` 전체 10개 영역 작성+교차검증 완료(IMPLEMENTATION_PLAN.md 포함)
 - **구현**: M1(상품/카테고리), M2(직원초대+시프트데이터), M3(고객+그룹자동분류), M4(예약등록로직+취소/노쇼 예약금처리+웨이팅), M5(주문+결제+분할결제로직+취소원자처리), M6(선불권 생성/충전/사용/취소/마이그레이션 + payment_pos 연동), M7(쿠폰발행+캠페인+포인트정책), M8(개점준비 권종카운트+체크리스트), M9(재고관리 — 商品/決済와 의도적으로 미연동), M10(売上概況 전영역 집계) 완료.
 
-**v3 구현 계획(M0~M10) 전체 완료(2026-06-23).** 10개 영역 전부 데이터+로직+예외처리+최소 1개 화면을 갖췄고, 단위테스트 196건이 전부 통과한다. 남은 작업은 각 모듈에서 "다음 차수"로 미뤄둔 보조 화면(02 결제수단그리드에 プリペイド券 추가, 06/07 예약캘린더·등록폼UI, 10 顧客詳細, 15 在庫変動履歴, 17 보너스탭, 20/21/23 화면UI 등)과 go_router 정식 내비게이션 도입이다.
+**v3 구현 계획(M0~M10) 전체 완료(2026-06-23).** 10개 영역 전부 데이터+로직+예외처리+최소 1개 화면을 갖췄다.
+
+**go_router 정식 내비게이션 도입 완료(2026-06-23)**: `lib/core/router.dart`에 `StatefulShellRoute.indexedStack`으로 10개 화면을 정식 경로(`/pos`, `/products`, `/staff`, `/customers`, `/waiting`, `/prepaid-pass`, `/coupons`, `/store-open`, `/inventory`, `/sales-report`)에 매핑. 기존 `_DevHomeTabs`(수동 IndexedStack+setState) 제거. 이 작업 중 **위젯테스트로 처음 발견한 실버그**: `locale: ja_JP`를 고정해놓고도 `flutter_localizations` 패키지/delegates를 등록하지 않아 MaterialLocalizations 자체가 없던 상태(AppBar 등이 런타임에 깨짐) — `pubspec.yaml`에 `flutter_localizations` 추가하고 `main.dart`에 `localizationsDelegates` 등록해 해결.
+
+단위테스트 200건(기존 196 + 스모크 4) 전부 통과, `flutter analyze` 클린. 남은 작업은 각 모듈에서 "다음 차수"로 미뤄둔 보조 화면(02 결제수단그리드에 プリペイド券 추가, 06/07 예약캘린더·등록폼UI, 10 顧客詳細, 15 在庫変動履歴, 17 보너스탭, 20/21/23 화면UI 등)이다.
 - 작업 단위는 Task 도구(M0~M10)로 추적 중 — 새 세션에서도 TaskList로 현재 진행 상태와 다음 작업을 바로 확인 가능
 - 모든 화면은 일본어로만 구현(현지화 필수, `design/spec/v3/01_glossary.md` 용어 고정표 준수)

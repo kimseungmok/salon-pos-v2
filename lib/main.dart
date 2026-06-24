@@ -1,16 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'features/booking/screens/waiting_list_screen.dart';
-import 'features/cash_management/screens/store_open_screen.dart';
-import 'features/customer/screens/customer_list_screen.dart';
-import 'features/inventory/screens/inventory_list_screen.dart';
-import 'features/marketing/screens/coupon_screen.dart';
-import 'features/sales_report/screens/sales_report_screen.dart';
-import 'features/payment_pos/screens/pos_order_screen.dart';
-import 'features/prepaid_pass/screens/prepaid_pass_menu_screen.dart';
-import 'features/product/screens/product_list_screen.dart';
-import 'features/staff/screens/staff_invite_screen.dart';
+import 'core/router.dart';
 
 /// salon-pos-v2 엔트리포인트.
 ///
@@ -27,65 +19,23 @@ class SalonPosApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'salon pos',
       locale: const Locale('ja', 'JP'),
       supportedLocales: const [Locale('ja', 'JP')],
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
       theme: ThemeData(
         useMaterial3: true,
         colorSchemeSeed: const Color(0xFF1E3A8A),
         fontFamily: 'Hiragino Sans',
       ),
-      // M1~M2 단계의 임시 홈. 정식 go_router 내비게이션(01_login_main
-      // 시작)은 M3(customer) 이후 도입 — IMPLEMENTATION_PLAN.md §1 참조.
-      home: const _DevHomeTabs(),
-    );
-  }
-}
-
-/// 개발 중 화면 전환용 임시 탭(go_router 도입 전까지만 사용).
-class _DevHomeTabs extends StatefulWidget {
-  const _DevHomeTabs();
-
-  @override
-  State<_DevHomeTabs> createState() => _DevHomeTabsState();
-}
-
-class _DevHomeTabsState extends State<_DevHomeTabs> {
-  int _index = 0;
-
-  @override
-  Widget build(BuildContext context) {
-    final screens = [
-      const PosOrderScreen(),
-      const ProductListScreen(),
-      const StaffInviteScreen(),
-      const CustomerListScreen(),
-      const WaitingListScreen(),
-      const PrepaidPassMenuScreen(),
-      const CouponScreen(),
-      const StoreOpenScreen(),
-      const InventoryListScreen(),
-      const SalesReportScreen(),
-    ];
-    return Scaffold(
-      body: IndexedStack(index: _index, children: screens),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _index,
-        onDestinationSelected: (i) => setState(() => _index = i),
-        destinations: const [
-          NavigationDestination(icon: Icon(Icons.point_of_sale), label: '注文'),
-          NavigationDestination(icon: Icon(Icons.spa), label: '商品'),
-          NavigationDestination(icon: Icon(Icons.people), label: 'スタッフ'),
-          NavigationDestination(icon: Icon(Icons.groups), label: '顧客'),
-          NavigationDestination(icon: Icon(Icons.event_seat), label: '待機'),
-          NavigationDestination(icon: Icon(Icons.card_giftcard), label: 'プリペイド'),
-          NavigationDestination(icon: Icon(Icons.local_offer), label: 'クーポン'),
-          NavigationDestination(icon: Icon(Icons.lock_clock), label: '開店'),
-          NavigationDestination(icon: Icon(Icons.inventory_2), label: '在庫'),
-          NavigationDestination(icon: Icon(Icons.bar_chart), label: '売上'),
-        ],
-      ),
+      // 정식 내비게이션 — core/router.dart 참조(IMPLEMENTATION_PLAN.md
+      // §1에서 예고했던 go_router 정식 도입).
+      routerConfig: appRouter,
     );
   }
 }
