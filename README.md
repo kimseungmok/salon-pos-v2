@@ -80,6 +80,8 @@ lib/          Flutter 소스 코드 (구현 단계에서 추가)
 
 **A-3(예약 변경 updateBooking) 구현 완료**: `BookingRepository._assertStaffAvailable()`에 `excludeBookingId` 매개변수를 추가해 `createBooking()`/`updateBooking()`이 충돌검사 로직을 공유하도록 구조화(수정 대상 예약 자기 자신과 항상 충돌판정되던 문제 해결). `updateBooking()`은 `status`를 바꾸지 않고 `'confirmed'`인 예약의 `staffId`/`startAt`/`endAt`만 갱신, `cancelBooking()`/`completeBooking()`과 동일한 "현재 confirmed인가" 가드로 통일해 종결된 예약의 수정을 차단. 변경 이력은 보존하지 않음(overwrite — 테이블 추가 금지 조건상 `cancelBooking()`도 이미 같은 한계). 테스트 10건 추가, 전체 250건 통과.
 
-**A-4(직원 재직상태)/A-5(재고이력보존)는 프리플라이트 검토(`A4_PREFLIGHT_REVIEW.md`/`A5_PREFLIGHT_REVIEW.md`)만 완료, 구현은 아직 착수 전.** A-4는 `Staff.accountStatus`(기존 nullable TEXT)에 새 값만 추가하면 마이그레이션 없이 처리 가능. A-5는 `InventoryItem`에 재활용 가능한 여유 필드가 없어 동일 전략을 못 쓰고, "이력이 있으면 삭제 자체를 거부"하는 정책을 권장.
+**A-4(직원 재직상태) 구현 완료**: `Staff.accountStatus`에 새 값(`'退職済み'`)만 추가, 마이그레이션 없음. `StaffRepository.removeStaff()`를 이원화(`連結済み`→상태전환, 그 외→하드삭제 유지), `assertNotRetired()` 신설. `BookingRepository.createBooking()`은 항상 신규배정이라 그대로 검증, `updateBooking()`은 **담당자가 실제로 바뀔 때만** 검증(시간만 바꾸는 변경이나 동일 담당자 재지정은 검증 생략) — A-3의 "부분변경도 전체 재검사" 정책과 충돌하지 않도록 별도 조건으로 게이트. Payment/Visit/Inventory는 변경 없음(이미 올바른 상태). 테스트 9건 추가, 전체 259건 통과.
 
-**다음 권장 순서**: A-4 구현 → A-5 구현(둘 다 마이그레이션 불필요로 확인됨) → (후속) 예약경로 recordVisit 연동(06/07 화면 구현 및 bookingId 전달방식 확정 시점에).
+**A-5(재고이력보존)는 프리플라이트 검토(`A5_PREFLIGHT_REVIEW.md`)만 완료, 구현은 아직 착수 전.** `InventoryItem`에 재활용 가능한 여유 필드가 없어 A-4와 동일 전략을 못 쓰고, "이력이 있으면 삭제 자체를 거부"하는 정책을 권장.
+
+**다음 권장 순서**: A-5 구현(마이그레이션 불필요로 확인됨) → (후속) 예약경로 recordVisit 연동(06/07 화면 구현 및 bookingId 전달방식 확정 시점에).
