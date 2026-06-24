@@ -173,6 +173,47 @@ class BookingRepository {
     }
   }
 
+  /// A-2(design/spec/v3/A2_PREFLIGHT_REVIEW.md): 예약 방문완료 상태 전환.
+  ///
+  /// design/spec/v3/A1_A2_BOUNDARY.md 경계 그대로: 이 메서드는 "예약경로"
+  /// 트리거만 처리한다 — 호출 시점(언제 부를지)은 이 레포지토리의 책임이
+  /// 아니라 호출자(향후 PaymentRepository, A-1 단계)의 책임이다. 이 메서드
+  /// 스스로 CustomerRepository.recordVisit()을 호출하지 않는다(A1_A2_BOUNDARY
+  /// §3 "PaymentRepository가 단일 호출 책임 주체" 원칙).
+  ///
+  /// design/spec/v3/A2_PREFLIGHT_REVIEW.md §7 예외케이스 그대로:
+  /// - 이미 completed/cancelled/noshow인 예약은 차단(멱등성, cancelBooking()
+  ///   과 동일 패턴)
+  /// - depositReceived/depositRefunded는 절대 건드리지 않는다(완료 처리는
+  ///   예약금 정산과 무관 — §7 예외케이스 6)
+  /// - 시작시각(startAt) 미도래 예약에 대한 차단 여부는 §7 예외케이스 4에서
+  ///   "결정 필요"로 남겨진 사안이라, 본 구현에서는 시간 검증을 추가하지
+  ///   않는다(현장에서 시술이 예정보다 빨리 끝나 미리 완료처리하는 정당한
+  ///   케이스를 막지 않기 위한 의도적 보류).
+  Future<void> completeBooking(String bookingId) async {
+    try {
+      final booking = await (_db.select(_db.bookings)
+            ..where((b) => b.id.equals(bookingId)))
+          .getSingleOrNull();
+      if (booking == null) {
+        throw const NotFoundException('予約が見つかりませんでした。');
+      }
+      if (booking.status == 'completed') {
+        throw const BusinessRuleException('この予約は既に来店完了処理済みです。');
+      }
+      if (booking.status == 'cancelled' || booking.status == 'noshow') {
+        throw const BusinessRuleException('キャンセル・ノーショー済みの予約は来店完了にできません。');
+      }
+
+      await (_db.update(_db.bookings)..where((b) => b.id.equals(bookingId)))
+          .write(const BookingsCompanion(status: Value('completed')));
+    } on AppException {
+      rethrow;
+    } catch (e) {
+      throw DatabaseException.writeFailed('$e');
+    }
+  }
+
   // ── Waiting (F-BOOK-03, 토스 근거 없는 독자기능) ──────────────────────
 
   Stream<List<WaitingEntryRow>> watchWaiting() {

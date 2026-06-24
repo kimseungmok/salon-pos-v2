@@ -248,6 +248,93 @@ void main() {
     });
   });
 
+  group('completeBooking (A-2)', () {
+    test('정상 완료 처리', () async {
+      final cid = await aCustomer();
+      final b = await repo.createBooking(
+        customerId: cid,
+        productIds: const ['p1'],
+        startAt: DateTime(2026, 6, 23, 14),
+        endAt: DateTime(2026, 6, 23, 15),
+      );
+      await repo.completeBooking(b.id);
+      final updated = await (db.select(db.bookings)..where((t) => t.id.equals(b.id)))
+          .getSingle();
+      expect(updated.status, 'completed');
+    });
+
+    test('예약금이 있어도 depositReceived/depositRefunded는 건드리지 않음', () async {
+      final cid = await aCustomer();
+      final b = await repo.createBooking(
+        customerId: cid,
+        productIds: const ['p1'],
+        startAt: DateTime(2026, 6, 23, 14),
+        endAt: DateTime(2026, 6, 23, 15),
+        depositEnabled: true,
+        depositAmount: 20000,
+        depositReceived: true,
+      );
+      await repo.completeBooking(b.id);
+      final updated = await (db.select(db.bookings)..where((t) => t.id.equals(b.id)))
+          .getSingle();
+      expect(updated.status, 'completed');
+      expect(updated.depositReceived, true);
+      expect(updated.depositRefunded, false);
+    });
+
+    test('존재하지 않는 예약 → NotFoundException', () async {
+      expect(
+        () => repo.completeBooking('no-such-id'),
+        throwsA(isA<NotFoundException>()),
+      );
+    });
+
+    test('이미 완료된 예약 재완료 → BusinessRuleException', () async {
+      final cid = await aCustomer();
+      final b = await repo.createBooking(
+        customerId: cid,
+        productIds: const ['p1'],
+        startAt: DateTime(2026, 6, 23, 14),
+        endAt: DateTime(2026, 6, 23, 15),
+      );
+      await repo.completeBooking(b.id);
+      expect(
+        () => repo.completeBooking(b.id),
+        throwsA(isA<BusinessRuleException>()),
+      );
+    });
+
+    test('취소된 예약을 완료 처리 → BusinessRuleException', () async {
+      final cid = await aCustomer();
+      final b = await repo.createBooking(
+        customerId: cid,
+        productIds: const ['p1'],
+        startAt: DateTime(2026, 6, 23, 14),
+        endAt: DateTime(2026, 6, 23, 15),
+      );
+      await repo.cancelBooking(bookingId: b.id, reason: 'customer_early');
+      expect(
+        () => repo.completeBooking(b.id),
+        throwsA(isA<BusinessRuleException>()),
+      );
+    });
+
+    test('노쇼 처리된 예약을 완료 처리 → BusinessRuleException', () async {
+      final cid = await aCustomer();
+      final b = await repo.createBooking(
+        customerId: cid,
+        productIds: const ['p1'],
+        startAt: DateTime(2026, 6, 23, 14),
+        endAt: DateTime(2026, 6, 23, 15),
+      );
+      await repo.cancelBooking(bookingId: b.id, reason: 'customer_late_or_noshow');
+      expect(
+        () => repo.completeBooking(b.id),
+        throwsA(isA<BusinessRuleException>()),
+      );
+    });
+  });
+
   group('waiting (F-BOOK-03)', () {
     test('정상 추가', () async {
       final w = await repo.addWaiting(customerName: '森かれん');
