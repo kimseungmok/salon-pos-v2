@@ -6,6 +6,7 @@ import 'features/cash_management/screens/store_open_screen.dart';
 import 'features/customer/screens/customer_list_screen.dart';
 import 'features/inventory/screens/inventory_list_screen.dart';
 import 'features/marketing/screens/coupon_screen.dart';
+import 'features/sales_report/screens/sales_report_screen.dart';
 import 'features/payment_pos/screens/pos_order_screen.dart';
 import 'features/prepaid_pass/screens/prepaid_pass_menu_screen.dart';
 import 'features/product/screens/product_list_screen.dart';
@@ -65,6 +66,7 @@ class _DevHomeTabsState extends State<_DevHomeTabs> {
       const CouponScreen(),
       const StoreOpenScreen(),
       const InventoryListScreen(),
+      const SalesReportScreen(),
     ];
     return Scaffold(
       body: IndexedStack(index: _index, children: screens),
@@ -81,6 +83,7 @@ class _DevHomeTabsState extends State<_DevHomeTabs> {
           NavigationDestination(icon: Icon(Icons.local_offer), label: 'クーポン'),
           NavigationDestination(icon: Icon(Icons.lock_clock), label: '開店'),
           NavigationDestination(icon: Icon(Icons.inventory_2), label: '在庫'),
+          NavigationDestination(icon: Icon(Icons.bar_chart), label: '売上'),
         ],
       ),
     );
