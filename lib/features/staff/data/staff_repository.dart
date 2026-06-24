@@ -94,18 +94,58 @@ class StaffRepository {
     }
   }
 
+  /// A-4(design/spec/v3/STAFF_ACCOUNT_STATUS_SPEC.md §3-2): 삭제 대신
+  /// 상태 기반으로 처리하되, 보존할 이력이 있는지에 따라 이원화한다.
+  /// - `accountStatus == '連結済み'`(정식 연결완료, 재직 중이었던 직원):
+  ///   하드 삭제하지 않고 `'退職済み'`로 상태 전환한다. `Shift`/`Booking`/
+  ///   `OrderItem`/`VisitRecord` 등이 이 `staffId`를 참조할 수 있어,
+  ///   행 자체를 지우면 과거 기록에서 이름이 사라지는 고아참조가 생긴다
+  ///   (`DESIGN_REVIEW.md` §5에서 식별된 문제의 해결).
+  /// - 그 외(`null`/`'待機中'`, 정식 연결 전): 보존할 이력이 구조적으로
+  ///   없으므로 기존 그대로 하드 삭제를 유지한다.
   Future<void> removeStaff(String staffId) async {
     try {
-      final rows =
-          await (_db.delete(_db.staff)..where((s) => s.id.equals(staffId)))
-              .go();
-      if (rows == 0) {
+      final staff = await (_db.select(_db.staff)
+            ..where((s) => s.id.equals(staffId)))
+          .getSingleOrNull();
+      if (staff == null) {
         throw const NotFoundException('スタッフが見つかりませんでした（既に削除されている可能性があります）。');
+      }
+
+      if (staff.accountStatus == '連結済み') {
+        await (_db.update(_db.staff)..where((s) => s.id.equals(staffId)))
+            .write(const StaffCompanion(accountStatus: Value('退職済み')));
+      } else {
+        await (_db.delete(_db.staff)..where((s) => s.id.equals(staffId)))
+            .go();
       }
     } on AppException {
       rethrow;
     } catch (e) {
       throw DatabaseException.writeFailed('$e');
+    }
+  }
+
+  /// A-4: 신규 배정 시점에만 적용하는 퇴사 검증(design/spec/v3/
+  /// STAFF_ACCOUNT_STATUS_SPEC.md §2-1, A4_PRE_IMPLEMENTATION_IMPACT_CHECK.md
+  /// §1-2). 호출 시점(언제 이 메서드를 부를지)은 호출자(BookingRepository)
+  /// 의 책임이다 — 이 메서드 자체는 단순히 "지금 이 staffId가 퇴사
+  /// 상태인가"만 판정한다.
+  Future<void> assertNotRetired(String staffId) async {
+    try {
+      final staff = await (_db.select(_db.staff)
+            ..where((s) => s.id.equals(staffId)))
+          .getSingleOrNull();
+      if (staff == null) {
+        throw const NotFoundException('スタッフが見つかりませんでした。');
+      }
+      if (staff.accountStatus == '退職済み') {
+        throw const BusinessRuleException('退職したスタッフを新しい予約に割り当てることはできません。');
+      }
+    } on AppException {
+      rethrow;
+    } catch (e) {
+      throw DatabaseException.readFailed('$e');
     }
   }
 

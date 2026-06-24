@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:salon_pos_v2/core/errors.dart';
 import 'package:salon_pos_v2/db/app_database.dart';
@@ -36,6 +37,22 @@ void main() {
       endTime: DateTime(date.year, date.month, date.day, 18),
     );
     return s.id;
+  }
+
+  /// A-4 검증용: 재직중(連結済み) 상태를 거쳐 退職済み로 전환된 직원.
+  Future<String> aRetiredStaffOnShift(DateTime date) async {
+    final id = await aStaffOnShift(date);
+    final staff = await (db.select(db.staff)..where((t) => t.id.equals(id))).getSingle();
+    await db.into(db.staff).insertOnConflictUpdate(
+          StaffCompanion(
+            id: Value(staff.id),
+            name: Value(staff.name),
+            phone: Value(staff.phone),
+            accountStatus: const Value('連結済み'),
+          ),
+        );
+    await staffRepo.removeStaff(id); // 連結済み → 退職済み 전환
+    return id;
   }
 
   group('createBooking', () {
@@ -157,6 +174,21 @@ void main() {
         endAt: DateTime(2026, 6, 23, 16),
       );
       expect(b2.status, 'confirmed');
+    });
+
+    test('퇴직 처리된 담당자에게 신규 예약 배정 시도 → BusinessRuleException', () async {
+      final cid = await aCustomer();
+      final retiredStaffId = await aRetiredStaffOnShift(DateTime(2026, 6, 23));
+      expect(
+        () => repo.createBooking(
+          customerId: cid,
+          staffId: retiredStaffId,
+          productIds: const ['p1'],
+          startAt: DateTime(2026, 6, 23, 14),
+          endAt: DateTime(2026, 6, 23, 15),
+        ),
+        throwsA(isA<BusinessRuleException>()),
+      );
     });
   });
 
@@ -507,6 +539,68 @@ void main() {
       );
       expect(updated.depositReceived, true);
       expect(updated.depositAmount, 20000);
+    });
+
+    test('A-4: 담당자가 그 사이 퇴직해도, 시간만 바꾸는 변경은 차단되지 않음', () async {
+      final cid = await aCustomer();
+      final retiredStaffId = await aRetiredStaffOnShift(DateTime(2026, 6, 23));
+      // 예약은 담당자가 재직중일 때 생성됐다고 가정 — 직접 DB에 confirmed
+      // 예약을 넣어 "이미 배정된 뒤 담당자가 퇴직한" 상황을 재현한다.
+      final cid2 = cid;
+      final bookingId = 'preexisting-booking';
+      await db.into(db.bookings).insert(
+            BookingsCompanion.insert(
+              id: bookingId,
+              customerId: cid2,
+              staffId: Value(retiredStaffId),
+              startAt: DateTime(2026, 6, 23, 14),
+              endAt: DateTime(2026, 6, 23, 15),
+            ),
+          );
+      final updated = await repo.updateBooking(
+        bookingId: bookingId,
+        startAt: DateTime(2026, 6, 23, 16),
+        endAt: DateTime(2026, 6, 23, 17),
+      );
+      expect(updated.startAt, DateTime(2026, 6, 23, 16));
+      expect(updated.staffId, retiredStaffId);
+    });
+
+    test('A-4: 같은(퇴직한) 담당자를 명시적으로 다시 지정해도 검증 생략', () async {
+      final cid = await aCustomer();
+      final retiredStaffId = await aRetiredStaffOnShift(DateTime(2026, 6, 23));
+      const bookingId = 'preexisting-booking-2';
+      await db.into(db.bookings).insert(
+            BookingsCompanion.insert(
+              id: bookingId,
+              customerId: cid,
+              staffId: Value(retiredStaffId),
+              startAt: DateTime(2026, 6, 23, 14),
+              endAt: DateTime(2026, 6, 23, 15),
+            ),
+          );
+      final updated = await repo.updateBooking(
+        bookingId: bookingId,
+        staffId: retiredStaffId, // 동일 담당자 — "변경"이 아님
+        startAt: DateTime(2026, 6, 23, 16),
+        endAt: DateTime(2026, 6, 23, 17),
+      );
+      expect(updated.staffId, retiredStaffId);
+    });
+
+    test('A-4: 퇴직한 담당자로 실제로 변경 시도 → BusinessRuleException', () async {
+      final cid = await aCustomer();
+      final b = await repo.createBooking(
+        customerId: cid,
+        productIds: const ['p1'],
+        startAt: DateTime(2026, 6, 23, 14),
+        endAt: DateTime(2026, 6, 23, 15),
+      );
+      final retiredStaffId = await aRetiredStaffOnShift(DateTime(2026, 6, 23));
+      expect(
+        () => repo.updateBooking(bookingId: b.id, staffId: retiredStaffId),
+        throwsA(isA<BusinessRuleException>()),
+      );
     });
   });
 

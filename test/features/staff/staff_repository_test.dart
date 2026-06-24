@@ -78,10 +78,66 @@ void main() {
     });
   });
 
-  group('removeStaff', () {
+  group('removeStaff (A-4: 상태 기반 이원화)', () {
     test('존재하지 않는 스태프 삭제 → NotFoundException', () async {
       expect(
         () => repo.removeStaff('no-such-id'),
+        throwsA(isA<NotFoundException>()),
+      );
+    });
+
+    test('待機中 상태는 하드 삭제 유지', () async {
+      final s = await repo.inviteStaff(name: 'Yuki', phone: '090-1234-5678');
+      await repo.removeStaff(s.id);
+      final found = await (db.select(db.staff)..where((t) => t.id.equals(s.id)))
+          .getSingleOrNull();
+      expect(found, null);
+    });
+
+    test('連結済み 상태는 하드 삭제하지 않고 退職済み로 상태전환', () async {
+      final s = await repo.inviteStaff(name: 'Yuki', phone: '090-1234-5678');
+      await db.into(db.staff).insertOnConflictUpdate(
+            StaffCompanion(
+              id: Value(s.id),
+              name: Value(s.name),
+              phone: Value(s.phone),
+              accountStatus: const Value('連結済み'),
+            ),
+          );
+      await repo.removeStaff(s.id);
+      final found = await (db.select(db.staff)..where((t) => t.id.equals(s.id)))
+          .getSingleOrNull();
+      expect(found != null, true);
+      expect(found!.accountStatus, '退職済み');
+    });
+  });
+
+  group('assertNotRetired (A-4)', () {
+    test('재직 중인 스태프는 예외 없이 통과', () async {
+      final s = await repo.inviteStaff(name: 'Yuki', phone: '090-1234-5678');
+      await repo.assertNotRetired(s.id); // 예외 없이 통과해야 함
+    });
+
+    test('퇴직 처리된 스태프 → BusinessRuleException', () async {
+      final s = await repo.inviteStaff(name: 'Yuki', phone: '090-1234-5678');
+      await db.into(db.staff).insertOnConflictUpdate(
+            StaffCompanion(
+              id: Value(s.id),
+              name: Value(s.name),
+              phone: Value(s.phone),
+              accountStatus: const Value('連結済み'),
+            ),
+          );
+      await repo.removeStaff(s.id); // 連結済み → 退職済み 전환
+      expect(
+        () => repo.assertNotRetired(s.id),
+        throwsA(isA<BusinessRuleException>()),
+      );
+    });
+
+    test('존재하지 않는 스태프 → NotFoundException', () async {
+      expect(
+        () => repo.assertNotRetired('no-such-id'),
         throwsA(isA<NotFoundException>()),
       );
     });

@@ -59,6 +59,9 @@ class BookingRepository {
 
     try {
       if (staffId != null) {
+        // A-4(design/spec/v3/A4_PRE_IMPLEMENTATION_IMPACT_CHECK.md §1-1):
+        // 신규 생성은 항상 "신규 배정"이므로 퇴사 검증을 그대로 적용한다.
+        await _staffRepository.assertNotRetired(staffId);
         await _assertStaffAvailable(staffId, startAt, endAt);
       }
 
@@ -185,6 +188,18 @@ class BookingRepository {
 
       if (!newEndAt.isAfter(newStartAt)) {
         throw const ValidationException('終了時刻は開始時刻より後にしてください。');
+      }
+
+      // A-4(design/spec/v3/A4_PRE_IMPLEMENTATION_IMPACT_CHECK.md §1-2):
+      // 퇴사 검증은 "담당자가 실제로 바뀌는 경우"에만 적용한다 — 시간만
+      // 바꾸거나 같은 담당자를 유지하는 변경은 검증 대상이 아니다. 이미
+      // 배정된 예약은 그 이후 담당자의 상태 변화(퇴사 처리 등)에 영향을
+      // 받지 않아야 한다(STAFF_ACCOUNT_STATUS_SPEC.md §2-1 "신규 배정만
+      // 차단" 원칙 — 함수 내부에 일괄로 넣으면 부작용이 생기는 지점이라
+      // 호출자인 이 메서드가 변경 여부를 먼저 판단한다).
+      final isStaffChanging = staffId != null && staffId != booking.staffId;
+      if (isStaffChanging) {
+        await _staffRepository.assertNotRetired(staffId);
       }
 
       if (newStaffId != null) {
