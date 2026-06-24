@@ -9,6 +9,7 @@ import 'package:path_provider/path_provider.dart';
 import '../features/booking/data/booking_tables.dart';
 import '../features/cash_management/data/cash_tables.dart';
 import '../features/customer/data/customer_tables.dart';
+import '../features/inventory/data/inventory_tables.dart';
 import '../features/marketing/data/marketing_tables.dart';
 import '../features/payment_pos/data/payment_tables.dart';
 import '../features/prepaid_pass/data/prepaid_pass_tables.dart';
@@ -43,6 +44,8 @@ part 'app_database.g.dart';
     PointPolicies,
     CashCounts,
     ClosingChecklistItems,
+    InventoryItems,
+    InventoryLogs,
   ],
 )
 class AppDatabase extends _$AppDatabase {
