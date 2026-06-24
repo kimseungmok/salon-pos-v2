@@ -106,11 +106,22 @@ class BookingRepository {
     }
   }
 
+  /// design/spec/v3/A3_PREFLIGHT_REVIEW.md §2/§9-1 그대로: createBooking()
+  /// 과 updateBooking() 양쪽에서 공유하는 단일 충돌검사 지점. [excludeBookingId]
+  /// 가 주어지면 그 예약 자신은 충돌후보에서 제외한다(수정 시 자기 자신과
+  /// 항상 충돌판정되는 문제를 막기 위함 — A3_PREFLIGHT_REVIEW.md §2/§"충돌
+  /// 위험 지점" 1번).
+  ///
+  /// overlap 정책은 BOOKING_OVERLAP_POLICY_ANALYSIS.md 권장대로 변경하지
+  /// 않는다(전업종 엄격정책 유지, "정책 선택 지점"만 이 메서드 하나로
+  /// 구조적으로 분리해 둔 것 — 향후 업종별 정책이 추가되면 이 안에서만
+  /// 분기하면 된다).
   Future<void> _assertStaffAvailable(
     String staffId,
     DateTime startAt,
-    DateTime endAt,
-  ) async {
+    DateTime endAt, {
+    String? excludeBookingId,
+  }) async {
     final onShift = await _staffRepository.isOnShift(staffId, startAt);
     if (!onShift) {
       throw const BusinessRuleException('指定した担当者はこの時間帯休みです。');
@@ -119,11 +130,101 @@ class BookingRepository {
           ..where((b) =>
               b.staffId.equals(staffId) & b.status.equals('confirmed')))
         .get();
-    final conflict = existing.any(
+    final candidates = excludeBookingId == null
+        ? existing
+        : existing.where((b) => b.id != excludeBookingId).toList();
+    final conflict = candidates.any(
       (b) => overlaps(b.startAt, b.endAt, startAt, endAt),
     );
     if (conflict) {
       throw const BusinessRuleException('指定した担当者は既にこの時間帯に予約があります。');
+    }
+  }
+
+  /// A-3(design/spec/v3/A3_PREFLIGHT_REVIEW.md): 예약 변경.
+  ///
+  /// §1 그대로: status 자체는 바꾸지 않는다 — 'confirmed'인 예약의 필드만
+  /// 갱신한다. §6 그대로: cancelBooking()/completeBooking()과 동일하게
+  /// "현재 confirmed인가"를 입구에서 검사하는 가드로 통일 — 이미 종결된
+  /// 예약(completed/cancelled/noshow)은 수정 자체를 차단한다.
+  ///
+  /// §3 그대로: 시간만 바뀌든 담당자만 바뀌든, 최종 (staffId, startAt,
+  /// endAt) 조합 전체에 대해 매번 충돌검사를 다시 수행한다(부분변경이라고
+  /// 검사를 생략하지 않음 — "충돌 위험 지점" 3번).
+  ///
+  /// §5 그대로: 변경 이력은 보존하지 않는다(overwrite). 테이블 추가 없이는
+  /// 해소할 수 없는 기존 구조 전반의 한계(cancelBooking()도 동일)이며,
+  /// 본 메서드가 새로 만드는 제약이 아니다.
+  ///
+  /// depositReceived/depositRefunded는 건드리지 않는다(completeBooking()
+  /// 과 동일한 범위 한정 원칙 — 예약변경은 예약금 정산과 무관).
+  Future<BookingRow> updateBooking({
+    required String bookingId,
+    String? staffId,
+    DateTime? startAt,
+    DateTime? endAt,
+  }) async {
+    try {
+      final booking = await (_db.select(_db.bookings)
+            ..where((b) => b.id.equals(bookingId)))
+          .getSingleOrNull();
+      if (booking == null) {
+        throw const NotFoundException('予約が見つかりませんでした。');
+      }
+      if (booking.status != 'confirmed') {
+        throw const BusinessRuleException('完了・キャンセル済みの予約は変更できません。');
+      }
+
+      // [staffId]를 생략(null)하면 기존 담당자를 유지한다. "담당자 배정
+      // 해제(null로 전환)"는 본 A-3 1차 범위(시간/담당자 변경)에 포함되지
+      // 않는 별도 요구사항이라 다루지 않는다(요청 범위 — start/end, staff
+      // 변경만).
+      final newStaffId = staffId ?? booking.staffId;
+      final newStartAt = startAt ?? booking.startAt;
+      final newEndAt = endAt ?? booking.endAt;
+
+      if (!newEndAt.isAfter(newStartAt)) {
+        throw const ValidationException('終了時刻は開始時刻より後にしてください。');
+      }
+
+      if (newStaffId != null) {
+        await _assertStaffAvailable(
+          newStaffId,
+          newStartAt,
+          newEndAt,
+          excludeBookingId: bookingId,
+        );
+      }
+
+      await (_db.update(_db.bookings)..where((b) => b.id.equals(bookingId)))
+          .write(BookingsCompanion(
+        staffId: Value(newStaffId),
+        startAt: Value(newStartAt),
+        endAt: Value(newEndAt),
+      ));
+
+      return BookingRow(
+        id: booking.id,
+        customerId: booking.customerId,
+        staffId: newStaffId,
+        productIdsCsv: booking.productIdsCsv,
+        startAt: newStartAt,
+        endAt: newEndAt,
+        depositEnabled: booking.depositEnabled,
+        depositMethod: booking.depositMethod,
+        depositAmount: booking.depositAmount,
+        depositReceived: booking.depositReceived,
+        depositRefunded: booking.depositRefunded,
+        refundNote: booking.refundNote,
+        repeatRule: booking.repeatRule,
+        memo: booking.memo,
+        requiresApproval: booking.requiresApproval,
+        status: booking.status,
+      );
+    } on AppException {
+      rethrow;
+    } catch (e) {
+      throw DatabaseException.writeFailed('$e');
     }
   }
 

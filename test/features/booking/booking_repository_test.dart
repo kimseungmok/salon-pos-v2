@@ -24,8 +24,11 @@ void main() {
   Future<String> aCustomer() async =>
       (await customerRepo.createCustomer(name: '田中美咲', phone: '090-1234-5678')).id;
 
+  int staffPhoneSeq = 0;
   Future<String> aStaffOnShift(DateTime date) async {
-    final s = await staffRepo.inviteStaff(name: 'Yuki', phone: '090-2222-3333');
+    staffPhoneSeq++;
+    final phone = '090-2222-${staffPhoneSeq.toString().padLeft(4, '0')}';
+    final s = await staffRepo.inviteStaff(name: 'Yuki', phone: phone);
     await staffRepo.setShift(
       staffId: s.id,
       date: date,
@@ -332,6 +335,178 @@ void main() {
         () => repo.completeBooking(b.id),
         throwsA(isA<BusinessRuleException>()),
       );
+    });
+  });
+
+  group('updateBooking (A-3)', () {
+    test('시간만 변경', () async {
+      final cid = await aCustomer();
+      final b = await repo.createBooking(
+        customerId: cid,
+        productIds: const ['p1'],
+        startAt: DateTime(2026, 6, 23, 14),
+        endAt: DateTime(2026, 6, 23, 15),
+      );
+      final updated = await repo.updateBooking(
+        bookingId: b.id,
+        startAt: DateTime(2026, 6, 23, 16),
+        endAt: DateTime(2026, 6, 23, 17),
+      );
+      expect(updated.startAt, DateTime(2026, 6, 23, 16));
+      expect(updated.endAt, DateTime(2026, 6, 23, 17));
+      expect(updated.status, 'confirmed');
+    });
+
+    test('담당자만 변경 — 새 담당자 가용성 검증', () async {
+      final cid = await aCustomer();
+      final staffA = await aStaffOnShift(DateTime(2026, 6, 23));
+      final staffB = await aStaffOnShift(DateTime(2026, 6, 23));
+      final b = await repo.createBooking(
+        customerId: cid,
+        staffId: staffA,
+        productIds: const ['p1'],
+        startAt: DateTime(2026, 6, 23, 14),
+        endAt: DateTime(2026, 6, 23, 15),
+      );
+      final updated = await repo.updateBooking(bookingId: b.id, staffId: staffB);
+      expect(updated.staffId, staffB);
+    });
+
+    test('동일 예약의 시간 변경 시 자기 자신과 충돌판정되지 않음(자기 제외)', () async {
+      final cid = await aCustomer();
+      final staffId = await aStaffOnShift(DateTime(2026, 6, 23));
+      final b = await repo.createBooking(
+        customerId: cid,
+        staffId: staffId,
+        productIds: const ['p1'],
+        startAt: DateTime(2026, 6, 23, 14),
+        endAt: DateTime(2026, 6, 23, 15),
+      );
+      // 같은 담당자, 거의 같은 시간대로 "변경"해도 자기 자신은 제외되어
+      // BusinessRuleException이 발생하지 않아야 한다.
+      final updated = await repo.updateBooking(
+        bookingId: b.id,
+        startAt: DateTime(2026, 6, 23, 14, 30),
+        endAt: DateTime(2026, 6, 23, 15, 30),
+      );
+      expect(updated.startAt, DateTime(2026, 6, 23, 14, 30));
+    });
+
+    test('변경 후 시간이 다른 기존 예약과 충돌 → BusinessRuleException', () async {
+      final cid = await aCustomer();
+      final staffId = await aStaffOnShift(DateTime(2026, 6, 23));
+      await repo.createBooking(
+        customerId: cid,
+        staffId: staffId,
+        productIds: const ['p1'],
+        startAt: DateTime(2026, 6, 23, 16),
+        endAt: DateTime(2026, 6, 23, 17),
+      );
+      final b2 = await repo.createBooking(
+        customerId: cid,
+        staffId: staffId,
+        productIds: const ['p1'],
+        startAt: DateTime(2026, 6, 23, 10),
+        endAt: DateTime(2026, 6, 23, 11),
+      );
+      expect(
+        () => repo.updateBooking(
+          bookingId: b2.id,
+          startAt: DateTime(2026, 6, 23, 16, 30),
+          endAt: DateTime(2026, 6, 23, 17, 30),
+        ),
+        throwsA(isA<BusinessRuleException>()),
+      );
+    });
+
+    test('종료시각이 시작시각보다 빠르게 변경 시도 → ValidationException', () async {
+      final cid = await aCustomer();
+      final b = await repo.createBooking(
+        customerId: cid,
+        productIds: const ['p1'],
+        startAt: DateTime(2026, 6, 23, 14),
+        endAt: DateTime(2026, 6, 23, 15),
+      );
+      expect(
+        () => repo.updateBooking(
+          bookingId: b.id,
+          startAt: DateTime(2026, 6, 23, 16),
+          endAt: DateTime(2026, 6, 23, 15),
+        ),
+        throwsA(isA<ValidationException>()),
+      );
+    });
+
+    test('존재하지 않는 예약 → NotFoundException', () async {
+      expect(
+        () => repo.updateBooking(bookingId: 'no-such-id', startAt: DateTime(2026, 6, 23, 16)),
+        throwsA(isA<NotFoundException>()),
+      );
+    });
+
+    test('완료된 예약 변경 시도 → BusinessRuleException', () async {
+      final cid = await aCustomer();
+      final b = await repo.createBooking(
+        customerId: cid,
+        productIds: const ['p1'],
+        startAt: DateTime(2026, 6, 23, 14),
+        endAt: DateTime(2026, 6, 23, 15),
+      );
+      await repo.completeBooking(b.id);
+      expect(
+        () => repo.updateBooking(bookingId: b.id, startAt: DateTime(2026, 6, 23, 16)),
+        throwsA(isA<BusinessRuleException>()),
+      );
+    });
+
+    test('취소된 예약 변경 시도 → BusinessRuleException', () async {
+      final cid = await aCustomer();
+      final b = await repo.createBooking(
+        customerId: cid,
+        productIds: const ['p1'],
+        startAt: DateTime(2026, 6, 23, 14),
+        endAt: DateTime(2026, 6, 23, 15),
+      );
+      await repo.cancelBooking(bookingId: b.id, reason: 'customer_early');
+      expect(
+        () => repo.updateBooking(bookingId: b.id, startAt: DateTime(2026, 6, 23, 16)),
+        throwsA(isA<BusinessRuleException>()),
+      );
+    });
+
+    test('노쇼 처리된 예약 변경 시도 → BusinessRuleException', () async {
+      final cid = await aCustomer();
+      final b = await repo.createBooking(
+        customerId: cid,
+        productIds: const ['p1'],
+        startAt: DateTime(2026, 6, 23, 14),
+        endAt: DateTime(2026, 6, 23, 15),
+      );
+      await repo.cancelBooking(bookingId: b.id, reason: 'customer_late_or_noshow');
+      expect(
+        () => repo.updateBooking(bookingId: b.id, startAt: DateTime(2026, 6, 23, 16)),
+        throwsA(isA<BusinessRuleException>()),
+      );
+    });
+
+    test('예약금 필드는 변경되지 않음', () async {
+      final cid = await aCustomer();
+      final b = await repo.createBooking(
+        customerId: cid,
+        productIds: const ['p1'],
+        startAt: DateTime(2026, 6, 23, 14),
+        endAt: DateTime(2026, 6, 23, 15),
+        depositEnabled: true,
+        depositAmount: 20000,
+        depositReceived: true,
+      );
+      final updated = await repo.updateBooking(
+        bookingId: b.id,
+        startAt: DateTime(2026, 6, 23, 16),
+        endAt: DateTime(2026, 6, 23, 17),
+      );
+      expect(updated.depositReceived, true);
+      expect(updated.depositAmount, 20000);
     });
   });
 
