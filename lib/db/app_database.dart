@@ -7,6 +7,7 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
 import '../features/booking/data/booking_tables.dart';
+import '../features/cash_management/data/cash_tables.dart';
 import '../features/customer/data/customer_tables.dart';
 import '../features/marketing/data/marketing_tables.dart';
 import '../features/payment_pos/data/payment_tables.dart';
@@ -40,6 +41,8 @@ part 'app_database.g.dart';
     Coupons,
     Campaigns,
     PointPolicies,
+    CashCounts,
+    ClosingChecklistItems,
   ],
 )
 class AppDatabase extends _$AppDatabase {

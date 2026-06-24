@@ -9049,6 +9049,959 @@ class PointPoliciesCompanion extends UpdateCompanion<PointPolicyRow> {
   }
 }
 
+class $CashCountsTable extends CashCounts
+    with TableInfo<$CashCountsTable, CashCountRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CashCountsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _typeMeta = const VerificationMeta('type');
+  @override
+  late final GeneratedColumn<String> type = GeneratedColumn<String>(
+    'type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dateMeta = const VerificationMeta('date');
+  @override
+  late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
+    'date',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _denominationsJsonMeta = const VerificationMeta(
+    'denominationsJson',
+  );
+  @override
+  late final GeneratedColumn<String> denominationsJson =
+      GeneratedColumn<String>(
+        'denominations_json',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _totalAmountMeta = const VerificationMeta(
+    'totalAmount',
+  );
+  @override
+  late final GeneratedColumn<int> totalAmount = GeneratedColumn<int>(
+    'total_amount',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _expectedAmountMeta = const VerificationMeta(
+    'expectedAmount',
+  );
+  @override
+  late final GeneratedColumn<int> expectedAmount = GeneratedColumn<int>(
+    'expected_amount',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _diffAmountMeta = const VerificationMeta(
+    'diffAmount',
+  );
+  @override
+  late final GeneratedColumn<int> diffAmount = GeneratedColumn<int>(
+    'diff_amount',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _diffReasonMeta = const VerificationMeta(
+    'diffReason',
+  );
+  @override
+  late final GeneratedColumn<String> diffReason = GeneratedColumn<String>(
+    'diff_reason',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _confirmedAtMeta = const VerificationMeta(
+    'confirmedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> confirmedAt = GeneratedColumn<DateTime>(
+    'confirmed_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _confirmedByMeta = const VerificationMeta(
+    'confirmedBy',
+  );
+  @override
+  late final GeneratedColumn<String> confirmedBy = GeneratedColumn<String>(
+    'confirmed_by',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    type,
+    date,
+    denominationsJson,
+    totalAmount,
+    expectedAmount,
+    diffAmount,
+    diffReason,
+    confirmedAt,
+    confirmedBy,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'cash_counts';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CashCountRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('type')) {
+      context.handle(
+        _typeMeta,
+        type.isAcceptableOrUnknown(data['type']!, _typeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_typeMeta);
+    }
+    if (data.containsKey('date')) {
+      context.handle(
+        _dateMeta,
+        date.isAcceptableOrUnknown(data['date']!, _dateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dateMeta);
+    }
+    if (data.containsKey('denominations_json')) {
+      context.handle(
+        _denominationsJsonMeta,
+        denominationsJson.isAcceptableOrUnknown(
+          data['denominations_json']!,
+          _denominationsJsonMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_denominationsJsonMeta);
+    }
+    if (data.containsKey('total_amount')) {
+      context.handle(
+        _totalAmountMeta,
+        totalAmount.isAcceptableOrUnknown(
+          data['total_amount']!,
+          _totalAmountMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_totalAmountMeta);
+    }
+    if (data.containsKey('expected_amount')) {
+      context.handle(
+        _expectedAmountMeta,
+        expectedAmount.isAcceptableOrUnknown(
+          data['expected_amount']!,
+          _expectedAmountMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_expectedAmountMeta);
+    }
+    if (data.containsKey('diff_amount')) {
+      context.handle(
+        _diffAmountMeta,
+        diffAmount.isAcceptableOrUnknown(data['diff_amount']!, _diffAmountMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_diffAmountMeta);
+    }
+    if (data.containsKey('diff_reason')) {
+      context.handle(
+        _diffReasonMeta,
+        diffReason.isAcceptableOrUnknown(data['diff_reason']!, _diffReasonMeta),
+      );
+    }
+    if (data.containsKey('confirmed_at')) {
+      context.handle(
+        _confirmedAtMeta,
+        confirmedAt.isAcceptableOrUnknown(
+          data['confirmed_at']!,
+          _confirmedAtMeta,
+        ),
+      );
+    }
+    if (data.containsKey('confirmed_by')) {
+      context.handle(
+        _confirmedByMeta,
+        confirmedBy.isAcceptableOrUnknown(
+          data['confirmed_by']!,
+          _confirmedByMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  CashCountRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CashCountRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      type: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}type'],
+      )!,
+      date: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}date'],
+      )!,
+      denominationsJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}denominations_json'],
+      )!,
+      totalAmount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}total_amount'],
+      )!,
+      expectedAmount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}expected_amount'],
+      )!,
+      diffAmount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}diff_amount'],
+      )!,
+      diffReason: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}diff_reason'],
+      ),
+      confirmedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}confirmed_at'],
+      ),
+      confirmedBy: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}confirmed_by'],
+      ),
+    );
+  }
+
+  @override
+  $CashCountsTable createAlias(String alias) {
+    return $CashCountsTable(attachedDatabase, alias);
+  }
+}
+
+class CashCountRow extends DataClass implements Insertable<CashCountRow> {
+  final String id;
+
+  /// open / close.
+  final String type;
+  final DateTime date;
+  final String denominationsJson;
+  final int totalAmount;
+  final int expectedAmount;
+  final int diffAmount;
+  final String? diffReason;
+  final DateTime? confirmedAt;
+  final String? confirmedBy;
+  const CashCountRow({
+    required this.id,
+    required this.type,
+    required this.date,
+    required this.denominationsJson,
+    required this.totalAmount,
+    required this.expectedAmount,
+    required this.diffAmount,
+    this.diffReason,
+    this.confirmedAt,
+    this.confirmedBy,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['type'] = Variable<String>(type);
+    map['date'] = Variable<DateTime>(date);
+    map['denominations_json'] = Variable<String>(denominationsJson);
+    map['total_amount'] = Variable<int>(totalAmount);
+    map['expected_amount'] = Variable<int>(expectedAmount);
+    map['diff_amount'] = Variable<int>(diffAmount);
+    if (!nullToAbsent || diffReason != null) {
+      map['diff_reason'] = Variable<String>(diffReason);
+    }
+    if (!nullToAbsent || confirmedAt != null) {
+      map['confirmed_at'] = Variable<DateTime>(confirmedAt);
+    }
+    if (!nullToAbsent || confirmedBy != null) {
+      map['confirmed_by'] = Variable<String>(confirmedBy);
+    }
+    return map;
+  }
+
+  CashCountsCompanion toCompanion(bool nullToAbsent) {
+    return CashCountsCompanion(
+      id: Value(id),
+      type: Value(type),
+      date: Value(date),
+      denominationsJson: Value(denominationsJson),
+      totalAmount: Value(totalAmount),
+      expectedAmount: Value(expectedAmount),
+      diffAmount: Value(diffAmount),
+      diffReason: diffReason == null && nullToAbsent
+          ? const Value.absent()
+          : Value(diffReason),
+      confirmedAt: confirmedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(confirmedAt),
+      confirmedBy: confirmedBy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(confirmedBy),
+    );
+  }
+
+  factory CashCountRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CashCountRow(
+      id: serializer.fromJson<String>(json['id']),
+      type: serializer.fromJson<String>(json['type']),
+      date: serializer.fromJson<DateTime>(json['date']),
+      denominationsJson: serializer.fromJson<String>(json['denominationsJson']),
+      totalAmount: serializer.fromJson<int>(json['totalAmount']),
+      expectedAmount: serializer.fromJson<int>(json['expectedAmount']),
+      diffAmount: serializer.fromJson<int>(json['diffAmount']),
+      diffReason: serializer.fromJson<String?>(json['diffReason']),
+      confirmedAt: serializer.fromJson<DateTime?>(json['confirmedAt']),
+      confirmedBy: serializer.fromJson<String?>(json['confirmedBy']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'type': serializer.toJson<String>(type),
+      'date': serializer.toJson<DateTime>(date),
+      'denominationsJson': serializer.toJson<String>(denominationsJson),
+      'totalAmount': serializer.toJson<int>(totalAmount),
+      'expectedAmount': serializer.toJson<int>(expectedAmount),
+      'diffAmount': serializer.toJson<int>(diffAmount),
+      'diffReason': serializer.toJson<String?>(diffReason),
+      'confirmedAt': serializer.toJson<DateTime?>(confirmedAt),
+      'confirmedBy': serializer.toJson<String?>(confirmedBy),
+    };
+  }
+
+  CashCountRow copyWith({
+    String? id,
+    String? type,
+    DateTime? date,
+    String? denominationsJson,
+    int? totalAmount,
+    int? expectedAmount,
+    int? diffAmount,
+    Value<String?> diffReason = const Value.absent(),
+    Value<DateTime?> confirmedAt = const Value.absent(),
+    Value<String?> confirmedBy = const Value.absent(),
+  }) => CashCountRow(
+    id: id ?? this.id,
+    type: type ?? this.type,
+    date: date ?? this.date,
+    denominationsJson: denominationsJson ?? this.denominationsJson,
+    totalAmount: totalAmount ?? this.totalAmount,
+    expectedAmount: expectedAmount ?? this.expectedAmount,
+    diffAmount: diffAmount ?? this.diffAmount,
+    diffReason: diffReason.present ? diffReason.value : this.diffReason,
+    confirmedAt: confirmedAt.present ? confirmedAt.value : this.confirmedAt,
+    confirmedBy: confirmedBy.present ? confirmedBy.value : this.confirmedBy,
+  );
+  CashCountRow copyWithCompanion(CashCountsCompanion data) {
+    return CashCountRow(
+      id: data.id.present ? data.id.value : this.id,
+      type: data.type.present ? data.type.value : this.type,
+      date: data.date.present ? data.date.value : this.date,
+      denominationsJson: data.denominationsJson.present
+          ? data.denominationsJson.value
+          : this.denominationsJson,
+      totalAmount: data.totalAmount.present
+          ? data.totalAmount.value
+          : this.totalAmount,
+      expectedAmount: data.expectedAmount.present
+          ? data.expectedAmount.value
+          : this.expectedAmount,
+      diffAmount: data.diffAmount.present
+          ? data.diffAmount.value
+          : this.diffAmount,
+      diffReason: data.diffReason.present
+          ? data.diffReason.value
+          : this.diffReason,
+      confirmedAt: data.confirmedAt.present
+          ? data.confirmedAt.value
+          : this.confirmedAt,
+      confirmedBy: data.confirmedBy.present
+          ? data.confirmedBy.value
+          : this.confirmedBy,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CashCountRow(')
+          ..write('id: $id, ')
+          ..write('type: $type, ')
+          ..write('date: $date, ')
+          ..write('denominationsJson: $denominationsJson, ')
+          ..write('totalAmount: $totalAmount, ')
+          ..write('expectedAmount: $expectedAmount, ')
+          ..write('diffAmount: $diffAmount, ')
+          ..write('diffReason: $diffReason, ')
+          ..write('confirmedAt: $confirmedAt, ')
+          ..write('confirmedBy: $confirmedBy')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    type,
+    date,
+    denominationsJson,
+    totalAmount,
+    expectedAmount,
+    diffAmount,
+    diffReason,
+    confirmedAt,
+    confirmedBy,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CashCountRow &&
+          other.id == this.id &&
+          other.type == this.type &&
+          other.date == this.date &&
+          other.denominationsJson == this.denominationsJson &&
+          other.totalAmount == this.totalAmount &&
+          other.expectedAmount == this.expectedAmount &&
+          other.diffAmount == this.diffAmount &&
+          other.diffReason == this.diffReason &&
+          other.confirmedAt == this.confirmedAt &&
+          other.confirmedBy == this.confirmedBy);
+}
+
+class CashCountsCompanion extends UpdateCompanion<CashCountRow> {
+  final Value<String> id;
+  final Value<String> type;
+  final Value<DateTime> date;
+  final Value<String> denominationsJson;
+  final Value<int> totalAmount;
+  final Value<int> expectedAmount;
+  final Value<int> diffAmount;
+  final Value<String?> diffReason;
+  final Value<DateTime?> confirmedAt;
+  final Value<String?> confirmedBy;
+  final Value<int> rowid;
+  const CashCountsCompanion({
+    this.id = const Value.absent(),
+    this.type = const Value.absent(),
+    this.date = const Value.absent(),
+    this.denominationsJson = const Value.absent(),
+    this.totalAmount = const Value.absent(),
+    this.expectedAmount = const Value.absent(),
+    this.diffAmount = const Value.absent(),
+    this.diffReason = const Value.absent(),
+    this.confirmedAt = const Value.absent(),
+    this.confirmedBy = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CashCountsCompanion.insert({
+    required String id,
+    required String type,
+    required DateTime date,
+    required String denominationsJson,
+    required int totalAmount,
+    required int expectedAmount,
+    required int diffAmount,
+    this.diffReason = const Value.absent(),
+    this.confirmedAt = const Value.absent(),
+    this.confirmedBy = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       type = Value(type),
+       date = Value(date),
+       denominationsJson = Value(denominationsJson),
+       totalAmount = Value(totalAmount),
+       expectedAmount = Value(expectedAmount),
+       diffAmount = Value(diffAmount);
+  static Insertable<CashCountRow> custom({
+    Expression<String>? id,
+    Expression<String>? type,
+    Expression<DateTime>? date,
+    Expression<String>? denominationsJson,
+    Expression<int>? totalAmount,
+    Expression<int>? expectedAmount,
+    Expression<int>? diffAmount,
+    Expression<String>? diffReason,
+    Expression<DateTime>? confirmedAt,
+    Expression<String>? confirmedBy,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (type != null) 'type': type,
+      if (date != null) 'date': date,
+      if (denominationsJson != null) 'denominations_json': denominationsJson,
+      if (totalAmount != null) 'total_amount': totalAmount,
+      if (expectedAmount != null) 'expected_amount': expectedAmount,
+      if (diffAmount != null) 'diff_amount': diffAmount,
+      if (diffReason != null) 'diff_reason': diffReason,
+      if (confirmedAt != null) 'confirmed_at': confirmedAt,
+      if (confirmedBy != null) 'confirmed_by': confirmedBy,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CashCountsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? type,
+    Value<DateTime>? date,
+    Value<String>? denominationsJson,
+    Value<int>? totalAmount,
+    Value<int>? expectedAmount,
+    Value<int>? diffAmount,
+    Value<String?>? diffReason,
+    Value<DateTime?>? confirmedAt,
+    Value<String?>? confirmedBy,
+    Value<int>? rowid,
+  }) {
+    return CashCountsCompanion(
+      id: id ?? this.id,
+      type: type ?? this.type,
+      date: date ?? this.date,
+      denominationsJson: denominationsJson ?? this.denominationsJson,
+      totalAmount: totalAmount ?? this.totalAmount,
+      expectedAmount: expectedAmount ?? this.expectedAmount,
+      diffAmount: diffAmount ?? this.diffAmount,
+      diffReason: diffReason ?? this.diffReason,
+      confirmedAt: confirmedAt ?? this.confirmedAt,
+      confirmedBy: confirmedBy ?? this.confirmedBy,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (type.present) {
+      map['type'] = Variable<String>(type.value);
+    }
+    if (date.present) {
+      map['date'] = Variable<DateTime>(date.value);
+    }
+    if (denominationsJson.present) {
+      map['denominations_json'] = Variable<String>(denominationsJson.value);
+    }
+    if (totalAmount.present) {
+      map['total_amount'] = Variable<int>(totalAmount.value);
+    }
+    if (expectedAmount.present) {
+      map['expected_amount'] = Variable<int>(expectedAmount.value);
+    }
+    if (diffAmount.present) {
+      map['diff_amount'] = Variable<int>(diffAmount.value);
+    }
+    if (diffReason.present) {
+      map['diff_reason'] = Variable<String>(diffReason.value);
+    }
+    if (confirmedAt.present) {
+      map['confirmed_at'] = Variable<DateTime>(confirmedAt.value);
+    }
+    if (confirmedBy.present) {
+      map['confirmed_by'] = Variable<String>(confirmedBy.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CashCountsCompanion(')
+          ..write('id: $id, ')
+          ..write('type: $type, ')
+          ..write('date: $date, ')
+          ..write('denominationsJson: $denominationsJson, ')
+          ..write('totalAmount: $totalAmount, ')
+          ..write('expectedAmount: $expectedAmount, ')
+          ..write('diffAmount: $diffAmount, ')
+          ..write('diffReason: $diffReason, ')
+          ..write('confirmedAt: $confirmedAt, ')
+          ..write('confirmedBy: $confirmedBy, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ClosingChecklistItemsTable extends ClosingChecklistItems
+    with TableInfo<$ClosingChecklistItemsTable, ClosingChecklistItemRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ClosingChecklistItemsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dateMeta = const VerificationMeta('date');
+  @override
+  late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
+    'date',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _labelMeta = const VerificationMeta('label');
+  @override
+  late final GeneratedColumn<String> label = GeneratedColumn<String>(
+    'label',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _checkedMeta = const VerificationMeta(
+    'checked',
+  );
+  @override
+  late final GeneratedColumn<bool> checked = GeneratedColumn<bool>(
+    'checked',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("checked" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, date, label, checked];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'closing_checklist_items';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ClosingChecklistItemRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('date')) {
+      context.handle(
+        _dateMeta,
+        date.isAcceptableOrUnknown(data['date']!, _dateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dateMeta);
+    }
+    if (data.containsKey('label')) {
+      context.handle(
+        _labelMeta,
+        label.isAcceptableOrUnknown(data['label']!, _labelMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_labelMeta);
+    }
+    if (data.containsKey('checked')) {
+      context.handle(
+        _checkedMeta,
+        checked.isAcceptableOrUnknown(data['checked']!, _checkedMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ClosingChecklistItemRow map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ClosingChecklistItemRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      date: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}date'],
+      )!,
+      label: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}label'],
+      )!,
+      checked: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}checked'],
+      )!,
+    );
+  }
+
+  @override
+  $ClosingChecklistItemsTable createAlias(String alias) {
+    return $ClosingChecklistItemsTable(attachedDatabase, alias);
+  }
+}
+
+class ClosingChecklistItemRow extends DataClass
+    implements Insertable<ClosingChecklistItemRow> {
+  final String id;
+  final DateTime date;
+  final String label;
+  final bool checked;
+  const ClosingChecklistItemRow({
+    required this.id,
+    required this.date,
+    required this.label,
+    required this.checked,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['date'] = Variable<DateTime>(date);
+    map['label'] = Variable<String>(label);
+    map['checked'] = Variable<bool>(checked);
+    return map;
+  }
+
+  ClosingChecklistItemsCompanion toCompanion(bool nullToAbsent) {
+    return ClosingChecklistItemsCompanion(
+      id: Value(id),
+      date: Value(date),
+      label: Value(label),
+      checked: Value(checked),
+    );
+  }
+
+  factory ClosingChecklistItemRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ClosingChecklistItemRow(
+      id: serializer.fromJson<String>(json['id']),
+      date: serializer.fromJson<DateTime>(json['date']),
+      label: serializer.fromJson<String>(json['label']),
+      checked: serializer.fromJson<bool>(json['checked']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'date': serializer.toJson<DateTime>(date),
+      'label': serializer.toJson<String>(label),
+      'checked': serializer.toJson<bool>(checked),
+    };
+  }
+
+  ClosingChecklistItemRow copyWith({
+    String? id,
+    DateTime? date,
+    String? label,
+    bool? checked,
+  }) => ClosingChecklistItemRow(
+    id: id ?? this.id,
+    date: date ?? this.date,
+    label: label ?? this.label,
+    checked: checked ?? this.checked,
+  );
+  ClosingChecklistItemRow copyWithCompanion(
+    ClosingChecklistItemsCompanion data,
+  ) {
+    return ClosingChecklistItemRow(
+      id: data.id.present ? data.id.value : this.id,
+      date: data.date.present ? data.date.value : this.date,
+      label: data.label.present ? data.label.value : this.label,
+      checked: data.checked.present ? data.checked.value : this.checked,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ClosingChecklistItemRow(')
+          ..write('id: $id, ')
+          ..write('date: $date, ')
+          ..write('label: $label, ')
+          ..write('checked: $checked')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, date, label, checked);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ClosingChecklistItemRow &&
+          other.id == this.id &&
+          other.date == this.date &&
+          other.label == this.label &&
+          other.checked == this.checked);
+}
+
+class ClosingChecklistItemsCompanion
+    extends UpdateCompanion<ClosingChecklistItemRow> {
+  final Value<String> id;
+  final Value<DateTime> date;
+  final Value<String> label;
+  final Value<bool> checked;
+  final Value<int> rowid;
+  const ClosingChecklistItemsCompanion({
+    this.id = const Value.absent(),
+    this.date = const Value.absent(),
+    this.label = const Value.absent(),
+    this.checked = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ClosingChecklistItemsCompanion.insert({
+    required String id,
+    required DateTime date,
+    required String label,
+    this.checked = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       date = Value(date),
+       label = Value(label);
+  static Insertable<ClosingChecklistItemRow> custom({
+    Expression<String>? id,
+    Expression<DateTime>? date,
+    Expression<String>? label,
+    Expression<bool>? checked,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (date != null) 'date': date,
+      if (label != null) 'label': label,
+      if (checked != null) 'checked': checked,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ClosingChecklistItemsCompanion copyWith({
+    Value<String>? id,
+    Value<DateTime>? date,
+    Value<String>? label,
+    Value<bool>? checked,
+    Value<int>? rowid,
+  }) {
+    return ClosingChecklistItemsCompanion(
+      id: id ?? this.id,
+      date: date ?? this.date,
+      label: label ?? this.label,
+      checked: checked ?? this.checked,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (date.present) {
+      map['date'] = Variable<DateTime>(date.value);
+    }
+    if (label.present) {
+      map['label'] = Variable<String>(label.value);
+    }
+    if (checked.present) {
+      map['checked'] = Variable<bool>(checked.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ClosingChecklistItemsCompanion(')
+          ..write('id: $id, ')
+          ..write('date: $date, ')
+          ..write('label: $label, ')
+          ..write('checked: $checked, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -9073,6 +10026,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $CouponsTable coupons = $CouponsTable(this);
   late final $CampaignsTable campaigns = $CampaignsTable(this);
   late final $PointPoliciesTable pointPolicies = $PointPoliciesTable(this);
+  late final $CashCountsTable cashCounts = $CashCountsTable(this);
+  late final $ClosingChecklistItemsTable closingChecklistItems =
+      $ClosingChecklistItemsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -9095,6 +10051,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     coupons,
     campaigns,
     pointPolicies,
+    cashCounts,
+    closingChecklistItems,
   ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
@@ -14749,6 +15707,515 @@ typedef $$PointPoliciesTableProcessedTableManager =
       PointPolicyRow,
       PrefetchHooks Function()
     >;
+typedef $$CashCountsTableCreateCompanionBuilder =
+    CashCountsCompanion Function({
+      required String id,
+      required String type,
+      required DateTime date,
+      required String denominationsJson,
+      required int totalAmount,
+      required int expectedAmount,
+      required int diffAmount,
+      Value<String?> diffReason,
+      Value<DateTime?> confirmedAt,
+      Value<String?> confirmedBy,
+      Value<int> rowid,
+    });
+typedef $$CashCountsTableUpdateCompanionBuilder =
+    CashCountsCompanion Function({
+      Value<String> id,
+      Value<String> type,
+      Value<DateTime> date,
+      Value<String> denominationsJson,
+      Value<int> totalAmount,
+      Value<int> expectedAmount,
+      Value<int> diffAmount,
+      Value<String?> diffReason,
+      Value<DateTime?> confirmedAt,
+      Value<String?> confirmedBy,
+      Value<int> rowid,
+    });
+
+class $$CashCountsTableFilterComposer
+    extends Composer<_$AppDatabase, $CashCountsTable> {
+  $$CashCountsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get date => $composableBuilder(
+    column: $table.date,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get denominationsJson => $composableBuilder(
+    column: $table.denominationsJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get totalAmount => $composableBuilder(
+    column: $table.totalAmount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get expectedAmount => $composableBuilder(
+    column: $table.expectedAmount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get diffAmount => $composableBuilder(
+    column: $table.diffAmount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get diffReason => $composableBuilder(
+    column: $table.diffReason,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get confirmedAt => $composableBuilder(
+    column: $table.confirmedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get confirmedBy => $composableBuilder(
+    column: $table.confirmedBy,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CashCountsTableOrderingComposer
+    extends Composer<_$AppDatabase, $CashCountsTable> {
+  $$CashCountsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get date => $composableBuilder(
+    column: $table.date,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get denominationsJson => $composableBuilder(
+    column: $table.denominationsJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get totalAmount => $composableBuilder(
+    column: $table.totalAmount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get expectedAmount => $composableBuilder(
+    column: $table.expectedAmount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get diffAmount => $composableBuilder(
+    column: $table.diffAmount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get diffReason => $composableBuilder(
+    column: $table.diffReason,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get confirmedAt => $composableBuilder(
+    column: $table.confirmedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get confirmedBy => $composableBuilder(
+    column: $table.confirmedBy,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CashCountsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $CashCountsTable> {
+  $$CashCountsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get type =>
+      $composableBuilder(column: $table.type, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get date =>
+      $composableBuilder(column: $table.date, builder: (column) => column);
+
+  GeneratedColumn<String> get denominationsJson => $composableBuilder(
+    column: $table.denominationsJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get totalAmount => $composableBuilder(
+    column: $table.totalAmount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get expectedAmount => $composableBuilder(
+    column: $table.expectedAmount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get diffAmount => $composableBuilder(
+    column: $table.diffAmount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get diffReason => $composableBuilder(
+    column: $table.diffReason,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get confirmedAt => $composableBuilder(
+    column: $table.confirmedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get confirmedBy => $composableBuilder(
+    column: $table.confirmedBy,
+    builder: (column) => column,
+  );
+}
+
+class $$CashCountsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $CashCountsTable,
+          CashCountRow,
+          $$CashCountsTableFilterComposer,
+          $$CashCountsTableOrderingComposer,
+          $$CashCountsTableAnnotationComposer,
+          $$CashCountsTableCreateCompanionBuilder,
+          $$CashCountsTableUpdateCompanionBuilder,
+          (
+            CashCountRow,
+            BaseReferences<_$AppDatabase, $CashCountsTable, CashCountRow>,
+          ),
+          CashCountRow,
+          PrefetchHooks Function()
+        > {
+  $$CashCountsTableTableManager(_$AppDatabase db, $CashCountsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CashCountsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CashCountsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CashCountsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> type = const Value.absent(),
+                Value<DateTime> date = const Value.absent(),
+                Value<String> denominationsJson = const Value.absent(),
+                Value<int> totalAmount = const Value.absent(),
+                Value<int> expectedAmount = const Value.absent(),
+                Value<int> diffAmount = const Value.absent(),
+                Value<String?> diffReason = const Value.absent(),
+                Value<DateTime?> confirmedAt = const Value.absent(),
+                Value<String?> confirmedBy = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CashCountsCompanion(
+                id: id,
+                type: type,
+                date: date,
+                denominationsJson: denominationsJson,
+                totalAmount: totalAmount,
+                expectedAmount: expectedAmount,
+                diffAmount: diffAmount,
+                diffReason: diffReason,
+                confirmedAt: confirmedAt,
+                confirmedBy: confirmedBy,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String type,
+                required DateTime date,
+                required String denominationsJson,
+                required int totalAmount,
+                required int expectedAmount,
+                required int diffAmount,
+                Value<String?> diffReason = const Value.absent(),
+                Value<DateTime?> confirmedAt = const Value.absent(),
+                Value<String?> confirmedBy = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CashCountsCompanion.insert(
+                id: id,
+                type: type,
+                date: date,
+                denominationsJson: denominationsJson,
+                totalAmount: totalAmount,
+                expectedAmount: expectedAmount,
+                diffAmount: diffAmount,
+                diffReason: diffReason,
+                confirmedAt: confirmedAt,
+                confirmedBy: confirmedBy,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CashCountsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $CashCountsTable,
+      CashCountRow,
+      $$CashCountsTableFilterComposer,
+      $$CashCountsTableOrderingComposer,
+      $$CashCountsTableAnnotationComposer,
+      $$CashCountsTableCreateCompanionBuilder,
+      $$CashCountsTableUpdateCompanionBuilder,
+      (
+        CashCountRow,
+        BaseReferences<_$AppDatabase, $CashCountsTable, CashCountRow>,
+      ),
+      CashCountRow,
+      PrefetchHooks Function()
+    >;
+typedef $$ClosingChecklistItemsTableCreateCompanionBuilder =
+    ClosingChecklistItemsCompanion Function({
+      required String id,
+      required DateTime date,
+      required String label,
+      Value<bool> checked,
+      Value<int> rowid,
+    });
+typedef $$ClosingChecklistItemsTableUpdateCompanionBuilder =
+    ClosingChecklistItemsCompanion Function({
+      Value<String> id,
+      Value<DateTime> date,
+      Value<String> label,
+      Value<bool> checked,
+      Value<int> rowid,
+    });
+
+class $$ClosingChecklistItemsTableFilterComposer
+    extends Composer<_$AppDatabase, $ClosingChecklistItemsTable> {
+  $$ClosingChecklistItemsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get date => $composableBuilder(
+    column: $table.date,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get label => $composableBuilder(
+    column: $table.label,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get checked => $composableBuilder(
+    column: $table.checked,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ClosingChecklistItemsTableOrderingComposer
+    extends Composer<_$AppDatabase, $ClosingChecklistItemsTable> {
+  $$ClosingChecklistItemsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get date => $composableBuilder(
+    column: $table.date,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get label => $composableBuilder(
+    column: $table.label,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get checked => $composableBuilder(
+    column: $table.checked,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ClosingChecklistItemsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ClosingChecklistItemsTable> {
+  $$ClosingChecklistItemsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get date =>
+      $composableBuilder(column: $table.date, builder: (column) => column);
+
+  GeneratedColumn<String> get label =>
+      $composableBuilder(column: $table.label, builder: (column) => column);
+
+  GeneratedColumn<bool> get checked =>
+      $composableBuilder(column: $table.checked, builder: (column) => column);
+}
+
+class $$ClosingChecklistItemsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ClosingChecklistItemsTable,
+          ClosingChecklistItemRow,
+          $$ClosingChecklistItemsTableFilterComposer,
+          $$ClosingChecklistItemsTableOrderingComposer,
+          $$ClosingChecklistItemsTableAnnotationComposer,
+          $$ClosingChecklistItemsTableCreateCompanionBuilder,
+          $$ClosingChecklistItemsTableUpdateCompanionBuilder,
+          (
+            ClosingChecklistItemRow,
+            BaseReferences<
+              _$AppDatabase,
+              $ClosingChecklistItemsTable,
+              ClosingChecklistItemRow
+            >,
+          ),
+          ClosingChecklistItemRow,
+          PrefetchHooks Function()
+        > {
+  $$ClosingChecklistItemsTableTableManager(
+    _$AppDatabase db,
+    $ClosingChecklistItemsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ClosingChecklistItemsTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$ClosingChecklistItemsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$ClosingChecklistItemsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<DateTime> date = const Value.absent(),
+                Value<String> label = const Value.absent(),
+                Value<bool> checked = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ClosingChecklistItemsCompanion(
+                id: id,
+                date: date,
+                label: label,
+                checked: checked,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required DateTime date,
+                required String label,
+                Value<bool> checked = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ClosingChecklistItemsCompanion.insert(
+                id: id,
+                date: date,
+                label: label,
+                checked: checked,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ClosingChecklistItemsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ClosingChecklistItemsTable,
+      ClosingChecklistItemRow,
+      $$ClosingChecklistItemsTableFilterComposer,
+      $$ClosingChecklistItemsTableOrderingComposer,
+      $$ClosingChecklistItemsTableAnnotationComposer,
+      $$ClosingChecklistItemsTableCreateCompanionBuilder,
+      $$ClosingChecklistItemsTableUpdateCompanionBuilder,
+      (
+        ClosingChecklistItemRow,
+        BaseReferences<
+          _$AppDatabase,
+          $ClosingChecklistItemsTable,
+          ClosingChecklistItemRow
+        >,
+      ),
+      ClosingChecklistItemRow,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -14790,4 +16257,8 @@ class $AppDatabaseManager {
       $$CampaignsTableTableManager(_db, _db.campaigns);
   $$PointPoliciesTableTableManager get pointPolicies =>
       $$PointPoliciesTableTableManager(_db, _db.pointPolicies);
+  $$CashCountsTableTableManager get cashCounts =>
+      $$CashCountsTableTableManager(_db, _db.cashCounts);
+  $$ClosingChecklistItemsTableTableManager get closingChecklistItems =>
+      $$ClosingChecklistItemsTableTableManager(_db, _db.closingChecklistItems);
 }
