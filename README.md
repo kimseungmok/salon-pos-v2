@@ -69,3 +69,11 @@ lib/          Flutter 소스 코드 (구현 단계에서 추가)
 - **cold start(`flutter run`) 미검증**: 실제 iOS 시뮬레이터(iPad Air 11" M3)에 빌드는 끝까지 진행됐으나(sqlite3_flutter_libs 컴파일까지 확인) 마지막 앱 설치(`installd`) 단계에서 현재 개발 환경(샌드박스)이 멈춰 끝내 실행 화면을 확인하지 못함 — 로컬 터미널에서 `flutter run -d <시뮬레이터ID>` 직접 실행 권장. hot reload(r)/hot restart(R)도 동일한 이유로 미검증.
 - 작업 단위는 Task 도구(M0~M10)로 추적 중 — 새 세션에서도 TaskList로 현재 진행 상태와 다음 작업을 바로 확인 가능
 - 모든 화면은 일본어로만 구현(현지화 필수, `design/spec/v3/01_glossary.md` 용어 고정표 준수)
+
+### 설계 리뷰 → MVP 업무규칙 정리 → A-2 구현(2026-06-23)
+
+`SCREENS_ERD_TABLES.md`(27화면×21테이블 ERD/테이블정의/제안엔티티/샘플데이터) → `DESIGN_REVIEW.md`(예약/고객/재고/결제/직원 5영역 운영업무 기준 리뷰, 핵심발견: recordVisit() 호출경로 부재로 고객그룹분류 F-CUST-01 비작동) → `PRIORITIZATION.md`(MVP필수5/베타7/출시후2 분류) → `MVP_IMPACT_MAP.md`(MVP 5건 화면/테이블/Repository/구현순서 매핑) → `A2_PREFLIGHT_REVIEW.md`(A-2 착수전 점검) → `A1_A2_BOUNDARY.md`(A-1×A-2 경계: 방문확정 단일트리거=결제완료) → `BUSINESS_RULES_TO_DECIDE.md`(즉시결정7/구현중3/출시전4 업무규칙) → `BOOKING_OVERLAP_POLICY_ANALYSIS.md`(헤어/네일/마츠게 업종별 예약중복정책 분석, A-3 영향)까지 design/spec/v3/ 에 순차 작성.
+
+**A-2(예약 방문완료 상태전환) 구현 완료**: `BookingRepository.completeBooking()` 추가(신규 테이블/컬럼/Repository 없음). `cancelBooking()`과 동일 패턴으로 멱등성 보장, 예약금 필드(`depositReceived`/`depositRefunded`)는 절대 비침범. `recordVisit()` 자체 호출은 하지 않음(A-1/PaymentRepository 책임으로 명확히 분리 — 호출 순서 결정 전까지 이중적재 위험 회피). 테스트 6건 추가, 전체 235건 통과.
+
+**다음 권장 순서**(`MVP_IMPACT_MAP.md` 기준): A-4(직원 재직상태) → A-1(recordVisit 연결, completeBooking()을 호출할 화면/PaymentRepository 연동 시점에 함께) → A-5(재고이력보존) → A-3(예약변경, 영향범위 최대라 마지막 — 단 `BOOKING_OVERLAP_POLICY_ANALYSIS.md`가 지적한 업종별 충돌정책 분기점 구조를 먼저 결정해야 재작업을 피할 수 있음).
