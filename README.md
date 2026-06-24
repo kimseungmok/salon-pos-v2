@@ -78,4 +78,8 @@ lib/          Flutter 소스 코드 (구현 단계에서 추가)
 
 **A-1(recordVisit 연결, 워크인/일반결제 경로) 구현 완료**: `A1_PREFLIGHT_REVIEW.md` §0 추가점검(AuthRepository/AuthService 코드베이스 전체 0건 재확인 — 로그인/세션 개념 자체가 없음, `pay()`엔 staffId 매개변수·컬럼 없음) 결과를 반영해 `PaymentRepository.pay()`의 기존 `newStatus=='completed'` 분기에서 `CustomerRepository.recordVisit()` 호출. `staffId`는 로그인 대신 `OrderItem` 조회로 조달(첫 non-null 채택). 예약경로(`completeBooking()` 연동)는 `Order`에 `bookingId` 저장 컬럼이 없는 구조적 제약으로 이번 범위에서 제외 — 워크인/일반결제 경로만 우선 구현, `PaymentRepository` 생성자 변경 없음. 테스트 5건 추가, 전체 240건 통과.
 
-**다음 권장 순서**(`MVP_IMPACT_MAP.md` 기준): A-4(직원 재직상태) → A-5(재고이력보존) → A-3(예약변경, 영향범위 최대라 마지막 — `BOOKING_OVERLAP_POLICY_ANALYSIS.md`가 지적한 업종별 충돌정책 분기점 구조를 먼저 결정해야 재작업을 피할 수 있음) → (후속) 예약경로 recordVisit 연동(06/07 화면 구현 및 bookingId 전달방식 확정 시점에).
+**A-3(예약 변경 updateBooking) 구현 완료**: `BookingRepository._assertStaffAvailable()`에 `excludeBookingId` 매개변수를 추가해 `createBooking()`/`updateBooking()`이 충돌검사 로직을 공유하도록 구조화(수정 대상 예약 자기 자신과 항상 충돌판정되던 문제 해결). `updateBooking()`은 `status`를 바꾸지 않고 `'confirmed'`인 예약의 `staffId`/`startAt`/`endAt`만 갱신, `cancelBooking()`/`completeBooking()`과 동일한 "현재 confirmed인가" 가드로 통일해 종결된 예약의 수정을 차단. 변경 이력은 보존하지 않음(overwrite — 테이블 추가 금지 조건상 `cancelBooking()`도 이미 같은 한계). 테스트 10건 추가, 전체 250건 통과.
+
+**A-4(직원 재직상태)/A-5(재고이력보존)는 프리플라이트 검토(`A4_PREFLIGHT_REVIEW.md`/`A5_PREFLIGHT_REVIEW.md`)만 완료, 구현은 아직 착수 전.** A-4는 `Staff.accountStatus`(기존 nullable TEXT)에 새 값만 추가하면 마이그레이션 없이 처리 가능. A-5는 `InventoryItem`에 재활용 가능한 여유 필드가 없어 동일 전략을 못 쓰고, "이력이 있으면 삭제 자체를 거부"하는 정책을 권장.
+
+**다음 권장 순서**: A-4 구현 → A-5 구현(둘 다 마이그레이션 불필요로 확인됨) → (후속) 예약경로 recordVisit 연동(06/07 화면 구현 및 bookingId 전달방식 확정 시점에).
