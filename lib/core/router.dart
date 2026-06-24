@@ -25,6 +25,10 @@ import '../features/staff/screens/staff_invite_screen.dart';
 /// 위젯 트리/상태를 탭 전환 후에도 보존해야 한다.
 final GoRouter appRouter = GoRouter(
   initialLocation: '/pos',
+  // 잘못된 URL(딥링크 오타, 존재하지 않는 경로)로 접근했을 때 깨진 화면
+  // 대신 안내화면을 보여준다 — 라우팅 테스트로 발견된 갭(기존에는
+  // errorBuilder가 없어 go_router 기본 에러화면이 그대로 노출됨).
+  errorBuilder: (context, state) => _NotFoundScreen(uri: state.uri),
   routes: [
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {
@@ -69,6 +73,35 @@ final GoRouter appRouter = GoRouter(
     ),
   ],
 );
+
+/// 존재하지 않는 경로 접근 시 보여주는 일본어 안내화면(404).
+class _NotFoundScreen extends StatelessWidget {
+  const _NotFoundScreen({required this.uri});
+
+  final Uri uri;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('ページが見つかりません')),
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.error_outline, size: 48, color: Colors.grey),
+            const SizedBox(height: 16),
+            Text('「${uri.path}」は存在しないページです。', textAlign: TextAlign.center),
+            const SizedBox(height: 16),
+            FilledButton(
+              onPressed: () => context.go('/pos'),
+              child: const Text('注文画面に戻る'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
 class _AppShell extends StatelessWidget {
   const _AppShell({required this.navigationShell});

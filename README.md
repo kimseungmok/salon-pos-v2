@@ -58,5 +58,14 @@ lib/          Flutter 소스 코드 (구현 단계에서 추가)
 **go_router 정식 내비게이션 도입 완료(2026-06-23)**: `lib/core/router.dart`에 `StatefulShellRoute.indexedStack`으로 10개 화면을 정식 경로(`/pos`, `/products`, `/staff`, `/customers`, `/waiting`, `/prepaid-pass`, `/coupons`, `/store-open`, `/inventory`, `/sales-report`)에 매핑. 기존 `_DevHomeTabs`(수동 IndexedStack+setState) 제거. 이 작업 중 **위젯테스트로 처음 발견한 실버그**: `locale: ja_JP`를 고정해놓고도 `flutter_localizations` 패키지/delegates를 등록하지 않아 MaterialLocalizations 자체가 없던 상태(AppBar 등이 런타임에 깨짐) — `pubspec.yaml`에 `flutter_localizations` 추가하고 `main.dart`에 `localizationsDelegates` 등록해 해결.
 
 단위테스트 200건(기존 196 + 스모크 4) 전부 통과, `flutter analyze` 클린. 남은 작업은 각 모듈에서 "다음 차수"로 미뤄둔 보조 화면(02 결제수단그리드에 プリペイド券 추가, 06/07 예약캘린더·등록폼UI, 10 顧客詳細, 15 在庫変動履歴, 17 보너스탭, 20/21/23 화면UI 등)이다.
+
+### 라우팅/로케일 회귀 테스트(2026-06-23 추가)
+
+`test/routing_test.dart`(25건) + `test/locale_test.dart`(4건) 추가, 누적 229건 전체 통과.
+
+- **404 처리 갭 발견·수정**: go_router에 `errorBuilder`가 없어 존재하지 않는 경로 접근 시 기본 디버그 에러화면이 그대로 노출되던 문제 → `_NotFoundScreen`(일본어 안내+「注文画面に戻る」버튼) 추가
+- **범위 한계 명시**: 현재 라우팅은 `/customer→/customer/detail→/reservation` 같은 중첩 push 구조가 아니라 10개 화면이 모두 평행 브랜치(하단탭)다 — 로그인/고객상세/예약 화면이 아직 없어 "뒤로가기" 테스트는 적용 대상이 없음(탭 반복전환 50회 스트레스 테스트로 대체)
+- **로케일 테스트**: `showDatePicker()`/`showTimePicker()`/`AlertDialog`가 일본어로 정상 렌더링됨을 standalone MaterialApp으로 확인(앱 화면 중 아직 picker를 쓰는 화면이 없어, 프레임워크 차원에서 버그 수정이 유효한지만 검증)
+- **cold start(`flutter run`) 미검증**: 실제 iOS 시뮬레이터(iPad Air 11" M3)에 빌드는 끝까지 진행됐으나(sqlite3_flutter_libs 컴파일까지 확인) 마지막 앱 설치(`installd`) 단계에서 현재 개발 환경(샌드박스)이 멈춰 끝내 실행 화면을 확인하지 못함 — 로컬 터미널에서 `flutter run -d <시뮬레이터ID>` 직접 실행 권장. hot reload(r)/hot restart(R)도 동일한 이유로 미검증.
 - 작업 단위는 Task 도구(M0~M10)로 추적 중 — 새 세션에서도 TaskList로 현재 진행 상태와 다음 작업을 바로 확인 가능
 - 모든 화면은 일본어로만 구현(현지화 필수, `design/spec/v3/01_glossary.md` 용어 고정표 준수)
