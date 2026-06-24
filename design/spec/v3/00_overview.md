@@ -93,6 +93,10 @@
 
 `STAFF_ACCOUNT_STATUS_SPEC.md` — 허용값 4종 확정(null=미사용/'待機中'/'連結済み'/'退職済み'). **단일 핵심원칙**: accountStatus는 "근무여부"가 아니라 "계정연결진행상태+퇴사여부"만 뜻함. 신규배정 가능조건은 전모듈 공통으로 `!= '退職済み'` 하나로 통일(Booking 즉시적용, Inventory 확장시도 동일규칙 재사용 가능). 결제/방문기록은 상태 완전무관 조회 원칙 유지. 이원화 삭제정책 공식화(null/待機中=하드삭제, 連結済み=상태전환), 재입사 시 같은 ID 재사용 허용(이력연속성 우선). 절대금지: 화면별 다른 판정식 혼용, null의 의미재해석, DB CHECK제약 시도. A-5와 충돌없음(InventoryLog.staffId도 동일 원칙 적용 가능). 설계 규격만 확정, 코드/컬럼 변경 없음(2026-06-24).
 
+## 3-16. A-4 코드 적용 전 전체 시스템 영향 검증
+
+`A4_PRE_IMPLEMENTATION_IMPACT_CHECK.md` — STAFF_ACCOUNT_STATUS_SPEC.md를 실제 코드에 적용하기 직전 정밀검증. **핵심 발견(충돌지점)**: `_assertStaffAvailable()` 내부에 퇴사검증을 일괄로 넣으면, A-3의 "부분변경도 전체 재검사" 정책과 충돌해 퇴사 후 단순 시간변경조차 차단되는 의도치 않은 부작용 발생 — createBooking()(항상 신규배정, 안전)과 updateBooking()(staffId 실제 변경여부로 분기 필요)을 다르게 처리해야 함. Payment/Visit/Inventory는 전부 "변경 없음"이 정답(이미 올바른 상태). 적용시 수정 코드지점 표로 확정(createBooking/updateBooking/removeStaff 3곳, cancelBooking·completeBooking·watchBookings는 대상 아님). A-5 충돌 없음 재확인. 설계 검토만 수행, 코드 없음(2026-06-24).
+
 ## 4. 진행 현황
 
 | 영역 | 기능정의서 | 화면정의서 | 데이터정의서 | 비고 |
