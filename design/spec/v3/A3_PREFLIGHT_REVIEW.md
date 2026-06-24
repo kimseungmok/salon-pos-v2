@@ -6,6 +6,20 @@
 
 ---
 
+## 0. 구현 완료 갱신 (2026-06-24)
+
+본 문서의 분석 그대로 구현이 완료됐다. `lib/features/booking/data/booking_repository.dart`:
+
+- `_assertStaffAvailable()`에 `excludeBookingId` 매개변수 추가(§2/§"설계 개선 방향" 1번 그대로) — `createBooking()`/`updateBooking()`이 충돌검사 로직을 공유
+- `updateBooking()` 신설 — `status`는 바꾸지 않고 `'confirmed'`인 예약의 `staffId`/`startAt`/`endAt`만 갱신(§1), `cancelBooking()`/`completeBooking()`과 동일한 "현재 confirmed인가" 가드로 통일(§6/§"설계 개선 방향" 2번 그대로)
+- 신규 테이블/컬럼/Repository 없음, 기존 `BookingRepository` 구조 그대로 유지
+
+**검증 결과**: 신규 테스트 10건 추가, **전체 250건 통과**(기존 240 + 신규 10, 회귀 없음), `flutter analyze` 클린. 검증 항목별 확인 — 변경 후 충돌검사 통과 ✅ / 자기 자신 충돌 제외 정상동작 ✅ / 완료·취소·노쇼 예약 수정 차단 ✅ / A-1·A-2 관련 기존 테스트 회귀 없음 ✅.
+
+§"부족한 부분"/"충돌 위험 지점"에서 식별했던 항목 중 1차 구현 범위에 포함된 것(자기제외, 종결상태 가드, 부분변경 시 전체 재검사)은 전부 해결됐다. **1차 구현 범위 밖으로 남긴 것**(§"부족한 부분" 그대로 유효): 변경 이력 미보존(overwrite), 워크인↔예약 전환 불가, 06/07 화면 미구현으로 인한 화면 연동 미검증 — 이 셋은 본 갱신 이후에도 여전히 후속 과제로 남아있다.
+
+---
+
 ## 1. 예약 변경 시 상태 흐름 (예약 → 변경 → 완료/취소/노쇼)
 
 현재 `Booking.status`는 `confirmed → completed | cancelled | noshow`의 흐름만 존재한다(`createBooking()`이 `'confirmed'`로 시작, `completeBooking()`/`cancelBooking()`이 종결상태로 보냄). **"변경됨"이라는 별도 상태는 없고, 있을 필요도 없다** — 시간/담당자/메뉴가 바뀌어도 그 예약은 여전히 "예정된 예약"이라는 의미에서 `'confirmed'`로 남는 것이 자연스럽다. 즉 `updateBooking()`은 **상태값 자체를 바꾸지 않고, `status='confirmed'`인 예약의 다른 필드만 갱신**하는 메서드로 설계하는 것이 `cancelBooking()`/`completeBooking()`과 일관된다.
