@@ -21,6 +21,30 @@
 
 ---
 
+## 0. (추가 점검) `AuthRepository`/`AuthService` 현재 구현 상태 + `staffId` 조달 경로
+
+A-1 착수 직전 추가로 확인이 필요했던 두 가지를 코드 레벨로 재검증했다.
+
+### 0-1. `AuthRepository`/`AuthService` 현재 구현 상태
+`grep -rn "AuthRepository\|AuthService\|currentStaff\|loggedInStaff\|sessionStaffId"` 결과 **코드베이스 전체에 0건.** `find -iname "*auth*"`도 0건. `SCREENS_ERD_TABLES.md` §4-4, `DESIGN_REVIEW.md` §5, `PRIORITIZATION.md` B-7에서 이미 "로그인(PIN) 검증주체 미정의"로 식별된 사실이 그대로다 — **이번 점검에서 새로 발견된 것은 없고, 기존 결론(로그인/세션 개념 자체가 코드에 없음)이 재확인됐다.**
+
+**A-1에 대한 함의**: `recordVisit()` 호출에 "현재 로그인한 직원"을 쓰려는 시도는 애초에 데이터가 없어 불가능하다. A-1은 **로그인/세션과 완전히 무관하게 구현해야 한다.**
+
+### 0-2. `pay()`에서 `staffId`를 즉시 가져올 수 있는 구조인지
+`pay({required orderId, required method, required amount, splitType, cashReceived, prepaidBalanceId})` — **`staffId` 매개변수가 없다.** `Payment` 테이블에도 `staffId` 컬럼이 없다(결제를 처리한 사람을 기록하는 컬럼 자체가 없음 — 컬럼 추가는 금지 범위).
+
+다만 `VisitRecord.staffId`(nullable)에 채울 값은 "결제 처리자"가 아니라 "시술을 담당한 스태프"면 충분하고, 이 값은 **이미 존재하는 `OrderItem.staffId`로 조달 가능하다** — `pay()`가 받는 `orderId`로 `_db.orderItems`를 조회하면 해당 주문의 각 품목에 담긴 `staffId`를 얻을 수 있다(`itemsOf()`가 이미 같은 조회를 제공). **즉시 매개변수로 받는 구조는 아니지만, 추가 쿼리 한 번으로 기존 데이터에서 조달 가능** — 컬럼/매개변수 추가 없이 해결된다.
+
+**채택 규칙**(한 주문에 담당자가 다른 여러 품목이 섞일 수 있어, 단일 `staffId`로 단순화해야 함): 주문의 `OrderItem` 중 **첫 번째로 발견되는 non-null `staffId`**를 사용하고, 전부 null이면 `recordVisit()`에도 `staffId: null`을 전달한다. 이는 "복수 담당자 주문의 방문기록을 누구 명의로 남길지"에 대한 완벽한 답은 아니지만, `VisitRecord.staffId`가 그룹분류(`groupOf()`)에 전혀 쓰이지 않는 보조 정보라는 점(고객 기준 집계만 사용)을 고려하면 1차 구현에 적절한 단순화다.
+
+### 0-3. 로그인 실패 시 예외처리 방식 재검토
+§0-1의 결론(로그인/세션이 코드에 없음)에 따라, **A-1 구현은 "로그인 실패"라는 케이스 자체를 다루지 않는다** — 호출 경로에 인증 단계가 없으므로 인증 실패 예외도 발생할 수 없다. 이는 누락이 아니라 **현재 범위에서 해당 분기가 존재하지 않는다는 사실의 확인**이다. 향후 `PRIORITIZATION.md` B-7(직원 로그인 연동 방식 결정)이 베타 단계에서 실행되면, 그때 `recordVisit()`/`pay()` 호출 경로에 인증 실패 처리를 추가할지 다시 검토해야 한다 — **지금은 범위 밖으로 명시한다.**
+
+### 0-4. 본 점검이 §2/§8에 미치는 영향
+§2(PaymentRepository 영향범위)·§8(구현순서)는 위 결론을 그대로 반영해 갱신한다: `staffId`는 `OrderItem` 조회로 조달하고, 인증 관련 분기는 추가하지 않는다.
+
+---
+
 ## 2. `PaymentRepository` 영향 범위
 
 현재 생성자: `PaymentRepository(this._db, this._customerRepository, this._prepaidPassRepository)` — `BookingRepository`는 주입되어 있지 않다.
@@ -91,14 +115,15 @@
 
 ---
 
-## 8. 구현 순서
+## 8. 구현 순서 (§0 점검 반영 갱신판)
 
-1. §4(0원 주문)·§5(환불 처리) 결정을 먼저 확정 — 둘 다 "1차 범위를 좁게" 가는 방향(0원 주문은 일단 미기록 유지 또는 별도 결정, 환불은 `VisitRecord` 비침범)으로 정해야 아래 단계들이 단순해짐
-2. `PaymentRepository` 생성자에 `BookingRepository` 의존성 추가(예약경로 지원이 필요하다고 결정된 경우에만 — 워크인 경로만 우선 지원하고 예약경로는 다음 단계로 미루는 것도 선택 가능)
-3. `pay()`의 기존 `newStatus == 'completed'` 분기 안에서 `order.customerId != null`이면 `_customerRepository.recordVisit()` 호출
-4. (예약경로를 함께 지원하는 경우) 같은 분기에서 `bookingId`가 전달됐다면 `_bookingRepository.completeBooking(bookingId)` 호출 — 단, `completeBooking()`이 던질 수 있는 예외(이미 cancelled/noshow인 예약 등)를 결제 트랜잭션 실패로 취급할지 별도 결정 필요(§9 리스크 참조)
-5. `payment_repository_test.dart`의 `setUp()`/관련 테스트 갱신, 신규 케이스 추가
-6. 전체 테스트 스위트 회귀 확인
+**확정된 1차 범위**: §0의 점검으로 로그인/세션 의존성이 없음이 재확인됐고, §4(0원 주문)·§5(환불 처리)는 "미기록/비침범" 방향으로 범위를 좁힌다. 예약경로(`completeBooking()` 연동)는 §3에서 식별한 `bookingId` 저장 불가 구조적 제약 때문에 **이번 구현에서는 포함하지 않고, 워크인/일반 결제 경로(`recordVisit()`만)부터 진행한다** — `PaymentRepository` 생성자에 `BookingRepository`를 추가하지 않는다(예약경로는 후속 작업으로 명확히 분리).
+
+1. `pay()` 내부에 `orderId`로 `OrderItem`을 조회해 `staffId`를 조달하는 보조 로직 추가(§0-2 규칙: 첫 번째 non-null `staffId`, 전부 null이면 `null`) — 기존 `itemsOf()`와 동일한 조회를 재사용
+2. 기존 `newStatus == 'completed'` 분기 안에서 `order.customerId != null`이면 `_customerRepository.recordVisit(customerId: order.customerId!, visitDate: now, staffId: 조달된값, amount: netTotal, status: 'completed')` 호출
+3. `payment_repository_test.dart`에 신규 케이스 추가: 완결 시 방문기록 1건 적재 확인, 분할결제 중간단계(`partially_paid`)에서는 미적재 확인, `customerId`가 없는 주문은 미적재 확인, 복수 담당자 품목 중 첫 non-null `staffId`가 채택되는지 확인
+4. 전체 테스트 스위트 회귀 확인
+5. (본 구현 범위 밖, 후속 작업) 예약경로 연동은 06/07 화면 구현 시점에 `bookingId` 전달 방식이 정해진 뒤 별도로 진행
 
 ---
 

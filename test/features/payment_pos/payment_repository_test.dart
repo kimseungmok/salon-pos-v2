@@ -148,6 +148,83 @@ void main() {
     });
   });
 
+  group('pay → recordVisit 연동 (A-1)', () {
+    test('주문 완결 시 고객의 방문기록이 1건 적재된다', () async {
+      final customer = await customerRepo.createCustomer(name: '田中美咲', phone: '090-1234-5678');
+      final order = await repo.createOrder(
+        customerId: customer.id,
+        items: [item],
+      );
+      await repo.pay(orderId: order.id, method: 'cash', amount: 5000, cashReceived: 5000);
+
+      final visits = await (db.select(db.visitRecords)
+            ..where((v) => v.customerId.equals(customer.id)))
+          .get();
+      expect(visits, hasLength(1));
+      expect(visits.single.status, 'completed');
+      expect(visits.single.amount, 5000);
+    });
+
+    test('분할결제 중간(partially_paid) 단계에서는 적재되지 않는다', () async {
+      final customer = await customerRepo.createCustomer(name: '田中美咲', phone: '090-1234-5678');
+      final order = await repo.createOrder(
+        customerId: customer.id,
+        items: [
+          (productId: 'p1', productName: 'カット', quantity: 1, unitPrice: 10000, staffId: null)
+        ],
+      );
+      await repo.pay(orderId: order.id, method: 'cash', amount: 4000, cashReceived: 4000);
+
+      final visits = await (db.select(db.visitRecords)
+            ..where((v) => v.customerId.equals(customer.id)))
+          .get();
+      expect(visits, isEmpty);
+    });
+
+    test('분할결제가 완결되는 마지막 회차에서만 1건 적재된다', () async {
+      final customer = await customerRepo.createCustomer(name: '田中美咲', phone: '090-1234-5678');
+      final order = await repo.createOrder(
+        customerId: customer.id,
+        items: [
+          (productId: 'p1', productName: 'カット', quantity: 1, unitPrice: 10000, staffId: null)
+        ],
+      );
+      await repo.pay(orderId: order.id, method: 'cash', amount: 4000, cashReceived: 4000);
+      await repo.pay(orderId: order.id, method: 'card', amount: 6000);
+
+      final visits = await (db.select(db.visitRecords)
+            ..where((v) => v.customerId.equals(customer.id)))
+          .get();
+      expect(visits, hasLength(1));
+      expect(visits.single.amount, 10000);
+    });
+
+    test('customerId가 없는 주문은 방문기록이 적재되지 않는다', () async {
+      final order = await repo.createOrder(items: [item]); // customerId 없음
+      await repo.pay(orderId: order.id, method: 'cash', amount: 5000, cashReceived: 5000);
+
+      final visits = await db.select(db.visitRecords).get();
+      expect(visits, isEmpty);
+    });
+
+    test('품목 중 첫 번째 non-null staffId가 방문기록에 채택된다', () async {
+      final customer = await customerRepo.createCustomer(name: '田中美咲', phone: '090-1234-5678');
+      final order = await repo.createOrder(
+        customerId: customer.id,
+        items: [
+          (productId: 'p1', productName: 'カット', quantity: 1, unitPrice: 2000, staffId: null),
+          (productId: 'p2', productName: 'カラー', quantity: 1, unitPrice: 3000, staffId: 'staff-001'),
+        ],
+      );
+      await repo.pay(orderId: order.id, method: 'cash', amount: 5000, cashReceived: 5000);
+
+      final visits = await (db.select(db.visitRecords)
+            ..where((v) => v.customerId.equals(customer.id)))
+          .get();
+      expect(visits.single.staffId, 'staff-001');
+    });
+  });
+
   group('cancelOrder (F-PAY-05 원자적 처리)', () {
     test('정상 취소 → 주문/결제 모두 상태 갱신', () async {
       final order = await repo.createOrder(items: [item]);

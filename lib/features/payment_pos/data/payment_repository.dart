@@ -182,6 +182,23 @@ class PaymentRepository {
       await (_db.update(_db.orders)..where((o) => o.id.equals(orderId)))
           .write(OrdersCompanion(status: Value(newStatus)));
 
+      // A-1(design/spec/v3/A1_PREFLIGHT_REVIEW.md): 방문확정 단일 트리거.
+      // A1_A2_BOUNDARY.md §3 원칙대로 PaymentRepository만이 호출 책임을
+      // 진다. 위의 초과결제 차단 로직이 같은 주문에서 이 분기가 두 번
+      // 실행되는 것을 막아준다(중복 적재 방지, §6 점검 결과 그대로).
+      // 예약경로(completeBooking() 연동)는 1차 범위에 포함하지 않음
+      // (§8 점검 결과 — Order에 bookingId를 저장할 컬럼이 없어 후속작업
+      // 으로 분리).
+      if (newStatus == 'completed' && order.customerId != null) {
+        final staffId = await _staffIdOf(orderId);
+        await _customerRepository.recordVisit(
+          customerId: order.customerId!,
+          visitDate: now,
+          staffId: staffId,
+          amount: netTotal,
+        );
+      }
+
       return PaymentRow(
         id: id,
         orderId: orderId,
@@ -199,6 +216,21 @@ class PaymentRepository {
     } catch (e) {
       throw DatabaseException.writeFailed('$e');
     }
+  }
+
+  /// A-1(design/spec/v3/A1_PREFLIGHT_REVIEW.md §0-2): 로그인/세션이
+  /// 없어 "결제 처리자"를 알 방법이 없으므로, VisitRecord.staffId는
+  /// 시술을 담당한 스태프(OrderItem.staffId)에서 조달한다. 한 주문에
+  /// 담당자가 다른 품목이 섞여 있으면 첫 번째 non-null 값을 채택한다
+  /// (groupOf() 그룹분류는 이 값을 쓰지 않는 보조정보라 단순화 허용).
+  Future<String?> _staffIdOf(String orderId) async {
+    final items = await (_db.select(_db.orderItems)
+          ..where((i) => i.orderId.equals(orderId)))
+        .get();
+    for (final item in items) {
+      if (item.staffId != null) return item.staffId;
+    }
+    return null;
   }
 
   Future<int> _paidAmount(String orderId) async {
