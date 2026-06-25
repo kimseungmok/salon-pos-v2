@@ -97,6 +97,10 @@
 
 `A4_PRE_IMPLEMENTATION_IMPACT_CHECK.md` — STAFF_ACCOUNT_STATUS_SPEC.md를 실제 코드에 적용하기 직전 정밀검증. **핵심 발견(충돌지점)**: `_assertStaffAvailable()` 내부에 퇴사검증을 일괄로 넣으면, A-3의 "부분변경도 전체 재검사" 정책과 충돌해 퇴사 후 단순 시간변경조차 차단되는 의도치 않은 부작용 발생 — createBooking()(항상 신규배정, 안전)과 updateBooking()(staffId 실제 변경여부로 분기 필요)을 다르게 처리해야 함. Payment/Visit/Inventory는 전부 "변경 없음"이 정답(이미 올바른 상태). 적용시 수정 코드지점 표로 확정(createBooking/updateBooking/removeStaff 3곳, cancelBooking·completeBooking·watchBookings는 대상 아님). A-5 충돌 없음 재확인. 설계 검토만 수행, 코드 없음(2026-06-24).
 
+## 3-17. A-5(재고 이력보존) 최종 프리플라이트 검토
+
+`A5_PREFLIGHT_REVIEW_FINAL.md` — A-4 구현 완료 시점에서 6개 항목 재검증. quantity(저장값)와 log합산값은 "정합성 보장"이 아니라 "깨질 계기가 아직 없을 뿐"임을 재확인. adjustQuantity()는 cancelOrder()와 달리 트랜잭션 미사용(TOCTOU, 음수재고 차단도 비원자적이라 "보장"아닌 "대개 맞음" 수준). InventoryItem엔 Staff.accountStatus 같은 여유필드가 없어 동일전략 불가 — 권장은 "이력있으면 삭제거부"(즉시구현 가능, 회귀위험 없음 — 기존 deleteItem() 테스트가 정상삭제 미검증). Product↔InventoryItem 매핑/재고조사구조화/정합성검증로직 3가지는 A-6+로 명시적 분리. **A-4 충돌 없음**: InventoryLog.staffId는 grep 재확인 결과 StaffRepository/assertNotRetired() 참조 0건, 향후 확장시에도 Booking과 동일한 단일조건+신규시점한정 원칙 재사용 가능. 설계 분석만 수행, 코드 없음(2026-06-25).
+
 ## 4. 진행 현황
 
 | 영역 | 기능정의서 | 화면정의서 | 데이터정의서 | 비고 |
