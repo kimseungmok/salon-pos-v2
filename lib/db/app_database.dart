@@ -14,6 +14,7 @@ import '../features/marketing/data/marketing_tables.dart';
 import '../features/payment_pos/data/payment_tables.dart';
 import '../features/prepaid_pass/data/prepaid_pass_tables.dart';
 import '../features/product/data/product_tables.dart';
+import '../features/session/data/session_tables.dart';
 import '../features/staff/data/staff_tables.dart';
 
 part 'app_database.g.dart';
@@ -46,6 +47,11 @@ part 'app_database.g.dart';
     ClosingChecklistItems,
     InventoryItems,
     InventoryLogs,
+    // A-8 SESSION ENGINE(docs/A8_SESSION_ENGINE.md) — schemaVersion 2.
+    PaymentSessions,
+    PaymentSessionItems,
+    StaffEarningLedgers,
+    PaymentMethodBreakdowns,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -65,7 +71,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting() : super(NativeDatabase.memory());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -75,6 +81,16 @@ class AppDatabase extends _$AppDatabase {
         // 향후 스키마 변경 시 onUpgrade에 단계별 마이그레이션 추가.
         // 절대 기존 데이터를 삭제하는 마이그레이션을 작성하지 않는다
         // (영업 매출 데이터 — 운영 중인 매장의 데이터 손실은 치명적).
+        onUpgrade: (Migrator m, int from, int to) async {
+          // v1 → v2: A-8 SESSION ENGINE 신규 테이블 4종 추가뿐 — 기존
+          // 테이블/컬럼은 전혀 건드리지 않는다(순수 추가형 마이그레이션).
+          if (from < 2) {
+            await m.createTable(paymentSessions);
+            await m.createTable(paymentSessionItems);
+            await m.createTable(staffEarningLedgers);
+            await m.createTable(paymentMethodBreakdowns);
+          }
+        },
       );
 }
 

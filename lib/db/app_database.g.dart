@@ -10818,6 +10818,2464 @@ class InventoryLogsCompanion extends UpdateCompanion<InventoryLogRow> {
   }
 }
 
+class $PaymentSessionsTable extends PaymentSessions
+    with TableInfo<$PaymentSessionsTable, PaymentSessionRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PaymentSessionsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _sessionNoMeta = const VerificationMeta(
+    'sessionNo',
+  );
+  @override
+  late final GeneratedColumn<String> sessionNo = GeneratedColumn<String>(
+    'session_no',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
+  );
+  static const VerificationMeta _shopIdMeta = const VerificationMeta('shopId');
+  @override
+  late final GeneratedColumn<int> shopId = GeneratedColumn<int>(
+    'shop_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(1),
+  );
+  static const VerificationMeta _businessTypeMeta = const VerificationMeta(
+    'businessType',
+  );
+  @override
+  late final GeneratedColumn<String> businessType = GeneratedColumn<String>(
+    'business_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _customerIdMeta = const VerificationMeta(
+    'customerId',
+  );
+  @override
+  late final GeneratedColumn<int> customerId = GeneratedColumn<int>(
+    'customer_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _staffIdPrimaryMeta = const VerificationMeta(
+    'staffIdPrimary',
+  );
+  @override
+  late final GeneratedColumn<String> staffIdPrimary = GeneratedColumn<String>(
+    'staff_id_primary',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _roomIdMeta = const VerificationMeta('roomId');
+  @override
+  late final GeneratedColumn<int> roomId = GeneratedColumn<int>(
+    'room_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('open'),
+  );
+  static const VerificationMeta _startAtMeta = const VerificationMeta(
+    'startAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> startAt = GeneratedColumn<DateTime>(
+    'start_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _endAtMeta = const VerificationMeta('endAt');
+  @override
+  late final GeneratedColumn<DateTime> endAt = GeneratedColumn<DateTime>(
+    'end_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _totalAmountMeta = const VerificationMeta(
+    'totalAmount',
+  );
+  @override
+  late final GeneratedColumn<int> totalAmount = GeneratedColumn<int>(
+    'total_amount',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _discountAmountMeta = const VerificationMeta(
+    'discountAmount',
+  );
+  @override
+  late final GeneratedColumn<int> discountAmount = GeneratedColumn<int>(
+    'discount_amount',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _taxAmountMeta = const VerificationMeta(
+    'taxAmount',
+  );
+  @override
+  late final GeneratedColumn<int> taxAmount = GeneratedColumn<int>(
+    'tax_amount',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _finalAmountMeta = const VerificationMeta(
+    'finalAmount',
+  );
+  @override
+  late final GeneratedColumn<int> finalAmount = GeneratedColumn<int>(
+    'final_amount',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    sessionNo,
+    shopId,
+    businessType,
+    customerId,
+    staffIdPrimary,
+    roomId,
+    status,
+    startAt,
+    endAt,
+    totalAmount,
+    discountAmount,
+    taxAmount,
+    finalAmount,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'payment_sessions';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<PaymentSessionRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('session_no')) {
+      context.handle(
+        _sessionNoMeta,
+        sessionNo.isAcceptableOrUnknown(data['session_no']!, _sessionNoMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sessionNoMeta);
+    }
+    if (data.containsKey('shop_id')) {
+      context.handle(
+        _shopIdMeta,
+        shopId.isAcceptableOrUnknown(data['shop_id']!, _shopIdMeta),
+      );
+    }
+    if (data.containsKey('business_type')) {
+      context.handle(
+        _businessTypeMeta,
+        businessType.isAcceptableOrUnknown(
+          data['business_type']!,
+          _businessTypeMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_businessTypeMeta);
+    }
+    if (data.containsKey('customer_id')) {
+      context.handle(
+        _customerIdMeta,
+        customerId.isAcceptableOrUnknown(data['customer_id']!, _customerIdMeta),
+      );
+    }
+    if (data.containsKey('staff_id_primary')) {
+      context.handle(
+        _staffIdPrimaryMeta,
+        staffIdPrimary.isAcceptableOrUnknown(
+          data['staff_id_primary']!,
+          _staffIdPrimaryMeta,
+        ),
+      );
+    }
+    if (data.containsKey('room_id')) {
+      context.handle(
+        _roomIdMeta,
+        roomId.isAcceptableOrUnknown(data['room_id']!, _roomIdMeta),
+      );
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    }
+    if (data.containsKey('start_at')) {
+      context.handle(
+        _startAtMeta,
+        startAt.isAcceptableOrUnknown(data['start_at']!, _startAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_startAtMeta);
+    }
+    if (data.containsKey('end_at')) {
+      context.handle(
+        _endAtMeta,
+        endAt.isAcceptableOrUnknown(data['end_at']!, _endAtMeta),
+      );
+    }
+    if (data.containsKey('total_amount')) {
+      context.handle(
+        _totalAmountMeta,
+        totalAmount.isAcceptableOrUnknown(
+          data['total_amount']!,
+          _totalAmountMeta,
+        ),
+      );
+    }
+    if (data.containsKey('discount_amount')) {
+      context.handle(
+        _discountAmountMeta,
+        discountAmount.isAcceptableOrUnknown(
+          data['discount_amount']!,
+          _discountAmountMeta,
+        ),
+      );
+    }
+    if (data.containsKey('tax_amount')) {
+      context.handle(
+        _taxAmountMeta,
+        taxAmount.isAcceptableOrUnknown(data['tax_amount']!, _taxAmountMeta),
+      );
+    }
+    if (data.containsKey('final_amount')) {
+      context.handle(
+        _finalAmountMeta,
+        finalAmount.isAcceptableOrUnknown(
+          data['final_amount']!,
+          _finalAmountMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  PaymentSessionRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PaymentSessionRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      sessionNo: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}session_no'],
+      )!,
+      shopId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}shop_id'],
+      )!,
+      businessType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}business_type'],
+      )!,
+      customerId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}customer_id'],
+      ),
+      staffIdPrimary: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}staff_id_primary'],
+      ),
+      roomId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}room_id'],
+      ),
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+      startAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}start_at'],
+      )!,
+      endAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}end_at'],
+      ),
+      totalAmount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}total_amount'],
+      )!,
+      discountAmount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}discount_amount'],
+      )!,
+      taxAmount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}tax_amount'],
+      )!,
+      finalAmount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}final_amount'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $PaymentSessionsTable createAlias(String alias) {
+    return $PaymentSessionsTable(attachedDatabase, alias);
+  }
+}
+
+class PaymentSessionRow extends DataClass
+    implements Insertable<PaymentSessionRow> {
+  final int id;
+
+  /// 전표번호, 예: "2026-0001". 연도별로 0001부터 다시 시작(연도+4자리).
+  final String sessionNo;
+  final int shopId;
+
+  /// 'salon' | 'karaoke' | 'izakaya'.
+  final String businessType;
+
+  /// 향후 customer 모듈과의 연결 방식은 별도 결정 필요(design/spec/v3
+  /// Customers.id는 UUID 문자열이라 이 정수형 컬럼과 직접 FK를 걸 수
+  /// 없음 — 본 1차 구현에서는 비FK 정수 참조로만 둔다).
+  final int? customerId;
+
+  /// design/spec/v3 Staff.id(UUID 문자열)와 같은 타입 — 향후 실제
+  /// Staff 테이블과 연결할 여지를 남겨둔다(현재는 비FK).
+  final String? staffIdPrimary;
+  final int? roomId;
+
+  /// 'open' | 'closed' | 'cancelled'.
+  final String status;
+  final DateTime startAt;
+  final DateTime? endAt;
+  final int totalAmount;
+  final int discountAmount;
+  final int taxAmount;
+  final int finalAmount;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const PaymentSessionRow({
+    required this.id,
+    required this.sessionNo,
+    required this.shopId,
+    required this.businessType,
+    this.customerId,
+    this.staffIdPrimary,
+    this.roomId,
+    required this.status,
+    required this.startAt,
+    this.endAt,
+    required this.totalAmount,
+    required this.discountAmount,
+    required this.taxAmount,
+    required this.finalAmount,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['session_no'] = Variable<String>(sessionNo);
+    map['shop_id'] = Variable<int>(shopId);
+    map['business_type'] = Variable<String>(businessType);
+    if (!nullToAbsent || customerId != null) {
+      map['customer_id'] = Variable<int>(customerId);
+    }
+    if (!nullToAbsent || staffIdPrimary != null) {
+      map['staff_id_primary'] = Variable<String>(staffIdPrimary);
+    }
+    if (!nullToAbsent || roomId != null) {
+      map['room_id'] = Variable<int>(roomId);
+    }
+    map['status'] = Variable<String>(status);
+    map['start_at'] = Variable<DateTime>(startAt);
+    if (!nullToAbsent || endAt != null) {
+      map['end_at'] = Variable<DateTime>(endAt);
+    }
+    map['total_amount'] = Variable<int>(totalAmount);
+    map['discount_amount'] = Variable<int>(discountAmount);
+    map['tax_amount'] = Variable<int>(taxAmount);
+    map['final_amount'] = Variable<int>(finalAmount);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  PaymentSessionsCompanion toCompanion(bool nullToAbsent) {
+    return PaymentSessionsCompanion(
+      id: Value(id),
+      sessionNo: Value(sessionNo),
+      shopId: Value(shopId),
+      businessType: Value(businessType),
+      customerId: customerId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(customerId),
+      staffIdPrimary: staffIdPrimary == null && nullToAbsent
+          ? const Value.absent()
+          : Value(staffIdPrimary),
+      roomId: roomId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(roomId),
+      status: Value(status),
+      startAt: Value(startAt),
+      endAt: endAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(endAt),
+      totalAmount: Value(totalAmount),
+      discountAmount: Value(discountAmount),
+      taxAmount: Value(taxAmount),
+      finalAmount: Value(finalAmount),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory PaymentSessionRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PaymentSessionRow(
+      id: serializer.fromJson<int>(json['id']),
+      sessionNo: serializer.fromJson<String>(json['sessionNo']),
+      shopId: serializer.fromJson<int>(json['shopId']),
+      businessType: serializer.fromJson<String>(json['businessType']),
+      customerId: serializer.fromJson<int?>(json['customerId']),
+      staffIdPrimary: serializer.fromJson<String?>(json['staffIdPrimary']),
+      roomId: serializer.fromJson<int?>(json['roomId']),
+      status: serializer.fromJson<String>(json['status']),
+      startAt: serializer.fromJson<DateTime>(json['startAt']),
+      endAt: serializer.fromJson<DateTime?>(json['endAt']),
+      totalAmount: serializer.fromJson<int>(json['totalAmount']),
+      discountAmount: serializer.fromJson<int>(json['discountAmount']),
+      taxAmount: serializer.fromJson<int>(json['taxAmount']),
+      finalAmount: serializer.fromJson<int>(json['finalAmount']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'sessionNo': serializer.toJson<String>(sessionNo),
+      'shopId': serializer.toJson<int>(shopId),
+      'businessType': serializer.toJson<String>(businessType),
+      'customerId': serializer.toJson<int?>(customerId),
+      'staffIdPrimary': serializer.toJson<String?>(staffIdPrimary),
+      'roomId': serializer.toJson<int?>(roomId),
+      'status': serializer.toJson<String>(status),
+      'startAt': serializer.toJson<DateTime>(startAt),
+      'endAt': serializer.toJson<DateTime?>(endAt),
+      'totalAmount': serializer.toJson<int>(totalAmount),
+      'discountAmount': serializer.toJson<int>(discountAmount),
+      'taxAmount': serializer.toJson<int>(taxAmount),
+      'finalAmount': serializer.toJson<int>(finalAmount),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  PaymentSessionRow copyWith({
+    int? id,
+    String? sessionNo,
+    int? shopId,
+    String? businessType,
+    Value<int?> customerId = const Value.absent(),
+    Value<String?> staffIdPrimary = const Value.absent(),
+    Value<int?> roomId = const Value.absent(),
+    String? status,
+    DateTime? startAt,
+    Value<DateTime?> endAt = const Value.absent(),
+    int? totalAmount,
+    int? discountAmount,
+    int? taxAmount,
+    int? finalAmount,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => PaymentSessionRow(
+    id: id ?? this.id,
+    sessionNo: sessionNo ?? this.sessionNo,
+    shopId: shopId ?? this.shopId,
+    businessType: businessType ?? this.businessType,
+    customerId: customerId.present ? customerId.value : this.customerId,
+    staffIdPrimary: staffIdPrimary.present
+        ? staffIdPrimary.value
+        : this.staffIdPrimary,
+    roomId: roomId.present ? roomId.value : this.roomId,
+    status: status ?? this.status,
+    startAt: startAt ?? this.startAt,
+    endAt: endAt.present ? endAt.value : this.endAt,
+    totalAmount: totalAmount ?? this.totalAmount,
+    discountAmount: discountAmount ?? this.discountAmount,
+    taxAmount: taxAmount ?? this.taxAmount,
+    finalAmount: finalAmount ?? this.finalAmount,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  PaymentSessionRow copyWithCompanion(PaymentSessionsCompanion data) {
+    return PaymentSessionRow(
+      id: data.id.present ? data.id.value : this.id,
+      sessionNo: data.sessionNo.present ? data.sessionNo.value : this.sessionNo,
+      shopId: data.shopId.present ? data.shopId.value : this.shopId,
+      businessType: data.businessType.present
+          ? data.businessType.value
+          : this.businessType,
+      customerId: data.customerId.present
+          ? data.customerId.value
+          : this.customerId,
+      staffIdPrimary: data.staffIdPrimary.present
+          ? data.staffIdPrimary.value
+          : this.staffIdPrimary,
+      roomId: data.roomId.present ? data.roomId.value : this.roomId,
+      status: data.status.present ? data.status.value : this.status,
+      startAt: data.startAt.present ? data.startAt.value : this.startAt,
+      endAt: data.endAt.present ? data.endAt.value : this.endAt,
+      totalAmount: data.totalAmount.present
+          ? data.totalAmount.value
+          : this.totalAmount,
+      discountAmount: data.discountAmount.present
+          ? data.discountAmount.value
+          : this.discountAmount,
+      taxAmount: data.taxAmount.present ? data.taxAmount.value : this.taxAmount,
+      finalAmount: data.finalAmount.present
+          ? data.finalAmount.value
+          : this.finalAmount,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PaymentSessionRow(')
+          ..write('id: $id, ')
+          ..write('sessionNo: $sessionNo, ')
+          ..write('shopId: $shopId, ')
+          ..write('businessType: $businessType, ')
+          ..write('customerId: $customerId, ')
+          ..write('staffIdPrimary: $staffIdPrimary, ')
+          ..write('roomId: $roomId, ')
+          ..write('status: $status, ')
+          ..write('startAt: $startAt, ')
+          ..write('endAt: $endAt, ')
+          ..write('totalAmount: $totalAmount, ')
+          ..write('discountAmount: $discountAmount, ')
+          ..write('taxAmount: $taxAmount, ')
+          ..write('finalAmount: $finalAmount, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    sessionNo,
+    shopId,
+    businessType,
+    customerId,
+    staffIdPrimary,
+    roomId,
+    status,
+    startAt,
+    endAt,
+    totalAmount,
+    discountAmount,
+    taxAmount,
+    finalAmount,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PaymentSessionRow &&
+          other.id == this.id &&
+          other.sessionNo == this.sessionNo &&
+          other.shopId == this.shopId &&
+          other.businessType == this.businessType &&
+          other.customerId == this.customerId &&
+          other.staffIdPrimary == this.staffIdPrimary &&
+          other.roomId == this.roomId &&
+          other.status == this.status &&
+          other.startAt == this.startAt &&
+          other.endAt == this.endAt &&
+          other.totalAmount == this.totalAmount &&
+          other.discountAmount == this.discountAmount &&
+          other.taxAmount == this.taxAmount &&
+          other.finalAmount == this.finalAmount &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class PaymentSessionsCompanion extends UpdateCompanion<PaymentSessionRow> {
+  final Value<int> id;
+  final Value<String> sessionNo;
+  final Value<int> shopId;
+  final Value<String> businessType;
+  final Value<int?> customerId;
+  final Value<String?> staffIdPrimary;
+  final Value<int?> roomId;
+  final Value<String> status;
+  final Value<DateTime> startAt;
+  final Value<DateTime?> endAt;
+  final Value<int> totalAmount;
+  final Value<int> discountAmount;
+  final Value<int> taxAmount;
+  final Value<int> finalAmount;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  const PaymentSessionsCompanion({
+    this.id = const Value.absent(),
+    this.sessionNo = const Value.absent(),
+    this.shopId = const Value.absent(),
+    this.businessType = const Value.absent(),
+    this.customerId = const Value.absent(),
+    this.staffIdPrimary = const Value.absent(),
+    this.roomId = const Value.absent(),
+    this.status = const Value.absent(),
+    this.startAt = const Value.absent(),
+    this.endAt = const Value.absent(),
+    this.totalAmount = const Value.absent(),
+    this.discountAmount = const Value.absent(),
+    this.taxAmount = const Value.absent(),
+    this.finalAmount = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  PaymentSessionsCompanion.insert({
+    this.id = const Value.absent(),
+    required String sessionNo,
+    this.shopId = const Value.absent(),
+    required String businessType,
+    this.customerId = const Value.absent(),
+    this.staffIdPrimary = const Value.absent(),
+    this.roomId = const Value.absent(),
+    this.status = const Value.absent(),
+    required DateTime startAt,
+    this.endAt = const Value.absent(),
+    this.totalAmount = const Value.absent(),
+    this.discountAmount = const Value.absent(),
+    this.taxAmount = const Value.absent(),
+    this.finalAmount = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+  }) : sessionNo = Value(sessionNo),
+       businessType = Value(businessType),
+       startAt = Value(startAt),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<PaymentSessionRow> custom({
+    Expression<int>? id,
+    Expression<String>? sessionNo,
+    Expression<int>? shopId,
+    Expression<String>? businessType,
+    Expression<int>? customerId,
+    Expression<String>? staffIdPrimary,
+    Expression<int>? roomId,
+    Expression<String>? status,
+    Expression<DateTime>? startAt,
+    Expression<DateTime>? endAt,
+    Expression<int>? totalAmount,
+    Expression<int>? discountAmount,
+    Expression<int>? taxAmount,
+    Expression<int>? finalAmount,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (sessionNo != null) 'session_no': sessionNo,
+      if (shopId != null) 'shop_id': shopId,
+      if (businessType != null) 'business_type': businessType,
+      if (customerId != null) 'customer_id': customerId,
+      if (staffIdPrimary != null) 'staff_id_primary': staffIdPrimary,
+      if (roomId != null) 'room_id': roomId,
+      if (status != null) 'status': status,
+      if (startAt != null) 'start_at': startAt,
+      if (endAt != null) 'end_at': endAt,
+      if (totalAmount != null) 'total_amount': totalAmount,
+      if (discountAmount != null) 'discount_amount': discountAmount,
+      if (taxAmount != null) 'tax_amount': taxAmount,
+      if (finalAmount != null) 'final_amount': finalAmount,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  PaymentSessionsCompanion copyWith({
+    Value<int>? id,
+    Value<String>? sessionNo,
+    Value<int>? shopId,
+    Value<String>? businessType,
+    Value<int?>? customerId,
+    Value<String?>? staffIdPrimary,
+    Value<int?>? roomId,
+    Value<String>? status,
+    Value<DateTime>? startAt,
+    Value<DateTime?>? endAt,
+    Value<int>? totalAmount,
+    Value<int>? discountAmount,
+    Value<int>? taxAmount,
+    Value<int>? finalAmount,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+  }) {
+    return PaymentSessionsCompanion(
+      id: id ?? this.id,
+      sessionNo: sessionNo ?? this.sessionNo,
+      shopId: shopId ?? this.shopId,
+      businessType: businessType ?? this.businessType,
+      customerId: customerId ?? this.customerId,
+      staffIdPrimary: staffIdPrimary ?? this.staffIdPrimary,
+      roomId: roomId ?? this.roomId,
+      status: status ?? this.status,
+      startAt: startAt ?? this.startAt,
+      endAt: endAt ?? this.endAt,
+      totalAmount: totalAmount ?? this.totalAmount,
+      discountAmount: discountAmount ?? this.discountAmount,
+      taxAmount: taxAmount ?? this.taxAmount,
+      finalAmount: finalAmount ?? this.finalAmount,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (sessionNo.present) {
+      map['session_no'] = Variable<String>(sessionNo.value);
+    }
+    if (shopId.present) {
+      map['shop_id'] = Variable<int>(shopId.value);
+    }
+    if (businessType.present) {
+      map['business_type'] = Variable<String>(businessType.value);
+    }
+    if (customerId.present) {
+      map['customer_id'] = Variable<int>(customerId.value);
+    }
+    if (staffIdPrimary.present) {
+      map['staff_id_primary'] = Variable<String>(staffIdPrimary.value);
+    }
+    if (roomId.present) {
+      map['room_id'] = Variable<int>(roomId.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (startAt.present) {
+      map['start_at'] = Variable<DateTime>(startAt.value);
+    }
+    if (endAt.present) {
+      map['end_at'] = Variable<DateTime>(endAt.value);
+    }
+    if (totalAmount.present) {
+      map['total_amount'] = Variable<int>(totalAmount.value);
+    }
+    if (discountAmount.present) {
+      map['discount_amount'] = Variable<int>(discountAmount.value);
+    }
+    if (taxAmount.present) {
+      map['tax_amount'] = Variable<int>(taxAmount.value);
+    }
+    if (finalAmount.present) {
+      map['final_amount'] = Variable<int>(finalAmount.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PaymentSessionsCompanion(')
+          ..write('id: $id, ')
+          ..write('sessionNo: $sessionNo, ')
+          ..write('shopId: $shopId, ')
+          ..write('businessType: $businessType, ')
+          ..write('customerId: $customerId, ')
+          ..write('staffIdPrimary: $staffIdPrimary, ')
+          ..write('roomId: $roomId, ')
+          ..write('status: $status, ')
+          ..write('startAt: $startAt, ')
+          ..write('endAt: $endAt, ')
+          ..write('totalAmount: $totalAmount, ')
+          ..write('discountAmount: $discountAmount, ')
+          ..write('taxAmount: $taxAmount, ')
+          ..write('finalAmount: $finalAmount, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $PaymentSessionItemsTable extends PaymentSessionItems
+    with TableInfo<$PaymentSessionItemsTable, PaymentSessionItemRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PaymentSessionItemsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _sessionIdMeta = const VerificationMeta(
+    'sessionId',
+  );
+  @override
+  late final GeneratedColumn<int> sessionId = GeneratedColumn<int>(
+    'session_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES payment_sessions (id)',
+    ),
+  );
+  static const VerificationMeta _itemTypeMeta = const VerificationMeta(
+    'itemType',
+  );
+  @override
+  late final GeneratedColumn<String> itemType = GeneratedColumn<String>(
+    'item_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _refTypeMeta = const VerificationMeta(
+    'refType',
+  );
+  @override
+  late final GeneratedColumn<String> refType = GeneratedColumn<String>(
+    'ref_type',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _refIdMeta = const VerificationMeta('refId');
+  @override
+  late final GeneratedColumn<String> refId = GeneratedColumn<String>(
+    'ref_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _itemNameMeta = const VerificationMeta(
+    'itemName',
+  );
+  @override
+  late final GeneratedColumn<String> itemName = GeneratedColumn<String>(
+    'item_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _qtyMeta = const VerificationMeta('qty');
+  @override
+  late final GeneratedColumn<int> qty = GeneratedColumn<int>(
+    'qty',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(1),
+  );
+  static const VerificationMeta _unitPriceMeta = const VerificationMeta(
+    'unitPrice',
+  );
+  @override
+  late final GeneratedColumn<int> unitPrice = GeneratedColumn<int>(
+    'unit_price',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _amountMeta = const VerificationMeta('amount');
+  @override
+  late final GeneratedColumn<int> amount = GeneratedColumn<int>(
+    'amount',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _staffIdMeta = const VerificationMeta(
+    'staffId',
+  );
+  @override
+  late final GeneratedColumn<String> staffId = GeneratedColumn<String>(
+    'staff_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _metaJsonMeta = const VerificationMeta(
+    'metaJson',
+  );
+  @override
+  late final GeneratedColumn<String> metaJson = GeneratedColumn<String>(
+    'meta_json',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    sessionId,
+    itemType,
+    refType,
+    refId,
+    itemName,
+    qty,
+    unitPrice,
+    amount,
+    staffId,
+    metaJson,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'payment_session_items';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<PaymentSessionItemRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('session_id')) {
+      context.handle(
+        _sessionIdMeta,
+        sessionId.isAcceptableOrUnknown(data['session_id']!, _sessionIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sessionIdMeta);
+    }
+    if (data.containsKey('item_type')) {
+      context.handle(
+        _itemTypeMeta,
+        itemType.isAcceptableOrUnknown(data['item_type']!, _itemTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_itemTypeMeta);
+    }
+    if (data.containsKey('ref_type')) {
+      context.handle(
+        _refTypeMeta,
+        refType.isAcceptableOrUnknown(data['ref_type']!, _refTypeMeta),
+      );
+    }
+    if (data.containsKey('ref_id')) {
+      context.handle(
+        _refIdMeta,
+        refId.isAcceptableOrUnknown(data['ref_id']!, _refIdMeta),
+      );
+    }
+    if (data.containsKey('item_name')) {
+      context.handle(
+        _itemNameMeta,
+        itemName.isAcceptableOrUnknown(data['item_name']!, _itemNameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_itemNameMeta);
+    }
+    if (data.containsKey('qty')) {
+      context.handle(
+        _qtyMeta,
+        qty.isAcceptableOrUnknown(data['qty']!, _qtyMeta),
+      );
+    }
+    if (data.containsKey('unit_price')) {
+      context.handle(
+        _unitPriceMeta,
+        unitPrice.isAcceptableOrUnknown(data['unit_price']!, _unitPriceMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_unitPriceMeta);
+    }
+    if (data.containsKey('amount')) {
+      context.handle(
+        _amountMeta,
+        amount.isAcceptableOrUnknown(data['amount']!, _amountMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_amountMeta);
+    }
+    if (data.containsKey('staff_id')) {
+      context.handle(
+        _staffIdMeta,
+        staffId.isAcceptableOrUnknown(data['staff_id']!, _staffIdMeta),
+      );
+    }
+    if (data.containsKey('meta_json')) {
+      context.handle(
+        _metaJsonMeta,
+        metaJson.isAcceptableOrUnknown(data['meta_json']!, _metaJsonMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  PaymentSessionItemRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PaymentSessionItemRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      sessionId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}session_id'],
+      )!,
+      itemType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}item_type'],
+      )!,
+      refType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}ref_type'],
+      ),
+      refId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}ref_id'],
+      ),
+      itemName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}item_name'],
+      )!,
+      qty: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}qty'],
+      )!,
+      unitPrice: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}unit_price'],
+      )!,
+      amount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}amount'],
+      )!,
+      staffId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}staff_id'],
+      ),
+      metaJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}meta_json'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $PaymentSessionItemsTable createAlias(String alias) {
+    return $PaymentSessionItemsTable(attachedDatabase, alias);
+  }
+}
+
+class PaymentSessionItemRow extends DataClass
+    implements Insertable<PaymentSessionItemRow> {
+  final int id;
+  final int sessionId;
+
+  /// 'service' | 'product' | 'time' | 'staff_fee' | 'discount' | 'surcharge'.
+  final String itemType;
+
+  /// 'booking' | 'plu' | 'staff' | 'manual'.
+  final String? refType;
+  final String? refId;
+
+  /// 당시 이름 스냅샷 — 원본(상품명 등)이 나중에 바뀌어도 전표에는
+  /// 그 시점 이름이 그대로 남아야 한다(영수증 재현성).
+  final String itemName;
+  final int qty;
+  final int unitPrice;
+  final int amount;
+
+  /// 수익 귀속 직원(지정금 핵심) — staff_fee뿐 아니라 service 항목에도
+  /// 쓰일 수 있어 모든 item_type에 공통으로 둔다.
+  final String? staffId;
+
+  /// 추가 메타(야간할증 등) — JSON 문자열, 구조는 호출자 책임.
+  final String? metaJson;
+  final DateTime createdAt;
+  const PaymentSessionItemRow({
+    required this.id,
+    required this.sessionId,
+    required this.itemType,
+    this.refType,
+    this.refId,
+    required this.itemName,
+    required this.qty,
+    required this.unitPrice,
+    required this.amount,
+    this.staffId,
+    this.metaJson,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['session_id'] = Variable<int>(sessionId);
+    map['item_type'] = Variable<String>(itemType);
+    if (!nullToAbsent || refType != null) {
+      map['ref_type'] = Variable<String>(refType);
+    }
+    if (!nullToAbsent || refId != null) {
+      map['ref_id'] = Variable<String>(refId);
+    }
+    map['item_name'] = Variable<String>(itemName);
+    map['qty'] = Variable<int>(qty);
+    map['unit_price'] = Variable<int>(unitPrice);
+    map['amount'] = Variable<int>(amount);
+    if (!nullToAbsent || staffId != null) {
+      map['staff_id'] = Variable<String>(staffId);
+    }
+    if (!nullToAbsent || metaJson != null) {
+      map['meta_json'] = Variable<String>(metaJson);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  PaymentSessionItemsCompanion toCompanion(bool nullToAbsent) {
+    return PaymentSessionItemsCompanion(
+      id: Value(id),
+      sessionId: Value(sessionId),
+      itemType: Value(itemType),
+      refType: refType == null && nullToAbsent
+          ? const Value.absent()
+          : Value(refType),
+      refId: refId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(refId),
+      itemName: Value(itemName),
+      qty: Value(qty),
+      unitPrice: Value(unitPrice),
+      amount: Value(amount),
+      staffId: staffId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(staffId),
+      metaJson: metaJson == null && nullToAbsent
+          ? const Value.absent()
+          : Value(metaJson),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory PaymentSessionItemRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PaymentSessionItemRow(
+      id: serializer.fromJson<int>(json['id']),
+      sessionId: serializer.fromJson<int>(json['sessionId']),
+      itemType: serializer.fromJson<String>(json['itemType']),
+      refType: serializer.fromJson<String?>(json['refType']),
+      refId: serializer.fromJson<String?>(json['refId']),
+      itemName: serializer.fromJson<String>(json['itemName']),
+      qty: serializer.fromJson<int>(json['qty']),
+      unitPrice: serializer.fromJson<int>(json['unitPrice']),
+      amount: serializer.fromJson<int>(json['amount']),
+      staffId: serializer.fromJson<String?>(json['staffId']),
+      metaJson: serializer.fromJson<String?>(json['metaJson']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'sessionId': serializer.toJson<int>(sessionId),
+      'itemType': serializer.toJson<String>(itemType),
+      'refType': serializer.toJson<String?>(refType),
+      'refId': serializer.toJson<String?>(refId),
+      'itemName': serializer.toJson<String>(itemName),
+      'qty': serializer.toJson<int>(qty),
+      'unitPrice': serializer.toJson<int>(unitPrice),
+      'amount': serializer.toJson<int>(amount),
+      'staffId': serializer.toJson<String?>(staffId),
+      'metaJson': serializer.toJson<String?>(metaJson),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  PaymentSessionItemRow copyWith({
+    int? id,
+    int? sessionId,
+    String? itemType,
+    Value<String?> refType = const Value.absent(),
+    Value<String?> refId = const Value.absent(),
+    String? itemName,
+    int? qty,
+    int? unitPrice,
+    int? amount,
+    Value<String?> staffId = const Value.absent(),
+    Value<String?> metaJson = const Value.absent(),
+    DateTime? createdAt,
+  }) => PaymentSessionItemRow(
+    id: id ?? this.id,
+    sessionId: sessionId ?? this.sessionId,
+    itemType: itemType ?? this.itemType,
+    refType: refType.present ? refType.value : this.refType,
+    refId: refId.present ? refId.value : this.refId,
+    itemName: itemName ?? this.itemName,
+    qty: qty ?? this.qty,
+    unitPrice: unitPrice ?? this.unitPrice,
+    amount: amount ?? this.amount,
+    staffId: staffId.present ? staffId.value : this.staffId,
+    metaJson: metaJson.present ? metaJson.value : this.metaJson,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  PaymentSessionItemRow copyWithCompanion(PaymentSessionItemsCompanion data) {
+    return PaymentSessionItemRow(
+      id: data.id.present ? data.id.value : this.id,
+      sessionId: data.sessionId.present ? data.sessionId.value : this.sessionId,
+      itemType: data.itemType.present ? data.itemType.value : this.itemType,
+      refType: data.refType.present ? data.refType.value : this.refType,
+      refId: data.refId.present ? data.refId.value : this.refId,
+      itemName: data.itemName.present ? data.itemName.value : this.itemName,
+      qty: data.qty.present ? data.qty.value : this.qty,
+      unitPrice: data.unitPrice.present ? data.unitPrice.value : this.unitPrice,
+      amount: data.amount.present ? data.amount.value : this.amount,
+      staffId: data.staffId.present ? data.staffId.value : this.staffId,
+      metaJson: data.metaJson.present ? data.metaJson.value : this.metaJson,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PaymentSessionItemRow(')
+          ..write('id: $id, ')
+          ..write('sessionId: $sessionId, ')
+          ..write('itemType: $itemType, ')
+          ..write('refType: $refType, ')
+          ..write('refId: $refId, ')
+          ..write('itemName: $itemName, ')
+          ..write('qty: $qty, ')
+          ..write('unitPrice: $unitPrice, ')
+          ..write('amount: $amount, ')
+          ..write('staffId: $staffId, ')
+          ..write('metaJson: $metaJson, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    sessionId,
+    itemType,
+    refType,
+    refId,
+    itemName,
+    qty,
+    unitPrice,
+    amount,
+    staffId,
+    metaJson,
+    createdAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PaymentSessionItemRow &&
+          other.id == this.id &&
+          other.sessionId == this.sessionId &&
+          other.itemType == this.itemType &&
+          other.refType == this.refType &&
+          other.refId == this.refId &&
+          other.itemName == this.itemName &&
+          other.qty == this.qty &&
+          other.unitPrice == this.unitPrice &&
+          other.amount == this.amount &&
+          other.staffId == this.staffId &&
+          other.metaJson == this.metaJson &&
+          other.createdAt == this.createdAt);
+}
+
+class PaymentSessionItemsCompanion
+    extends UpdateCompanion<PaymentSessionItemRow> {
+  final Value<int> id;
+  final Value<int> sessionId;
+  final Value<String> itemType;
+  final Value<String?> refType;
+  final Value<String?> refId;
+  final Value<String> itemName;
+  final Value<int> qty;
+  final Value<int> unitPrice;
+  final Value<int> amount;
+  final Value<String?> staffId;
+  final Value<String?> metaJson;
+  final Value<DateTime> createdAt;
+  const PaymentSessionItemsCompanion({
+    this.id = const Value.absent(),
+    this.sessionId = const Value.absent(),
+    this.itemType = const Value.absent(),
+    this.refType = const Value.absent(),
+    this.refId = const Value.absent(),
+    this.itemName = const Value.absent(),
+    this.qty = const Value.absent(),
+    this.unitPrice = const Value.absent(),
+    this.amount = const Value.absent(),
+    this.staffId = const Value.absent(),
+    this.metaJson = const Value.absent(),
+    this.createdAt = const Value.absent(),
+  });
+  PaymentSessionItemsCompanion.insert({
+    this.id = const Value.absent(),
+    required int sessionId,
+    required String itemType,
+    this.refType = const Value.absent(),
+    this.refId = const Value.absent(),
+    required String itemName,
+    this.qty = const Value.absent(),
+    required int unitPrice,
+    required int amount,
+    this.staffId = const Value.absent(),
+    this.metaJson = const Value.absent(),
+    required DateTime createdAt,
+  }) : sessionId = Value(sessionId),
+       itemType = Value(itemType),
+       itemName = Value(itemName),
+       unitPrice = Value(unitPrice),
+       amount = Value(amount),
+       createdAt = Value(createdAt);
+  static Insertable<PaymentSessionItemRow> custom({
+    Expression<int>? id,
+    Expression<int>? sessionId,
+    Expression<String>? itemType,
+    Expression<String>? refType,
+    Expression<String>? refId,
+    Expression<String>? itemName,
+    Expression<int>? qty,
+    Expression<int>? unitPrice,
+    Expression<int>? amount,
+    Expression<String>? staffId,
+    Expression<String>? metaJson,
+    Expression<DateTime>? createdAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (sessionId != null) 'session_id': sessionId,
+      if (itemType != null) 'item_type': itemType,
+      if (refType != null) 'ref_type': refType,
+      if (refId != null) 'ref_id': refId,
+      if (itemName != null) 'item_name': itemName,
+      if (qty != null) 'qty': qty,
+      if (unitPrice != null) 'unit_price': unitPrice,
+      if (amount != null) 'amount': amount,
+      if (staffId != null) 'staff_id': staffId,
+      if (metaJson != null) 'meta_json': metaJson,
+      if (createdAt != null) 'created_at': createdAt,
+    });
+  }
+
+  PaymentSessionItemsCompanion copyWith({
+    Value<int>? id,
+    Value<int>? sessionId,
+    Value<String>? itemType,
+    Value<String?>? refType,
+    Value<String?>? refId,
+    Value<String>? itemName,
+    Value<int>? qty,
+    Value<int>? unitPrice,
+    Value<int>? amount,
+    Value<String?>? staffId,
+    Value<String?>? metaJson,
+    Value<DateTime>? createdAt,
+  }) {
+    return PaymentSessionItemsCompanion(
+      id: id ?? this.id,
+      sessionId: sessionId ?? this.sessionId,
+      itemType: itemType ?? this.itemType,
+      refType: refType ?? this.refType,
+      refId: refId ?? this.refId,
+      itemName: itemName ?? this.itemName,
+      qty: qty ?? this.qty,
+      unitPrice: unitPrice ?? this.unitPrice,
+      amount: amount ?? this.amount,
+      staffId: staffId ?? this.staffId,
+      metaJson: metaJson ?? this.metaJson,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (sessionId.present) {
+      map['session_id'] = Variable<int>(sessionId.value);
+    }
+    if (itemType.present) {
+      map['item_type'] = Variable<String>(itemType.value);
+    }
+    if (refType.present) {
+      map['ref_type'] = Variable<String>(refType.value);
+    }
+    if (refId.present) {
+      map['ref_id'] = Variable<String>(refId.value);
+    }
+    if (itemName.present) {
+      map['item_name'] = Variable<String>(itemName.value);
+    }
+    if (qty.present) {
+      map['qty'] = Variable<int>(qty.value);
+    }
+    if (unitPrice.present) {
+      map['unit_price'] = Variable<int>(unitPrice.value);
+    }
+    if (amount.present) {
+      map['amount'] = Variable<int>(amount.value);
+    }
+    if (staffId.present) {
+      map['staff_id'] = Variable<String>(staffId.value);
+    }
+    if (metaJson.present) {
+      map['meta_json'] = Variable<String>(metaJson.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PaymentSessionItemsCompanion(')
+          ..write('id: $id, ')
+          ..write('sessionId: $sessionId, ')
+          ..write('itemType: $itemType, ')
+          ..write('refType: $refType, ')
+          ..write('refId: $refId, ')
+          ..write('itemName: $itemName, ')
+          ..write('qty: $qty, ')
+          ..write('unitPrice: $unitPrice, ')
+          ..write('amount: $amount, ')
+          ..write('staffId: $staffId, ')
+          ..write('metaJson: $metaJson, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $StaffEarningLedgersTable extends StaffEarningLedgers
+    with TableInfo<$StaffEarningLedgersTable, StaffEarningLedgerRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $StaffEarningLedgersTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _sessionIdMeta = const VerificationMeta(
+    'sessionId',
+  );
+  @override
+  late final GeneratedColumn<int> sessionId = GeneratedColumn<int>(
+    'session_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES payment_sessions (id)',
+    ),
+  );
+  static const VerificationMeta _sessionItemIdMeta = const VerificationMeta(
+    'sessionItemId',
+  );
+  @override
+  late final GeneratedColumn<int> sessionItemId = GeneratedColumn<int>(
+    'session_item_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES payment_session_items (id)',
+    ),
+  );
+  static const VerificationMeta _staffIdMeta = const VerificationMeta(
+    'staffId',
+  );
+  @override
+  late final GeneratedColumn<String> staffId = GeneratedColumn<String>(
+    'staff_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _earningTypeMeta = const VerificationMeta(
+    'earningType',
+  );
+  @override
+  late final GeneratedColumn<String> earningType = GeneratedColumn<String>(
+    'earning_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _amountMeta = const VerificationMeta('amount');
+  @override
+  late final GeneratedColumn<int> amount = GeneratedColumn<int>(
+    'amount',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    sessionId,
+    sessionItemId,
+    staffId,
+    earningType,
+    amount,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'staff_earning_ledgers';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<StaffEarningLedgerRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('session_id')) {
+      context.handle(
+        _sessionIdMeta,
+        sessionId.isAcceptableOrUnknown(data['session_id']!, _sessionIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sessionIdMeta);
+    }
+    if (data.containsKey('session_item_id')) {
+      context.handle(
+        _sessionItemIdMeta,
+        sessionItemId.isAcceptableOrUnknown(
+          data['session_item_id']!,
+          _sessionItemIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('staff_id')) {
+      context.handle(
+        _staffIdMeta,
+        staffId.isAcceptableOrUnknown(data['staff_id']!, _staffIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_staffIdMeta);
+    }
+    if (data.containsKey('earning_type')) {
+      context.handle(
+        _earningTypeMeta,
+        earningType.isAcceptableOrUnknown(
+          data['earning_type']!,
+          _earningTypeMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_earningTypeMeta);
+    }
+    if (data.containsKey('amount')) {
+      context.handle(
+        _amountMeta,
+        amount.isAcceptableOrUnknown(data['amount']!, _amountMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_amountMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  StaffEarningLedgerRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return StaffEarningLedgerRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      sessionId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}session_id'],
+      )!,
+      sessionItemId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}session_item_id'],
+      ),
+      staffId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}staff_id'],
+      )!,
+      earningType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}earning_type'],
+      )!,
+      amount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}amount'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $StaffEarningLedgersTable createAlias(String alias) {
+    return $StaffEarningLedgersTable(attachedDatabase, alias);
+  }
+}
+
+class StaffEarningLedgerRow extends DataClass
+    implements Insertable<StaffEarningLedgerRow> {
+  final int id;
+  final int sessionId;
+  final int? sessionItemId;
+  final String staffId;
+
+  /// 'service' | 'commission' | 'staff_fee' | 'bonus'.
+  final String earningType;
+  final int amount;
+  final DateTime createdAt;
+  const StaffEarningLedgerRow({
+    required this.id,
+    required this.sessionId,
+    this.sessionItemId,
+    required this.staffId,
+    required this.earningType,
+    required this.amount,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['session_id'] = Variable<int>(sessionId);
+    if (!nullToAbsent || sessionItemId != null) {
+      map['session_item_id'] = Variable<int>(sessionItemId);
+    }
+    map['staff_id'] = Variable<String>(staffId);
+    map['earning_type'] = Variable<String>(earningType);
+    map['amount'] = Variable<int>(amount);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  StaffEarningLedgersCompanion toCompanion(bool nullToAbsent) {
+    return StaffEarningLedgersCompanion(
+      id: Value(id),
+      sessionId: Value(sessionId),
+      sessionItemId: sessionItemId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sessionItemId),
+      staffId: Value(staffId),
+      earningType: Value(earningType),
+      amount: Value(amount),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory StaffEarningLedgerRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return StaffEarningLedgerRow(
+      id: serializer.fromJson<int>(json['id']),
+      sessionId: serializer.fromJson<int>(json['sessionId']),
+      sessionItemId: serializer.fromJson<int?>(json['sessionItemId']),
+      staffId: serializer.fromJson<String>(json['staffId']),
+      earningType: serializer.fromJson<String>(json['earningType']),
+      amount: serializer.fromJson<int>(json['amount']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'sessionId': serializer.toJson<int>(sessionId),
+      'sessionItemId': serializer.toJson<int?>(sessionItemId),
+      'staffId': serializer.toJson<String>(staffId),
+      'earningType': serializer.toJson<String>(earningType),
+      'amount': serializer.toJson<int>(amount),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  StaffEarningLedgerRow copyWith({
+    int? id,
+    int? sessionId,
+    Value<int?> sessionItemId = const Value.absent(),
+    String? staffId,
+    String? earningType,
+    int? amount,
+    DateTime? createdAt,
+  }) => StaffEarningLedgerRow(
+    id: id ?? this.id,
+    sessionId: sessionId ?? this.sessionId,
+    sessionItemId: sessionItemId.present
+        ? sessionItemId.value
+        : this.sessionItemId,
+    staffId: staffId ?? this.staffId,
+    earningType: earningType ?? this.earningType,
+    amount: amount ?? this.amount,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  StaffEarningLedgerRow copyWithCompanion(StaffEarningLedgersCompanion data) {
+    return StaffEarningLedgerRow(
+      id: data.id.present ? data.id.value : this.id,
+      sessionId: data.sessionId.present ? data.sessionId.value : this.sessionId,
+      sessionItemId: data.sessionItemId.present
+          ? data.sessionItemId.value
+          : this.sessionItemId,
+      staffId: data.staffId.present ? data.staffId.value : this.staffId,
+      earningType: data.earningType.present
+          ? data.earningType.value
+          : this.earningType,
+      amount: data.amount.present ? data.amount.value : this.amount,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StaffEarningLedgerRow(')
+          ..write('id: $id, ')
+          ..write('sessionId: $sessionId, ')
+          ..write('sessionItemId: $sessionItemId, ')
+          ..write('staffId: $staffId, ')
+          ..write('earningType: $earningType, ')
+          ..write('amount: $amount, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    sessionId,
+    sessionItemId,
+    staffId,
+    earningType,
+    amount,
+    createdAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is StaffEarningLedgerRow &&
+          other.id == this.id &&
+          other.sessionId == this.sessionId &&
+          other.sessionItemId == this.sessionItemId &&
+          other.staffId == this.staffId &&
+          other.earningType == this.earningType &&
+          other.amount == this.amount &&
+          other.createdAt == this.createdAt);
+}
+
+class StaffEarningLedgersCompanion
+    extends UpdateCompanion<StaffEarningLedgerRow> {
+  final Value<int> id;
+  final Value<int> sessionId;
+  final Value<int?> sessionItemId;
+  final Value<String> staffId;
+  final Value<String> earningType;
+  final Value<int> amount;
+  final Value<DateTime> createdAt;
+  const StaffEarningLedgersCompanion({
+    this.id = const Value.absent(),
+    this.sessionId = const Value.absent(),
+    this.sessionItemId = const Value.absent(),
+    this.staffId = const Value.absent(),
+    this.earningType = const Value.absent(),
+    this.amount = const Value.absent(),
+    this.createdAt = const Value.absent(),
+  });
+  StaffEarningLedgersCompanion.insert({
+    this.id = const Value.absent(),
+    required int sessionId,
+    this.sessionItemId = const Value.absent(),
+    required String staffId,
+    required String earningType,
+    required int amount,
+    required DateTime createdAt,
+  }) : sessionId = Value(sessionId),
+       staffId = Value(staffId),
+       earningType = Value(earningType),
+       amount = Value(amount),
+       createdAt = Value(createdAt);
+  static Insertable<StaffEarningLedgerRow> custom({
+    Expression<int>? id,
+    Expression<int>? sessionId,
+    Expression<int>? sessionItemId,
+    Expression<String>? staffId,
+    Expression<String>? earningType,
+    Expression<int>? amount,
+    Expression<DateTime>? createdAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (sessionId != null) 'session_id': sessionId,
+      if (sessionItemId != null) 'session_item_id': sessionItemId,
+      if (staffId != null) 'staff_id': staffId,
+      if (earningType != null) 'earning_type': earningType,
+      if (amount != null) 'amount': amount,
+      if (createdAt != null) 'created_at': createdAt,
+    });
+  }
+
+  StaffEarningLedgersCompanion copyWith({
+    Value<int>? id,
+    Value<int>? sessionId,
+    Value<int?>? sessionItemId,
+    Value<String>? staffId,
+    Value<String>? earningType,
+    Value<int>? amount,
+    Value<DateTime>? createdAt,
+  }) {
+    return StaffEarningLedgersCompanion(
+      id: id ?? this.id,
+      sessionId: sessionId ?? this.sessionId,
+      sessionItemId: sessionItemId ?? this.sessionItemId,
+      staffId: staffId ?? this.staffId,
+      earningType: earningType ?? this.earningType,
+      amount: amount ?? this.amount,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (sessionId.present) {
+      map['session_id'] = Variable<int>(sessionId.value);
+    }
+    if (sessionItemId.present) {
+      map['session_item_id'] = Variable<int>(sessionItemId.value);
+    }
+    if (staffId.present) {
+      map['staff_id'] = Variable<String>(staffId.value);
+    }
+    if (earningType.present) {
+      map['earning_type'] = Variable<String>(earningType.value);
+    }
+    if (amount.present) {
+      map['amount'] = Variable<int>(amount.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StaffEarningLedgersCompanion(')
+          ..write('id: $id, ')
+          ..write('sessionId: $sessionId, ')
+          ..write('sessionItemId: $sessionItemId, ')
+          ..write('staffId: $staffId, ')
+          ..write('earningType: $earningType, ')
+          ..write('amount: $amount, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $PaymentMethodBreakdownsTable extends PaymentMethodBreakdowns
+    with TableInfo<$PaymentMethodBreakdownsTable, PaymentMethodBreakdownRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PaymentMethodBreakdownsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _sessionIdMeta = const VerificationMeta(
+    'sessionId',
+  );
+  @override
+  late final GeneratedColumn<int> sessionId = GeneratedColumn<int>(
+    'session_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES payment_sessions (id)',
+    ),
+  );
+  static const VerificationMeta _methodMeta = const VerificationMeta('method');
+  @override
+  late final GeneratedColumn<String> method = GeneratedColumn<String>(
+    'method',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _amountMeta = const VerificationMeta('amount');
+  @override
+  late final GeneratedColumn<int> amount = GeneratedColumn<int>(
+    'amount',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _receivedAtMeta = const VerificationMeta(
+    'receivedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> receivedAt = GeneratedColumn<DateTime>(
+    'received_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    sessionId,
+    method,
+    amount,
+    receivedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'payment_method_breakdowns';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<PaymentMethodBreakdownRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('session_id')) {
+      context.handle(
+        _sessionIdMeta,
+        sessionId.isAcceptableOrUnknown(data['session_id']!, _sessionIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sessionIdMeta);
+    }
+    if (data.containsKey('method')) {
+      context.handle(
+        _methodMeta,
+        method.isAcceptableOrUnknown(data['method']!, _methodMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_methodMeta);
+    }
+    if (data.containsKey('amount')) {
+      context.handle(
+        _amountMeta,
+        amount.isAcceptableOrUnknown(data['amount']!, _amountMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_amountMeta);
+    }
+    if (data.containsKey('received_at')) {
+      context.handle(
+        _receivedAtMeta,
+        receivedAt.isAcceptableOrUnknown(data['received_at']!, _receivedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_receivedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  PaymentMethodBreakdownRow map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PaymentMethodBreakdownRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      sessionId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}session_id'],
+      )!,
+      method: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}method'],
+      )!,
+      amount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}amount'],
+      )!,
+      receivedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}received_at'],
+      )!,
+    );
+  }
+
+  @override
+  $PaymentMethodBreakdownsTable createAlias(String alias) {
+    return $PaymentMethodBreakdownsTable(attachedDatabase, alias);
+  }
+}
+
+class PaymentMethodBreakdownRow extends DataClass
+    implements Insertable<PaymentMethodBreakdownRow> {
+  final int id;
+  final int sessionId;
+
+  /// 'cash' | 'card' | 'point' | 'gift' | 'transfer'.
+  final String method;
+  final int amount;
+  final DateTime receivedAt;
+  const PaymentMethodBreakdownRow({
+    required this.id,
+    required this.sessionId,
+    required this.method,
+    required this.amount,
+    required this.receivedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['session_id'] = Variable<int>(sessionId);
+    map['method'] = Variable<String>(method);
+    map['amount'] = Variable<int>(amount);
+    map['received_at'] = Variable<DateTime>(receivedAt);
+    return map;
+  }
+
+  PaymentMethodBreakdownsCompanion toCompanion(bool nullToAbsent) {
+    return PaymentMethodBreakdownsCompanion(
+      id: Value(id),
+      sessionId: Value(sessionId),
+      method: Value(method),
+      amount: Value(amount),
+      receivedAt: Value(receivedAt),
+    );
+  }
+
+  factory PaymentMethodBreakdownRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PaymentMethodBreakdownRow(
+      id: serializer.fromJson<int>(json['id']),
+      sessionId: serializer.fromJson<int>(json['sessionId']),
+      method: serializer.fromJson<String>(json['method']),
+      amount: serializer.fromJson<int>(json['amount']),
+      receivedAt: serializer.fromJson<DateTime>(json['receivedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'sessionId': serializer.toJson<int>(sessionId),
+      'method': serializer.toJson<String>(method),
+      'amount': serializer.toJson<int>(amount),
+      'receivedAt': serializer.toJson<DateTime>(receivedAt),
+    };
+  }
+
+  PaymentMethodBreakdownRow copyWith({
+    int? id,
+    int? sessionId,
+    String? method,
+    int? amount,
+    DateTime? receivedAt,
+  }) => PaymentMethodBreakdownRow(
+    id: id ?? this.id,
+    sessionId: sessionId ?? this.sessionId,
+    method: method ?? this.method,
+    amount: amount ?? this.amount,
+    receivedAt: receivedAt ?? this.receivedAt,
+  );
+  PaymentMethodBreakdownRow copyWithCompanion(
+    PaymentMethodBreakdownsCompanion data,
+  ) {
+    return PaymentMethodBreakdownRow(
+      id: data.id.present ? data.id.value : this.id,
+      sessionId: data.sessionId.present ? data.sessionId.value : this.sessionId,
+      method: data.method.present ? data.method.value : this.method,
+      amount: data.amount.present ? data.amount.value : this.amount,
+      receivedAt: data.receivedAt.present
+          ? data.receivedAt.value
+          : this.receivedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PaymentMethodBreakdownRow(')
+          ..write('id: $id, ')
+          ..write('sessionId: $sessionId, ')
+          ..write('method: $method, ')
+          ..write('amount: $amount, ')
+          ..write('receivedAt: $receivedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, sessionId, method, amount, receivedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PaymentMethodBreakdownRow &&
+          other.id == this.id &&
+          other.sessionId == this.sessionId &&
+          other.method == this.method &&
+          other.amount == this.amount &&
+          other.receivedAt == this.receivedAt);
+}
+
+class PaymentMethodBreakdownsCompanion
+    extends UpdateCompanion<PaymentMethodBreakdownRow> {
+  final Value<int> id;
+  final Value<int> sessionId;
+  final Value<String> method;
+  final Value<int> amount;
+  final Value<DateTime> receivedAt;
+  const PaymentMethodBreakdownsCompanion({
+    this.id = const Value.absent(),
+    this.sessionId = const Value.absent(),
+    this.method = const Value.absent(),
+    this.amount = const Value.absent(),
+    this.receivedAt = const Value.absent(),
+  });
+  PaymentMethodBreakdownsCompanion.insert({
+    this.id = const Value.absent(),
+    required int sessionId,
+    required String method,
+    required int amount,
+    required DateTime receivedAt,
+  }) : sessionId = Value(sessionId),
+       method = Value(method),
+       amount = Value(amount),
+       receivedAt = Value(receivedAt);
+  static Insertable<PaymentMethodBreakdownRow> custom({
+    Expression<int>? id,
+    Expression<int>? sessionId,
+    Expression<String>? method,
+    Expression<int>? amount,
+    Expression<DateTime>? receivedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (sessionId != null) 'session_id': sessionId,
+      if (method != null) 'method': method,
+      if (amount != null) 'amount': amount,
+      if (receivedAt != null) 'received_at': receivedAt,
+    });
+  }
+
+  PaymentMethodBreakdownsCompanion copyWith({
+    Value<int>? id,
+    Value<int>? sessionId,
+    Value<String>? method,
+    Value<int>? amount,
+    Value<DateTime>? receivedAt,
+  }) {
+    return PaymentMethodBreakdownsCompanion(
+      id: id ?? this.id,
+      sessionId: sessionId ?? this.sessionId,
+      method: method ?? this.method,
+      amount: amount ?? this.amount,
+      receivedAt: receivedAt ?? this.receivedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (sessionId.present) {
+      map['session_id'] = Variable<int>(sessionId.value);
+    }
+    if (method.present) {
+      map['method'] = Variable<String>(method.value);
+    }
+    if (amount.present) {
+      map['amount'] = Variable<int>(amount.value);
+    }
+    if (receivedAt.present) {
+      map['received_at'] = Variable<DateTime>(receivedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PaymentMethodBreakdownsCompanion(')
+          ..write('id: $id, ')
+          ..write('sessionId: $sessionId, ')
+          ..write('method: $method, ')
+          ..write('amount: $amount, ')
+          ..write('receivedAt: $receivedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -10847,6 +13305,15 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $ClosingChecklistItemsTable(this);
   late final $InventoryItemsTable inventoryItems = $InventoryItemsTable(this);
   late final $InventoryLogsTable inventoryLogs = $InventoryLogsTable(this);
+  late final $PaymentSessionsTable paymentSessions = $PaymentSessionsTable(
+    this,
+  );
+  late final $PaymentSessionItemsTable paymentSessionItems =
+      $PaymentSessionItemsTable(this);
+  late final $StaffEarningLedgersTable staffEarningLedgers =
+      $StaffEarningLedgersTable(this);
+  late final $PaymentMethodBreakdownsTable paymentMethodBreakdowns =
+      $PaymentMethodBreakdownsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -10873,6 +13340,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     closingChecklistItems,
     inventoryItems,
     inventoryLogs,
+    paymentSessions,
+    paymentSessionItems,
+    staffEarningLedgers,
+    paymentMethodBreakdowns,
   ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
@@ -17714,6 +20185,2120 @@ typedef $$InventoryLogsTableProcessedTableManager =
       InventoryLogRow,
       PrefetchHooks Function({bool itemId})
     >;
+typedef $$PaymentSessionsTableCreateCompanionBuilder =
+    PaymentSessionsCompanion Function({
+      Value<int> id,
+      required String sessionNo,
+      Value<int> shopId,
+      required String businessType,
+      Value<int?> customerId,
+      Value<String?> staffIdPrimary,
+      Value<int?> roomId,
+      Value<String> status,
+      required DateTime startAt,
+      Value<DateTime?> endAt,
+      Value<int> totalAmount,
+      Value<int> discountAmount,
+      Value<int> taxAmount,
+      Value<int> finalAmount,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+    });
+typedef $$PaymentSessionsTableUpdateCompanionBuilder =
+    PaymentSessionsCompanion Function({
+      Value<int> id,
+      Value<String> sessionNo,
+      Value<int> shopId,
+      Value<String> businessType,
+      Value<int?> customerId,
+      Value<String?> staffIdPrimary,
+      Value<int?> roomId,
+      Value<String> status,
+      Value<DateTime> startAt,
+      Value<DateTime?> endAt,
+      Value<int> totalAmount,
+      Value<int> discountAmount,
+      Value<int> taxAmount,
+      Value<int> finalAmount,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+    });
+
+final class $$PaymentSessionsTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $PaymentSessionsTable,
+          PaymentSessionRow
+        > {
+  $$PaymentSessionsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static MultiTypedResultKey<
+    $PaymentSessionItemsTable,
+    List<PaymentSessionItemRow>
+  >
+  _paymentSessionItemsRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.paymentSessionItems,
+        aliasName: 'payment_sessions__id__payment_session_items__session_id',
+      );
+
+  $$PaymentSessionItemsTableProcessedTableManager get paymentSessionItemsRefs {
+    final manager = $$PaymentSessionItemsTableTableManager(
+      $_db,
+      $_db.paymentSessionItems,
+    ).filter((f) => f.sessionId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _paymentSessionItemsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $StaffEarningLedgersTable,
+    List<StaffEarningLedgerRow>
+  >
+  _staffEarningLedgersRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.staffEarningLedgers,
+        aliasName: 'payment_sessions__id__staff_earning_ledgers__session_id',
+      );
+
+  $$StaffEarningLedgersTableProcessedTableManager get staffEarningLedgersRefs {
+    final manager = $$StaffEarningLedgersTableTableManager(
+      $_db,
+      $_db.staffEarningLedgers,
+    ).filter((f) => f.sessionId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _staffEarningLedgersRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $PaymentMethodBreakdownsTable,
+    List<PaymentMethodBreakdownRow>
+  >
+  _paymentMethodBreakdownsRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.paymentMethodBreakdowns,
+        aliasName:
+            'payment_sessions__id__payment_method_breakdowns__session_id',
+      );
+
+  $$PaymentMethodBreakdownsTableProcessedTableManager
+  get paymentMethodBreakdownsRefs {
+    final manager = $$PaymentMethodBreakdownsTableTableManager(
+      $_db,
+      $_db.paymentMethodBreakdowns,
+    ).filter((f) => f.sessionId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _paymentMethodBreakdownsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$PaymentSessionsTableFilterComposer
+    extends Composer<_$AppDatabase, $PaymentSessionsTable> {
+  $$PaymentSessionsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sessionNo => $composableBuilder(
+    column: $table.sessionNo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get shopId => $composableBuilder(
+    column: $table.shopId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get businessType => $composableBuilder(
+    column: $table.businessType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get customerId => $composableBuilder(
+    column: $table.customerId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get staffIdPrimary => $composableBuilder(
+    column: $table.staffIdPrimary,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get roomId => $composableBuilder(
+    column: $table.roomId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get startAt => $composableBuilder(
+    column: $table.startAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get endAt => $composableBuilder(
+    column: $table.endAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get totalAmount => $composableBuilder(
+    column: $table.totalAmount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get discountAmount => $composableBuilder(
+    column: $table.discountAmount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get taxAmount => $composableBuilder(
+    column: $table.taxAmount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get finalAmount => $composableBuilder(
+    column: $table.finalAmount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  Expression<bool> paymentSessionItemsRefs(
+    Expression<bool> Function($$PaymentSessionItemsTableFilterComposer f) f,
+  ) {
+    final $$PaymentSessionItemsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.paymentSessionItems,
+      getReferencedColumn: (t) => t.sessionId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PaymentSessionItemsTableFilterComposer(
+            $db: $db,
+            $table: $db.paymentSessionItems,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> staffEarningLedgersRefs(
+    Expression<bool> Function($$StaffEarningLedgersTableFilterComposer f) f,
+  ) {
+    final $$StaffEarningLedgersTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.staffEarningLedgers,
+      getReferencedColumn: (t) => t.sessionId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$StaffEarningLedgersTableFilterComposer(
+            $db: $db,
+            $table: $db.staffEarningLedgers,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> paymentMethodBreakdownsRefs(
+    Expression<bool> Function($$PaymentMethodBreakdownsTableFilterComposer f) f,
+  ) {
+    final $$PaymentMethodBreakdownsTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.paymentMethodBreakdowns,
+          getReferencedColumn: (t) => t.sessionId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$PaymentMethodBreakdownsTableFilterComposer(
+                $db: $db,
+                $table: $db.paymentMethodBreakdowns,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+}
+
+class $$PaymentSessionsTableOrderingComposer
+    extends Composer<_$AppDatabase, $PaymentSessionsTable> {
+  $$PaymentSessionsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sessionNo => $composableBuilder(
+    column: $table.sessionNo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get shopId => $composableBuilder(
+    column: $table.shopId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get businessType => $composableBuilder(
+    column: $table.businessType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get customerId => $composableBuilder(
+    column: $table.customerId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get staffIdPrimary => $composableBuilder(
+    column: $table.staffIdPrimary,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get roomId => $composableBuilder(
+    column: $table.roomId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get startAt => $composableBuilder(
+    column: $table.startAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get endAt => $composableBuilder(
+    column: $table.endAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get totalAmount => $composableBuilder(
+    column: $table.totalAmount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get discountAmount => $composableBuilder(
+    column: $table.discountAmount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get taxAmount => $composableBuilder(
+    column: $table.taxAmount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get finalAmount => $composableBuilder(
+    column: $table.finalAmount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$PaymentSessionsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $PaymentSessionsTable> {
+  $$PaymentSessionsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get sessionNo =>
+      $composableBuilder(column: $table.sessionNo, builder: (column) => column);
+
+  GeneratedColumn<int> get shopId =>
+      $composableBuilder(column: $table.shopId, builder: (column) => column);
+
+  GeneratedColumn<String> get businessType => $composableBuilder(
+    column: $table.businessType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get customerId => $composableBuilder(
+    column: $table.customerId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get staffIdPrimary => $composableBuilder(
+    column: $table.staffIdPrimary,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get roomId =>
+      $composableBuilder(column: $table.roomId, builder: (column) => column);
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get startAt =>
+      $composableBuilder(column: $table.startAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get endAt =>
+      $composableBuilder(column: $table.endAt, builder: (column) => column);
+
+  GeneratedColumn<int> get totalAmount => $composableBuilder(
+    column: $table.totalAmount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get discountAmount => $composableBuilder(
+    column: $table.discountAmount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get taxAmount =>
+      $composableBuilder(column: $table.taxAmount, builder: (column) => column);
+
+  GeneratedColumn<int> get finalAmount => $composableBuilder(
+    column: $table.finalAmount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  Expression<T> paymentSessionItemsRefs<T extends Object>(
+    Expression<T> Function($$PaymentSessionItemsTableAnnotationComposer a) f,
+  ) {
+    final $$PaymentSessionItemsTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.paymentSessionItems,
+          getReferencedColumn: (t) => t.sessionId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$PaymentSessionItemsTableAnnotationComposer(
+                $db: $db,
+                $table: $db.paymentSessionItems,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<T> staffEarningLedgersRefs<T extends Object>(
+    Expression<T> Function($$StaffEarningLedgersTableAnnotationComposer a) f,
+  ) {
+    final $$StaffEarningLedgersTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.staffEarningLedgers,
+          getReferencedColumn: (t) => t.sessionId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$StaffEarningLedgersTableAnnotationComposer(
+                $db: $db,
+                $table: $db.staffEarningLedgers,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<T> paymentMethodBreakdownsRefs<T extends Object>(
+    Expression<T> Function($$PaymentMethodBreakdownsTableAnnotationComposer a)
+    f,
+  ) {
+    final $$PaymentMethodBreakdownsTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.paymentMethodBreakdowns,
+          getReferencedColumn: (t) => t.sessionId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$PaymentMethodBreakdownsTableAnnotationComposer(
+                $db: $db,
+                $table: $db.paymentMethodBreakdowns,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+}
+
+class $$PaymentSessionsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $PaymentSessionsTable,
+          PaymentSessionRow,
+          $$PaymentSessionsTableFilterComposer,
+          $$PaymentSessionsTableOrderingComposer,
+          $$PaymentSessionsTableAnnotationComposer,
+          $$PaymentSessionsTableCreateCompanionBuilder,
+          $$PaymentSessionsTableUpdateCompanionBuilder,
+          (PaymentSessionRow, $$PaymentSessionsTableReferences),
+          PaymentSessionRow,
+          PrefetchHooks Function({
+            bool paymentSessionItemsRefs,
+            bool staffEarningLedgersRefs,
+            bool paymentMethodBreakdownsRefs,
+          })
+        > {
+  $$PaymentSessionsTableTableManager(
+    _$AppDatabase db,
+    $PaymentSessionsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$PaymentSessionsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$PaymentSessionsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$PaymentSessionsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> sessionNo = const Value.absent(),
+                Value<int> shopId = const Value.absent(),
+                Value<String> businessType = const Value.absent(),
+                Value<int?> customerId = const Value.absent(),
+                Value<String?> staffIdPrimary = const Value.absent(),
+                Value<int?> roomId = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<DateTime> startAt = const Value.absent(),
+                Value<DateTime?> endAt = const Value.absent(),
+                Value<int> totalAmount = const Value.absent(),
+                Value<int> discountAmount = const Value.absent(),
+                Value<int> taxAmount = const Value.absent(),
+                Value<int> finalAmount = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+              }) => PaymentSessionsCompanion(
+                id: id,
+                sessionNo: sessionNo,
+                shopId: shopId,
+                businessType: businessType,
+                customerId: customerId,
+                staffIdPrimary: staffIdPrimary,
+                roomId: roomId,
+                status: status,
+                startAt: startAt,
+                endAt: endAt,
+                totalAmount: totalAmount,
+                discountAmount: discountAmount,
+                taxAmount: taxAmount,
+                finalAmount: finalAmount,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String sessionNo,
+                Value<int> shopId = const Value.absent(),
+                required String businessType,
+                Value<int?> customerId = const Value.absent(),
+                Value<String?> staffIdPrimary = const Value.absent(),
+                Value<int?> roomId = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                required DateTime startAt,
+                Value<DateTime?> endAt = const Value.absent(),
+                Value<int> totalAmount = const Value.absent(),
+                Value<int> discountAmount = const Value.absent(),
+                Value<int> taxAmount = const Value.absent(),
+                Value<int> finalAmount = const Value.absent(),
+                required DateTime createdAt,
+                required DateTime updatedAt,
+              }) => PaymentSessionsCompanion.insert(
+                id: id,
+                sessionNo: sessionNo,
+                shopId: shopId,
+                businessType: businessType,
+                customerId: customerId,
+                staffIdPrimary: staffIdPrimary,
+                roomId: roomId,
+                status: status,
+                startAt: startAt,
+                endAt: endAt,
+                totalAmount: totalAmount,
+                discountAmount: discountAmount,
+                taxAmount: taxAmount,
+                finalAmount: finalAmount,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$PaymentSessionsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback:
+              ({
+                paymentSessionItemsRefs = false,
+                staffEarningLedgersRefs = false,
+                paymentMethodBreakdownsRefs = false,
+              }) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (paymentSessionItemsRefs) db.paymentSessionItems,
+                    if (staffEarningLedgersRefs) db.staffEarningLedgers,
+                    if (paymentMethodBreakdownsRefs) db.paymentMethodBreakdowns,
+                  ],
+                  addJoins: null,
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (paymentSessionItemsRefs)
+                        await $_getPrefetchedData<
+                          PaymentSessionRow,
+                          $PaymentSessionsTable,
+                          PaymentSessionItemRow
+                        >(
+                          currentTable: table,
+                          referencedTable: $$PaymentSessionsTableReferences
+                              ._paymentSessionItemsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$PaymentSessionsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).paymentSessionItemsRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.sessionId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (staffEarningLedgersRefs)
+                        await $_getPrefetchedData<
+                          PaymentSessionRow,
+                          $PaymentSessionsTable,
+                          StaffEarningLedgerRow
+                        >(
+                          currentTable: table,
+                          referencedTable: $$PaymentSessionsTableReferences
+                              ._staffEarningLedgersRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$PaymentSessionsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).staffEarningLedgersRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.sessionId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (paymentMethodBreakdownsRefs)
+                        await $_getPrefetchedData<
+                          PaymentSessionRow,
+                          $PaymentSessionsTable,
+                          PaymentMethodBreakdownRow
+                        >(
+                          currentTable: table,
+                          referencedTable: $$PaymentSessionsTableReferences
+                              ._paymentMethodBreakdownsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$PaymentSessionsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).paymentMethodBreakdownsRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.sessionId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$PaymentSessionsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $PaymentSessionsTable,
+      PaymentSessionRow,
+      $$PaymentSessionsTableFilterComposer,
+      $$PaymentSessionsTableOrderingComposer,
+      $$PaymentSessionsTableAnnotationComposer,
+      $$PaymentSessionsTableCreateCompanionBuilder,
+      $$PaymentSessionsTableUpdateCompanionBuilder,
+      (PaymentSessionRow, $$PaymentSessionsTableReferences),
+      PaymentSessionRow,
+      PrefetchHooks Function({
+        bool paymentSessionItemsRefs,
+        bool staffEarningLedgersRefs,
+        bool paymentMethodBreakdownsRefs,
+      })
+    >;
+typedef $$PaymentSessionItemsTableCreateCompanionBuilder =
+    PaymentSessionItemsCompanion Function({
+      Value<int> id,
+      required int sessionId,
+      required String itemType,
+      Value<String?> refType,
+      Value<String?> refId,
+      required String itemName,
+      Value<int> qty,
+      required int unitPrice,
+      required int amount,
+      Value<String?> staffId,
+      Value<String?> metaJson,
+      required DateTime createdAt,
+    });
+typedef $$PaymentSessionItemsTableUpdateCompanionBuilder =
+    PaymentSessionItemsCompanion Function({
+      Value<int> id,
+      Value<int> sessionId,
+      Value<String> itemType,
+      Value<String?> refType,
+      Value<String?> refId,
+      Value<String> itemName,
+      Value<int> qty,
+      Value<int> unitPrice,
+      Value<int> amount,
+      Value<String?> staffId,
+      Value<String?> metaJson,
+      Value<DateTime> createdAt,
+    });
+
+final class $$PaymentSessionItemsTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $PaymentSessionItemsTable,
+          PaymentSessionItemRow
+        > {
+  $$PaymentSessionItemsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $PaymentSessionsTable _sessionIdTable(_$AppDatabase db) => db
+      .paymentSessions
+      .createAlias('payment_session_items__session_id__payment_sessions__id');
+
+  $$PaymentSessionsTableProcessedTableManager get sessionId {
+    final $_column = $_itemColumn<int>('session_id')!;
+
+    final manager = $$PaymentSessionsTableTableManager(
+      $_db,
+      $_db.paymentSessions,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_sessionIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $StaffEarningLedgersTable,
+    List<StaffEarningLedgerRow>
+  >
+  _staffEarningLedgersRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.staffEarningLedgers,
+        aliasName:
+            'payment_session_items__id__staff_earning_ledgers__session_item_id',
+      );
+
+  $$StaffEarningLedgersTableProcessedTableManager get staffEarningLedgersRefs {
+    final manager = $$StaffEarningLedgersTableTableManager(
+      $_db,
+      $_db.staffEarningLedgers,
+    ).filter((f) => f.sessionItemId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _staffEarningLedgersRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$PaymentSessionItemsTableFilterComposer
+    extends Composer<_$AppDatabase, $PaymentSessionItemsTable> {
+  $$PaymentSessionItemsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get itemType => $composableBuilder(
+    column: $table.itemType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get refType => $composableBuilder(
+    column: $table.refType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get refId => $composableBuilder(
+    column: $table.refId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get itemName => $composableBuilder(
+    column: $table.itemName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get qty => $composableBuilder(
+    column: $table.qty,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get unitPrice => $composableBuilder(
+    column: $table.unitPrice,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get amount => $composableBuilder(
+    column: $table.amount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get staffId => $composableBuilder(
+    column: $table.staffId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get metaJson => $composableBuilder(
+    column: $table.metaJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$PaymentSessionsTableFilterComposer get sessionId {
+    final $$PaymentSessionsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.sessionId,
+      referencedTable: $db.paymentSessions,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PaymentSessionsTableFilterComposer(
+            $db: $db,
+            $table: $db.paymentSessions,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<bool> staffEarningLedgersRefs(
+    Expression<bool> Function($$StaffEarningLedgersTableFilterComposer f) f,
+  ) {
+    final $$StaffEarningLedgersTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.staffEarningLedgers,
+      getReferencedColumn: (t) => t.sessionItemId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$StaffEarningLedgersTableFilterComposer(
+            $db: $db,
+            $table: $db.staffEarningLedgers,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$PaymentSessionItemsTableOrderingComposer
+    extends Composer<_$AppDatabase, $PaymentSessionItemsTable> {
+  $$PaymentSessionItemsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get itemType => $composableBuilder(
+    column: $table.itemType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get refType => $composableBuilder(
+    column: $table.refType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get refId => $composableBuilder(
+    column: $table.refId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get itemName => $composableBuilder(
+    column: $table.itemName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get qty => $composableBuilder(
+    column: $table.qty,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get unitPrice => $composableBuilder(
+    column: $table.unitPrice,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get amount => $composableBuilder(
+    column: $table.amount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get staffId => $composableBuilder(
+    column: $table.staffId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get metaJson => $composableBuilder(
+    column: $table.metaJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$PaymentSessionsTableOrderingComposer get sessionId {
+    final $$PaymentSessionsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.sessionId,
+      referencedTable: $db.paymentSessions,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PaymentSessionsTableOrderingComposer(
+            $db: $db,
+            $table: $db.paymentSessions,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$PaymentSessionItemsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $PaymentSessionItemsTable> {
+  $$PaymentSessionItemsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get itemType =>
+      $composableBuilder(column: $table.itemType, builder: (column) => column);
+
+  GeneratedColumn<String> get refType =>
+      $composableBuilder(column: $table.refType, builder: (column) => column);
+
+  GeneratedColumn<String> get refId =>
+      $composableBuilder(column: $table.refId, builder: (column) => column);
+
+  GeneratedColumn<String> get itemName =>
+      $composableBuilder(column: $table.itemName, builder: (column) => column);
+
+  GeneratedColumn<int> get qty =>
+      $composableBuilder(column: $table.qty, builder: (column) => column);
+
+  GeneratedColumn<int> get unitPrice =>
+      $composableBuilder(column: $table.unitPrice, builder: (column) => column);
+
+  GeneratedColumn<int> get amount =>
+      $composableBuilder(column: $table.amount, builder: (column) => column);
+
+  GeneratedColumn<String> get staffId =>
+      $composableBuilder(column: $table.staffId, builder: (column) => column);
+
+  GeneratedColumn<String> get metaJson =>
+      $composableBuilder(column: $table.metaJson, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  $$PaymentSessionsTableAnnotationComposer get sessionId {
+    final $$PaymentSessionsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.sessionId,
+      referencedTable: $db.paymentSessions,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PaymentSessionsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.paymentSessions,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<T> staffEarningLedgersRefs<T extends Object>(
+    Expression<T> Function($$StaffEarningLedgersTableAnnotationComposer a) f,
+  ) {
+    final $$StaffEarningLedgersTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.staffEarningLedgers,
+          getReferencedColumn: (t) => t.sessionItemId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$StaffEarningLedgersTableAnnotationComposer(
+                $db: $db,
+                $table: $db.staffEarningLedgers,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+}
+
+class $$PaymentSessionItemsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $PaymentSessionItemsTable,
+          PaymentSessionItemRow,
+          $$PaymentSessionItemsTableFilterComposer,
+          $$PaymentSessionItemsTableOrderingComposer,
+          $$PaymentSessionItemsTableAnnotationComposer,
+          $$PaymentSessionItemsTableCreateCompanionBuilder,
+          $$PaymentSessionItemsTableUpdateCompanionBuilder,
+          (PaymentSessionItemRow, $$PaymentSessionItemsTableReferences),
+          PaymentSessionItemRow,
+          PrefetchHooks Function({bool sessionId, bool staffEarningLedgersRefs})
+        > {
+  $$PaymentSessionItemsTableTableManager(
+    _$AppDatabase db,
+    $PaymentSessionItemsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$PaymentSessionItemsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$PaymentSessionItemsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$PaymentSessionItemsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> sessionId = const Value.absent(),
+                Value<String> itemType = const Value.absent(),
+                Value<String?> refType = const Value.absent(),
+                Value<String?> refId = const Value.absent(),
+                Value<String> itemName = const Value.absent(),
+                Value<int> qty = const Value.absent(),
+                Value<int> unitPrice = const Value.absent(),
+                Value<int> amount = const Value.absent(),
+                Value<String?> staffId = const Value.absent(),
+                Value<String?> metaJson = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+              }) => PaymentSessionItemsCompanion(
+                id: id,
+                sessionId: sessionId,
+                itemType: itemType,
+                refType: refType,
+                refId: refId,
+                itemName: itemName,
+                qty: qty,
+                unitPrice: unitPrice,
+                amount: amount,
+                staffId: staffId,
+                metaJson: metaJson,
+                createdAt: createdAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int sessionId,
+                required String itemType,
+                Value<String?> refType = const Value.absent(),
+                Value<String?> refId = const Value.absent(),
+                required String itemName,
+                Value<int> qty = const Value.absent(),
+                required int unitPrice,
+                required int amount,
+                Value<String?> staffId = const Value.absent(),
+                Value<String?> metaJson = const Value.absent(),
+                required DateTime createdAt,
+              }) => PaymentSessionItemsCompanion.insert(
+                id: id,
+                sessionId: sessionId,
+                itemType: itemType,
+                refType: refType,
+                refId: refId,
+                itemName: itemName,
+                qty: qty,
+                unitPrice: unitPrice,
+                amount: amount,
+                staffId: staffId,
+                metaJson: metaJson,
+                createdAt: createdAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$PaymentSessionItemsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback:
+              ({sessionId = false, staffEarningLedgersRefs = false}) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (staffEarningLedgersRefs) db.staffEarningLedgers,
+                  ],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (sessionId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.sessionId,
+                                    referencedTable:
+                                        $$PaymentSessionItemsTableReferences
+                                            ._sessionIdTable(db),
+                                    referencedColumn:
+                                        $$PaymentSessionItemsTableReferences
+                                            ._sessionIdTable(db)
+                                            .id,
+                                  )
+                                  as T;
+                        }
+
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (staffEarningLedgersRefs)
+                        await $_getPrefetchedData<
+                          PaymentSessionItemRow,
+                          $PaymentSessionItemsTable,
+                          StaffEarningLedgerRow
+                        >(
+                          currentTable: table,
+                          referencedTable: $$PaymentSessionItemsTableReferences
+                              ._staffEarningLedgersRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$PaymentSessionItemsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).staffEarningLedgersRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.sessionItemId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$PaymentSessionItemsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $PaymentSessionItemsTable,
+      PaymentSessionItemRow,
+      $$PaymentSessionItemsTableFilterComposer,
+      $$PaymentSessionItemsTableOrderingComposer,
+      $$PaymentSessionItemsTableAnnotationComposer,
+      $$PaymentSessionItemsTableCreateCompanionBuilder,
+      $$PaymentSessionItemsTableUpdateCompanionBuilder,
+      (PaymentSessionItemRow, $$PaymentSessionItemsTableReferences),
+      PaymentSessionItemRow,
+      PrefetchHooks Function({bool sessionId, bool staffEarningLedgersRefs})
+    >;
+typedef $$StaffEarningLedgersTableCreateCompanionBuilder =
+    StaffEarningLedgersCompanion Function({
+      Value<int> id,
+      required int sessionId,
+      Value<int?> sessionItemId,
+      required String staffId,
+      required String earningType,
+      required int amount,
+      required DateTime createdAt,
+    });
+typedef $$StaffEarningLedgersTableUpdateCompanionBuilder =
+    StaffEarningLedgersCompanion Function({
+      Value<int> id,
+      Value<int> sessionId,
+      Value<int?> sessionItemId,
+      Value<String> staffId,
+      Value<String> earningType,
+      Value<int> amount,
+      Value<DateTime> createdAt,
+    });
+
+final class $$StaffEarningLedgersTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $StaffEarningLedgersTable,
+          StaffEarningLedgerRow
+        > {
+  $$StaffEarningLedgersTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $PaymentSessionsTable _sessionIdTable(_$AppDatabase db) => db
+      .paymentSessions
+      .createAlias('staff_earning_ledgers__session_id__payment_sessions__id');
+
+  $$PaymentSessionsTableProcessedTableManager get sessionId {
+    final $_column = $_itemColumn<int>('session_id')!;
+
+    final manager = $$PaymentSessionsTableTableManager(
+      $_db,
+      $_db.paymentSessions,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_sessionIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $PaymentSessionItemsTable _sessionItemIdTable(_$AppDatabase db) =>
+      db.paymentSessionItems.createAlias(
+        'staff_earning_ledgers__session_item_id__payment_session_items__id',
+      );
+
+  $$PaymentSessionItemsTableProcessedTableManager? get sessionItemId {
+    final $_column = $_itemColumn<int>('session_item_id');
+    if ($_column == null) return null;
+    final manager = $$PaymentSessionItemsTableTableManager(
+      $_db,
+      $_db.paymentSessionItems,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_sessionItemIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$StaffEarningLedgersTableFilterComposer
+    extends Composer<_$AppDatabase, $StaffEarningLedgersTable> {
+  $$StaffEarningLedgersTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get staffId => $composableBuilder(
+    column: $table.staffId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get earningType => $composableBuilder(
+    column: $table.earningType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get amount => $composableBuilder(
+    column: $table.amount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$PaymentSessionsTableFilterComposer get sessionId {
+    final $$PaymentSessionsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.sessionId,
+      referencedTable: $db.paymentSessions,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PaymentSessionsTableFilterComposer(
+            $db: $db,
+            $table: $db.paymentSessions,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$PaymentSessionItemsTableFilterComposer get sessionItemId {
+    final $$PaymentSessionItemsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.sessionItemId,
+      referencedTable: $db.paymentSessionItems,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PaymentSessionItemsTableFilterComposer(
+            $db: $db,
+            $table: $db.paymentSessionItems,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$StaffEarningLedgersTableOrderingComposer
+    extends Composer<_$AppDatabase, $StaffEarningLedgersTable> {
+  $$StaffEarningLedgersTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get staffId => $composableBuilder(
+    column: $table.staffId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get earningType => $composableBuilder(
+    column: $table.earningType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get amount => $composableBuilder(
+    column: $table.amount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$PaymentSessionsTableOrderingComposer get sessionId {
+    final $$PaymentSessionsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.sessionId,
+      referencedTable: $db.paymentSessions,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PaymentSessionsTableOrderingComposer(
+            $db: $db,
+            $table: $db.paymentSessions,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$PaymentSessionItemsTableOrderingComposer get sessionItemId {
+    final $$PaymentSessionItemsTableOrderingComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.sessionItemId,
+          referencedTable: $db.paymentSessionItems,
+          getReferencedColumn: (t) => t.id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$PaymentSessionItemsTableOrderingComposer(
+                $db: $db,
+                $table: $db.paymentSessionItems,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return composer;
+  }
+}
+
+class $$StaffEarningLedgersTableAnnotationComposer
+    extends Composer<_$AppDatabase, $StaffEarningLedgersTable> {
+  $$StaffEarningLedgersTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get staffId =>
+      $composableBuilder(column: $table.staffId, builder: (column) => column);
+
+  GeneratedColumn<String> get earningType => $composableBuilder(
+    column: $table.earningType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get amount =>
+      $composableBuilder(column: $table.amount, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  $$PaymentSessionsTableAnnotationComposer get sessionId {
+    final $$PaymentSessionsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.sessionId,
+      referencedTable: $db.paymentSessions,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PaymentSessionsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.paymentSessions,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$PaymentSessionItemsTableAnnotationComposer get sessionItemId {
+    final $$PaymentSessionItemsTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.sessionItemId,
+          referencedTable: $db.paymentSessionItems,
+          getReferencedColumn: (t) => t.id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$PaymentSessionItemsTableAnnotationComposer(
+                $db: $db,
+                $table: $db.paymentSessionItems,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return composer;
+  }
+}
+
+class $$StaffEarningLedgersTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $StaffEarningLedgersTable,
+          StaffEarningLedgerRow,
+          $$StaffEarningLedgersTableFilterComposer,
+          $$StaffEarningLedgersTableOrderingComposer,
+          $$StaffEarningLedgersTableAnnotationComposer,
+          $$StaffEarningLedgersTableCreateCompanionBuilder,
+          $$StaffEarningLedgersTableUpdateCompanionBuilder,
+          (StaffEarningLedgerRow, $$StaffEarningLedgersTableReferences),
+          StaffEarningLedgerRow,
+          PrefetchHooks Function({bool sessionId, bool sessionItemId})
+        > {
+  $$StaffEarningLedgersTableTableManager(
+    _$AppDatabase db,
+    $StaffEarningLedgersTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$StaffEarningLedgersTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$StaffEarningLedgersTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$StaffEarningLedgersTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> sessionId = const Value.absent(),
+                Value<int?> sessionItemId = const Value.absent(),
+                Value<String> staffId = const Value.absent(),
+                Value<String> earningType = const Value.absent(),
+                Value<int> amount = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+              }) => StaffEarningLedgersCompanion(
+                id: id,
+                sessionId: sessionId,
+                sessionItemId: sessionItemId,
+                staffId: staffId,
+                earningType: earningType,
+                amount: amount,
+                createdAt: createdAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int sessionId,
+                Value<int?> sessionItemId = const Value.absent(),
+                required String staffId,
+                required String earningType,
+                required int amount,
+                required DateTime createdAt,
+              }) => StaffEarningLedgersCompanion.insert(
+                id: id,
+                sessionId: sessionId,
+                sessionItemId: sessionItemId,
+                staffId: staffId,
+                earningType: earningType,
+                amount: amount,
+                createdAt: createdAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$StaffEarningLedgersTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({sessionId = false, sessionItemId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (sessionId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.sessionId,
+                                referencedTable:
+                                    $$StaffEarningLedgersTableReferences
+                                        ._sessionIdTable(db),
+                                referencedColumn:
+                                    $$StaffEarningLedgersTableReferences
+                                        ._sessionIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+                    if (sessionItemId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.sessionItemId,
+                                referencedTable:
+                                    $$StaffEarningLedgersTableReferences
+                                        ._sessionItemIdTable(db),
+                                referencedColumn:
+                                    $$StaffEarningLedgersTableReferences
+                                        ._sessionItemIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$StaffEarningLedgersTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $StaffEarningLedgersTable,
+      StaffEarningLedgerRow,
+      $$StaffEarningLedgersTableFilterComposer,
+      $$StaffEarningLedgersTableOrderingComposer,
+      $$StaffEarningLedgersTableAnnotationComposer,
+      $$StaffEarningLedgersTableCreateCompanionBuilder,
+      $$StaffEarningLedgersTableUpdateCompanionBuilder,
+      (StaffEarningLedgerRow, $$StaffEarningLedgersTableReferences),
+      StaffEarningLedgerRow,
+      PrefetchHooks Function({bool sessionId, bool sessionItemId})
+    >;
+typedef $$PaymentMethodBreakdownsTableCreateCompanionBuilder =
+    PaymentMethodBreakdownsCompanion Function({
+      Value<int> id,
+      required int sessionId,
+      required String method,
+      required int amount,
+      required DateTime receivedAt,
+    });
+typedef $$PaymentMethodBreakdownsTableUpdateCompanionBuilder =
+    PaymentMethodBreakdownsCompanion Function({
+      Value<int> id,
+      Value<int> sessionId,
+      Value<String> method,
+      Value<int> amount,
+      Value<DateTime> receivedAt,
+    });
+
+final class $$PaymentMethodBreakdownsTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $PaymentMethodBreakdownsTable,
+          PaymentMethodBreakdownRow
+        > {
+  $$PaymentMethodBreakdownsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $PaymentSessionsTable _sessionIdTable(_$AppDatabase db) =>
+      db.paymentSessions.createAlias(
+        'payment_method_breakdowns__session_id__payment_sessions__id',
+      );
+
+  $$PaymentSessionsTableProcessedTableManager get sessionId {
+    final $_column = $_itemColumn<int>('session_id')!;
+
+    final manager = $$PaymentSessionsTableTableManager(
+      $_db,
+      $_db.paymentSessions,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_sessionIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$PaymentMethodBreakdownsTableFilterComposer
+    extends Composer<_$AppDatabase, $PaymentMethodBreakdownsTable> {
+  $$PaymentMethodBreakdownsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get method => $composableBuilder(
+    column: $table.method,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get amount => $composableBuilder(
+    column: $table.amount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get receivedAt => $composableBuilder(
+    column: $table.receivedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$PaymentSessionsTableFilterComposer get sessionId {
+    final $$PaymentSessionsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.sessionId,
+      referencedTable: $db.paymentSessions,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PaymentSessionsTableFilterComposer(
+            $db: $db,
+            $table: $db.paymentSessions,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$PaymentMethodBreakdownsTableOrderingComposer
+    extends Composer<_$AppDatabase, $PaymentMethodBreakdownsTable> {
+  $$PaymentMethodBreakdownsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get method => $composableBuilder(
+    column: $table.method,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get amount => $composableBuilder(
+    column: $table.amount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get receivedAt => $composableBuilder(
+    column: $table.receivedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$PaymentSessionsTableOrderingComposer get sessionId {
+    final $$PaymentSessionsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.sessionId,
+      referencedTable: $db.paymentSessions,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PaymentSessionsTableOrderingComposer(
+            $db: $db,
+            $table: $db.paymentSessions,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$PaymentMethodBreakdownsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $PaymentMethodBreakdownsTable> {
+  $$PaymentMethodBreakdownsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get method =>
+      $composableBuilder(column: $table.method, builder: (column) => column);
+
+  GeneratedColumn<int> get amount =>
+      $composableBuilder(column: $table.amount, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get receivedAt => $composableBuilder(
+    column: $table.receivedAt,
+    builder: (column) => column,
+  );
+
+  $$PaymentSessionsTableAnnotationComposer get sessionId {
+    final $$PaymentSessionsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.sessionId,
+      referencedTable: $db.paymentSessions,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PaymentSessionsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.paymentSessions,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$PaymentMethodBreakdownsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $PaymentMethodBreakdownsTable,
+          PaymentMethodBreakdownRow,
+          $$PaymentMethodBreakdownsTableFilterComposer,
+          $$PaymentMethodBreakdownsTableOrderingComposer,
+          $$PaymentMethodBreakdownsTableAnnotationComposer,
+          $$PaymentMethodBreakdownsTableCreateCompanionBuilder,
+          $$PaymentMethodBreakdownsTableUpdateCompanionBuilder,
+          (PaymentMethodBreakdownRow, $$PaymentMethodBreakdownsTableReferences),
+          PaymentMethodBreakdownRow,
+          PrefetchHooks Function({bool sessionId})
+        > {
+  $$PaymentMethodBreakdownsTableTableManager(
+    _$AppDatabase db,
+    $PaymentMethodBreakdownsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$PaymentMethodBreakdownsTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$PaymentMethodBreakdownsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$PaymentMethodBreakdownsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> sessionId = const Value.absent(),
+                Value<String> method = const Value.absent(),
+                Value<int> amount = const Value.absent(),
+                Value<DateTime> receivedAt = const Value.absent(),
+              }) => PaymentMethodBreakdownsCompanion(
+                id: id,
+                sessionId: sessionId,
+                method: method,
+                amount: amount,
+                receivedAt: receivedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int sessionId,
+                required String method,
+                required int amount,
+                required DateTime receivedAt,
+              }) => PaymentMethodBreakdownsCompanion.insert(
+                id: id,
+                sessionId: sessionId,
+                method: method,
+                amount: amount,
+                receivedAt: receivedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$PaymentMethodBreakdownsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({sessionId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (sessionId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.sessionId,
+                                referencedTable:
+                                    $$PaymentMethodBreakdownsTableReferences
+                                        ._sessionIdTable(db),
+                                referencedColumn:
+                                    $$PaymentMethodBreakdownsTableReferences
+                                        ._sessionIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$PaymentMethodBreakdownsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $PaymentMethodBreakdownsTable,
+      PaymentMethodBreakdownRow,
+      $$PaymentMethodBreakdownsTableFilterComposer,
+      $$PaymentMethodBreakdownsTableOrderingComposer,
+      $$PaymentMethodBreakdownsTableAnnotationComposer,
+      $$PaymentMethodBreakdownsTableCreateCompanionBuilder,
+      $$PaymentMethodBreakdownsTableUpdateCompanionBuilder,
+      (PaymentMethodBreakdownRow, $$PaymentMethodBreakdownsTableReferences),
+      PaymentMethodBreakdownRow,
+      PrefetchHooks Function({bool sessionId})
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -17763,4 +22348,15 @@ class $AppDatabaseManager {
       $$InventoryItemsTableTableManager(_db, _db.inventoryItems);
   $$InventoryLogsTableTableManager get inventoryLogs =>
       $$InventoryLogsTableTableManager(_db, _db.inventoryLogs);
+  $$PaymentSessionsTableTableManager get paymentSessions =>
+      $$PaymentSessionsTableTableManager(_db, _db.paymentSessions);
+  $$PaymentSessionItemsTableTableManager get paymentSessionItems =>
+      $$PaymentSessionItemsTableTableManager(_db, _db.paymentSessionItems);
+  $$StaffEarningLedgersTableTableManager get staffEarningLedgers =>
+      $$StaffEarningLedgersTableTableManager(_db, _db.staffEarningLedgers);
+  $$PaymentMethodBreakdownsTableTableManager get paymentMethodBreakdowns =>
+      $$PaymentMethodBreakdownsTableTableManager(
+        _db,
+        _db.paymentMethodBreakdowns,
+      );
 }
