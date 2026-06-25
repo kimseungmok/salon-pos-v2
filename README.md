@@ -82,6 +82,6 @@ lib/          Flutter 소스 코드 (구현 단계에서 추가)
 
 **A-4(직원 재직상태) 구현 완료**: `Staff.accountStatus`에 새 값(`'退職済み'`)만 추가, 마이그레이션 없음. `StaffRepository.removeStaff()`를 이원화(`連結済み`→상태전환, 그 외→하드삭제 유지), `assertNotRetired()` 신설. `BookingRepository.createBooking()`은 항상 신규배정이라 그대로 검증, `updateBooking()`은 **담당자가 실제로 바뀔 때만** 검증(시간만 바꾸는 변경이나 동일 담당자 재지정은 검증 생략) — A-3의 "부분변경도 전체 재검사" 정책과 충돌하지 않도록 별도 조건으로 게이트. Payment/Visit/Inventory는 변경 없음(이미 올바른 상태). 테스트 9건 추가, 전체 259건 통과.
 
-**A-5(재고이력보존)는 프리플라이트 검토(`A5_PREFLIGHT_REVIEW.md`)만 완료, 구현은 아직 착수 전.** `InventoryItem`에 재활용 가능한 여유 필드가 없어 A-4와 동일 전략을 못 쓰고, "이력이 있으면 삭제 자체를 거부"하는 정책을 권장.
+**A-5(재고 이력보존) 구현 완료**: `InventoryRepository.deleteItem()`을 이력보존 삭제정책으로 변경 — soft delete용 상태컬럼 추가 없이, `itemId`를 참조하는 `InventoryLog`가 1건이라도 있으면 삭제를 거부(`BusinessRuleException`, 별도 복구로직 없이 단순 실패 처리). 이력이 없는 품목만 기존과 동일하게 하드 삭제. `adjustQuantity()`(재고수량 변경 로직)는 수정 없음, Payment/Product/Booking/Staff 도메인 무관(F-INV-00 그대로 유지). 테스트 3건 추가, 전체 262건 통과.
 
-**다음 권장 순서**: A-5 구현(마이그레이션 불필요로 확인됨) → (후속) 예약경로 recordVisit 연동(06/07 화면 구현 및 bookingId 전달방식 확정 시점에).
+**A-4/A-5 모두 구현 완료** — MVP 필수 5건(A-1~A-5) 전부 구현 완료. **다음 권장 순서**: 후속으로 예약경로 recordVisit 연동(06/07 화면 구현 및 bookingId 전달방식 확정 시점에), 그 외 베타/정식출시 단계 항목은 `PRIORITIZATION.md` 참조.
