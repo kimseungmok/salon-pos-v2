@@ -103,6 +103,13 @@ class StaffRepository {
   ///   (`DESIGN_REVIEW.md` §5에서 식별된 문제의 해결).
   /// - 그 외(`null`/`'待機中'`, 정식 연결 전): 보존할 이력이 구조적으로
   ///   없으므로 기존 그대로 하드 삭제를 유지한다.
+  ///
+  /// A-7(design/spec/v3/A6_FLOW_INTEGRATION_DESIGN.md §4/§6에서 식별된
+  /// 비멱등성 결함 수정): `'退職済み'`에 대해 다시 호출하면 **아무 동작도
+  /// 하지 않고 그대로 반환**한다 — 수정 전에는 이 분기가 빠져있어 `else`
+  /// (하드삭제)로 떨어졌고, 이미 보존해야 할 이력이 있는 행을 실수로
+  /// 영구 삭제할 위험이 있었다. "같은 요청을 반복해도 상태가 변하지
+  /// 않는다"는 멱등성 원칙을 모든 상태전이 메서드에 통일 적용한다.
   Future<void> removeStaff(String staffId) async {
     try {
       final staff = await (_db.select(_db.staff)
@@ -110,6 +117,10 @@ class StaffRepository {
           .getSingleOrNull();
       if (staff == null) {
         throw const NotFoundException('スタッフが見つかりませんでした（既に削除されている可能性があります）。');
+      }
+
+      if (staff.accountStatus == '退職済み') {
+        return; // 이미 퇴직 처리됨 — 멱등, 아무 동작 없음
       }
 
       if (staff.accountStatus == '連結済み') {

@@ -110,6 +110,24 @@ void main() {
       expect(found != null, true);
       expect(found!.accountStatus, '退職済み');
     });
+
+    test('A-7: 退職済み 상태에 재호출해도 하드삭제되지 않고 그대로 유지(멱등)', () async {
+      final s = await repo.inviteStaff(name: 'Yuki', phone: '090-1234-5678');
+      await db.into(db.staff).insertOnConflictUpdate(
+            StaffCompanion(
+              id: Value(s.id),
+              name: Value(s.name),
+              phone: Value(s.phone),
+              accountStatus: const Value('連結済み'),
+            ),
+          );
+      await repo.removeStaff(s.id); // 1차: 連結済み → 退職済み
+      await repo.removeStaff(s.id); // 2차: 退職済み 재호출 — 멱등, 변화 없어야 함
+      final found = await (db.select(db.staff)..where((t) => t.id.equals(s.id)))
+          .getSingleOrNull();
+      expect(found != null, true);
+      expect(found!.accountStatus, '退職済み');
+    });
   });
 
   group('assertNotRetired (A-4)', () {
