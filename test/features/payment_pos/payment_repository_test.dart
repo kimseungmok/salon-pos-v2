@@ -22,7 +22,7 @@ void main() {
   tearDown(() => db.close());
 
   const item = (
-    productId: 'p1',
+    productId: 1,
     productName: 'カット',
     quantity: 1,
     unitPrice: 5000,
@@ -46,7 +46,7 @@ void main() {
     test('수량 0 이하 → ValidationException', () async {
       expect(
         () => repo.createOrder(items: [
-          (productId: 'p1', productName: 'カット', quantity: 0, unitPrice: 5000, staffId: null)
+          (productId: 1, productName: 'カット', quantity: 0, unitPrice: 5000, staffId: null)
         ]),
         throwsA(isA<ValidationException>()),
       );
@@ -101,14 +101,14 @@ void main() {
 
     test('존재하지 않는 주문 → NotFoundException', () async {
       expect(
-        () => repo.pay(orderId: 'no-such-id', method: 'card', amount: 5000),
+        () => repo.pay(orderId: 999999, method: 'card', amount: 5000),
         throwsA(isA<NotFoundException>()),
       );
     });
 
     test('분할결제: 부분 결제 시 partially_paid 상태', () async {
       final order = await repo.createOrder(items: [
-        (productId: 'p1', productName: 'カット', quantity: 1, unitPrice: 10000, staffId: null)
+        (productId: 1, productName: 'カット', quantity: 1, unitPrice: 10000, staffId: null)
       ]);
       await repo.pay(orderId: order.id, method: 'cash', amount: 4000, cashReceived: 4000);
       final updated =
@@ -119,7 +119,7 @@ void main() {
 
     test('분할결제: 잔여금액 전부 결제하면 completed', () async {
       final order = await repo.createOrder(items: [
-        (productId: 'p1', productName: 'カット', quantity: 1, unitPrice: 10000, staffId: null)
+        (productId: 1, productName: 'カット', quantity: 1, unitPrice: 10000, staffId: null)
       ]);
       await repo.pay(orderId: order.id, method: 'cash', amount: 4000, cashReceived: 4000);
       await repo.pay(orderId: order.id, method: 'card', amount: 6000);
@@ -170,7 +170,7 @@ void main() {
       final order = await repo.createOrder(
         customerId: customer.id,
         items: [
-          (productId: 'p1', productName: 'カット', quantity: 1, unitPrice: 10000, staffId: null)
+          (productId: 1, productName: 'カット', quantity: 1, unitPrice: 10000, staffId: null)
         ],
       );
       await repo.pay(orderId: order.id, method: 'cash', amount: 4000, cashReceived: 4000);
@@ -186,7 +186,7 @@ void main() {
       final order = await repo.createOrder(
         customerId: customer.id,
         items: [
-          (productId: 'p1', productName: 'カット', quantity: 1, unitPrice: 10000, staffId: null)
+          (productId: 1, productName: 'カット', quantity: 1, unitPrice: 10000, staffId: null)
         ],
       );
       await repo.pay(orderId: order.id, method: 'cash', amount: 4000, cashReceived: 4000);
@@ -212,8 +212,8 @@ void main() {
       final order = await repo.createOrder(
         customerId: customer.id,
         items: [
-          (productId: 'p1', productName: 'カット', quantity: 1, unitPrice: 2000, staffId: null),
-          (productId: 'p2', productName: 'カラー', quantity: 1, unitPrice: 3000, staffId: 'staff-001'),
+          (productId: 1, productName: 'カット', quantity: 1, unitPrice: 2000, staffId: null),
+          (productId: 2, productName: 'カラー', quantity: 1, unitPrice: 3000, staffId: 1),
         ],
       );
       await repo.pay(orderId: order.id, method: 'cash', amount: 5000, cashReceived: 5000);
@@ -221,7 +221,7 @@ void main() {
       final visits = await (db.select(db.visitRecords)
             ..where((v) => v.customerId.equals(customer.id)))
           .get();
-      expect(visits.single.staffId, 'staff-001');
+      expect(visits.single.staffId, 1);
     });
   });
 
@@ -287,7 +287,7 @@ void main() {
 
     test('존재하지 않는 주문 취소 → NotFoundException', () async {
       expect(
-        () => repo.cancelOrder('no-such-id'),
+        () => repo.cancelOrder(999999),
         throwsA(isA<NotFoundException>()),
       );
     });

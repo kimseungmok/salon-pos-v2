@@ -23,4 +23,4 @@ final productsStreamProvider = StreamProvider<List<ProductRow>>((ref) {
 });
 
 /// 25번 화면(商品リスト) 카테고리 탭 선택 상태. null = すべて.
-final selectedCategoryIdProvider = StateProvider<String?>((ref) => null);
+final selectedCategoryIdProvider = StateProvider<int?>((ref) => null);

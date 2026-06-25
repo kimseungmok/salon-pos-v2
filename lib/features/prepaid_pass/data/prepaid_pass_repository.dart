@@ -1,13 +1,13 @@
 import 'package:drift/drift.dart';
-import 'package:uuid/uuid.dart';
 
 import '../../../core/errors.dart';
 import '../../../db/app_database.dart';
 import '../logic/prepaid_pass_logic.dart';
 
-const _uuid = Uuid();
-
 /// design/spec/v3/prepaid_pass/feature_spec.md F-PP-01~05 그대로 구현.
+///
+/// A-9(docs/ID_CONVENTION.md): id는 INTEGER AUTOINCREMENT — UUID 생성
+/// 코드 없음.
 class PrepaidPassRepository {
   PrepaidPassRepository(this._db);
 
@@ -24,7 +24,7 @@ class PrepaidPassRepository {
         .watch();
   }
 
-  Stream<List<PrepaidPassBalanceRow>> watchBalancesOf(String customerId) {
+  Stream<List<PrepaidPassBalanceRow>> watchBalancesOf(int customerId) {
     return (_db.select(_db.prepaidPassBalances)
           ..where((b) => b.customerId.equals(customerId) & b.status.equals('active')))
         .watch();
@@ -35,7 +35,7 @@ class PrepaidPassRepository {
   Future<PrepaidPassMenuRow> createMenu({
     required String type,
     required String name,
-    String? linkedProductId,
+    int? linkedProductId,
     required int price,
     bool allowCustomPrice = false,
     int? countPerPurchase,
@@ -53,7 +53,7 @@ class PrepaidPassRepository {
       throw const ValidationException('メニュー名を入力してください。');
     }
     if (type == 'count') {
-      if (linkedProductId == null || linkedProductId.isEmpty) {
+      if (linkedProductId == null) {
         throw const ValidationException('回数券は適用商品を1つ選択してください。');
       }
       if (countPerPurchase == null || countPerPurchase <= 0) {
@@ -68,10 +68,8 @@ class PrepaidPassRepository {
     }
 
     try {
-      final id = _uuid.v4();
-      await _db.into(_db.prepaidPassMenus).insert(
+      final id = await _db.into(_db.prepaidPassMenus).insert(
             PrepaidPassMenusCompanion.insert(
-              id: id,
               type: type,
               name: trimmedName,
               linkedProductId: Value(linkedProductId),
@@ -113,12 +111,9 @@ class PrepaidPassRepository {
   /// Order를 거치지 않고 독립적으로 처리). 보너스 충전(F-PP-01a)을
   /// 자동 적용한다.
   Future<PrepaidPassBalanceRow> chargeMenu({
-    required String customerId,
-    required String menuId,
+    required int customerId,
+    required int menuId,
   }) async {
-    if (customerId.isEmpty) {
-      throw const ValidationException('お客様を選択してください。');
-    }
     try {
       final menu = await (_db.select(_db.prepaidPassMenus)
             ..where((m) => m.id.equals(menuId)))
@@ -147,10 +142,8 @@ class PrepaidPassRepository {
         }
       }
 
-      final balanceId = _uuid.v4();
-      await _db.into(_db.prepaidPassBalances).insert(
+      final balanceId = await _db.into(_db.prepaidPassBalances).insert(
             PrepaidPassBalancesCompanion.insert(
-              id: balanceId,
               customerId: customerId,
               menuId: menuId,
               remainingAmount: Value(remainingAmount),
@@ -161,7 +154,6 @@ class PrepaidPassRepository {
           );
       await _db.into(_db.prepaidPassTransactions).insert(
             PrepaidPassTransactionsCompanion.insert(
-              id: _uuid.v4(),
               balanceId: balanceId,
               type: 'charge',
               amount: Value(remainingAmount),
@@ -190,9 +182,9 @@ class PrepaidPassRepository {
   // ── F-PP-03: 사용(결제 차감) ────────────────────────────────────────
 
   Future<PrepaidPaymentResult> useAmountBalance({
-    required String balanceId,
+    required int balanceId,
     required int requestedAmount,
-    String? relatedOrderId,
+    int? relatedOrderId,
   }) async {
     if (requestedAmount <= 0) {
       throw const ValidationException('使用金額は1円以上にしてください。');
@@ -209,7 +201,6 @@ class PrepaidPassRepository {
       ));
       await _db.into(_db.prepaidPassTransactions).insert(
             PrepaidPassTransactionsCompanion.insert(
-              id: _uuid.v4(),
               balanceId: balanceId,
               type: 'use',
               amount: Value(-result.usedFromPrepaid),
@@ -227,8 +218,8 @@ class PrepaidPassRepository {
 
   /// 횟수권 사용 — 1회 시술 = 1회 차감(부분차감 없음, F-PP-03).
   Future<void> useCountBalance({
-    required String balanceId,
-    String? relatedOrderId,
+    required int balanceId,
+    int? relatedOrderId,
   }) async {
     try {
       final balance = await _activeBalanceOrThrow(balanceId);
@@ -244,7 +235,6 @@ class PrepaidPassRepository {
       ));
       await _db.into(_db.prepaidPassTransactions).insert(
             PrepaidPassTransactionsCompanion.insert(
-              id: _uuid.v4(),
               balanceId: balanceId,
               type: 'use',
               count: const Value(-1),
@@ -259,7 +249,7 @@ class PrepaidPassRepository {
     }
   }
 
-  Future<PrepaidPassBalanceRow> _activeBalanceOrThrow(String balanceId) async {
+  Future<PrepaidPassBalanceRow> _activeBalanceOrThrow(int balanceId) async {
     final balance = await (_db.select(_db.prepaidPassBalances)
           ..where((b) => b.id.equals(balanceId)))
         .getSingleOrNull();
@@ -281,7 +271,7 @@ class PrepaidPassRepository {
   /// 사용했다가 주문이 취소되면 사용분을 되돌려준다(F-PP-02의 "충전
   /// 취소시 재사용 불가"와는 다른 케이스 — 이건 사용 취소의 복원).
   Future<void> restoreUse({
-    required String balanceId,
+    required int balanceId,
     int? amount,
     int? count,
   }) async {
@@ -306,7 +296,6 @@ class PrepaidPassRepository {
       }
       await _db.into(_db.prepaidPassTransactions).insert(
             PrepaidPassTransactionsCompanion.insert(
-              id: _uuid.v4(),
               balanceId: balanceId,
               type: 'refund',
               amount: Value(amount),
@@ -322,7 +311,7 @@ class PrepaidPassRepository {
   }
 
   /// F-PP-02: 충전(구매) 자체를 취소 — 잔액 전부 소멸, 재사용 불가.
-  Future<void> voidCharge(String balanceId) async {
+  Future<void> voidCharge(int balanceId) async {
     try {
       final rows = await (_db.update(_db.prepaidPassBalances)
             ..where((b) => b.id.equals(balanceId)))
@@ -344,8 +333,8 @@ class PrepaidPassRepository {
   // ── F-PP-05: 과거 종이 티켓 마이그레이션 ───────────────────────────
 
   Future<PrepaidPassBalanceRow> migratePaperTicket({
-    required String customerId,
-    required String menuId,
+    required int customerId,
+    required int menuId,
     int? remainingAmount,
     int? remainingCount,
     required DateTime originalPurchaseDate,
@@ -361,10 +350,8 @@ class PrepaidPassRepository {
         throw const NotFoundException('プリペイド券メニューが見つかりませんでした。');
       }
       final expiresAt = computeExpiry(menu, originalPurchaseDate);
-      final id = _uuid.v4();
-      await _db.into(_db.prepaidPassBalances).insert(
+      final id = await _db.into(_db.prepaidPassBalances).insert(
             PrepaidPassBalancesCompanion.insert(
-              id: id,
               customerId: customerId,
               menuId: menuId,
               remainingAmount: Value(remainingAmount),

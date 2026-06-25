@@ -127,7 +127,7 @@ void main() {
 
     test('존재하지 않는 캠페인 → NotFoundException', () async {
       expect(
-        () => repo.toggleCampaign('no-such-id', false),
+        () => repo.toggleCampaign(999999, false),
         throwsA(isA<NotFoundException>()),
       );
     });

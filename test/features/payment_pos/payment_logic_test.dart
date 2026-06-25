@@ -28,24 +28,24 @@ void main() {
   });
 
   group('payByItems (F-PAY-04 메뉴별 결제)', () {
-    OrderItemRow item(String id, int price, int qty) => OrderItemRow(
+    OrderItemRow item(int id, int price, int qty) => OrderItemRow(
           id: id,
-          orderId: 'o1',
+          orderId: 1,
           productId: id,
-          productName: id,
+          productName: 'p$id',
           quantity: qty,
           unitPrice: price,
         );
 
     test('선택된 아이템들의 합계만 계산', () {
-      final items = [item('a', 5000, 1), item('b', 8000, 2), item('c', 3000, 1)];
-      final total = payByItems(['a', 'b'], items);
+      final items = [item(1, 5000, 1), item(2, 8000, 2), item(3, 3000, 1)];
+      final total = payByItems([1, 2], items);
       expect(total, 5000 + 8000 * 2);
     });
 
     test('선택 없으면 0', () {
-      final items = [item('a', 5000, 1)];
-      expect(payByItems([], items), 0);
+      final items = [item(1, 5000, 1)];
+      expect(payByItems(<int>[], items), 0);
     });
   });
 

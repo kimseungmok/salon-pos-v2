@@ -113,7 +113,7 @@ class InventoryListScreen extends ConsumerWidget {
     );
   }
 
-  Future<void> _adjust(BuildContext context, WidgetRef ref, String itemId, int delta) async {
+  Future<void> _adjust(BuildContext context, WidgetRef ref, int itemId, int delta) async {
     try {
       await ref.read(inventoryRepositoryProvider).adjustQuantity(
             itemId: itemId,

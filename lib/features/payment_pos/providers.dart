@@ -15,4 +15,4 @@ final paymentRepositoryProvider = Provider<PaymentRepository>((ref) {
 
 /// 02번 화면(注文)의 카트 상태 — productId별 수량.
 final cartProvider =
-    StateProvider<Map<String, int>>((ref) => {});
+    StateProvider<Map<int, int>>((ref) => {});

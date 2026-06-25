@@ -80,7 +80,7 @@ void main() {
 
     test('존재하지 않는 품목 → NotFoundException', () async {
       expect(
-        () => repo.adjustQuantity(itemId: 'no-such-id', delta: 1, reason: 'stock_in'),
+        () => repo.adjustQuantity(itemId: 999999, delta: 1, reason: 'stock_in'),
         throwsA(isA<NotFoundException>()),
       );
     });
@@ -89,7 +89,7 @@ void main() {
   group('deleteItem (A-5: 이력보존 삭제정책)', () {
     test('존재하지 않는 품목 삭제 → NotFoundException', () async {
       expect(
-        () => repo.deleteItem('no-such-id'),
+        () => repo.deleteItem(999999),
         throwsA(isA<NotFoundException>()),
       );
     });

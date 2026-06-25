@@ -8,7 +8,7 @@ void main() {
     int? expiryCustomDays,
   }) {
     return PrepaidPassMenuRow(
-      id: 'm1',
+      id: 1,
       type: 'amount',
       name: 'テスト券',
       price: 100000,

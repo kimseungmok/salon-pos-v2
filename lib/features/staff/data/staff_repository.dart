@@ -1,10 +1,7 @@
 import 'package:drift/drift.dart';
-import 'package:uuid/uuid.dart';
 
 import '../../../core/errors.dart';
 import '../../../db/app_database.dart';
-
-const _uuid = Uuid();
 
 /// design/spec/v3/staff/feature_spec.md F-STAFF-00/01 그대로 구현.
 ///
@@ -12,6 +9,9 @@ const _uuid = Uuid();
 /// 메서드를 추가하지 않는다. 토스 전체에 그런 화면이 없고(F-STAFF-00
 /// 근거), 본 앱도 그 범위를 넘지 않는다. [Staff.role]은 표시 전용으로만
 /// 읽는다.
+///
+/// A-9(docs/ID_CONVENTION.md): id는 INTEGER AUTOINCREMENT — UUID 생성
+/// 코드 없음(insert 시 id를 지정하지 않고 DB가 자동 생성).
 class StaffRepository {
   StaffRepository(this._db);
 
@@ -46,11 +46,9 @@ class StaffRepository {
         throw BusinessRuleException('この携帯電話番号は既に登録されています。');
       }
 
-      final id = _uuid.v4();
       final now = DateTime.now();
-      await _db.into(_db.staff).insert(
+      final id = await _db.into(_db.staff).insert(
             StaffCompanion.insert(
-              id: id,
               name: trimmedName,
               phone: trimmedPhone,
               accountStatus: const Value('待機中'),
@@ -74,7 +72,7 @@ class StaffRepository {
   }
 
   /// 대기중 상태에서만 재전송 가능.
-  Future<void> resendInvite(String staffId) async {
+  Future<void> resendInvite(int staffId) async {
     try {
       final staff = await (_db.select(_db.staff)
             ..where((s) => s.id.equals(staffId)))
@@ -110,7 +108,7 @@ class StaffRepository {
   /// (하드삭제)로 떨어졌고, 이미 보존해야 할 이력이 있는 행을 실수로
   /// 영구 삭제할 위험이 있었다. "같은 요청을 반복해도 상태가 변하지
   /// 않는다"는 멱등성 원칙을 모든 상태전이 메서드에 통일 적용한다.
-  Future<void> removeStaff(String staffId) async {
+  Future<void> removeStaff(int staffId) async {
     try {
       final staff = await (_db.select(_db.staff)
             ..where((s) => s.id.equals(staffId)))
@@ -142,7 +140,7 @@ class StaffRepository {
   /// §1-2). 호출 시점(언제 이 메서드를 부를지)은 호출자(BookingRepository)
   /// 의 책임이다 — 이 메서드 자체는 단순히 "지금 이 staffId가 퇴사
   /// 상태인가"만 판정한다.
-  Future<void> assertNotRetired(String staffId) async {
+  Future<void> assertNotRetired(int staffId) async {
     try {
       final staff = await (_db.select(_db.staff)
             ..where((s) => s.id.equals(staffId)))
@@ -171,7 +169,7 @@ class StaffRepository {
   }
 
   Future<void> setShift({
-    required String staffId,
+    required int staffId,
     required DateTime date,
     DateTime? startTime,
     DateTime? endTime,
@@ -197,7 +195,6 @@ class StaffRepository {
       } else {
         await _db.into(_db.shifts).insert(
               ShiftsCompanion.insert(
-                id: _uuid.v4(),
                 staffId: staffId,
                 date: dateOnly,
                 startTime: Value(startTime),
@@ -216,7 +213,7 @@ class StaffRepository {
   /// booking 모듈(M4)이 이 메서드를 호출해 담당자 칩의 空き/予約あり/休み
   /// 를 판정한다(예약 중복여부 판단은 booking 쪽 책임이라 이 함수는
   /// 시프트 유무만 본다).
-  Future<bool> isOnShift(String staffId, DateTime dateTime) async {
+  Future<bool> isOnShift(int staffId, DateTime dateTime) async {
     try {
       final dateOnly = DateTime(dateTime.year, dateTime.month, dateTime.day);
       final shift = await (_db.select(_db.shifts)

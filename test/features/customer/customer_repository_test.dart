@@ -52,7 +52,7 @@ void main() {
 
     test('존재하지 않는 고객 → NotFoundException', () async {
       expect(
-        () => repo.updateMemo('no-such-id', 'メモ'),
+        () => repo.updateMemo(999999, 'メモ'),
         throwsA(isA<NotFoundException>()),
       );
     });
@@ -78,7 +78,7 @@ void main() {
 
     test('존재하지 않는 고객 → NotFoundException', () async {
       expect(
-        () => repo.recordVisit(customerId: 'no-such-id', visitDate: DateTime.now()),
+        () => repo.recordVisit(customerId: 999999, visitDate: DateTime.now()),
         throwsA(isA<NotFoundException>()),
       );
     });

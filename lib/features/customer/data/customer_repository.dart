@@ -1,12 +1,12 @@
 import 'package:drift/drift.dart';
-import 'package:uuid/uuid.dart';
 
 import '../../../core/errors.dart';
 import '../../../db/app_database.dart';
 
-const _uuid = Uuid();
-
 /// design/spec/v3/customer/feature_spec.md F-CUST-02/04 그대로 구현.
+///
+/// A-9(docs/ID_CONVENTION.md): id는 INTEGER AUTOINCREMENT — UUID 생성
+/// 코드 없음.
 class CustomerRepository {
   CustomerRepository(this._db);
 
@@ -64,11 +64,9 @@ class CustomerRepository {
         throw BusinessRuleException('この電話番号は既に登録されているお客様です（${duplicate.name}様）。');
       }
 
-      final id = _uuid.v4();
       final now = DateTime.now();
-      await _db.into(_db.customers).insert(
+      final id = await _db.into(_db.customers).insert(
             CustomersCompanion.insert(
-              id: id,
               name: trimmedName,
               phone: trimmedPhone,
               createdAt: now,
@@ -91,7 +89,7 @@ class CustomerRepository {
   /// payment_pos의 cancelOrder()(F-PAY-05)·marketing의 포인트 환원
   /// 로직(F-MKT-03)이 공통으로 호출하는 포인트 가감 메서드. 적립/사용은
   /// 양수, 환원/회수는 음수로 [delta]를 넘긴다.
-  Future<void> adjustPoints(String customerId, int delta) async {
+  Future<void> adjustPoints(int customerId, int delta) async {
     try {
       final customer = await (_db.select(_db.customers)
             ..where((c) => c.id.equals(customerId)))
@@ -113,12 +111,12 @@ class CustomerRepository {
   }
 
   /// F-PAY-05 결제취소 시 사용한 포인트를 되돌려준다(양수 가산).
-  Future<void> restorePoints(String customerId, int usedPoints) =>
+  Future<void> restorePoints(int customerId, int usedPoints) =>
       adjustPoints(customerId, usedPoints);
 
   /// F-CUST-02: 메모 저장. 권한 체크(오너만)는 화면단(호출 측)에서
   /// 로그인 정보로 판단 — 레포지토리는 저장만 책임진다.
-  Future<void> updateMemo(String customerId, String memo) async {
+  Future<void> updateMemo(int customerId, String memo) async {
     try {
       final rows = await (_db.update(_db.customers)
             ..where((c) => c.id.equals(customerId)))
@@ -136,9 +134,9 @@ class CustomerRepository {
   /// 방문 완료 기록 — F-CUST-01 그룹 재계산은 다음 조회 시 자동 반영
   /// (저장값이 아니라 항상 즉시 계산이므로 별도 트리거 불필요).
   Future<void> recordVisit({
-    required String customerId,
+    required int customerId,
     required DateTime visitDate,
-    String? staffId,
+    int? staffId,
     int amount = 0,
     String status = 'completed',
   }) async {
@@ -154,7 +152,6 @@ class CustomerRepository {
       }
       await _db.into(_db.visitRecords).insert(
             VisitRecordsCompanion.insert(
-              id: _uuid.v4(),
               customerId: customerId,
               visitDate: visitDate,
               staffId: Value(staffId),

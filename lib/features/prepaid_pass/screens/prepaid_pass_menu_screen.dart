@@ -100,7 +100,7 @@ class _CreateMenuDialogState extends State<_CreateMenuDialog> {
   final _nameController = TextEditingController();
   final _priceController = TextEditingController();
   final _countController = TextEditingController();
-  String? _linkedProductId;
+  int? _linkedProductId;
   bool _submitting = false;
   String? _errorText;
 
@@ -174,7 +174,7 @@ class _CreateMenuDialogState extends State<_CreateMenuDialog> {
                   return ChoiceChip(
                     label: Text(p.name as String),
                     selected: _linkedProductId == p.id,
-                    onSelected: (_) => setState(() => _linkedProductId = p.id as String),
+                    onSelected: (_) => setState(() => _linkedProductId = p.id),
                   );
                 }).toList(),
               ),

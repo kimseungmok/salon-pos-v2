@@ -22,11 +22,11 @@ void main() {
 
   tearDown(() => db.close());
 
-  Future<String> aCustomer() async =>
+  Future<int> aCustomer() async =>
       (await customerRepo.createCustomer(name: '田中美咲', phone: '090-1234-5678')).id;
 
   int staffPhoneSeq = 0;
-  Future<String> aStaffOnShift(DateTime date) async {
+  Future<int> aStaffOnShift(DateTime date) async {
     staffPhoneSeq++;
     final phone = '090-2222-${staffPhoneSeq.toString().padLeft(4, '0')}';
     final s = await staffRepo.inviteStaff(name: 'Yuki', phone: phone);
@@ -40,7 +40,7 @@ void main() {
   }
 
   /// A-4 검증용: 재직중(連結済み) 상태를 거쳐 退職済み로 전환된 직원.
-  Future<String> aRetiredStaffOnShift(DateTime date) async {
+  Future<int> aRetiredStaffOnShift(DateTime date) async {
     final id = await aStaffOnShift(date);
     final staff = await (db.select(db.staff)..where((t) => t.id.equals(id))).getSingle();
     await db.into(db.staff).insertOnConflictUpdate(
@@ -60,23 +60,11 @@ void main() {
       final cid = await aCustomer();
       final b = await repo.createBooking(
         customerId: cid,
-        productIds: const ['p1'],
+        productIds: const [1],
         startAt: DateTime(2026, 6, 23, 14),
         endAt: DateTime(2026, 6, 23, 15),
       );
       expect(b.status, 'confirmed');
-    });
-
-    test('고객 미지정 → ValidationException', () async {
-      expect(
-        () => repo.createBooking(
-          customerId: '',
-          productIds: const ['p1'],
-          startAt: DateTime(2026, 6, 23, 14),
-          endAt: DateTime(2026, 6, 23, 15),
-        ),
-        throwsA(isA<ValidationException>()),
-      );
     });
 
     test('메뉴 미선택 → ValidationException', () async {
@@ -84,7 +72,7 @@ void main() {
       expect(
         () => repo.createBooking(
           customerId: cid,
-          productIds: const [],
+          productIds: const <int>[],
           startAt: DateTime(2026, 6, 23, 14),
           endAt: DateTime(2026, 6, 23, 15),
         ),
@@ -97,7 +85,7 @@ void main() {
       expect(
         () => repo.createBooking(
           customerId: cid,
-          productIds: const ['p1'],
+          productIds: const [1],
           startAt: DateTime(2026, 6, 23, 15),
           endAt: DateTime(2026, 6, 23, 14),
         ),
@@ -110,7 +98,7 @@ void main() {
       expect(
         () => repo.createBooking(
           customerId: cid,
-          productIds: const ['p1'],
+          productIds: const [1],
           startAt: DateTime(2026, 6, 23, 14),
           endAt: DateTime(2026, 6, 23, 15),
           depositEnabled: true,
@@ -126,7 +114,7 @@ void main() {
         () => repo.createBooking(
           customerId: cid,
           staffId: staff.id,
-          productIds: const ['p1'],
+          productIds: const [1],
           startAt: DateTime(2026, 6, 23, 14),
           endAt: DateTime(2026, 6, 23, 15),
         ),
@@ -140,7 +128,7 @@ void main() {
       await repo.createBooking(
         customerId: cid,
         staffId: staffId,
-        productIds: const ['p1'],
+        productIds: const [1],
         startAt: DateTime(2026, 6, 23, 14),
         endAt: DateTime(2026, 6, 23, 15),
       );
@@ -148,7 +136,7 @@ void main() {
         () => repo.createBooking(
           customerId: cid,
           staffId: staffId,
-          productIds: const ['p2'],
+          productIds: const [2],
           startAt: DateTime(2026, 6, 23, 14, 30),
           endAt: DateTime(2026, 6, 23, 15, 30),
         ),
@@ -162,14 +150,14 @@ void main() {
       await repo.createBooking(
         customerId: cid,
         staffId: staffId,
-        productIds: const ['p1'],
+        productIds: const [1],
         startAt: DateTime(2026, 6, 23, 14),
         endAt: DateTime(2026, 6, 23, 15),
       );
       final b2 = await repo.createBooking(
         customerId: cid,
         staffId: staffId,
-        productIds: const ['p2'],
+        productIds: const [2],
         startAt: DateTime(2026, 6, 23, 15),
         endAt: DateTime(2026, 6, 23, 16),
       );
@@ -183,7 +171,7 @@ void main() {
         () => repo.createBooking(
           customerId: cid,
           staffId: retiredStaffId,
-          productIds: const ['p1'],
+          productIds: const [1],
           startAt: DateTime(2026, 6, 23, 14),
           endAt: DateTime(2026, 6, 23, 15),
         ),
@@ -197,7 +185,7 @@ void main() {
       final cid = await aCustomer();
       final b = await repo.createBooking(
         customerId: cid,
-        productIds: const ['p1'],
+        productIds: const [1],
         startAt: DateTime(2026, 6, 23, 14),
         endAt: DateTime(2026, 6, 23, 15),
         depositEnabled: true,
@@ -215,7 +203,7 @@ void main() {
       final cid = await aCustomer();
       final b = await repo.createBooking(
         customerId: cid,
-        productIds: const ['p1'],
+        productIds: const [1],
         startAt: DateTime(2026, 6, 23, 14),
         endAt: DateTime(2026, 6, 23, 15),
         depositEnabled: true,
@@ -233,7 +221,7 @@ void main() {
       final cid = await aCustomer();
       final b = await repo.createBooking(
         customerId: cid,
-        productIds: const ['p1'],
+        productIds: const [1],
         startAt: DateTime(2026, 6, 23, 14),
         endAt: DateTime(2026, 6, 23, 15),
         depositEnabled: true,
@@ -250,7 +238,7 @@ void main() {
       final cid = await aCustomer();
       final b = await repo.createBooking(
         customerId: cid,
-        productIds: const ['p1'],
+        productIds: const [1],
         startAt: DateTime(2026, 6, 23, 14),
         endAt: DateTime(2026, 6, 23, 15),
       );
@@ -262,7 +250,7 @@ void main() {
 
     test('존재하지 않는 예약 → NotFoundException', () async {
       expect(
-        () => repo.cancelBooking(bookingId: 'no-such-id', reason: 'customer_early'),
+        () => repo.cancelBooking(bookingId: 999999, reason: 'customer_early'),
         throwsA(isA<NotFoundException>()),
       );
     });
@@ -271,7 +259,7 @@ void main() {
       final cid = await aCustomer();
       final b = await repo.createBooking(
         customerId: cid,
-        productIds: const ['p1'],
+        productIds: const [1],
         startAt: DateTime(2026, 6, 23, 14),
         endAt: DateTime(2026, 6, 23, 15),
       );
@@ -288,7 +276,7 @@ void main() {
       final cid = await aCustomer();
       final b = await repo.createBooking(
         customerId: cid,
-        productIds: const ['p1'],
+        productIds: const [1],
         startAt: DateTime(2026, 6, 23, 14),
         endAt: DateTime(2026, 6, 23, 15),
       );
@@ -302,7 +290,7 @@ void main() {
       final cid = await aCustomer();
       final b = await repo.createBooking(
         customerId: cid,
-        productIds: const ['p1'],
+        productIds: const [1],
         startAt: DateTime(2026, 6, 23, 14),
         endAt: DateTime(2026, 6, 23, 15),
         depositEnabled: true,
@@ -319,7 +307,7 @@ void main() {
 
     test('존재하지 않는 예약 → NotFoundException', () async {
       expect(
-        () => repo.completeBooking('no-such-id'),
+        () => repo.completeBooking(999999),
         throwsA(isA<NotFoundException>()),
       );
     });
@@ -328,7 +316,7 @@ void main() {
       final cid = await aCustomer();
       final b = await repo.createBooking(
         customerId: cid,
-        productIds: const ['p1'],
+        productIds: const [1],
         startAt: DateTime(2026, 6, 23, 14),
         endAt: DateTime(2026, 6, 23, 15),
       );
@@ -343,7 +331,7 @@ void main() {
       final cid = await aCustomer();
       final b = await repo.createBooking(
         customerId: cid,
-        productIds: const ['p1'],
+        productIds: const [1],
         startAt: DateTime(2026, 6, 23, 14),
         endAt: DateTime(2026, 6, 23, 15),
       );
@@ -358,7 +346,7 @@ void main() {
       final cid = await aCustomer();
       final b = await repo.createBooking(
         customerId: cid,
-        productIds: const ['p1'],
+        productIds: const [1],
         startAt: DateTime(2026, 6, 23, 14),
         endAt: DateTime(2026, 6, 23, 15),
       );
@@ -375,7 +363,7 @@ void main() {
       final cid = await aCustomer();
       final b = await repo.createBooking(
         customerId: cid,
-        productIds: const ['p1'],
+        productIds: const [1],
         startAt: DateTime(2026, 6, 23, 14),
         endAt: DateTime(2026, 6, 23, 15),
       );
@@ -396,7 +384,7 @@ void main() {
       final b = await repo.createBooking(
         customerId: cid,
         staffId: staffA,
-        productIds: const ['p1'],
+        productIds: const [1],
         startAt: DateTime(2026, 6, 23, 14),
         endAt: DateTime(2026, 6, 23, 15),
       );
@@ -410,7 +398,7 @@ void main() {
       final b = await repo.createBooking(
         customerId: cid,
         staffId: staffId,
-        productIds: const ['p1'],
+        productIds: const [1],
         startAt: DateTime(2026, 6, 23, 14),
         endAt: DateTime(2026, 6, 23, 15),
       );
@@ -430,14 +418,14 @@ void main() {
       await repo.createBooking(
         customerId: cid,
         staffId: staffId,
-        productIds: const ['p1'],
+        productIds: const [1],
         startAt: DateTime(2026, 6, 23, 16),
         endAt: DateTime(2026, 6, 23, 17),
       );
       final b2 = await repo.createBooking(
         customerId: cid,
         staffId: staffId,
-        productIds: const ['p1'],
+        productIds: const [1],
         startAt: DateTime(2026, 6, 23, 10),
         endAt: DateTime(2026, 6, 23, 11),
       );
@@ -455,7 +443,7 @@ void main() {
       final cid = await aCustomer();
       final b = await repo.createBooking(
         customerId: cid,
-        productIds: const ['p1'],
+        productIds: const [1],
         startAt: DateTime(2026, 6, 23, 14),
         endAt: DateTime(2026, 6, 23, 15),
       );
@@ -471,7 +459,7 @@ void main() {
 
     test('존재하지 않는 예약 → NotFoundException', () async {
       expect(
-        () => repo.updateBooking(bookingId: 'no-such-id', startAt: DateTime(2026, 6, 23, 16)),
+        () => repo.updateBooking(bookingId: 999999, startAt: DateTime(2026, 6, 23, 16)),
         throwsA(isA<NotFoundException>()),
       );
     });
@@ -480,7 +468,7 @@ void main() {
       final cid = await aCustomer();
       final b = await repo.createBooking(
         customerId: cid,
-        productIds: const ['p1'],
+        productIds: const [1],
         startAt: DateTime(2026, 6, 23, 14),
         endAt: DateTime(2026, 6, 23, 15),
       );
@@ -495,7 +483,7 @@ void main() {
       final cid = await aCustomer();
       final b = await repo.createBooking(
         customerId: cid,
-        productIds: const ['p1'],
+        productIds: const [1],
         startAt: DateTime(2026, 6, 23, 14),
         endAt: DateTime(2026, 6, 23, 15),
       );
@@ -510,7 +498,7 @@ void main() {
       final cid = await aCustomer();
       final b = await repo.createBooking(
         customerId: cid,
-        productIds: const ['p1'],
+        productIds: const [1],
         startAt: DateTime(2026, 6, 23, 14),
         endAt: DateTime(2026, 6, 23, 15),
       );
@@ -525,7 +513,7 @@ void main() {
       final cid = await aCustomer();
       final b = await repo.createBooking(
         customerId: cid,
-        productIds: const ['p1'],
+        productIds: const [1],
         startAt: DateTime(2026, 6, 23, 14),
         endAt: DateTime(2026, 6, 23, 15),
         depositEnabled: true,
@@ -546,12 +534,9 @@ void main() {
       final retiredStaffId = await aRetiredStaffOnShift(DateTime(2026, 6, 23));
       // 예약은 담당자가 재직중일 때 생성됐다고 가정 — 직접 DB에 confirmed
       // 예약을 넣어 "이미 배정된 뒤 담당자가 퇴직한" 상황을 재현한다.
-      final cid2 = cid;
-      final bookingId = 'preexisting-booking';
-      await db.into(db.bookings).insert(
+      final bookingId = await db.into(db.bookings).insert(
             BookingsCompanion.insert(
-              id: bookingId,
-              customerId: cid2,
+              customerId: cid,
               staffId: Value(retiredStaffId),
               startAt: DateTime(2026, 6, 23, 14),
               endAt: DateTime(2026, 6, 23, 15),
@@ -569,10 +554,8 @@ void main() {
     test('A-4: 같은(퇴직한) 담당자를 명시적으로 다시 지정해도 검증 생략', () async {
       final cid = await aCustomer();
       final retiredStaffId = await aRetiredStaffOnShift(DateTime(2026, 6, 23));
-      const bookingId = 'preexisting-booking-2';
-      await db.into(db.bookings).insert(
+      final bookingId = await db.into(db.bookings).insert(
             BookingsCompanion.insert(
-              id: bookingId,
               customerId: cid,
               staffId: Value(retiredStaffId),
               startAt: DateTime(2026, 6, 23, 14),
@@ -592,7 +575,7 @@ void main() {
       final cid = await aCustomer();
       final b = await repo.createBooking(
         customerId: cid,
-        productIds: const ['p1'],
+        productIds: const [1],
         startAt: DateTime(2026, 6, 23, 14),
         endAt: DateTime(2026, 6, 23, 15),
       );
@@ -628,7 +611,7 @@ void main() {
 
     test('존재하지 않는 항목 호출 → NotFoundException', () async {
       expect(
-        () => repo.callWaiting('no-such-id'),
+        () => repo.callWaiting(999999),
         throwsA(isA<NotFoundException>()),
       );
     });

@@ -1,14 +1,14 @@
 import 'package:drift/drift.dart';
-import 'package:uuid/uuid.dart';
 
 import '../../../core/errors.dart';
 import '../../../db/app_database.dart';
 import '../../staff/data/staff_repository.dart';
 import '../logic/booking_logic.dart';
 
-const _uuid = Uuid();
-
 /// design/spec/v3/booking/feature_spec.md F-BOOK-01/02/02a/04 그대로.
+///
+/// A-9(docs/ID_CONVENTION.md): id는 INTEGER AUTOINCREMENT — UUID 생성
+/// 코드 없음.
 class BookingRepository {
   BookingRepository(this._db, this._staffRepository);
 
@@ -30,9 +30,9 @@ class BookingRepository {
   /// "같은 시간대 중복 예약"을 사전에 차단한다(담당자 칩의 予約あり
   /// 표시와 동일한 판단 로직을 서버측에서도 강제).
   Future<BookingRow> createBooking({
-    required String customerId,
-    String? staffId,
-    required List<String> productIds,
+    required int customerId,
+    int? staffId,
+    required List<int> productIds,
     required DateTime startAt,
     required DateTime endAt,
     bool depositEnabled = false,
@@ -44,9 +44,6 @@ class BookingRepository {
     String? memo,
     bool requiresApproval = false,
   }) async {
-    if (customerId.isEmpty) {
-      throw const ValidationException('お客様を選択してください。');
-    }
     if (productIds.isEmpty) {
       throw const ValidationException('メニューを選択してください。');
     }
@@ -65,10 +62,8 @@ class BookingRepository {
         await _assertStaffAvailable(staffId, startAt, endAt);
       }
 
-      final id = _uuid.v4();
-      await _db.into(_db.bookings).insert(
+      final id = await _db.into(_db.bookings).insert(
             BookingsCompanion.insert(
-              id: id,
               customerId: customerId,
               staffId: Value(staffId),
               productIdsCsv: Value(productIds.join(',')),
@@ -120,10 +115,10 @@ class BookingRepository {
   /// 구조적으로 분리해 둔 것 — 향후 업종별 정책이 추가되면 이 안에서만
   /// 분기하면 된다).
   Future<void> _assertStaffAvailable(
-    String staffId,
+    int staffId,
     DateTime startAt,
     DateTime endAt, {
-    String? excludeBookingId,
+    int? excludeBookingId,
   }) async {
     final onShift = await _staffRepository.isOnShift(staffId, startAt);
     if (!onShift) {
@@ -162,8 +157,8 @@ class BookingRepository {
   /// depositReceived/depositRefunded는 건드리지 않는다(completeBooking()
   /// 과 동일한 범위 한정 원칙 — 예약변경은 예약금 정산과 무관).
   Future<BookingRow> updateBooking({
-    required String bookingId,
-    String? staffId,
+    required int bookingId,
+    int? staffId,
     DateTime? startAt,
     DateTime? endAt,
   }) async {
@@ -246,7 +241,7 @@ class BookingRepository {
   /// F-BOOK-04: 취소/노쇼 시 예약금 처리.
   /// 24시간 전 취소·매장사정 취소 = 전액환불, 24시간 이내/노쇼 = 환불불가.
   Future<void> cancelBooking({
-    required String bookingId,
+    required int bookingId,
     required String reason, // 'customer_early' | 'customer_late_or_noshow' | 'salon_fault'
   }) async {
     const validReasons = {
@@ -306,7 +301,7 @@ class BookingRepository {
   ///   "결정 필요"로 남겨진 사안이라, 본 구현에서는 시간 검증을 추가하지
   ///   않는다(현장에서 시술이 예정보다 빨리 끝나 미리 완료처리하는 정당한
   ///   케이스를 막지 않기 위한 의도적 보류).
-  Future<void> completeBooking(String bookingId) async {
+  Future<void> completeBooking(int bookingId) async {
     try {
       final booking = await (_db.select(_db.bookings)
             ..where((b) => b.id.equals(bookingId)))
@@ -342,7 +337,7 @@ class BookingRepository {
     required String customerName,
     String? phone,
     String? menuNote,
-    String? preferredStaffId,
+    int? preferredStaffId,
   }) async {
     final trimmed = customerName.trim();
     if (trimmed.isEmpty) {
@@ -355,11 +350,9 @@ class BookingRepository {
       final maxOrder =
           maxRow?.read(_db.waitingEntries.sortOrder.max()) ?? 0;
 
-      final id = _uuid.v4();
       final now = DateTime.now();
-      await _db.into(_db.waitingEntries).insert(
+      final id = await _db.into(_db.waitingEntries).insert(
             WaitingEntriesCompanion.insert(
-              id: id,
               customerName: trimmed,
               phone: Value(phone),
               menuNote: Value(menuNote),
@@ -385,12 +378,12 @@ class BookingRepository {
     }
   }
 
-  Future<void> callWaiting(String id) => _updateWaitingStatus(id, 'called');
+  Future<void> callWaiting(int id) => _updateWaitingStatus(id, 'called');
 
-  Future<void> cancelWaiting(String id) =>
+  Future<void> cancelWaiting(int id) =>
       _updateWaitingStatus(id, 'cancelled');
 
-  Future<void> _updateWaitingStatus(String id, String status) async {
+  Future<void> _updateWaitingStatus(int id, String status) async {
     try {
       final rows = await (_db.update(_db.waitingEntries)
             ..where((w) => w.id.equals(id)))

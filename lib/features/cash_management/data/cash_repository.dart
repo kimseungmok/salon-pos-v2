@@ -1,15 +1,16 @@
 import 'dart:convert';
 
 import 'package:drift/drift.dart';
-import 'package:uuid/uuid.dart';
 
 import '../../../core/errors.dart';
 import '../../../db/app_database.dart';
 import '../logic/cash_logic.dart';
 
-const _uuid = Uuid();
-
 /// design/spec/v3/cash_management/feature_spec.md F-CASH-01~04 그대로.
+///
+/// A-9(docs/ID_CONVENTION.md): id는 INTEGER AUTOINCREMENT — UUID 생성
+/// 코드 없음. `confirmedBy`는 자유 텍스트 표시값으로 유지(Staff.id를
+/// 강제 참조하지 않음, F-STAFF-00).
 class CashManagementRepository {
   CashManagementRepository(this._db);
 
@@ -52,11 +53,9 @@ class CashManagementRepository {
     try {
       final total = computeTotal(denominations);
       final diff = computeDiff(total, expectedAmount);
-      final id = _uuid.v4();
       final now = DateTime.now();
-      await _db.into(_db.cashCounts).insert(
+      final id = await _db.into(_db.cashCounts).insert(
             CashCountsCompanion.insert(
-              id: id,
               type: type,
               date: DateTime(date.year, date.month, date.day),
               denominationsJson: jsonEncode(denominations.map((k, v) => MapEntry('$k', v))),
@@ -121,7 +120,6 @@ class CashManagementRepository {
       for (final label in _defaultChecklist) {
         await _db.into(_db.closingChecklistItems).insert(
               ClosingChecklistItemsCompanion.insert(
-                id: _uuid.v4(),
                 date: dateOnly,
                 label: label,
               ),
@@ -132,7 +130,7 @@ class CashManagementRepository {
     }
   }
 
-  Future<void> toggleChecklistItem(String id, bool checked) async {
+  Future<void> toggleChecklistItem(int id, bool checked) async {
     try {
       final rows = await (_db.update(_db.closingChecklistItems)
             ..where((c) => c.id.equals(id)))

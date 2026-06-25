@@ -66,7 +66,7 @@ class PosOrderScreen extends ConsumerWidget {
                           color: color,
                           textColor: isLight ? Colors.black87 : Colors.white,
                           onTap: () {
-                            final next = Map<String, int>.from(cart);
+                            final next = Map<int, int>.from(cart);
                             next[p.id] = (next[p.id] ?? 0) + 1;
                             ref.read(cartProvider.notifier).state = next;
                           },
@@ -197,8 +197,8 @@ class _CartPanel extends ConsumerWidget {
     );
   }
 
-  void _updateQty(String productId, int qty) {
-    final next = Map<String, int>.from(ref.read(cartProvider));
+  void _updateQty(int productId, int qty) {
+    final next = Map<int, int>.from(ref.read(cartProvider));
     if (qty <= 0) {
       next.remove(productId);
     } else {
@@ -209,8 +209,8 @@ class _CartPanel extends ConsumerWidget {
 
   Future<void> _openPaymentDialog(
     BuildContext context,
-    List<MapEntry<String, int>> entries,
-    Map<String, ProductRow> productById,
+    List<MapEntry<int, int>> entries,
+    Map<int, ProductRow> productById,
     int total,
   ) {
     return showDialog(
@@ -233,8 +233,8 @@ class _PaymentDialog extends StatefulWidget {
     required this.ref,
   });
 
-  final List<MapEntry<String, int>> entries;
-  final Map<String, ProductRow> productById;
+  final List<MapEntry<int, int>> entries;
+  final Map<int, ProductRow> productById;
   final int total;
   final WidgetRef ref;
 

@@ -1,13 +1,18 @@
 import 'package:drift/drift.dart';
-import 'package:uuid/uuid.dart';
 
 import '../../../core/errors.dart';
 import '../../../db/app_database.dart';
 
-const _uuid = Uuid();
-const _singlePointPolicyId = 'singleton';
+/// A-9(docs/ID_CONVENTION.md): PointPolicy는 매장당 단일 레코드라
+/// id를 고정값(1)으로 upsert한다 — INTEGER PK로 통일된 뒤에도 동일한
+/// "singleton" 패턴을 정수로 표현(autoIncrement 컬럼이라도 명시적으로
+/// id를 지정해 insert하는 것은 SQLite에서 허용됨).
+const _singlePointPolicyId = 1;
 
 /// design/spec/v3/marketing/feature_spec.md F-MKT-01/02/03 그대로.
+///
+/// id는 INTEGER AUTOINCREMENT — UUID 생성 코드 없음(PointPolicy
+/// 제외, 위 설명 참조).
 class MarketingRepository {
   MarketingRepository(this._db);
 
@@ -34,7 +39,7 @@ class MarketingRepository {
     String? discountValue,
     String? discountScope,
     int? minOrderAmount,
-    String? giftProductId,
+    int? giftProductId,
     required String expiryDays,
   }) async {
     if (!_validSeasons.contains(season)) {
@@ -46,7 +51,7 @@ class MarketingRepository {
     if (benefitType == 'discount' && (discountValue == null || discountValue.trim().isEmpty)) {
       throw const ValidationException('割引額を入力してください。');
     }
-    if (benefitType == 'gift' && (giftProductId == null || giftProductId.isEmpty)) {
+    if (benefitType == 'gift' && giftProductId == null) {
       throw const ValidationException('プレゼント商品を選択してください。');
     }
     if (!_validExpiryDays.contains(expiryDays)) {
@@ -54,12 +59,10 @@ class MarketingRepository {
     }
 
     try {
-      final id = _uuid.v4();
       final now = DateTime.now();
       final code = '${season.toUpperCase()}${(now.millisecondsSinceEpoch % 1000).toString().padLeft(3, '0')}';
-      await _db.into(_db.coupons).insert(
+      final id = await _db.into(_db.coupons).insert(
             CouponsCompanion.insert(
-              id: id,
               code: code,
               season: season,
               benefitType: benefitType,
@@ -113,10 +116,8 @@ class MarketingRepository {
       throw const ValidationException('キャンペーン名を入力してください。');
     }
     try {
-      final id = _uuid.v4();
-      await _db.into(_db.campaigns).insert(
+      final id = await _db.into(_db.campaigns).insert(
             CampaignsCompanion.insert(
-              id: id,
               name: trimmed,
               conditionType: conditionType,
               discountValue: discountValue,
@@ -134,7 +135,7 @@ class MarketingRepository {
     }
   }
 
-  Future<void> toggleCampaign(String id, bool enabled) async {
+  Future<void> toggleCampaign(int id, bool enabled) async {
     final rows = await (_db.update(_db.campaigns)..where((c) => c.id.equals(id)))
         .write(CampaignsCompanion(enabled: Value(enabled)));
     if (rows == 0) {

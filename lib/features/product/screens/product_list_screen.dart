@@ -145,8 +145,8 @@ class _CategoryTabs extends StatelessWidget {
   });
 
   final List<CategoryRow> categories;
-  final String? selectedId;
-  final ValueChanged<String?> onSelect;
+  final int? selectedId;
+  final ValueChanged<int?> onSelect;
 
   @override
   Widget build(BuildContext context) {
@@ -393,7 +393,7 @@ class _ProductFormDialogState extends State<_ProductFormDialog> {
   late final TextEditingController _nameController;
   late final TextEditingController _priceController;
   late final TextEditingController _durationController;
-  late String? _categoryId;
+  late int? _categoryId;
   late bool _allowCustomPrice;
   bool _submitting = false;
   String? _errorText;
@@ -439,7 +439,7 @@ class _ProductFormDialogState extends State<_ProductFormDialog> {
       await widget.ref.read(productRepositoryProvider).upsertProduct(
             id: widget.existing?.id,
             name: _nameController.text,
-            categoryId: _categoryId ?? '',
+            categoryId: _categoryId!,
             price: price < 0 ? 0 : price,
             allowCustomPrice: _allowCustomPrice,
             durationMin: duration,

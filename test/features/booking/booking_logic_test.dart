@@ -3,10 +3,10 @@ import 'package:salon_pos_v2/db/app_database.dart';
 import 'package:salon_pos_v2/features/booking/logic/booking_logic.dart';
 
 void main() {
-  ProductRow product(String id, int duration) => ProductRow(
+  ProductRow product(int id, int duration) => ProductRow(
         id: id,
-        name: id,
-        categoryId: 'c1',
+        name: 'p$id',
+        categoryId: 1,
         price: 1000,
         allowCustomPrice: false,
         kioskVisible: true,
@@ -17,8 +17,8 @@ void main() {
     test('단일 메뉴 소요시간만큼 더함', () {
       final end = computeEndAt(
         DateTime(2026, 6, 23, 14),
-        ['p1'],
-        [product('p1', 40)],
+        [1],
+        [product(1, 40)],
       );
       expect(end, DateTime(2026, 6, 23, 14, 40));
     });
@@ -26,8 +26,8 @@ void main() {
     test('복수 메뉴는 합산(40分+90分=130分 → 14:00+130分=16:10)', () {
       final end = computeEndAt(
         DateTime(2026, 6, 23, 14),
-        ['p1', 'p2'],
-        [product('p1', 40), product('p2', 90)],
+        [1, 2],
+        [product(1, 40), product(2, 90)],
       );
       expect(end, DateTime(2026, 6, 23, 16, 10));
     });
@@ -35,8 +35,8 @@ void main() {
     test('존재하지 않는 상품 id는 0분으로 취급', () {
       final end = computeEndAt(
         DateTime(2026, 6, 23, 14),
-        ['no-such'],
-        [product('p1', 40)],
+        [999],
+        [product(1, 40)],
       );
       expect(end, DateTime(2026, 6, 23, 14));
     });

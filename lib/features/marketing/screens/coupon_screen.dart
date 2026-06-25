@@ -110,7 +110,7 @@ class _CreateCouponDialogState extends State<_CreateCouponDialog> {
             season: _season,
             benefitType: _benefitType,
             discountValue: _benefitType == 'discount' ? _discountController.text : null,
-            giftProductId: _benefitType == 'gift' ? 'dummy-product' : null,
+            giftProductId: _benefitType == 'gift' ? 1 : null,
             expiryDays: _expiryDays,
           );
       if (mounted) Navigator.of(context).pop();

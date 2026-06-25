@@ -4,7 +4,7 @@ import 'package:salon_pos_v2/features/inventory/logic/inventory_logic.dart';
 
 void main() {
   InventoryItemRow item(int quantity, int threshold) => InventoryItemRow(
-        id: 'i1',
+        id: 1,
         name: 'テスト品目',
         category: 'カラー剤',
         quantity: quantity,

@@ -24,7 +24,7 @@ void main() {
   tearDown(() => db.close());
 
   const item = (
-    productId: 'p1',
+    productId: 1,
     productName: 'カット',
     quantity: 1,
     unitPrice: 5000,

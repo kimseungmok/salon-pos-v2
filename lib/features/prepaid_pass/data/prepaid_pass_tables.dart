@@ -2,16 +2,18 @@ import 'package:drift/drift.dart';
 
 /// design/spec/v3/prepaid_pass/data_spec.md "엔티티: PrepaidPassMenu"
 /// 그대로. F-PP-01.
+///
+/// A-9(docs/ID_CONVENTION.md): PK/FK는 INTEGER AUTOINCREMENT — UUID 금지.
 @DataClassName('PrepaidPassMenuRow')
 class PrepaidPassMenus extends Table {
-  TextColumn get id => text()();
+  IntColumn get id => integer().autoIncrement()();
 
   /// amount(금액권) / count(횟수권). 생성 후 변경 불가(앱에서 강제).
   TextColumn get type => text()();
   TextColumn get name => text().withLength(min: 1, max: 40)();
 
   /// count 타입만 필수, 1개만.
-  TextColumn get linkedProductId => text().nullable()();
+  IntColumn get linkedProductId => integer().nullable()();
   IntColumn get price => integer()();
   BoolColumn get allowCustomPrice =>
       boolean().withDefault(const Constant(false))();
@@ -34,18 +36,15 @@ class PrepaidPassMenus extends Table {
 
   /// active/disabled.
   TextColumn get status => text().withDefault(const Constant('active'))();
-
-  @override
-  Set<Column> get primaryKey => {id};
 }
 
 /// design/spec/v3/prepaid_pass/data_spec.md "엔티티: PrepaidPassBalance"
 /// 그대로.
 @DataClassName('PrepaidPassBalanceRow')
 class PrepaidPassBalances extends Table {
-  TextColumn get id => text()();
-  TextColumn get customerId => text()();
-  TextColumn get menuId => text()();
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get customerId => integer()();
+  IntColumn get menuId => integer()();
   IntColumn get remainingAmount => integer().nullable()();
   IntColumn get remainingCount => integer().nullable()();
   DateTimeColumn get purchasedAt => dateTime()();
@@ -53,25 +52,19 @@ class PrepaidPassBalances extends Table {
 
   /// active/expired/voided.
   TextColumn get status => text().withDefault(const Constant('active'))();
-
-  @override
-  Set<Column> get primaryKey => {id};
 }
 
 /// design/spec/v3/prepaid_pass/data_spec.md "엔티티: PrepaidPassTransaction"
 /// 그대로.
 @DataClassName('PrepaidPassTransactionRow')
 class PrepaidPassTransactions extends Table {
-  TextColumn get id => text()();
-  TextColumn get balanceId => text()();
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get balanceId => integer()();
 
   /// charge/use/refund.
   TextColumn get type => text()();
   IntColumn get amount => integer().nullable()();
   IntColumn get count => integer().nullable()();
-  TextColumn get relatedOrderId => text().nullable()();
+  IntColumn get relatedOrderId => integer().nullable()();
   DateTimeColumn get createdAt => dateTime()();
-
-  @override
-  Set<Column> get primaryKey => {id};
 }

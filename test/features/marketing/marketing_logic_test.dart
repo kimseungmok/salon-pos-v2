@@ -4,7 +4,7 @@ import 'package:salon_pos_v2/features/marketing/logic/marketing_logic.dart';
 
 void main() {
   PointPolicyRow policy({bool enabled = true, double rate = 5}) => PointPolicyRow(
-        id: 'singleton',
+        id: 1,
         enabled: enabled,
         earnRate: rate,
         minUsablePoints: 100,

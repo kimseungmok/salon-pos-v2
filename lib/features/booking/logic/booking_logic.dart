@@ -3,7 +3,7 @@ import '../../../db/app_database.dart';
 /// design/spec/v3/booking/data_spec.md computeEndAt() 그대로.
 DateTime computeEndAt(
   DateTime startAt,
-  List<String> productIds,
+  List<int> productIds,
   List<ProductRow> products,
 ) {
   final totalMinutes = productIds.fold<int>(0, (sum, id) {

@@ -90,7 +90,7 @@ void main() {
       expect(
         () => repo.upsertProduct(
           name: 'テスト',
-          categoryId: 'no-such-id',
+          categoryId: 999999,
           price: 1000,
           allowCustomPrice: false,
         ),
@@ -129,7 +129,7 @@ void main() {
 
     test('존재하지 않는 카테고리 삭제 → NotFoundException', () async {
       expect(
-        () => repo.deleteCategory('no-such-id'),
+        () => repo.deleteCategory(999999),
         throwsA(isA<NotFoundException>()),
       );
     });
@@ -144,7 +144,7 @@ void main() {
 
     test('존재하지 않는 카테고리 → NotFoundException', () async {
       expect(
-        () => repo.tileColorOf('no-such-id'),
+        () => repo.tileColorOf(999999),
         throwsA(isA<NotFoundException>()),
       );
     });

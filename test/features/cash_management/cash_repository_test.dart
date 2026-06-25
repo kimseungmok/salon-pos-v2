@@ -121,7 +121,7 @@ void main() {
 
     test('존재하지 않는 항목 토글 → NotFoundException', () async {
       expect(
-        () => repo.toggleChecklistItem('no-such-id', true),
+        () => repo.toggleChecklistItem(999999, true),
         throwsA(isA<NotFoundException>()),
       );
     });

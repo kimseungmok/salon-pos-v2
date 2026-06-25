@@ -1,5 +1,4 @@
 import 'package:drift/drift.dart';
-import 'package:uuid/uuid.dart';
 
 import '../../../core/errors.dart';
 import '../../../db/app_database.dart';
@@ -7,9 +6,10 @@ import '../../customer/data/customer_repository.dart';
 import '../../prepaid_pass/data/prepaid_pass_repository.dart';
 import '../logic/payment_logic.dart';
 
-const _uuid = Uuid();
-
 /// design/spec/v3/payment_pos/feature_spec.md F-PAY-01~05 그대로 구현.
+///
+/// A-9(docs/ID_CONVENTION.md): id는 INTEGER AUTOINCREMENT — UUID 생성
+/// 코드 없음.
 class PaymentRepository {
   PaymentRepository(this._db, this._customerRepository, this._prepaidPassRepository);
 
@@ -34,7 +34,7 @@ class PaymentRepository {
         .watch();
   }
 
-  Future<List<OrderItemRow>> itemsOf(String orderId) async {
+  Future<List<OrderItemRow>> itemsOf(int orderId) async {
     try {
       return await (_db.select(_db.orderItems)
             ..where((i) => i.orderId.equals(orderId)))
@@ -46,8 +46,8 @@ class PaymentRepository {
 
   /// F-PAY-01: 주문(카트) 생성. 아이템이 1개 이상 있어야 한다.
   Future<OrderRow> createOrder({
-    String? customerId,
-    required List<({String productId, String productName, int quantity, int unitPrice, String? staffId})>
+    int? customerId,
+    required List<({int productId, String productName, int quantity, int unitPrice, int? staffId})>
         items,
     int discountAmount = 0,
   }) async {
@@ -64,11 +64,9 @@ class PaymentRepository {
         throw const ValidationException('割引額が合計金額を超えています。');
       }
 
-      final orderId = _uuid.v4();
       final now = DateTime.now();
-      await _db.into(_db.orders).insert(
+      final orderId = await _db.into(_db.orders).insert(
             OrdersCompanion.insert(
-              id: orderId,
               customerId: Value(customerId),
               totalAmount: total,
               discountAmount: Value(discountAmount),
@@ -78,7 +76,6 @@ class PaymentRepository {
       for (final i in items) {
         await _db.into(_db.orderItems).insert(
               OrderItemsCompanion.insert(
-                id: _uuid.v4(),
                 orderId: orderId,
                 productId: i.productId,
                 productName: i.productName,
@@ -114,12 +111,12 @@ class PaymentRepository {
   /// 먼저 호출해서 끝내고, 그 결과(usedFromPrepaid)를 [amount]로 넘겨야
   /// 한다(F-PP-03). 두 레포지토리를 강하게 결합하지 않기 위한 설계.
   Future<PaymentRow> pay({
-    required String orderId,
+    required int orderId,
     required String method,
     required int amount,
     String? splitType,
     int? cashReceived,
-    String? prepaidBalanceId,
+    int? prepaidBalanceId,
   }) async {
     if (!_validMethods.contains(method)) {
       throw const ValidationException('決済方法の値が正しくありません。');
@@ -135,7 +132,7 @@ class PaymentRepository {
         throw const ValidationException('受取金額が決済金額より少ないです。');
       }
     }
-    if (method == 'prepaid_pass' && (prepaidBalanceId == null || prepaidBalanceId.isEmpty)) {
+    if (method == 'prepaid_pass' && prepaidBalanceId == null) {
       throw const ValidationException('使用するプリペイド券を選択してください。');
     }
     if (method == 'prepaid_pass' && splitType != null) {
@@ -160,12 +157,10 @@ class PaymentRepository {
         throw const BusinessRuleException('決済金額が残りの注文金額を超えています。');
       }
 
-      final id = _uuid.v4();
       final now = DateTime.now();
       final change = method == 'cash' ? computeChange(cashReceived!, amount) : null;
-      await _db.into(_db.payments).insert(
+      final id = await _db.into(_db.payments).insert(
             PaymentsCompanion.insert(
-              id: id,
               orderId: orderId,
               method: method,
               amount: amount,
@@ -223,7 +218,7 @@ class PaymentRepository {
   /// 시술을 담당한 스태프(OrderItem.staffId)에서 조달한다. 한 주문에
   /// 담당자가 다른 품목이 섞여 있으면 첫 번째 non-null 값을 채택한다
   /// (groupOf() 그룹분류는 이 값을 쓰지 않는 보조정보라 단순화 허용).
-  Future<String?> _staffIdOf(String orderId) async {
+  Future<int?> _staffIdOf(int orderId) async {
     final items = await (_db.select(_db.orderItems)
           ..where((i) => i.orderId.equals(orderId)))
         .get();
@@ -233,7 +228,7 @@ class PaymentRepository {
     return null;
   }
 
-  Future<int> _paidAmount(String orderId) async {
+  Future<int> _paidAmount(int orderId) async {
     final payments = await (_db.select(_db.payments)
           ..where((p) => p.orderId.equals(orderId) & p.status.equals('completed')))
         .get();
@@ -241,7 +236,7 @@ class PaymentRepository {
   }
 
   /// 잔여 결제금액(분할결제 진행 중 "총 N원 중 M원 남음" 표시용).
-  Future<int> remainingAmount(String orderId) async {
+  Future<int> remainingAmount(int orderId) async {
     try {
       final order = await (_db.select(_db.orders)
             ..where((o) => o.id.equals(orderId)))
@@ -263,7 +258,7 @@ class PaymentRepository {
   /// M6에서 선불권 환원 연동 완료(이전 TODO 해소, CROSS_VALIDATION.md
   /// 수정2 후속) — method='prepaid_pass'인 결제는 해당 잔액에
   /// `restoreUse()`로 사용분을 되돌려준다.
-  Future<void> cancelOrder(String orderId) async {
+  Future<void> cancelOrder(int orderId) async {
     try {
       await _db.transaction(() async {
         final order = await (_db.select(_db.orders)

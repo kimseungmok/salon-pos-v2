@@ -72,7 +72,7 @@ void main() {
 
     test('존재하지 않는 스태프 → NotFoundException', () async {
       expect(
-        () => repo.resendInvite('no-such-id'),
+        () => repo.resendInvite(999999),
         throwsA(isA<NotFoundException>()),
       );
     });
@@ -81,7 +81,7 @@ void main() {
   group('removeStaff (A-4: 상태 기반 이원화)', () {
     test('존재하지 않는 스태프 삭제 → NotFoundException', () async {
       expect(
-        () => repo.removeStaff('no-such-id'),
+        () => repo.removeStaff(999999),
         throwsA(isA<NotFoundException>()),
       );
     });
@@ -155,7 +155,7 @@ void main() {
 
     test('존재하지 않는 스태프 → NotFoundException', () async {
       expect(
-        () => repo.assertNotRetired('no-such-id'),
+        () => repo.assertNotRetired(999999),
         throwsA(isA<NotFoundException>()),
       );
     });

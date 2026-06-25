@@ -47,7 +47,7 @@ part 'app_database.g.dart';
     ClosingChecklistItems,
     InventoryItems,
     InventoryLogs,
-    // A-8 SESSION ENGINE(docs/A8_SESSION_ENGINE.md) — schemaVersion 2.
+    // A-8 SESSION ENGINE(docs/A8_SESSION_ENGINE.md).
     PaymentSessions,
     PaymentSessionItems,
     StaffEarningLedgers,
@@ -71,7 +71,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting() : super(NativeDatabase.memory());
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -81,16 +81,16 @@ class AppDatabase extends _$AppDatabase {
         // 향후 스키마 변경 시 onUpgrade에 단계별 마이그레이션 추가.
         // 절대 기존 데이터를 삭제하는 마이그레이션을 작성하지 않는다
         // (영업 매출 데이터 — 운영 중인 매장의 데이터 손실은 치명적).
-        onUpgrade: (Migrator m, int from, int to) async {
-          // v1 → v2: A-8 SESSION ENGINE 신규 테이블 4종 추가뿐 — 기존
-          // 테이블/컬럼은 전혀 건드리지 않는다(순수 추가형 마이그레이션).
-          if (from < 2) {
-            await m.createTable(paymentSessions);
-            await m.createTable(paymentSessionItems);
-            await m.createTable(staffEarningLedgers);
-            await m.createTable(paymentMethodBreakdowns);
-          }
-        },
+        //
+        // 예외(v2→v3, A-9 ID 통일): 기존 21개 테이블의 PK를 UUID TEXT
+        // 에서 INTEGER AUTOINCREMENT로 바꾸는 변경은 데이터 보존
+        // 마이그레이션이 불가능하다(문자열 UUID를 정수로 치환하면서
+        // 모든 FK 참조까지 일관되게 재매핑하는 것은 단순 ALTER로
+        // 표현할 수 없음). **본 앱이 아직 정식 출시 전(라이브 사용자
+        // 데이터 없음)이라는 전제**로, v3은 onCreate 경로(신규 설치)
+        // 만 지원하고 v1/v2에서의 onUpgrade 경로는 작성하지 않았다 —
+        // 출시 이후라면 이런 방식의 PK 타입 변경 자체를 시도하면 안
+        // 된다(docs/A9_ID_UNIFICATION.md 참조).
       );
 }
 

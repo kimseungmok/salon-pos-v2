@@ -1,14 +1,14 @@
 import 'package:drift/drift.dart';
-import 'package:uuid/uuid.dart';
 
 import '../../../core/errors.dart';
 import '../../../db/app_database.dart';
 
-const _uuid = Uuid();
-
 /// design/spec/v3/inventory/feature_spec.md F-INV-00~02 그대로 구현.
 /// **절대 원칙(F-INV-00)**: 이 레포지토리는 Product/Order 테이블을
 /// import하거나 참조하지 않는다 — 재고는 商品/決済와 완전히 독립.
+///
+/// A-9(docs/ID_CONVENTION.md): id는 INTEGER AUTOINCREMENT — UUID 생성
+/// 코드 없음.
 class InventoryRepository {
   InventoryRepository(this._db);
 
@@ -47,10 +47,8 @@ class InventoryRepository {
       throw const ValidationException('在庫数・しきい値は0以上にしてください。');
     }
     try {
-      final id = _uuid.v4();
-      await _db.into(_db.inventoryItems).insert(
+      final id = await _db.into(_db.inventoryItems).insert(
             InventoryItemsCompanion.insert(
-              id: id,
               name: trimmed,
               category: category,
               quantity: Value(quantity),
@@ -75,10 +73,10 @@ class InventoryRepository {
 
   /// F-INV-01: 수량 조정 — 변경분을 InventoryLog에 자동 기록.
   Future<void> adjustQuantity({
-    required String itemId,
+    required int itemId,
     required int delta,
     required String reason,
-    String? staffId,
+    int? staffId,
   }) async {
     if (!_validReasons.contains(reason)) {
       throw const ValidationException('変動理由の値が正しくありません。');
@@ -99,7 +97,6 @@ class InventoryRepository {
           .write(InventoryItemsCompanion(quantity: Value(newQuantity)));
       await _db.into(_db.inventoryLogs).insert(
             InventoryLogsCompanion.insert(
-              id: _uuid.v4(),
               itemId: itemId,
               delta: delta,
               reason: reason,
@@ -120,7 +117,7 @@ class InventoryRepository {
   /// 컬럼을 두지 않고 "삭제 가능 여부"만 사전 검증). 이력이 전혀 없는
   /// 품목(등록 직후 실수로 만든 경우 등)만 기존과 동일하게 하드 삭제된다.
   /// 거부된 경우 별도 복구/안내 로직 없이 예외만 던지고 종료한다.
-  Future<void> deleteItem(String itemId) async {
+  Future<void> deleteItem(int itemId) async {
     try {
       final hasLogs = await (_db.select(_db.inventoryLogs)
             ..where((l) => l.itemId.equals(itemId))

@@ -18,7 +18,7 @@ void main() {
 
   tearDown(() => db.close());
 
-  Future<String> aCustomer() async =>
+  Future<int> aCustomer() async =>
       (await customerRepo.createCustomer(name: '田中美咲', phone: '090-1234-5678')).id;
 
   group('createMenu (F-PP-01)', () {
@@ -31,7 +31,7 @@ void main() {
       final m = await repo.createMenu(
         type: 'count',
         name: 'カット10回券',
-        linkedProductId: 'p1',
+        linkedProductId: 1,
         price: 80000,
         countPerPurchase: 10,
       );
@@ -61,7 +61,7 @@ void main() {
 
     test('횟수권인데 횟수 누락 → ValidationException', () async {
       expect(
-        () => repo.createMenu(type: 'count', name: 'テスト', linkedProductId: 'p1', price: 1000),
+        () => repo.createMenu(type: 'count', name: 'テスト', linkedProductId: 1, price: 1000),
         throwsA(isA<ValidationException>()),
       );
     });
@@ -100,7 +100,7 @@ void main() {
       final menu = await repo.createMenu(
         type: 'count',
         name: 'カット10回券',
-        linkedProductId: 'p1',
+        linkedProductId: 1,
         price: 80000,
         countPerPurchase: 10,
         bonusType: 'bonus',
@@ -113,18 +113,11 @@ void main() {
     test('존재하지 않는 메뉴 → NotFoundException', () async {
       final cid = await aCustomer();
       expect(
-        () => repo.chargeMenu(customerId: cid, menuId: 'no-such-id'),
+        () => repo.chargeMenu(customerId: cid, menuId: 999999),
         throwsA(isA<NotFoundException>()),
       );
     });
 
-    test('고객 미지정 → ValidationException', () async {
-      final menu = await repo.createMenu(type: 'amount', name: '10万円券', price: 100000);
-      expect(
-        () => repo.chargeMenu(customerId: '', menuId: menu.id),
-        throwsA(isA<ValidationException>()),
-      );
-    });
   });
 
   group('useAmountBalance (F-PP-03)', () {
@@ -151,7 +144,7 @@ void main() {
       final menu = await repo.createMenu(
         type: 'count',
         name: 'カット10回券',
-        linkedProductId: 'p1',
+        linkedProductId: 1,
         price: 80000,
         countPerPurchase: 10,
       );
@@ -191,7 +184,7 @@ void main() {
 
     test('존재하지 않는 선불권 → NotFoundException', () async {
       expect(
-        () => repo.useAmountBalance(balanceId: 'no-such-id', requestedAmount: 1000),
+        () => repo.useAmountBalance(balanceId: 999999, requestedAmount: 1000),
         throwsA(isA<NotFoundException>()),
       );
     });
@@ -203,7 +196,7 @@ void main() {
       final menu = await repo.createMenu(
         type: 'count',
         name: 'カット10回券',
-        linkedProductId: 'p1',
+        linkedProductId: 1,
         price: 80000,
         countPerPurchase: 10,
       );
@@ -220,7 +213,7 @@ void main() {
       final menu = await repo.createMenu(
         type: 'count',
         name: 'カット1回券',
-        linkedProductId: 'p1',
+        linkedProductId: 1,
         price: 8000,
         countPerPurchase: 1,
       );
@@ -267,7 +260,7 @@ void main() {
       final menu = await repo.createMenu(
         type: 'count',
         name: 'カット10回券',
-        linkedProductId: 'p1',
+        linkedProductId: 1,
         price: 80000,
         countPerPurchase: 10,
       );

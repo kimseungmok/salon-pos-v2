@@ -138,7 +138,7 @@ class _GroupTabs extends StatelessWidget {
   });
 
   final List<CustomerRow> customers;
-  final Map<String, CustomerGroup> groupByCustomer;
+  final Map<int, CustomerGroup> groupByCustomer;
   final CustomerGroup? selected;
   final ValueChanged<CustomerGroup?> onSelect;
 

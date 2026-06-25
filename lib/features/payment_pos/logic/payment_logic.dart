@@ -13,7 +13,7 @@ int computeChange(int received, int amount) {
 bool canPayWithCash(int received, int amount) => received >= amount;
 
 /// F-PAY-04: 분할결제 — 메뉴별 결제 시 선택된 아이템들의 합계.
-int payByItems(List<String> selectedItemIds, List<OrderItemRow> items) {
+int payByItems(List<int> selectedItemIds, List<OrderItemRow> items) {
   return items
       .where((i) => selectedItemIds.contains(i.id))
       .fold<int>(0, (sum, i) => sum + i.unitPrice * i.quantity);

@@ -23,7 +23,7 @@ const Map<CustomerGroup, String> kGroupIcon = {
 };
 
 CustomerGroup groupOf(
-  String customerId,
+  int customerId,
   List<VisitRecordRow> allVisits,
   DateTime today,
 ) {
