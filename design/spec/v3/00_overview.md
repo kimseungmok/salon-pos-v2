@@ -101,6 +101,10 @@
 
 `A5_PREFLIGHT_REVIEW_FINAL.md` — A-4 구현 완료 시점에서 6개 항목 재검증. quantity(저장값)와 log합산값은 "정합성 보장"이 아니라 "깨질 계기가 아직 없을 뿐"임을 재확인. adjustQuantity()는 cancelOrder()와 달리 트랜잭션 미사용(TOCTOU, 음수재고 차단도 비원자적이라 "보장"아닌 "대개 맞음" 수준). InventoryItem엔 Staff.accountStatus 같은 여유필드가 없어 동일전략 불가 — 권장은 "이력있으면 삭제거부"(즉시구현 가능, 회귀위험 없음 — 기존 deleteItem() 테스트가 정상삭제 미검증). Product↔InventoryItem 매핑/재고조사구조화/정합성검증로직 3가지는 A-6+로 명시적 분리. **A-4 충돌 없음**: InventoryLog.staffId는 grep 재확인 결과 StaffRepository/assertNotRetired() 참조 0건, 향후 확장시에도 Booking과 동일한 단일조건+신규시점한정 원칙 재사용 가능. 설계 분석만 수행, 코드 없음(2026-06-25).
 
+## 3-18. A-6 — Booking→Payment→Visit 통합 흐름 설계
+
+`A6_FLOW_INTEGRATION_DESIGN.md` — A-1~A-5 구현 완료 후 코드 재추적으로 전체 트랜잭션 모델 통합. **핵심 발견**: completeBooking() 호출자가 lib/ 전체에 0건(휴면 기능) — recordVisit()은 pay() 내부 1곳뿐인 유일한 트리거. 이로 인해 "예약완료인데 Visit없음"이 예외가 아니라 **시스템의 기본 동작**임을 확인(최우선 불일치 케이스). 재고차감은 Payment 기준 확정(Visit기준과 동일지점이라 별개질문 아님), 단 매핑부재로 실행불가 재확인. **신규 결함 발견**: removeStaff()가 비멱등 — 이미 '退職済み'인 직원에게 재호출 시 else분기로 빠져 하드삭제됨(A-4가 막으려던 고아참조 문제 재발 위험), 수정은 다음 사이클로 등록(본 문서는 식별만). 4개 권한자(Payment/Booking/Staff/Inventory)가 서로 쓰기를 침범하지 않음을 확인, 유일한 교차쓰기는 pay()→recordVisit() 한 곳. 설계 문서만 작성, 코드 없음(2026-06-25).
+
 ## 4. 진행 현황
 
 | 영역 | 기능정의서 | 화면정의서 | 데이터정의서 | 비고 |
