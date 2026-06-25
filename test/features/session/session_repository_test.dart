@@ -69,13 +69,13 @@ void main() {
         itemType: 'staff_fee',
         itemName: '指名料',
         unitPrice: 1000,
-        staffId: 'staff-001',
+        staffId: 1,
       );
       final ledgers = await (db.select(db.staffEarningLedgers)
             ..where((t) => t.sessionId.equals(s.id)))
           .get();
       expect(ledgers, hasLength(1));
-      expect(ledgers.single.staffId, 'staff-001');
+      expect(ledgers.single.staffId, 1);
       expect(ledgers.single.earningType, 'staff_fee');
       expect(ledgers.single.amount, 1000);
       expect(ledgers.single.sessionItemId, item.id);
@@ -268,7 +268,7 @@ void main() {
         itemType: 'staff_fee',
         itemName: '指名料',
         unitPrice: 1000,
-        staffId: 'staff-001',
+        staffId: 1,
       );
       await repo.closeSession(
         sessionId: s.id,

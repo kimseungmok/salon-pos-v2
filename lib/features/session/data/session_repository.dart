@@ -60,7 +60,7 @@ class SessionRepository {
   /// "연도-4자리순번" 형식으로 연도별 시퀀스를 다시 0001부터 시작한다.
   Future<PaymentSessionRow> createSession({
     required String businessType,
-    String? staffId,
+    int? staffId,
     int? customerId,
     int? roomId,
   }) async {
@@ -125,7 +125,7 @@ class SessionRepository {
     required String itemName,
     int qty = 1,
     required int unitPrice,
-    String? staffId,
+    int? staffId,
     String? metaJson,
   }) async {
     if (!_validItemTypes.contains(itemType)) {

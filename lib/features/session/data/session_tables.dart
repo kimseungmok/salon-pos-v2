@@ -27,9 +27,10 @@ class PaymentSessions extends Table {
   /// 없음 — 본 1차 구현에서는 비FK 정수 참조로만 둔다).
   IntColumn get customerId => integer().nullable()();
 
-  /// design/spec/v3 Staff.id(UUID 문자열)와 같은 타입 — 향후 실제
-  /// Staff 테이블과 연결할 여지를 남겨둔다(현재는 비FK).
-  TextColumn get staffIdPrimary => text().nullable()();
+  /// A-9.5(docs/A9_ID_UNIFICATION.md 핫픽스): A-9 이후 실제 Staff.id가
+  /// INTEGER로 통일됐으므로 같은 타입으로 맞춘다(향후 실제 Staff
+  /// 테이블과 연결할 여지, 현재는 비FK).
+  IntColumn get staffIdPrimary => integer().nullable()();
   IntColumn get roomId => integer().nullable()();
 
   /// 'open' | 'closed' | 'cancelled'.
@@ -65,8 +66,9 @@ class PaymentSessionItems extends Table {
   IntColumn get amount => integer()();
 
   /// 수익 귀속 직원(지정금 핵심) — staff_fee뿐 아니라 service 항목에도
-  /// 쓰일 수 있어 모든 item_type에 공통으로 둔다.
-  TextColumn get staffId => text().nullable()();
+  /// 쓰일 수 있어 모든 item_type에 공통으로 둔다. A-9.5: Staff.id와
+  /// 같은 INTEGER 타입으로 통일.
+  IntColumn get staffId => integer().nullable()();
 
   /// 추가 메타(야간할증 등) — JSON 문자열, 구조는 호출자 책임.
   TextColumn get metaJson => text().nullable()();
@@ -80,7 +82,9 @@ class StaffEarningLedgers extends Table {
   IntColumn get sessionId => integer().references(PaymentSessions, #id)();
   IntColumn get sessionItemId =>
       integer().nullable().references(PaymentSessionItems, #id)();
-  TextColumn get staffId => text()();
+
+  /// A-9.5: Staff.id와 같은 INTEGER 타입으로 통일.
+  IntColumn get staffId => integer()();
 
   /// 'service' | 'commission' | 'staff_fee' | 'bonus'.
   TextColumn get earningType => text()();

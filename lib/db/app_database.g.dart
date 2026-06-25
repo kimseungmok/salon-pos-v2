@@ -10676,11 +10676,11 @@ class $PaymentSessionsTable extends PaymentSessions
     'staffIdPrimary',
   );
   @override
-  late final GeneratedColumn<String> staffIdPrimary = GeneratedColumn<String>(
+  late final GeneratedColumn<int> staffIdPrimary = GeneratedColumn<int>(
     'staff_id_primary',
     aliasedName,
     true,
-    type: DriftSqlType.string,
+    type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
   static const VerificationMeta _roomIdMeta = const VerificationMeta('roomId');
@@ -10971,7 +10971,7 @@ class $PaymentSessionsTable extends PaymentSessions
         data['${effectivePrefix}customer_id'],
       ),
       staffIdPrimary: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
+        DriftSqlType.int,
         data['${effectivePrefix}staff_id_primary'],
       ),
       roomId: attachedDatabase.typeMapping.read(
@@ -11039,9 +11039,10 @@ class PaymentSessionRow extends DataClass
   /// 없음 — 본 1차 구현에서는 비FK 정수 참조로만 둔다).
   final int? customerId;
 
-  /// design/spec/v3 Staff.id(UUID 문자열)와 같은 타입 — 향후 실제
-  /// Staff 테이블과 연결할 여지를 남겨둔다(현재는 비FK).
-  final String? staffIdPrimary;
+  /// A-9.5(docs/A9_ID_UNIFICATION.md 핫픽스): A-9 이후 실제 Staff.id가
+  /// INTEGER로 통일됐으므로 같은 타입으로 맞춘다(향후 실제 Staff
+  /// 테이블과 연결할 여지, 현재는 비FK).
+  final int? staffIdPrimary;
   final int? roomId;
 
   /// 'open' | 'closed' | 'cancelled'.
@@ -11083,7 +11084,7 @@ class PaymentSessionRow extends DataClass
       map['customer_id'] = Variable<int>(customerId);
     }
     if (!nullToAbsent || staffIdPrimary != null) {
-      map['staff_id_primary'] = Variable<String>(staffIdPrimary);
+      map['staff_id_primary'] = Variable<int>(staffIdPrimary);
     }
     if (!nullToAbsent || roomId != null) {
       map['room_id'] = Variable<int>(roomId);
@@ -11142,7 +11143,7 @@ class PaymentSessionRow extends DataClass
       shopId: serializer.fromJson<int>(json['shopId']),
       businessType: serializer.fromJson<String>(json['businessType']),
       customerId: serializer.fromJson<int?>(json['customerId']),
-      staffIdPrimary: serializer.fromJson<String?>(json['staffIdPrimary']),
+      staffIdPrimary: serializer.fromJson<int?>(json['staffIdPrimary']),
       roomId: serializer.fromJson<int?>(json['roomId']),
       status: serializer.fromJson<String>(json['status']),
       startAt: serializer.fromJson<DateTime>(json['startAt']),
@@ -11164,7 +11165,7 @@ class PaymentSessionRow extends DataClass
       'shopId': serializer.toJson<int>(shopId),
       'businessType': serializer.toJson<String>(businessType),
       'customerId': serializer.toJson<int?>(customerId),
-      'staffIdPrimary': serializer.toJson<String?>(staffIdPrimary),
+      'staffIdPrimary': serializer.toJson<int?>(staffIdPrimary),
       'roomId': serializer.toJson<int?>(roomId),
       'status': serializer.toJson<String>(status),
       'startAt': serializer.toJson<DateTime>(startAt),
@@ -11184,7 +11185,7 @@ class PaymentSessionRow extends DataClass
     int? shopId,
     String? businessType,
     Value<int?> customerId = const Value.absent(),
-    Value<String?> staffIdPrimary = const Value.absent(),
+    Value<int?> staffIdPrimary = const Value.absent(),
     Value<int?> roomId = const Value.absent(),
     String? status,
     DateTime? startAt,
@@ -11318,7 +11319,7 @@ class PaymentSessionsCompanion extends UpdateCompanion<PaymentSessionRow> {
   final Value<int> shopId;
   final Value<String> businessType;
   final Value<int?> customerId;
-  final Value<String?> staffIdPrimary;
+  final Value<int?> staffIdPrimary;
   final Value<int?> roomId;
   final Value<String> status;
   final Value<DateTime> startAt;
@@ -11375,7 +11376,7 @@ class PaymentSessionsCompanion extends UpdateCompanion<PaymentSessionRow> {
     Expression<int>? shopId,
     Expression<String>? businessType,
     Expression<int>? customerId,
-    Expression<String>? staffIdPrimary,
+    Expression<int>? staffIdPrimary,
     Expression<int>? roomId,
     Expression<String>? status,
     Expression<DateTime>? startAt,
@@ -11413,7 +11414,7 @@ class PaymentSessionsCompanion extends UpdateCompanion<PaymentSessionRow> {
     Value<int>? shopId,
     Value<String>? businessType,
     Value<int?>? customerId,
-    Value<String?>? staffIdPrimary,
+    Value<int?>? staffIdPrimary,
     Value<int?>? roomId,
     Value<String>? status,
     Value<DateTime>? startAt,
@@ -11464,7 +11465,7 @@ class PaymentSessionsCompanion extends UpdateCompanion<PaymentSessionRow> {
       map['customer_id'] = Variable<int>(customerId.value);
     }
     if (staffIdPrimary.present) {
-      map['staff_id_primary'] = Variable<String>(staffIdPrimary.value);
+      map['staff_id_primary'] = Variable<int>(staffIdPrimary.value);
     }
     if (roomId.present) {
       map['room_id'] = Variable<int>(roomId.value);
@@ -11632,11 +11633,11 @@ class $PaymentSessionItemsTable extends PaymentSessionItems
     'staffId',
   );
   @override
-  late final GeneratedColumn<String> staffId = GeneratedColumn<String>(
+  late final GeneratedColumn<int> staffId = GeneratedColumn<int>(
     'staff_id',
     aliasedName,
     true,
-    type: DriftSqlType.string,
+    type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
   static const VerificationMeta _metaJsonMeta = const VerificationMeta(
@@ -11815,7 +11816,7 @@ class $PaymentSessionItemsTable extends PaymentSessionItems
         data['${effectivePrefix}amount'],
       )!,
       staffId: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
+        DriftSqlType.int,
         data['${effectivePrefix}staff_id'],
       ),
       metaJson: attachedDatabase.typeMapping.read(
@@ -11855,8 +11856,9 @@ class PaymentSessionItemRow extends DataClass
   final int amount;
 
   /// 수익 귀속 직원(지정금 핵심) — staff_fee뿐 아니라 service 항목에도
-  /// 쓰일 수 있어 모든 item_type에 공통으로 둔다.
-  final String? staffId;
+  /// 쓰일 수 있어 모든 item_type에 공통으로 둔다. A-9.5: Staff.id와
+  /// 같은 INTEGER 타입으로 통일.
+  final int? staffId;
 
   /// 추가 메타(야간할증 등) — JSON 문자열, 구조는 호출자 책임.
   final String? metaJson;
@@ -11892,7 +11894,7 @@ class PaymentSessionItemRow extends DataClass
     map['unit_price'] = Variable<int>(unitPrice);
     map['amount'] = Variable<int>(amount);
     if (!nullToAbsent || staffId != null) {
-      map['staff_id'] = Variable<String>(staffId);
+      map['staff_id'] = Variable<int>(staffId);
     }
     if (!nullToAbsent || metaJson != null) {
       map['meta_json'] = Variable<String>(metaJson);
@@ -11941,7 +11943,7 @@ class PaymentSessionItemRow extends DataClass
       qty: serializer.fromJson<int>(json['qty']),
       unitPrice: serializer.fromJson<int>(json['unitPrice']),
       amount: serializer.fromJson<int>(json['amount']),
-      staffId: serializer.fromJson<String?>(json['staffId']),
+      staffId: serializer.fromJson<int?>(json['staffId']),
       metaJson: serializer.fromJson<String?>(json['metaJson']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
@@ -11959,7 +11961,7 @@ class PaymentSessionItemRow extends DataClass
       'qty': serializer.toJson<int>(qty),
       'unitPrice': serializer.toJson<int>(unitPrice),
       'amount': serializer.toJson<int>(amount),
-      'staffId': serializer.toJson<String?>(staffId),
+      'staffId': serializer.toJson<int?>(staffId),
       'metaJson': serializer.toJson<String?>(metaJson),
       'createdAt': serializer.toJson<DateTime>(createdAt),
     };
@@ -11975,7 +11977,7 @@ class PaymentSessionItemRow extends DataClass
     int? qty,
     int? unitPrice,
     int? amount,
-    Value<String?> staffId = const Value.absent(),
+    Value<int?> staffId = const Value.absent(),
     Value<String?> metaJson = const Value.absent(),
     DateTime? createdAt,
   }) => PaymentSessionItemRow(
@@ -12072,7 +12074,7 @@ class PaymentSessionItemsCompanion
   final Value<int> qty;
   final Value<int> unitPrice;
   final Value<int> amount;
-  final Value<String?> staffId;
+  final Value<int?> staffId;
   final Value<String?> metaJson;
   final Value<DateTime> createdAt;
   const PaymentSessionItemsCompanion({
@@ -12118,7 +12120,7 @@ class PaymentSessionItemsCompanion
     Expression<int>? qty,
     Expression<int>? unitPrice,
     Expression<int>? amount,
-    Expression<String>? staffId,
+    Expression<int>? staffId,
     Expression<String>? metaJson,
     Expression<DateTime>? createdAt,
   }) {
@@ -12148,7 +12150,7 @@ class PaymentSessionItemsCompanion
     Value<int>? qty,
     Value<int>? unitPrice,
     Value<int>? amount,
-    Value<String?>? staffId,
+    Value<int?>? staffId,
     Value<String?>? metaJson,
     Value<DateTime>? createdAt,
   }) {
@@ -12199,7 +12201,7 @@ class PaymentSessionItemsCompanion
       map['amount'] = Variable<int>(amount.value);
     }
     if (staffId.present) {
-      map['staff_id'] = Variable<String>(staffId.value);
+      map['staff_id'] = Variable<int>(staffId.value);
     }
     if (metaJson.present) {
       map['meta_json'] = Variable<String>(metaJson.value);
@@ -12281,11 +12283,11 @@ class $StaffEarningLedgersTable extends StaffEarningLedgers
     'staffId',
   );
   @override
-  late final GeneratedColumn<String> staffId = GeneratedColumn<String>(
+  late final GeneratedColumn<int> staffId = GeneratedColumn<int>(
     'staff_id',
     aliasedName,
     false,
-    type: DriftSqlType.string,
+    type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
   static const VerificationMeta _earningTypeMeta = const VerificationMeta(
@@ -12418,7 +12420,7 @@ class $StaffEarningLedgersTable extends StaffEarningLedgers
         data['${effectivePrefix}session_item_id'],
       ),
       staffId: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
+        DriftSqlType.int,
         data['${effectivePrefix}staff_id'],
       )!,
       earningType: attachedDatabase.typeMapping.read(
@@ -12447,7 +12449,9 @@ class StaffEarningLedgerRow extends DataClass
   final int id;
   final int sessionId;
   final int? sessionItemId;
-  final String staffId;
+
+  /// A-9.5: Staff.id와 같은 INTEGER 타입으로 통일.
+  final int staffId;
 
   /// 'service' | 'commission' | 'staff_fee' | 'bonus'.
   final String earningType;
@@ -12470,7 +12474,7 @@ class StaffEarningLedgerRow extends DataClass
     if (!nullToAbsent || sessionItemId != null) {
       map['session_item_id'] = Variable<int>(sessionItemId);
     }
-    map['staff_id'] = Variable<String>(staffId);
+    map['staff_id'] = Variable<int>(staffId);
     map['earning_type'] = Variable<String>(earningType);
     map['amount'] = Variable<int>(amount);
     map['created_at'] = Variable<DateTime>(createdAt);
@@ -12500,7 +12504,7 @@ class StaffEarningLedgerRow extends DataClass
       id: serializer.fromJson<int>(json['id']),
       sessionId: serializer.fromJson<int>(json['sessionId']),
       sessionItemId: serializer.fromJson<int?>(json['sessionItemId']),
-      staffId: serializer.fromJson<String>(json['staffId']),
+      staffId: serializer.fromJson<int>(json['staffId']),
       earningType: serializer.fromJson<String>(json['earningType']),
       amount: serializer.fromJson<int>(json['amount']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
@@ -12513,7 +12517,7 @@ class StaffEarningLedgerRow extends DataClass
       'id': serializer.toJson<int>(id),
       'sessionId': serializer.toJson<int>(sessionId),
       'sessionItemId': serializer.toJson<int?>(sessionItemId),
-      'staffId': serializer.toJson<String>(staffId),
+      'staffId': serializer.toJson<int>(staffId),
       'earningType': serializer.toJson<String>(earningType),
       'amount': serializer.toJson<int>(amount),
       'createdAt': serializer.toJson<DateTime>(createdAt),
@@ -12524,7 +12528,7 @@ class StaffEarningLedgerRow extends DataClass
     int? id,
     int? sessionId,
     Value<int?> sessionItemId = const Value.absent(),
-    String? staffId,
+    int? staffId,
     String? earningType,
     int? amount,
     DateTime? createdAt,
@@ -12597,7 +12601,7 @@ class StaffEarningLedgersCompanion
   final Value<int> id;
   final Value<int> sessionId;
   final Value<int?> sessionItemId;
-  final Value<String> staffId;
+  final Value<int> staffId;
   final Value<String> earningType;
   final Value<int> amount;
   final Value<DateTime> createdAt;
@@ -12614,7 +12618,7 @@ class StaffEarningLedgersCompanion
     this.id = const Value.absent(),
     required int sessionId,
     this.sessionItemId = const Value.absent(),
-    required String staffId,
+    required int staffId,
     required String earningType,
     required int amount,
     required DateTime createdAt,
@@ -12627,7 +12631,7 @@ class StaffEarningLedgersCompanion
     Expression<int>? id,
     Expression<int>? sessionId,
     Expression<int>? sessionItemId,
-    Expression<String>? staffId,
+    Expression<int>? staffId,
     Expression<String>? earningType,
     Expression<int>? amount,
     Expression<DateTime>? createdAt,
@@ -12647,7 +12651,7 @@ class StaffEarningLedgersCompanion
     Value<int>? id,
     Value<int>? sessionId,
     Value<int?>? sessionItemId,
-    Value<String>? staffId,
+    Value<int>? staffId,
     Value<String>? earningType,
     Value<int>? amount,
     Value<DateTime>? createdAt,
@@ -12676,7 +12680,7 @@ class StaffEarningLedgersCompanion
       map['session_item_id'] = Variable<int>(sessionItemId.value);
     }
     if (staffId.present) {
-      map['staff_id'] = Variable<String>(staffId.value);
+      map['staff_id'] = Variable<int>(staffId.value);
     }
     if (earningType.present) {
       map['earning_type'] = Variable<String>(earningType.value);
@@ -19857,7 +19861,7 @@ typedef $$PaymentSessionsTableCreateCompanionBuilder =
       Value<int> shopId,
       required String businessType,
       Value<int?> customerId,
-      Value<String?> staffIdPrimary,
+      Value<int?> staffIdPrimary,
       Value<int?> roomId,
       Value<String> status,
       required DateTime startAt,
@@ -19876,7 +19880,7 @@ typedef $$PaymentSessionsTableUpdateCompanionBuilder =
       Value<int> shopId,
       Value<String> businessType,
       Value<int?> customerId,
-      Value<String?> staffIdPrimary,
+      Value<int?> staffIdPrimary,
       Value<int?> roomId,
       Value<String> status,
       Value<DateTime> startAt,
@@ -20011,7 +20015,7 @@ class $$PaymentSessionsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get staffIdPrimary => $composableBuilder(
+  ColumnFilters<int> get staffIdPrimary => $composableBuilder(
     column: $table.staffIdPrimary,
     builder: (column) => ColumnFilters(column),
   );
@@ -20177,7 +20181,7 @@ class $$PaymentSessionsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get staffIdPrimary => $composableBuilder(
+  ColumnOrderings<int> get staffIdPrimary => $composableBuilder(
     column: $table.staffIdPrimary,
     builder: (column) => ColumnOrderings(column),
   );
@@ -20261,7 +20265,7 @@ class $$PaymentSessionsTableAnnotationComposer
     builder: (column) => column,
   );
 
-  GeneratedColumn<String> get staffIdPrimary => $composableBuilder(
+  GeneratedColumn<int> get staffIdPrimary => $composableBuilder(
     column: $table.staffIdPrimary,
     builder: (column) => column,
   );
@@ -20421,7 +20425,7 @@ class $$PaymentSessionsTableTableManager
                 Value<int> shopId = const Value.absent(),
                 Value<String> businessType = const Value.absent(),
                 Value<int?> customerId = const Value.absent(),
-                Value<String?> staffIdPrimary = const Value.absent(),
+                Value<int?> staffIdPrimary = const Value.absent(),
                 Value<int?> roomId = const Value.absent(),
                 Value<String> status = const Value.absent(),
                 Value<DateTime> startAt = const Value.absent(),
@@ -20457,7 +20461,7 @@ class $$PaymentSessionsTableTableManager
                 Value<int> shopId = const Value.absent(),
                 required String businessType,
                 Value<int?> customerId = const Value.absent(),
-                Value<String?> staffIdPrimary = const Value.absent(),
+                Value<int?> staffIdPrimary = const Value.absent(),
                 Value<int?> roomId = const Value.absent(),
                 Value<String> status = const Value.absent(),
                 required DateTime startAt,
@@ -20610,7 +20614,7 @@ typedef $$PaymentSessionItemsTableCreateCompanionBuilder =
       Value<int> qty,
       required int unitPrice,
       required int amount,
-      Value<String?> staffId,
+      Value<int?> staffId,
       Value<String?> metaJson,
       required DateTime createdAt,
     });
@@ -20625,7 +20629,7 @@ typedef $$PaymentSessionItemsTableUpdateCompanionBuilder =
       Value<int> qty,
       Value<int> unitPrice,
       Value<int> amount,
-      Value<String?> staffId,
+      Value<int?> staffId,
       Value<String?> metaJson,
       Value<DateTime> createdAt,
     });
@@ -20736,7 +20740,7 @@ class $$PaymentSessionItemsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get staffId => $composableBuilder(
+  ColumnFilters<int> get staffId => $composableBuilder(
     column: $table.staffId,
     builder: (column) => ColumnFilters(column),
   );
@@ -20849,7 +20853,7 @@ class $$PaymentSessionItemsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get staffId => $composableBuilder(
+  ColumnOrderings<int> get staffId => $composableBuilder(
     column: $table.staffId,
     builder: (column) => ColumnOrderings(column),
   );
@@ -20921,7 +20925,7 @@ class $$PaymentSessionItemsTableAnnotationComposer
   GeneratedColumn<int> get amount =>
       $composableBuilder(column: $table.amount, builder: (column) => column);
 
-  GeneratedColumn<String> get staffId =>
+  GeneratedColumn<int> get staffId =>
       $composableBuilder(column: $table.staffId, builder: (column) => column);
 
   GeneratedColumn<String> get metaJson =>
@@ -21025,7 +21029,7 @@ class $$PaymentSessionItemsTableTableManager
                 Value<int> qty = const Value.absent(),
                 Value<int> unitPrice = const Value.absent(),
                 Value<int> amount = const Value.absent(),
-                Value<String?> staffId = const Value.absent(),
+                Value<int?> staffId = const Value.absent(),
                 Value<String?> metaJson = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
               }) => PaymentSessionItemsCompanion(
@@ -21053,7 +21057,7 @@ class $$PaymentSessionItemsTableTableManager
                 Value<int> qty = const Value.absent(),
                 required int unitPrice,
                 required int amount,
-                Value<String?> staffId = const Value.absent(),
+                Value<int?> staffId = const Value.absent(),
                 Value<String?> metaJson = const Value.absent(),
                 required DateTime createdAt,
               }) => PaymentSessionItemsCompanion.insert(
@@ -21169,7 +21173,7 @@ typedef $$StaffEarningLedgersTableCreateCompanionBuilder =
       Value<int> id,
       required int sessionId,
       Value<int?> sessionItemId,
-      required String staffId,
+      required int staffId,
       required String earningType,
       required int amount,
       required DateTime createdAt,
@@ -21179,7 +21183,7 @@ typedef $$StaffEarningLedgersTableUpdateCompanionBuilder =
       Value<int> id,
       Value<int> sessionId,
       Value<int?> sessionItemId,
-      Value<String> staffId,
+      Value<int> staffId,
       Value<String> earningType,
       Value<int> amount,
       Value<DateTime> createdAt,
@@ -21250,7 +21254,7 @@ class $$StaffEarningLedgersTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get staffId => $composableBuilder(
+  ColumnFilters<int> get staffId => $composableBuilder(
     column: $table.staffId,
     builder: (column) => ColumnFilters(column),
   );
@@ -21331,7 +21335,7 @@ class $$StaffEarningLedgersTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get staffId => $composableBuilder(
+  ColumnOrderings<int> get staffId => $composableBuilder(
     column: $table.staffId,
     builder: (column) => ColumnOrderings(column),
   );
@@ -21411,7 +21415,7 @@ class $$StaffEarningLedgersTableAnnotationComposer
   GeneratedColumn<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
-  GeneratedColumn<String> get staffId =>
+  GeneratedColumn<int> get staffId =>
       $composableBuilder(column: $table.staffId, builder: (column) => column);
 
   GeneratedColumn<String> get earningType => $composableBuilder(
@@ -21512,7 +21516,7 @@ class $$StaffEarningLedgersTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<int> sessionId = const Value.absent(),
                 Value<int?> sessionItemId = const Value.absent(),
-                Value<String> staffId = const Value.absent(),
+                Value<int> staffId = const Value.absent(),
                 Value<String> earningType = const Value.absent(),
                 Value<int> amount = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
@@ -21530,7 +21534,7 @@ class $$StaffEarningLedgersTableTableManager
                 Value<int> id = const Value.absent(),
                 required int sessionId,
                 Value<int?> sessionItemId = const Value.absent(),
-                required String staffId,
+                required int staffId,
                 required String earningType,
                 required int amount,
                 required DateTime createdAt,
