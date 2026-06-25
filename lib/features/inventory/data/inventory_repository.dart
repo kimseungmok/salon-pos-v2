@@ -114,8 +114,22 @@ class InventoryRepository {
     }
   }
 
+  /// A-5(design/spec/v3/A5_PREFLIGHT_REVIEW_FINAL.md §3): 이력 보존
+  /// 삭제정책. 컬럼/테이블 추가 없이, 이 품목을 참조하는 `InventoryLog`
+  /// 가 1건이라도 있으면 삭제 자체를 거부한다(soft delete 아님 — 상태
+  /// 컬럼을 두지 않고 "삭제 가능 여부"만 사전 검증). 이력이 전혀 없는
+  /// 품목(등록 직후 실수로 만든 경우 등)만 기존과 동일하게 하드 삭제된다.
+  /// 거부된 경우 별도 복구/안내 로직 없이 예외만 던지고 종료한다.
   Future<void> deleteItem(String itemId) async {
     try {
+      final hasLogs = await (_db.select(_db.inventoryLogs)
+            ..where((l) => l.itemId.equals(itemId))
+            ..limit(1))
+          .getSingleOrNull();
+      if (hasLogs != null) {
+        throw const BusinessRuleException('入出庫履歴が存在する品目は削除できません。');
+      }
+
       final rows = await (_db.delete(_db.inventoryItems)
             ..where((i) => i.id.equals(itemId)))
           .go();

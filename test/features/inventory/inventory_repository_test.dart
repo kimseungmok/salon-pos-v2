@@ -86,12 +86,51 @@ void main() {
     });
   });
 
-  group('deleteItem', () {
+  group('deleteItem (A-5: 이력보존 삭제정책)', () {
     test('존재하지 않는 품목 삭제 → NotFoundException', () async {
       expect(
         () => repo.deleteItem('no-such-id'),
         throwsA(isA<NotFoundException>()),
       );
+    });
+
+    test('이력이 없는 품목은 삭제 가능', () async {
+      final item = await repo.createItem(name: 'テスト品目', category: 'その他');
+      await repo.deleteItem(item.id); // 예외 없이 통과해야 함
+      final found = await (db.select(db.inventoryItems)
+            ..where((t) => t.id.equals(item.id)))
+          .getSingleOrNull();
+      expect(found, null);
+    });
+
+    test('이력이 1건이라도 있는 품목은 삭제 거부 → BusinessRuleException', () async {
+      final item = await repo.createItem(name: 'カラー剤', category: 'カラー剤');
+      await repo.adjustQuantity(itemId: item.id, delta: 10, reason: 'stock_in');
+      expect(
+        () => repo.deleteItem(item.id),
+        throwsA(isA<BusinessRuleException>()),
+      );
+      // 삭제 거부 후에도 품목/이력 데이터는 그대로 보존되어야 한다.
+      final found = await (db.select(db.inventoryItems)
+            ..where((t) => t.id.equals(item.id)))
+          .getSingleOrNull();
+      expect(found != null, true);
+      final logs = await (db.select(db.inventoryLogs)
+            ..where((t) => t.itemId.equals(item.id)))
+          .get();
+      expect(logs, hasLength(1));
+    });
+
+    test('이력이 있어 삭제가 거부된 뒤에도 재고 수량 조정 로직은 영향 없음', () async {
+      final item = await repo.createItem(name: 'パーマ液', category: 'パーマ剤');
+      await repo.adjustQuantity(itemId: item.id, delta: 10, reason: 'stock_in');
+      expect(() => repo.deleteItem(item.id), throwsA(isA<BusinessRuleException>()));
+
+      await repo.adjustQuantity(itemId: item.id, delta: -3, reason: 'use');
+      final updated = await (db.select(db.inventoryItems)
+            ..where((t) => t.id.equals(item.id)))
+          .getSingle();
+      expect(updated.quantity, 7);
     });
   });
 }
