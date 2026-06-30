@@ -150,6 +150,11 @@
 - **결과**: Booking 7개 이벤트 전부 Session 생성을 트리거하지 않음을 재확인. **A-8 설계의 `refType='booking'` 연결은 `PaymentSessions`가 아니라 `PaymentSessionItems` 컬럼**이라는 정밀한 사실을 확인 — Integration Point는 `createSession()` 단독이 아니라 `createSession()`+`addItem()`의 조합. Baseline 영향 없음(No Baseline Impact), 새 Repository/Workflow/Engine/Table 전부 불필요. **"Booking Session Integration Point Analysis Completed"**. 369건 테스트 통과(코드 변경 없음).
 - **커밋**: `5f847a0`
 
+### A-22: Booking Session Call Site Analysis
+- **요청**: Booking 완료 이후 `createSession()`→`addItem(refType='booking', refId=...)`를 실제로 어느 위치에서 호출해야 하는지 호출 지점 1개 확정(분석만, 구현 없음).
+- **결과**: `completeBooking()` 자체를 호출하는 곳이 `createSession()`처럼 0건임을 확인. `completeBooking()` docstring이 인용한 기존 원칙(`A1_A2_BOUNDARY.md`) — "완료 처리 메서드 자신이 아니라 그 호출자가 도메인 간 연결 책임을 진다" — 을 발견하고, `payment_repository.dart`의 `PaymentRepository→CustomerRepository.recordVisit()` 호출을 실제 선례로 확인. 이에 따라 Session 생성 호출 위치를 **"`completeBooking()`을 호출하는 지점"**(아직 코드에 없음 — A-23에서 신설 대상)으로 확정. **"Booking Session Call Site Established"**. 369건 테스트 통과(코드 변경 없음).
+- **커밋**: `09e297c`
+
 ---
 
 ## 누적 산출물 요약(2026-06-25 ~ 06-30)
