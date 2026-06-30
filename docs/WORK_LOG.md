@@ -160,6 +160,11 @@
 - **결과**: 후보 5개(`completeBooking()` 자신/`WaitingListScreen`/`PosOrderScreen`/`SessionClosingWorkflow`/Orchestrator류 클래스) 전부 검토했으나 전부 부적합 — **선정 불가**로 결론. 코드베이스 전체에 Orchestrator/Coordinator/UseCase/Service 패턴 자체가 0개임을 확인. 지시문이 명시적으로 예상한 "선정 불가" 경로이므로, 패턴을 맞추기 위해 "Completed"를 억지로 명시하지 않고 정직하게 기록(A-18.1과 동일 원칙). Baseline 영향 없음. 369건 테스트 통과(코드 변경 없음).
 - **커밋**: `fbb5d6e`
 
+### A-24: Booking Completion Caller Design Decision
+- **요청**: A-23의 "선정 불가" 결론을 바탕으로 Booking 완료 후 Session을 생성할 호출자 구조를 설계 수준에서 확정(코드 작성 없음).
+- **결과**: 기존 구조 4개 후보(Repository/Workflow/Engine/Screen-Provider 확장) 전부 기존 원칙(A1_A2_BOUNDARY, A-15 Baseline, ADR-001, 구/신 결제 파이프라인 분리)과 충돌해 Rejected. **단일 Caller 클래스(`BookingCompletionCaller`, 가칭)**를 `lib/features/booking/data/booking_completion_caller.dart`에 배치하는 것으로 확정 — 새 디렉터리/계층/아키텍처 없이 기존 메서드(`completeBooking()`→`createSession()`→`addItem(refType='booking')`)만 순서대로 호출. Baseline 영향 없음. **"Booking Completion Caller Design Established"**. 369건 테스트 통과(코드 변경 없음).
+- **커밋**: `a4158e7`
+
 ---
 
 ## 누적 산출물 요약(2026-06-25 ~ 06-30)
