@@ -155,6 +155,11 @@
 - **결과**: `completeBooking()` 자체를 호출하는 곳이 `createSession()`처럼 0건임을 확인. `completeBooking()` docstring이 인용한 기존 원칙(`A1_A2_BOUNDARY.md`) — "완료 처리 메서드 자신이 아니라 그 호출자가 도메인 간 연결 책임을 진다" — 을 발견하고, `payment_repository.dart`의 `PaymentRepository→CustomerRepository.recordVisit()` 호출을 실제 선례로 확인. 이에 따라 Session 생성 호출 위치를 **"`completeBooking()`을 호출하는 지점"**(아직 코드에 없음 — A-23에서 신설 대상)으로 확정. **"Booking Session Call Site Established"**. 369건 테스트 통과(코드 변경 없음).
 - **커밋**: `09e297c`
 
+### A-23: Booking Completion Orchestrator Analysis
+- **요청**: Booking 완료를 담당하는 상위 호출자(Orchestrator)를 기존 코드 중에서 하나 확정(분석만, 구현 없음).
+- **결과**: 후보 5개(`completeBooking()` 자신/`WaitingListScreen`/`PosOrderScreen`/`SessionClosingWorkflow`/Orchestrator류 클래스) 전부 검토했으나 전부 부적합 — **선정 불가**로 결론. 코드베이스 전체에 Orchestrator/Coordinator/UseCase/Service 패턴 자체가 0개임을 확인. 지시문이 명시적으로 예상한 "선정 불가" 경로이므로, 패턴을 맞추기 위해 "Completed"를 억지로 명시하지 않고 정직하게 기록(A-18.1과 동일 원칙). Baseline 영향 없음. 369건 테스트 통과(코드 변경 없음).
+- **커밋**: `fbb5d6e`
+
 ---
 
 ## 누적 산출물 요약(2026-06-25 ~ 06-30)
