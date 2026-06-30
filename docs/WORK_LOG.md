@@ -174,6 +174,11 @@
 - **결과**: `businessType`은 Booking에 컬럼이 없어 **`BookingCompletionCaller`의 외부 계약 매개변수**로 확정. `roomId`도 `Bookings`에 컬럼 자체가 없음을 코드로 재확인해 항상 `null`로 정리. `itemType`/`itemName`/`unitPrice`는 **Product 도메인 소유**(`Products.name`/`Products.price`로 코드 확인)임을 명시하고 "Product lookup 필요"라는 사실만 확정(구체적 조회 방식은 범위 밖으로 명시적으로 남김). **"Booking Session Data Ownership Contract Established"**. 369건 테스트 통과(코드 변경 없음).
 - **커밋**: `c77c372`
 
+### A-24.6: Booking → Product Retrieval Strategy Design
+- **요청**: A-25 구현에 필요한 Product 데이터 조회 방식(어떻게 가져올지)을 확정(설계만, 코드 변경 없음).
+- **결과**: `ProductRepository`에 단건/배치 조회 메서드가 없음을 확인하고, `booking_logic.dart`의 `computeEndAt()`이 이미 전제하는 패턴(CSV 파싱 ID + 기존 `watchProducts()` 결과를 메모리에서 매칭)을 그대로 채택 — 새 Repository 메서드 추가 없음, fallback 없음. CSV 처리 3원칙(split/순서유지/empty가드) 확정. **이로써 A-25를 막던 두 미정 항목(businessType, Product 조회 방식) 모두 해소됨.** **"Booking Product Retrieval Strategy Established"**. 369건 테스트 통과(코드 변경 없음).
+- **커밋**: `0eec1c1`
+
 ---
 
 ## 누적 산출물 요약(2026-06-25 ~ 06-30)
