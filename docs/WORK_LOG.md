@@ -181,6 +181,12 @@
 
 ---
 
+### A-25(2차 시도): Booking Completion Caller Implementation Order (Contract Safe Version) — 중단(추가 설계 오더 필요)
+- **요청**: A-24~A-24.6에서 확정된 계약(businessType 외부주입/Product 조회 전략 포함)을 기반으로 `BookingCompletionCaller` 실제 구현.
+- **결과**: 구현 착수 전 계약을 기존(수정 금지) 코드와 대조 검증하던 중, PART2의 데이터 매핑 계약(`itemType: Product.id`)이 `SessionRepository.addItem()`의 기존 검증 로직(`_validItemTypes`, `'service'`/`'product'`/`'time'`/`'staff_fee'`/`'discount'`/`'surcharge'` 6개 고정 문자열만 허용)과 결정적으로 충돌함을 발견 — 어떤 실데이터로도 `ValidationException`을 피할 수 없는 모순. 추측으로 고치지 않고 PART7 HARD STOP 적용, 파일 작성 안 함. "Completed" 미명시, 추가 설계 오더 필요로 기록. 코드 변경 없음(커밋 없음).
+
+---
+
 ## 누적 산출물 요약(2026-06-25 ~ 06-30)
 
 - **ADR**: `ADR-001`(Pricing Engine Domain Isolation) ~ `ADR-007`(A-13 MVP Transaction Scope), 총 7개(`ADR-005`는 보류로 미작성)
