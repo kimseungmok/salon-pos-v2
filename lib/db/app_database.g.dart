@@ -13071,6 +13071,1287 @@ class PaymentMethodBreakdownsCompanion
   }
 }
 
+class $PricingRulesTable extends PricingRules
+    with TableInfo<$PricingRulesTable, PricingRuleRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PricingRulesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _shopIdMeta = const VerificationMeta('shopId');
+  @override
+  late final GeneratedColumn<int> shopId = GeneratedColumn<int>(
+    'shop_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(1),
+  );
+  static const VerificationMeta _businessTypeMeta = const VerificationMeta(
+    'businessType',
+  );
+  @override
+  late final GeneratedColumn<String> businessType = GeneratedColumn<String>(
+    'business_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _ruleTypeMeta = const VerificationMeta(
+    'ruleType',
+  );
+  @override
+  late final GeneratedColumn<String> ruleType = GeneratedColumn<String>(
+    'rule_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _valueMeta = const VerificationMeta('value');
+  @override
+  late final GeneratedColumn<int> value = GeneratedColumn<int>(
+    'value',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _priorityMeta = const VerificationMeta(
+    'priority',
+  );
+  @override
+  late final GeneratedColumn<int> priority = GeneratedColumn<int>(
+    'priority',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _isActiveMeta = const VerificationMeta(
+    'isActive',
+  );
+  @override
+  late final GeneratedColumn<bool> isActive = GeneratedColumn<bool>(
+    'is_active',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_active" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _peakStartHourMeta = const VerificationMeta(
+    'peakStartHour',
+  );
+  @override
+  late final GeneratedColumn<int> peakStartHour = GeneratedColumn<int>(
+    'peak_start_hour',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(22),
+  );
+  static const VerificationMeta _peakEndHourMeta = const VerificationMeta(
+    'peakEndHour',
+  );
+  @override
+  late final GeneratedColumn<int> peakEndHour = GeneratedColumn<int>(
+    'peak_end_hour',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(6),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    shopId,
+    businessType,
+    ruleType,
+    value,
+    priority,
+    isActive,
+    peakStartHour,
+    peakEndHour,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'pricing_rules';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<PricingRuleRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('shop_id')) {
+      context.handle(
+        _shopIdMeta,
+        shopId.isAcceptableOrUnknown(data['shop_id']!, _shopIdMeta),
+      );
+    }
+    if (data.containsKey('business_type')) {
+      context.handle(
+        _businessTypeMeta,
+        businessType.isAcceptableOrUnknown(
+          data['business_type']!,
+          _businessTypeMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_businessTypeMeta);
+    }
+    if (data.containsKey('rule_type')) {
+      context.handle(
+        _ruleTypeMeta,
+        ruleType.isAcceptableOrUnknown(data['rule_type']!, _ruleTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_ruleTypeMeta);
+    }
+    if (data.containsKey('value')) {
+      context.handle(
+        _valueMeta,
+        value.isAcceptableOrUnknown(data['value']!, _valueMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_valueMeta);
+    }
+    if (data.containsKey('priority')) {
+      context.handle(
+        _priorityMeta,
+        priority.isAcceptableOrUnknown(data['priority']!, _priorityMeta),
+      );
+    }
+    if (data.containsKey('is_active')) {
+      context.handle(
+        _isActiveMeta,
+        isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta),
+      );
+    }
+    if (data.containsKey('peak_start_hour')) {
+      context.handle(
+        _peakStartHourMeta,
+        peakStartHour.isAcceptableOrUnknown(
+          data['peak_start_hour']!,
+          _peakStartHourMeta,
+        ),
+      );
+    }
+    if (data.containsKey('peak_end_hour')) {
+      context.handle(
+        _peakEndHourMeta,
+        peakEndHour.isAcceptableOrUnknown(
+          data['peak_end_hour']!,
+          _peakEndHourMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  PricingRuleRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PricingRuleRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      shopId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}shop_id'],
+      )!,
+      businessType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}business_type'],
+      )!,
+      ruleType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}rule_type'],
+      )!,
+      value: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}value'],
+      )!,
+      priority: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}priority'],
+      )!,
+      isActive: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_active'],
+      )!,
+      peakStartHour: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}peak_start_hour'],
+      )!,
+      peakEndHour: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}peak_end_hour'],
+      )!,
+    );
+  }
+
+  @override
+  $PricingRulesTable createAlias(String alias) {
+    return $PricingRulesTable(attachedDatabase, alias);
+  }
+}
+
+class PricingRuleRow extends DataClass implements Insertable<PricingRuleRow> {
+  final int id;
+  final int shopId;
+
+  /// 'salon' | 'karaoke' | 'izakaya'.
+  final String businessType;
+
+  /// 'time_base' | 'peak'.
+  final String ruleType;
+
+  /// time_base: 분당 요금(원). peak: 할증율(%, 정수 — 예: 20 = 20%).
+  /// 단위 해석은 `ruleType`에 따라 PricingEngine이 결정한다.
+  final int value;
+
+  /// 같은 businessType+ruleType 규칙이 여러 개 있을 때 우선순위 —
+  /// 값이 작을수록 먼저 적용된다.
+  final int priority;
+  final bool isActive;
+
+  /// `ruleType='peak'`일 때만 의미 있는 시간대 범위(0~23시, [peakEndHour]
+  /// 미포함) — PricingEngine은 이 값을 그대로 해석만 하고 직접 정책을
+  /// 결정하지 않는다(하드코딩 제거, 지점/업종별로 다른 피크 시간대를
+  /// Rule 데이터로 표현). 기본값(22~06시)은 기존 A-10 MVP 하드코딩과
+  /// 동일하게 유지해 기존 동작을 보존한다. `time_base` 규칙에서는
+  /// 미사용(기본값이 남아있어도 무시됨).
+  final int peakStartHour;
+  final int peakEndHour;
+  const PricingRuleRow({
+    required this.id,
+    required this.shopId,
+    required this.businessType,
+    required this.ruleType,
+    required this.value,
+    required this.priority,
+    required this.isActive,
+    required this.peakStartHour,
+    required this.peakEndHour,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['shop_id'] = Variable<int>(shopId);
+    map['business_type'] = Variable<String>(businessType);
+    map['rule_type'] = Variable<String>(ruleType);
+    map['value'] = Variable<int>(value);
+    map['priority'] = Variable<int>(priority);
+    map['is_active'] = Variable<bool>(isActive);
+    map['peak_start_hour'] = Variable<int>(peakStartHour);
+    map['peak_end_hour'] = Variable<int>(peakEndHour);
+    return map;
+  }
+
+  PricingRulesCompanion toCompanion(bool nullToAbsent) {
+    return PricingRulesCompanion(
+      id: Value(id),
+      shopId: Value(shopId),
+      businessType: Value(businessType),
+      ruleType: Value(ruleType),
+      value: Value(value),
+      priority: Value(priority),
+      isActive: Value(isActive),
+      peakStartHour: Value(peakStartHour),
+      peakEndHour: Value(peakEndHour),
+    );
+  }
+
+  factory PricingRuleRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PricingRuleRow(
+      id: serializer.fromJson<int>(json['id']),
+      shopId: serializer.fromJson<int>(json['shopId']),
+      businessType: serializer.fromJson<String>(json['businessType']),
+      ruleType: serializer.fromJson<String>(json['ruleType']),
+      value: serializer.fromJson<int>(json['value']),
+      priority: serializer.fromJson<int>(json['priority']),
+      isActive: serializer.fromJson<bool>(json['isActive']),
+      peakStartHour: serializer.fromJson<int>(json['peakStartHour']),
+      peakEndHour: serializer.fromJson<int>(json['peakEndHour']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'shopId': serializer.toJson<int>(shopId),
+      'businessType': serializer.toJson<String>(businessType),
+      'ruleType': serializer.toJson<String>(ruleType),
+      'value': serializer.toJson<int>(value),
+      'priority': serializer.toJson<int>(priority),
+      'isActive': serializer.toJson<bool>(isActive),
+      'peakStartHour': serializer.toJson<int>(peakStartHour),
+      'peakEndHour': serializer.toJson<int>(peakEndHour),
+    };
+  }
+
+  PricingRuleRow copyWith({
+    int? id,
+    int? shopId,
+    String? businessType,
+    String? ruleType,
+    int? value,
+    int? priority,
+    bool? isActive,
+    int? peakStartHour,
+    int? peakEndHour,
+  }) => PricingRuleRow(
+    id: id ?? this.id,
+    shopId: shopId ?? this.shopId,
+    businessType: businessType ?? this.businessType,
+    ruleType: ruleType ?? this.ruleType,
+    value: value ?? this.value,
+    priority: priority ?? this.priority,
+    isActive: isActive ?? this.isActive,
+    peakStartHour: peakStartHour ?? this.peakStartHour,
+    peakEndHour: peakEndHour ?? this.peakEndHour,
+  );
+  PricingRuleRow copyWithCompanion(PricingRulesCompanion data) {
+    return PricingRuleRow(
+      id: data.id.present ? data.id.value : this.id,
+      shopId: data.shopId.present ? data.shopId.value : this.shopId,
+      businessType: data.businessType.present
+          ? data.businessType.value
+          : this.businessType,
+      ruleType: data.ruleType.present ? data.ruleType.value : this.ruleType,
+      value: data.value.present ? data.value.value : this.value,
+      priority: data.priority.present ? data.priority.value : this.priority,
+      isActive: data.isActive.present ? data.isActive.value : this.isActive,
+      peakStartHour: data.peakStartHour.present
+          ? data.peakStartHour.value
+          : this.peakStartHour,
+      peakEndHour: data.peakEndHour.present
+          ? data.peakEndHour.value
+          : this.peakEndHour,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PricingRuleRow(')
+          ..write('id: $id, ')
+          ..write('shopId: $shopId, ')
+          ..write('businessType: $businessType, ')
+          ..write('ruleType: $ruleType, ')
+          ..write('value: $value, ')
+          ..write('priority: $priority, ')
+          ..write('isActive: $isActive, ')
+          ..write('peakStartHour: $peakStartHour, ')
+          ..write('peakEndHour: $peakEndHour')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    shopId,
+    businessType,
+    ruleType,
+    value,
+    priority,
+    isActive,
+    peakStartHour,
+    peakEndHour,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PricingRuleRow &&
+          other.id == this.id &&
+          other.shopId == this.shopId &&
+          other.businessType == this.businessType &&
+          other.ruleType == this.ruleType &&
+          other.value == this.value &&
+          other.priority == this.priority &&
+          other.isActive == this.isActive &&
+          other.peakStartHour == this.peakStartHour &&
+          other.peakEndHour == this.peakEndHour);
+}
+
+class PricingRulesCompanion extends UpdateCompanion<PricingRuleRow> {
+  final Value<int> id;
+  final Value<int> shopId;
+  final Value<String> businessType;
+  final Value<String> ruleType;
+  final Value<int> value;
+  final Value<int> priority;
+  final Value<bool> isActive;
+  final Value<int> peakStartHour;
+  final Value<int> peakEndHour;
+  const PricingRulesCompanion({
+    this.id = const Value.absent(),
+    this.shopId = const Value.absent(),
+    this.businessType = const Value.absent(),
+    this.ruleType = const Value.absent(),
+    this.value = const Value.absent(),
+    this.priority = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.peakStartHour = const Value.absent(),
+    this.peakEndHour = const Value.absent(),
+  });
+  PricingRulesCompanion.insert({
+    this.id = const Value.absent(),
+    this.shopId = const Value.absent(),
+    required String businessType,
+    required String ruleType,
+    required int value,
+    this.priority = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.peakStartHour = const Value.absent(),
+    this.peakEndHour = const Value.absent(),
+  }) : businessType = Value(businessType),
+       ruleType = Value(ruleType),
+       value = Value(value);
+  static Insertable<PricingRuleRow> custom({
+    Expression<int>? id,
+    Expression<int>? shopId,
+    Expression<String>? businessType,
+    Expression<String>? ruleType,
+    Expression<int>? value,
+    Expression<int>? priority,
+    Expression<bool>? isActive,
+    Expression<int>? peakStartHour,
+    Expression<int>? peakEndHour,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (shopId != null) 'shop_id': shopId,
+      if (businessType != null) 'business_type': businessType,
+      if (ruleType != null) 'rule_type': ruleType,
+      if (value != null) 'value': value,
+      if (priority != null) 'priority': priority,
+      if (isActive != null) 'is_active': isActive,
+      if (peakStartHour != null) 'peak_start_hour': peakStartHour,
+      if (peakEndHour != null) 'peak_end_hour': peakEndHour,
+    });
+  }
+
+  PricingRulesCompanion copyWith({
+    Value<int>? id,
+    Value<int>? shopId,
+    Value<String>? businessType,
+    Value<String>? ruleType,
+    Value<int>? value,
+    Value<int>? priority,
+    Value<bool>? isActive,
+    Value<int>? peakStartHour,
+    Value<int>? peakEndHour,
+  }) {
+    return PricingRulesCompanion(
+      id: id ?? this.id,
+      shopId: shopId ?? this.shopId,
+      businessType: businessType ?? this.businessType,
+      ruleType: ruleType ?? this.ruleType,
+      value: value ?? this.value,
+      priority: priority ?? this.priority,
+      isActive: isActive ?? this.isActive,
+      peakStartHour: peakStartHour ?? this.peakStartHour,
+      peakEndHour: peakEndHour ?? this.peakEndHour,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (shopId.present) {
+      map['shop_id'] = Variable<int>(shopId.value);
+    }
+    if (businessType.present) {
+      map['business_type'] = Variable<String>(businessType.value);
+    }
+    if (ruleType.present) {
+      map['rule_type'] = Variable<String>(ruleType.value);
+    }
+    if (value.present) {
+      map['value'] = Variable<int>(value.value);
+    }
+    if (priority.present) {
+      map['priority'] = Variable<int>(priority.value);
+    }
+    if (isActive.present) {
+      map['is_active'] = Variable<bool>(isActive.value);
+    }
+    if (peakStartHour.present) {
+      map['peak_start_hour'] = Variable<int>(peakStartHour.value);
+    }
+    if (peakEndHour.present) {
+      map['peak_end_hour'] = Variable<int>(peakEndHour.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PricingRulesCompanion(')
+          ..write('id: $id, ')
+          ..write('shopId: $shopId, ')
+          ..write('businessType: $businessType, ')
+          ..write('ruleType: $ruleType, ')
+          ..write('value: $value, ')
+          ..write('priority: $priority, ')
+          ..write('isActive: $isActive, ')
+          ..write('peakStartHour: $peakStartHour, ')
+          ..write('peakEndHour: $peakEndHour')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $PromotionRulesTable extends PromotionRules
+    with TableInfo<$PromotionRulesTable, PromotionRuleRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PromotionRulesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _shopIdMeta = const VerificationMeta('shopId');
+  @override
+  late final GeneratedColumn<int> shopId = GeneratedColumn<int>(
+    'shop_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(1),
+  );
+  static const VerificationMeta _businessTypeMeta = const VerificationMeta(
+    'businessType',
+  );
+  @override
+  late final GeneratedColumn<String> businessType = GeneratedColumn<String>(
+    'business_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _ruleTypeMeta = const VerificationMeta(
+    'ruleType',
+  );
+  @override
+  late final GeneratedColumn<String> ruleType = GeneratedColumn<String>(
+    'rule_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('discount'),
+  );
+  static const VerificationMeta _discountTypeMeta = const VerificationMeta(
+    'discountType',
+  );
+  @override
+  late final GeneratedColumn<String> discountType = GeneratedColumn<String>(
+    'discount_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _priorityMeta = const VerificationMeta(
+    'priority',
+  );
+  @override
+  late final GeneratedColumn<int> priority = GeneratedColumn<int>(
+    'priority',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _amountMeta = const VerificationMeta('amount');
+  @override
+  late final GeneratedColumn<int> amount = GeneratedColumn<int>(
+    'amount',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _startAtMeta = const VerificationMeta(
+    'startAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> startAt = GeneratedColumn<DateTime>(
+    'start_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _endAtMeta = const VerificationMeta('endAt');
+  @override
+  late final GeneratedColumn<DateTime> endAt = GeneratedColumn<DateTime>(
+    'end_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('draft'),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    shopId,
+    businessType,
+    ruleType,
+    discountType,
+    priority,
+    amount,
+    startAt,
+    endAt,
+    status,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'promotion_rules';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<PromotionRuleRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('shop_id')) {
+      context.handle(
+        _shopIdMeta,
+        shopId.isAcceptableOrUnknown(data['shop_id']!, _shopIdMeta),
+      );
+    }
+    if (data.containsKey('business_type')) {
+      context.handle(
+        _businessTypeMeta,
+        businessType.isAcceptableOrUnknown(
+          data['business_type']!,
+          _businessTypeMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_businessTypeMeta);
+    }
+    if (data.containsKey('rule_type')) {
+      context.handle(
+        _ruleTypeMeta,
+        ruleType.isAcceptableOrUnknown(data['rule_type']!, _ruleTypeMeta),
+      );
+    }
+    if (data.containsKey('discount_type')) {
+      context.handle(
+        _discountTypeMeta,
+        discountType.isAcceptableOrUnknown(
+          data['discount_type']!,
+          _discountTypeMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_discountTypeMeta);
+    }
+    if (data.containsKey('priority')) {
+      context.handle(
+        _priorityMeta,
+        priority.isAcceptableOrUnknown(data['priority']!, _priorityMeta),
+      );
+    }
+    if (data.containsKey('amount')) {
+      context.handle(
+        _amountMeta,
+        amount.isAcceptableOrUnknown(data['amount']!, _amountMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_amountMeta);
+    }
+    if (data.containsKey('start_at')) {
+      context.handle(
+        _startAtMeta,
+        startAt.isAcceptableOrUnknown(data['start_at']!, _startAtMeta),
+      );
+    }
+    if (data.containsKey('end_at')) {
+      context.handle(
+        _endAtMeta,
+        endAt.isAcceptableOrUnknown(data['end_at']!, _endAtMeta),
+      );
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  PromotionRuleRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PromotionRuleRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      shopId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}shop_id'],
+      )!,
+      businessType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}business_type'],
+      )!,
+      ruleType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}rule_type'],
+      )!,
+      discountType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}discount_type'],
+      )!,
+      priority: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}priority'],
+      )!,
+      amount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}amount'],
+      )!,
+      startAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}start_at'],
+      ),
+      endAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}end_at'],
+      ),
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $PromotionRulesTable createAlias(String alias) {
+    return $PromotionRulesTable(attachedDatabase, alias);
+  }
+}
+
+class PromotionRuleRow extends DataClass
+    implements Insertable<PromotionRuleRow> {
+  final int id;
+  final int shopId;
+
+  /// 'salon' | 'karaoke' | 'izakaya'.
+  final String businessType;
+
+  /// MVP에서는 항상 'discount' — 향후 다른 Promotion 종류(예:
+  /// 포인트 적립)가 추가될 자리만 마련(현재는 'discount' 1종만 검증).
+  final String ruleType;
+
+  /// 'flat'(정액) | 'rate'(정률).
+  final String discountType;
+
+  /// 같은 businessType 규칙이 여러 개 매칭될 때 우선순위 — 값이
+  /// 작을수록 먼저 적용된다(PricingRule과 동일한 관례).
+  final int priority;
+
+  /// flat: 차감할 금액(원). rate: 할인율(%, 정수).
+  final int amount;
+
+  /// 유효 기간(둘 다 nullable — null이면 그 경계 없음). 이 두 컬럼을
+  /// 기준으로 한 "지금 적용 가능한가" 판정은 Repository가 아니라
+  /// PromotionEngine이 수행한다(`docs/A11_IMPLEMENTATION_PLAN.md`
+  /// PART 3 — Peak Rule 처리와 동일한 선례).
+  final DateTime? startAt;
+  final DateTime? endAt;
+
+  /// 'draft' | 'active' | 'disabled'(ADR-004, Expired는 저장하지 않음).
+  final String status;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const PromotionRuleRow({
+    required this.id,
+    required this.shopId,
+    required this.businessType,
+    required this.ruleType,
+    required this.discountType,
+    required this.priority,
+    required this.amount,
+    this.startAt,
+    this.endAt,
+    required this.status,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['shop_id'] = Variable<int>(shopId);
+    map['business_type'] = Variable<String>(businessType);
+    map['rule_type'] = Variable<String>(ruleType);
+    map['discount_type'] = Variable<String>(discountType);
+    map['priority'] = Variable<int>(priority);
+    map['amount'] = Variable<int>(amount);
+    if (!nullToAbsent || startAt != null) {
+      map['start_at'] = Variable<DateTime>(startAt);
+    }
+    if (!nullToAbsent || endAt != null) {
+      map['end_at'] = Variable<DateTime>(endAt);
+    }
+    map['status'] = Variable<String>(status);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  PromotionRulesCompanion toCompanion(bool nullToAbsent) {
+    return PromotionRulesCompanion(
+      id: Value(id),
+      shopId: Value(shopId),
+      businessType: Value(businessType),
+      ruleType: Value(ruleType),
+      discountType: Value(discountType),
+      priority: Value(priority),
+      amount: Value(amount),
+      startAt: startAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(startAt),
+      endAt: endAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(endAt),
+      status: Value(status),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory PromotionRuleRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PromotionRuleRow(
+      id: serializer.fromJson<int>(json['id']),
+      shopId: serializer.fromJson<int>(json['shopId']),
+      businessType: serializer.fromJson<String>(json['businessType']),
+      ruleType: serializer.fromJson<String>(json['ruleType']),
+      discountType: serializer.fromJson<String>(json['discountType']),
+      priority: serializer.fromJson<int>(json['priority']),
+      amount: serializer.fromJson<int>(json['amount']),
+      startAt: serializer.fromJson<DateTime?>(json['startAt']),
+      endAt: serializer.fromJson<DateTime?>(json['endAt']),
+      status: serializer.fromJson<String>(json['status']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'shopId': serializer.toJson<int>(shopId),
+      'businessType': serializer.toJson<String>(businessType),
+      'ruleType': serializer.toJson<String>(ruleType),
+      'discountType': serializer.toJson<String>(discountType),
+      'priority': serializer.toJson<int>(priority),
+      'amount': serializer.toJson<int>(amount),
+      'startAt': serializer.toJson<DateTime?>(startAt),
+      'endAt': serializer.toJson<DateTime?>(endAt),
+      'status': serializer.toJson<String>(status),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  PromotionRuleRow copyWith({
+    int? id,
+    int? shopId,
+    String? businessType,
+    String? ruleType,
+    String? discountType,
+    int? priority,
+    int? amount,
+    Value<DateTime?> startAt = const Value.absent(),
+    Value<DateTime?> endAt = const Value.absent(),
+    String? status,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => PromotionRuleRow(
+    id: id ?? this.id,
+    shopId: shopId ?? this.shopId,
+    businessType: businessType ?? this.businessType,
+    ruleType: ruleType ?? this.ruleType,
+    discountType: discountType ?? this.discountType,
+    priority: priority ?? this.priority,
+    amount: amount ?? this.amount,
+    startAt: startAt.present ? startAt.value : this.startAt,
+    endAt: endAt.present ? endAt.value : this.endAt,
+    status: status ?? this.status,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  PromotionRuleRow copyWithCompanion(PromotionRulesCompanion data) {
+    return PromotionRuleRow(
+      id: data.id.present ? data.id.value : this.id,
+      shopId: data.shopId.present ? data.shopId.value : this.shopId,
+      businessType: data.businessType.present
+          ? data.businessType.value
+          : this.businessType,
+      ruleType: data.ruleType.present ? data.ruleType.value : this.ruleType,
+      discountType: data.discountType.present
+          ? data.discountType.value
+          : this.discountType,
+      priority: data.priority.present ? data.priority.value : this.priority,
+      amount: data.amount.present ? data.amount.value : this.amount,
+      startAt: data.startAt.present ? data.startAt.value : this.startAt,
+      endAt: data.endAt.present ? data.endAt.value : this.endAt,
+      status: data.status.present ? data.status.value : this.status,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PromotionRuleRow(')
+          ..write('id: $id, ')
+          ..write('shopId: $shopId, ')
+          ..write('businessType: $businessType, ')
+          ..write('ruleType: $ruleType, ')
+          ..write('discountType: $discountType, ')
+          ..write('priority: $priority, ')
+          ..write('amount: $amount, ')
+          ..write('startAt: $startAt, ')
+          ..write('endAt: $endAt, ')
+          ..write('status: $status, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    shopId,
+    businessType,
+    ruleType,
+    discountType,
+    priority,
+    amount,
+    startAt,
+    endAt,
+    status,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PromotionRuleRow &&
+          other.id == this.id &&
+          other.shopId == this.shopId &&
+          other.businessType == this.businessType &&
+          other.ruleType == this.ruleType &&
+          other.discountType == this.discountType &&
+          other.priority == this.priority &&
+          other.amount == this.amount &&
+          other.startAt == this.startAt &&
+          other.endAt == this.endAt &&
+          other.status == this.status &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class PromotionRulesCompanion extends UpdateCompanion<PromotionRuleRow> {
+  final Value<int> id;
+  final Value<int> shopId;
+  final Value<String> businessType;
+  final Value<String> ruleType;
+  final Value<String> discountType;
+  final Value<int> priority;
+  final Value<int> amount;
+  final Value<DateTime?> startAt;
+  final Value<DateTime?> endAt;
+  final Value<String> status;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  const PromotionRulesCompanion({
+    this.id = const Value.absent(),
+    this.shopId = const Value.absent(),
+    this.businessType = const Value.absent(),
+    this.ruleType = const Value.absent(),
+    this.discountType = const Value.absent(),
+    this.priority = const Value.absent(),
+    this.amount = const Value.absent(),
+    this.startAt = const Value.absent(),
+    this.endAt = const Value.absent(),
+    this.status = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  PromotionRulesCompanion.insert({
+    this.id = const Value.absent(),
+    this.shopId = const Value.absent(),
+    required String businessType,
+    this.ruleType = const Value.absent(),
+    required String discountType,
+    this.priority = const Value.absent(),
+    required int amount,
+    this.startAt = const Value.absent(),
+    this.endAt = const Value.absent(),
+    this.status = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+  }) : businessType = Value(businessType),
+       discountType = Value(discountType),
+       amount = Value(amount),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<PromotionRuleRow> custom({
+    Expression<int>? id,
+    Expression<int>? shopId,
+    Expression<String>? businessType,
+    Expression<String>? ruleType,
+    Expression<String>? discountType,
+    Expression<int>? priority,
+    Expression<int>? amount,
+    Expression<DateTime>? startAt,
+    Expression<DateTime>? endAt,
+    Expression<String>? status,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (shopId != null) 'shop_id': shopId,
+      if (businessType != null) 'business_type': businessType,
+      if (ruleType != null) 'rule_type': ruleType,
+      if (discountType != null) 'discount_type': discountType,
+      if (priority != null) 'priority': priority,
+      if (amount != null) 'amount': amount,
+      if (startAt != null) 'start_at': startAt,
+      if (endAt != null) 'end_at': endAt,
+      if (status != null) 'status': status,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  PromotionRulesCompanion copyWith({
+    Value<int>? id,
+    Value<int>? shopId,
+    Value<String>? businessType,
+    Value<String>? ruleType,
+    Value<String>? discountType,
+    Value<int>? priority,
+    Value<int>? amount,
+    Value<DateTime?>? startAt,
+    Value<DateTime?>? endAt,
+    Value<String>? status,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+  }) {
+    return PromotionRulesCompanion(
+      id: id ?? this.id,
+      shopId: shopId ?? this.shopId,
+      businessType: businessType ?? this.businessType,
+      ruleType: ruleType ?? this.ruleType,
+      discountType: discountType ?? this.discountType,
+      priority: priority ?? this.priority,
+      amount: amount ?? this.amount,
+      startAt: startAt ?? this.startAt,
+      endAt: endAt ?? this.endAt,
+      status: status ?? this.status,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (shopId.present) {
+      map['shop_id'] = Variable<int>(shopId.value);
+    }
+    if (businessType.present) {
+      map['business_type'] = Variable<String>(businessType.value);
+    }
+    if (ruleType.present) {
+      map['rule_type'] = Variable<String>(ruleType.value);
+    }
+    if (discountType.present) {
+      map['discount_type'] = Variable<String>(discountType.value);
+    }
+    if (priority.present) {
+      map['priority'] = Variable<int>(priority.value);
+    }
+    if (amount.present) {
+      map['amount'] = Variable<int>(amount.value);
+    }
+    if (startAt.present) {
+      map['start_at'] = Variable<DateTime>(startAt.value);
+    }
+    if (endAt.present) {
+      map['end_at'] = Variable<DateTime>(endAt.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PromotionRulesCompanion(')
+          ..write('id: $id, ')
+          ..write('shopId: $shopId, ')
+          ..write('businessType: $businessType, ')
+          ..write('ruleType: $ruleType, ')
+          ..write('discountType: $discountType, ')
+          ..write('priority: $priority, ')
+          ..write('amount: $amount, ')
+          ..write('startAt: $startAt, ')
+          ..write('endAt: $endAt, ')
+          ..write('status: $status, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -13109,6 +14390,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $StaffEarningLedgersTable(this);
   late final $PaymentMethodBreakdownsTable paymentMethodBreakdowns =
       $PaymentMethodBreakdownsTable(this);
+  late final $PricingRulesTable pricingRules = $PricingRulesTable(this);
+  late final $PromotionRulesTable promotionRules = $PromotionRulesTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -13139,6 +14422,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     paymentSessionItems,
     staffEarningLedgers,
     paymentMethodBreakdowns,
+    pricingRules,
+    promotionRules,
   ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
@@ -21968,6 +23253,619 @@ typedef $$PaymentMethodBreakdownsTableProcessedTableManager =
       PaymentMethodBreakdownRow,
       PrefetchHooks Function({bool sessionId})
     >;
+typedef $$PricingRulesTableCreateCompanionBuilder =
+    PricingRulesCompanion Function({
+      Value<int> id,
+      Value<int> shopId,
+      required String businessType,
+      required String ruleType,
+      required int value,
+      Value<int> priority,
+      Value<bool> isActive,
+      Value<int> peakStartHour,
+      Value<int> peakEndHour,
+    });
+typedef $$PricingRulesTableUpdateCompanionBuilder =
+    PricingRulesCompanion Function({
+      Value<int> id,
+      Value<int> shopId,
+      Value<String> businessType,
+      Value<String> ruleType,
+      Value<int> value,
+      Value<int> priority,
+      Value<bool> isActive,
+      Value<int> peakStartHour,
+      Value<int> peakEndHour,
+    });
+
+class $$PricingRulesTableFilterComposer
+    extends Composer<_$AppDatabase, $PricingRulesTable> {
+  $$PricingRulesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get shopId => $composableBuilder(
+    column: $table.shopId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get businessType => $composableBuilder(
+    column: $table.businessType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get ruleType => $composableBuilder(
+    column: $table.ruleType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get value => $composableBuilder(
+    column: $table.value,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get priority => $composableBuilder(
+    column: $table.priority,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get peakStartHour => $composableBuilder(
+    column: $table.peakStartHour,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get peakEndHour => $composableBuilder(
+    column: $table.peakEndHour,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$PricingRulesTableOrderingComposer
+    extends Composer<_$AppDatabase, $PricingRulesTable> {
+  $$PricingRulesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get shopId => $composableBuilder(
+    column: $table.shopId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get businessType => $composableBuilder(
+    column: $table.businessType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get ruleType => $composableBuilder(
+    column: $table.ruleType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get value => $composableBuilder(
+    column: $table.value,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get priority => $composableBuilder(
+    column: $table.priority,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get peakStartHour => $composableBuilder(
+    column: $table.peakStartHour,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get peakEndHour => $composableBuilder(
+    column: $table.peakEndHour,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$PricingRulesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $PricingRulesTable> {
+  $$PricingRulesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get shopId =>
+      $composableBuilder(column: $table.shopId, builder: (column) => column);
+
+  GeneratedColumn<String> get businessType => $composableBuilder(
+    column: $table.businessType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get ruleType =>
+      $composableBuilder(column: $table.ruleType, builder: (column) => column);
+
+  GeneratedColumn<int> get value =>
+      $composableBuilder(column: $table.value, builder: (column) => column);
+
+  GeneratedColumn<int> get priority =>
+      $composableBuilder(column: $table.priority, builder: (column) => column);
+
+  GeneratedColumn<bool> get isActive =>
+      $composableBuilder(column: $table.isActive, builder: (column) => column);
+
+  GeneratedColumn<int> get peakStartHour => $composableBuilder(
+    column: $table.peakStartHour,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get peakEndHour => $composableBuilder(
+    column: $table.peakEndHour,
+    builder: (column) => column,
+  );
+}
+
+class $$PricingRulesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $PricingRulesTable,
+          PricingRuleRow,
+          $$PricingRulesTableFilterComposer,
+          $$PricingRulesTableOrderingComposer,
+          $$PricingRulesTableAnnotationComposer,
+          $$PricingRulesTableCreateCompanionBuilder,
+          $$PricingRulesTableUpdateCompanionBuilder,
+          (
+            PricingRuleRow,
+            BaseReferences<_$AppDatabase, $PricingRulesTable, PricingRuleRow>,
+          ),
+          PricingRuleRow,
+          PrefetchHooks Function()
+        > {
+  $$PricingRulesTableTableManager(_$AppDatabase db, $PricingRulesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$PricingRulesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$PricingRulesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$PricingRulesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> shopId = const Value.absent(),
+                Value<String> businessType = const Value.absent(),
+                Value<String> ruleType = const Value.absent(),
+                Value<int> value = const Value.absent(),
+                Value<int> priority = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                Value<int> peakStartHour = const Value.absent(),
+                Value<int> peakEndHour = const Value.absent(),
+              }) => PricingRulesCompanion(
+                id: id,
+                shopId: shopId,
+                businessType: businessType,
+                ruleType: ruleType,
+                value: value,
+                priority: priority,
+                isActive: isActive,
+                peakStartHour: peakStartHour,
+                peakEndHour: peakEndHour,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> shopId = const Value.absent(),
+                required String businessType,
+                required String ruleType,
+                required int value,
+                Value<int> priority = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                Value<int> peakStartHour = const Value.absent(),
+                Value<int> peakEndHour = const Value.absent(),
+              }) => PricingRulesCompanion.insert(
+                id: id,
+                shopId: shopId,
+                businessType: businessType,
+                ruleType: ruleType,
+                value: value,
+                priority: priority,
+                isActive: isActive,
+                peakStartHour: peakStartHour,
+                peakEndHour: peakEndHour,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$PricingRulesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $PricingRulesTable,
+      PricingRuleRow,
+      $$PricingRulesTableFilterComposer,
+      $$PricingRulesTableOrderingComposer,
+      $$PricingRulesTableAnnotationComposer,
+      $$PricingRulesTableCreateCompanionBuilder,
+      $$PricingRulesTableUpdateCompanionBuilder,
+      (
+        PricingRuleRow,
+        BaseReferences<_$AppDatabase, $PricingRulesTable, PricingRuleRow>,
+      ),
+      PricingRuleRow,
+      PrefetchHooks Function()
+    >;
+typedef $$PromotionRulesTableCreateCompanionBuilder =
+    PromotionRulesCompanion Function({
+      Value<int> id,
+      Value<int> shopId,
+      required String businessType,
+      Value<String> ruleType,
+      required String discountType,
+      Value<int> priority,
+      required int amount,
+      Value<DateTime?> startAt,
+      Value<DateTime?> endAt,
+      Value<String> status,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+    });
+typedef $$PromotionRulesTableUpdateCompanionBuilder =
+    PromotionRulesCompanion Function({
+      Value<int> id,
+      Value<int> shopId,
+      Value<String> businessType,
+      Value<String> ruleType,
+      Value<String> discountType,
+      Value<int> priority,
+      Value<int> amount,
+      Value<DateTime?> startAt,
+      Value<DateTime?> endAt,
+      Value<String> status,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+    });
+
+class $$PromotionRulesTableFilterComposer
+    extends Composer<_$AppDatabase, $PromotionRulesTable> {
+  $$PromotionRulesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get shopId => $composableBuilder(
+    column: $table.shopId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get businessType => $composableBuilder(
+    column: $table.businessType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get ruleType => $composableBuilder(
+    column: $table.ruleType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get discountType => $composableBuilder(
+    column: $table.discountType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get priority => $composableBuilder(
+    column: $table.priority,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get amount => $composableBuilder(
+    column: $table.amount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get startAt => $composableBuilder(
+    column: $table.startAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get endAt => $composableBuilder(
+    column: $table.endAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$PromotionRulesTableOrderingComposer
+    extends Composer<_$AppDatabase, $PromotionRulesTable> {
+  $$PromotionRulesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get shopId => $composableBuilder(
+    column: $table.shopId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get businessType => $composableBuilder(
+    column: $table.businessType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get ruleType => $composableBuilder(
+    column: $table.ruleType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get discountType => $composableBuilder(
+    column: $table.discountType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get priority => $composableBuilder(
+    column: $table.priority,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get amount => $composableBuilder(
+    column: $table.amount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get startAt => $composableBuilder(
+    column: $table.startAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get endAt => $composableBuilder(
+    column: $table.endAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$PromotionRulesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $PromotionRulesTable> {
+  $$PromotionRulesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get shopId =>
+      $composableBuilder(column: $table.shopId, builder: (column) => column);
+
+  GeneratedColumn<String> get businessType => $composableBuilder(
+    column: $table.businessType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get ruleType =>
+      $composableBuilder(column: $table.ruleType, builder: (column) => column);
+
+  GeneratedColumn<String> get discountType => $composableBuilder(
+    column: $table.discountType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get priority =>
+      $composableBuilder(column: $table.priority, builder: (column) => column);
+
+  GeneratedColumn<int> get amount =>
+      $composableBuilder(column: $table.amount, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get startAt =>
+      $composableBuilder(column: $table.startAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get endAt =>
+      $composableBuilder(column: $table.endAt, builder: (column) => column);
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$PromotionRulesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $PromotionRulesTable,
+          PromotionRuleRow,
+          $$PromotionRulesTableFilterComposer,
+          $$PromotionRulesTableOrderingComposer,
+          $$PromotionRulesTableAnnotationComposer,
+          $$PromotionRulesTableCreateCompanionBuilder,
+          $$PromotionRulesTableUpdateCompanionBuilder,
+          (
+            PromotionRuleRow,
+            BaseReferences<
+              _$AppDatabase,
+              $PromotionRulesTable,
+              PromotionRuleRow
+            >,
+          ),
+          PromotionRuleRow,
+          PrefetchHooks Function()
+        > {
+  $$PromotionRulesTableTableManager(
+    _$AppDatabase db,
+    $PromotionRulesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$PromotionRulesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$PromotionRulesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$PromotionRulesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> shopId = const Value.absent(),
+                Value<String> businessType = const Value.absent(),
+                Value<String> ruleType = const Value.absent(),
+                Value<String> discountType = const Value.absent(),
+                Value<int> priority = const Value.absent(),
+                Value<int> amount = const Value.absent(),
+                Value<DateTime?> startAt = const Value.absent(),
+                Value<DateTime?> endAt = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+              }) => PromotionRulesCompanion(
+                id: id,
+                shopId: shopId,
+                businessType: businessType,
+                ruleType: ruleType,
+                discountType: discountType,
+                priority: priority,
+                amount: amount,
+                startAt: startAt,
+                endAt: endAt,
+                status: status,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> shopId = const Value.absent(),
+                required String businessType,
+                Value<String> ruleType = const Value.absent(),
+                required String discountType,
+                Value<int> priority = const Value.absent(),
+                required int amount,
+                Value<DateTime?> startAt = const Value.absent(),
+                Value<DateTime?> endAt = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                required DateTime createdAt,
+                required DateTime updatedAt,
+              }) => PromotionRulesCompanion.insert(
+                id: id,
+                shopId: shopId,
+                businessType: businessType,
+                ruleType: ruleType,
+                discountType: discountType,
+                priority: priority,
+                amount: amount,
+                startAt: startAt,
+                endAt: endAt,
+                status: status,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$PromotionRulesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $PromotionRulesTable,
+      PromotionRuleRow,
+      $$PromotionRulesTableFilterComposer,
+      $$PromotionRulesTableOrderingComposer,
+      $$PromotionRulesTableAnnotationComposer,
+      $$PromotionRulesTableCreateCompanionBuilder,
+      $$PromotionRulesTableUpdateCompanionBuilder,
+      (
+        PromotionRuleRow,
+        BaseReferences<_$AppDatabase, $PromotionRulesTable, PromotionRuleRow>,
+      ),
+      PromotionRuleRow,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -22028,4 +23926,8 @@ class $AppDatabaseManager {
         _db,
         _db.paymentMethodBreakdowns,
       );
+  $$PricingRulesTableTableManager get pricingRules =>
+      $$PricingRulesTableTableManager(_db, _db.pricingRules);
+  $$PromotionRulesTableTableManager get promotionRules =>
+      $$PromotionRulesTableTableManager(_db, _db.promotionRules);
 }

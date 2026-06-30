@@ -13,7 +13,9 @@ import '../features/inventory/data/inventory_tables.dart';
 import '../features/marketing/data/marketing_tables.dart';
 import '../features/payment_pos/data/payment_tables.dart';
 import '../features/prepaid_pass/data/prepaid_pass_tables.dart';
+import '../features/pricing/data/pricing_rule_tables.dart';
 import '../features/product/data/product_tables.dart';
+import '../features/promotion/data/promotion_rule_tables.dart';
 import '../features/session/data/session_tables.dart';
 import '../features/staff/data/staff_tables.dart';
 
@@ -52,6 +54,10 @@ part 'app_database.g.dart';
     PaymentSessionItems,
     StaffEarningLedgers,
     PaymentMethodBreakdowns,
+    // A-10 Pricing Engine MVP(docs/A10_IMPLEMENTATION_READINESS_REVIEW.md).
+    PricingRules,
+    // A-11 Promotion Engine MVP(docs/A11_IMPLEMENTATION_PLAN.md).
+    PromotionRules,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -71,7 +77,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting() : super(NativeDatabase.memory());
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -91,6 +97,26 @@ class AppDatabase extends _$AppDatabase {
         // 만 지원하고 v1/v2에서의 onUpgrade 경로는 작성하지 않았다 —
         // 출시 이후라면 이런 방식의 PK 타입 변경 자체를 시도하면 안
         // 된다(docs/A9_ID_UNIFICATION.md 참조).
+        onUpgrade: (Migrator m, int from, int to) async {
+          // v3 → v4: A-10 Pricing Engine MVP 신규 테이블 1종 추가뿐 —
+          // 기존 테이블/컬럼은 전혀 건드리지 않는다(순수 추가형).
+          if (from < 4) {
+            await m.createTable(pricingRules);
+          }
+          // v4 → v5: A-10 리뷰 후속 — peak 시간대를 코드 하드코딩에서
+          // Rule 데이터(peakStartHour/peakEndHour)로 옮기기 위한 컬럼
+          // 추가뿐. 기본값(22~06시)이 기존 하드코딩 값과 동일해 기존
+          // 데이터/동작에는 영향 없다(순수 추가형).
+          if (from < 5) {
+            await m.addColumn(pricingRules, pricingRules.peakStartHour);
+            await m.addColumn(pricingRules, pricingRules.peakEndHour);
+          }
+          // v5 → v6: A-11 Promotion Engine MVP 신규 테이블 1종 추가뿐 —
+          // 기존 테이블/컬럼은 전혀 건드리지 않는다(순수 추가형).
+          if (from < 6) {
+            await m.createTable(promotionRules);
+          }
+        },
       );
 }
 
