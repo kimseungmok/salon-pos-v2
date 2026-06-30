@@ -165,6 +165,10 @@
 - **결과**: 기존 구조 4개 후보(Repository/Workflow/Engine/Screen-Provider 확장) 전부 기존 원칙(A1_A2_BOUNDARY, A-15 Baseline, ADR-001, 구/신 결제 파이프라인 분리)과 충돌해 Rejected. **단일 Caller 클래스(`BookingCompletionCaller`, 가칭)**를 `lib/features/booking/data/booking_completion_caller.dart`에 배치하는 것으로 확정 — 새 디렉터리/계층/아키텍처 없이 기존 메서드(`completeBooking()`→`createSession()`→`addItem(refType='booking')`)만 순서대로 호출. Baseline 영향 없음. **"Booking Completion Caller Design Established"**. 369건 테스트 통과(코드 변경 없음).
 - **커밋**: `a4158e7`
 
+### A-25: Booking Completion Caller Implementation — 중단(추가 오더 필요)
+- **요청**: A-24 설계를 그대로 코드로 구현, `BookingCompletionCaller` 작성.
+- **결과**: 구현 착수 중 **A-24가 다루지 않은 필수 정보 누락**을 발견하고 PART7 규칙(실패 처리)에 따라 중단. `createSession()`은 `businessType`(필수)을 요구하나 `Bookings` 테이블에 해당 컬럼이 없음 — `addItem()`의 `itemType`/`itemName`/`unitPrice`도 출처가 A-24에 정의돼 있지 않음. 이 값들을 채우려면 "메서드 매개변수로 외부 주입" 또는 "Product 조회 추가 호출" 중 하나가 필요한데 둘 다 A-24 범위 밖의 새 설계 결정이라, 비즈니스 로직을 추론해 채우지 않고 파일을 작성하지 않은 채 중단. **"Booking Completion Caller Implementation Completed" 미명시** — 추가 오더 필요로 기록. 코드 변경 없음(커밋 없음).
+
 ---
 
 ## 누적 산출물 요약(2026-06-25 ~ 06-30)
