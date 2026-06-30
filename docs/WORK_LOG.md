@@ -145,6 +145,11 @@
 - **결과**: 기존 `BookingRepository`/`Bookings`/`WaitingEntries`는 이미 구현돼 있으나, A-8 설계 시점부터 자리만 마련된 `refType='booking'` 연결은 실제 호출 코드가 0건임을 확인. Booking은 Session 생성 이전 단계라 **No Baseline Impact**. Phase 1 최소 범위를 "기존 설계된 연결 지점을 실제로 호출하는 것" 하나로 좁힘. **"Booking Engine Domain Analysis Completed"**. 369건 테스트 통과(코드 변경 없음).
 - **커밋**: `1982bad`
 
+### A-21: Booking → Session Integration Point Analysis
+- **요청**: A-20 결과를 바탕으로 Booking Domain과 Session Engine을 연결해야 하는 정확한 Integration Point 확정(분석만, 구현 없음).
+- **결과**: Booking 7개 이벤트 전부 Session 생성을 트리거하지 않음을 재확인. **A-8 설계의 `refType='booking'` 연결은 `PaymentSessions`가 아니라 `PaymentSessionItems` 컬럼**이라는 정밀한 사실을 확인 — Integration Point는 `createSession()` 단독이 아니라 `createSession()`+`addItem()`의 조합. Baseline 영향 없음(No Baseline Impact), 새 Repository/Workflow/Engine/Table 전부 불필요. **"Booking Session Integration Point Analysis Completed"**. 369건 테스트 통과(코드 변경 없음).
+- **커밋**: `5f847a0`
+
 ---
 
 ## 누적 산출물 요약(2026-06-25 ~ 06-30)
