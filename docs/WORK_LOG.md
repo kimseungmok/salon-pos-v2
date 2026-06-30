@@ -169,6 +169,11 @@
 - **요청**: A-24 설계를 그대로 코드로 구현, `BookingCompletionCaller` 작성.
 - **결과**: 구현 착수 중 **A-24가 다루지 않은 필수 정보 누락**을 발견하고 PART7 규칙(실패 처리)에 따라 중단. `createSession()`은 `businessType`(필수)을 요구하나 `Bookings` 테이블에 해당 컬럼이 없음 — `addItem()`의 `itemType`/`itemName`/`unitPrice`도 출처가 A-24에 정의돼 있지 않음. 이 값들을 채우려면 "메서드 매개변수로 외부 주입" 또는 "Product 조회 추가 호출" 중 하나가 필요한데 둘 다 A-24 범위 밖의 새 설계 결정이라, 비즈니스 로직을 추론해 채우지 않고 파일을 작성하지 않은 채 중단. **"Booking Completion Caller Implementation Completed" 미명시** — 추가 오더 필요로 기록. 코드 변경 없음(커밋 없음).
 
+### A-24.5: Booking → Session Data Ownership & Mapping Design
+- **요청**: A-25에서 막혔던 `businessType`/`itemType`/`itemName`/`unitPrice` 출처 문제를 해결하는 데이터 소유권·매핑 규칙 확정(설계만, 코드 변경 없음).
+- **결과**: `businessType`은 Booking에 컬럼이 없어 **`BookingCompletionCaller`의 외부 계약 매개변수**로 확정. `roomId`도 `Bookings`에 컬럼 자체가 없음을 코드로 재확인해 항상 `null`로 정리. `itemType`/`itemName`/`unitPrice`는 **Product 도메인 소유**(`Products.name`/`Products.price`로 코드 확인)임을 명시하고 "Product lookup 필요"라는 사실만 확정(구체적 조회 방식은 범위 밖으로 명시적으로 남김). **"Booking Session Data Ownership Contract Established"**. 369건 테스트 통과(코드 변경 없음).
+- **커밋**: `c77c372`
+
 ---
 
 ## 누적 산출물 요약(2026-06-25 ~ 06-30)
