@@ -128,6 +128,20 @@
 
 ---
 
+## 2026-06-30
+
+### (작업 로그/커밋 정리) 6월 작업 전체 정리 + 작업 로그 운영 규칙 도입
+- **요청**: A-9.5~A-18.4까지 쌓인 미커밋 변경사항과 오더 내역을 정리해서 커밋. 앞으로도 매 작업 종료 시 오더/결과를 별도로 기록.
+- **결과**: 누적 변경(80개+ 파일)을 의미 단위 5개 커밋(A-10/A-11/A-12/A-13~18.4/작업로그)으로 정리해 push. 본 `WORK_LOG.md` 신규 작성, "매 오더 완료 시 항목 추가+별도 커밋" 규칙을 메모리에 저장.
+- **커밋**: `1fc9d06`, `3c11deb`, `128a3b7`, `6cc7bb9`, `0b06b6f`
+
+### A-19: Session Closing Baseline Documentation
+- **요청**: A-14~A-18에서 확정된 Session Closing 구조(Repository/Workflow/Engine/Transaction Boundary)를 `docs/baseline/SESSION_CLOSING_BASELINE.md`로 공식 문서화(새 분석/설계 없음, 기존 문서·코드 확인만).
+- **결과**: 구조/설계 결정/검증 결과(5개 항목 전부 Completed)/향후 개발 기준 정리. **"Session Closing Baseline Established"**. 369건 테스트 통과.
+- **커밋**: `15296f1`
+
+---
+
 ## 누적 산출물 요약(2026-06-25 ~ 06-30)
 
 - **ADR**: `ADR-001`(Pricing Engine Domain Isolation) ~ `ADR-007`(A-13 MVP Transaction Scope), 총 7개(`ADR-005`는 보류로 미작성)
