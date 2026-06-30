@@ -140,6 +140,11 @@
 - **결과**: 구조/설계 결정/검증 결과(5개 항목 전부 Completed)/향후 개발 기준 정리. **"Session Closing Baseline Established"**. 369건 테스트 통과.
 - **커밋**: `15296f1`
 
+### A-20: Booking Engine Domain Analysis
+- **요청**: Booking Engine 구현 전 도메인 구조 분석 + Session Closing Baseline과의 연계 방식 확인(분석만, 구현 없음).
+- **결과**: 기존 `BookingRepository`/`Bookings`/`WaitingEntries`는 이미 구현돼 있으나, A-8 설계 시점부터 자리만 마련된 `refType='booking'` 연결은 실제 호출 코드가 0건임을 확인. Booking은 Session 생성 이전 단계라 **No Baseline Impact**. Phase 1 최소 범위를 "기존 설계된 연결 지점을 실제로 호출하는 것" 하나로 좁힘. **"Booking Engine Domain Analysis Completed"**. 369건 테스트 통과(코드 변경 없음).
+- **커밋**: `1982bad`
+
 ---
 
 ## 누적 산출물 요약(2026-06-25 ~ 06-30)
