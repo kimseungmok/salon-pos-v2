@@ -205,6 +205,11 @@
 - **결과**: `docs/ARCHITECTURE_SUMMARY.md`(12개 설계 결정·근거·참조 문서 정리), `docs/PROJECT_ROADMAP.md`(Completed/Next/Future 3단계), `docs/MARK2_IDEAS.md`에 분류 컬럼 추가(Repository/Performance/Technical Debt, 내용 변경 없음). 기존 설계와 충돌 없음. **"Project Architecture Documentation Completed"**. 373건 테스트 통과(코드 변경 없음).
 - **커밋**: `defa2d4`
 
+### A-25.6: Milestone-1 Completion & Decision History Documentation
+- **요청**: A-20~A-25.5 완료를 하나의 Milestone으로 공식 정리, Decision History 작성, Roadmap 갱신.
+- **결과**: `docs/MILESTONE_1_BOOKING_SESSION_FOUNDATION.md`(목표/완료범위/포함오더/구현결과/테스트결과/남은범위/다음Milestone), `docs/DECISION_HISTORY.md`(9개 핵심 결정을 시간순 표로 정리), `docs/PROJECT_ROADMAP.md`에 Milestone 1 Completed 표시 추가. 기존 문서 충돌 없음. MARK2 내용 변경 없음. **"Milestone 1 — Booking Session Integration Foundation Completed"**. 373건 테스트 통과(코드 변경 없음).
+- **커밋**: `9d8c661`
+
 ---
 
 ## 누적 산출물 요약(2026-06-25 ~ 06-30)
