@@ -215,6 +215,11 @@
 - **결과**: `docs/README.md`(전체 문서 분류 인덱스, 8개 카테고리), `docs/ADR_INDEX.md`(9개 핵심 설계 결정 색인), `docs/AI_DEVELOPMENT_PROCESS.md`(Analysis→Design→Implementation→Verification→Documentation 사이클 명문화, A-25.8 추가 설명: Analysis = Domain Analysis + Integration Analysis), `docs/DEVELOPMENT_CHECKLIST.md`(기능 완료 전 체크리스트). 고아 문서 없음, 모든 문서 상호 참조됨. **"Project Documentation & Development Governance Established"**. 373건 테스트 통과(코드 변경 없음).
 - **커밋**: `c7c5121`
 
+### A-25.10: Engineering Notebook & AI Repair Loop Knowledge Capture
+- **요청**: A-20~A-25 시리즈에서 얻은 경험과 시행착오를 지식 자산으로 보존(코드 수정 없음).
+- **결과**: `docs/AI_DEVELOPMENT_NOTEBOOK.md`(처음 가정 흐름 vs 실제 흐름/Repair Loop 발생 사례 5건/수행 조건 9가지/DB 변경 원칙/설계·계약·문서·MARK2 관점의 교훈), `docs/README.md`에 Notebook 항목 추가. 기존 문서와 충돌 없음. **"Engineering Knowledge & AI Repair Loop Captured"**. 373건 테스트 통과(코드 변경 없음).
+- **커밋**: `3572338`
+
 ---
 
 ## 누적 산출물 요약(2026-06-25 ~ 06-30)
