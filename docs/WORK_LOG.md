@@ -190,6 +190,11 @@
 - **결과**: `addItem()`의 `_validItemTypes = {'service','product','time','staff_fee','discount','surcharge'}`를 코드로 재확인. Booking의 Product들이 `durationMin`(시술시간) 컬럼을 가진 시술 서비스라는 것을 코드(`booking_logic.dart`의 `computeEndAt()`, `product_tables.dart` 34행)로 근거 삼아 **`itemType: 'service'`로 확정**. `Product.id`는 조회 키로만 사용하고 `addItem()` 파라미터에 별도 저장 불필요. 나머지 5개 항목(businessType/itemName/unitPrice/refType/refId)은 A-24.5 계약 그대로 유지. **"Session Item Mapping Contract Established"**. 369건 테스트 통과(코드 변경 없음).
 - **커밋**: `35217ed`
 
+### A-24.8: Session Item Persistence Contract Verification
+- **요청**: A-24.7에서 확정한 계약이 실제 `PaymentSessionItems` 저장 구조와 완전히 일치하는지 검증(설계 검증만, 코드 변경 없음).
+- **결과**: 6개 계약 항목 전부 저장 구조와 일치(Conflict 0건) — `itemType='service'`(허용값 포함), `itemName`/`unitPrice`(타입 일치), `refType='booking'`(허용값 포함), `refId`(`TEXT` nullable, 기존 변환 관례 존재). `Product.id`는 A-8 스냅샷 원칙으로 별도 저장 불필요 확정. **A-25 즉시 구현 가능.** **"Session Item Persistence Contract Verified"**. 369건 테스트 통과(코드 변경 없음).
+- **커밋**: `d0bf64c`
+
 ---
 
 ## 누적 산출물 요약(2026-06-25 ~ 06-30)
