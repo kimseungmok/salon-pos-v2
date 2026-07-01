@@ -185,6 +185,11 @@
 - **요청**: A-24~A-24.6에서 확정된 계약(businessType 외부주입/Product 조회 전략 포함)을 기반으로 `BookingCompletionCaller` 실제 구현.
 - **결과**: 구현 착수 전 계약을 기존(수정 금지) 코드와 대조 검증하던 중, PART2의 데이터 매핑 계약(`itemType: Product.id`)이 `SessionRepository.addItem()`의 기존 검증 로직(`_validItemTypes`, `'service'`/`'product'`/`'time'`/`'staff_fee'`/`'discount'`/`'surcharge'` 6개 고정 문자열만 허용)과 결정적으로 충돌함을 발견 — 어떤 실데이터로도 `ValidationException`을 피할 수 없는 모순. 추측으로 고치지 않고 PART7 HARD STOP 적용, 파일 작성 안 함. "Completed" 미명시, 추가 설계 오더 필요로 기록. 코드 변경 없음(커밋 없음).
 
+### A-24.7: Session Item Contract Verification & Mapping Correction Design
+- **요청**: A-25 중단 원인(`itemType: Product.id` 충돌)을 해소하는 최종 계약 확정(설계만, 코드 변경 없음).
+- **결과**: `addItem()`의 `_validItemTypes = {'service','product','time','staff_fee','discount','surcharge'}`를 코드로 재확인. Booking의 Product들이 `durationMin`(시술시간) 컬럼을 가진 시술 서비스라는 것을 코드(`booking_logic.dart`의 `computeEndAt()`, `product_tables.dart` 34행)로 근거 삼아 **`itemType: 'service'`로 확정**. `Product.id`는 조회 키로만 사용하고 `addItem()` 파라미터에 별도 저장 불필요. 나머지 5개 항목(businessType/itemName/unitPrice/refType/refId)은 A-24.5 계약 그대로 유지. **"Session Item Mapping Contract Established"**. 369건 테스트 통과(코드 변경 없음).
+- **커밋**: `35217ed`
+
 ---
 
 ## 누적 산출물 요약(2026-06-25 ~ 06-30)
