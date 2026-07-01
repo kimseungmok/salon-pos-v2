@@ -200,6 +200,11 @@
 - **결과**: `lib/features/booking/data/booking_completion_caller.dart` 구현(DI: BookingRepository/SessionRepository/ProductRepository, `complete({required BookingRow booking, required String businessType})` 메서드, 5단계 순서 정확히 구현). 테스트 4건 작성(단일/복수 상품, 빈 CSV, 미매칭 ID). `docs/MARK2_IDEAS.md` 신규 작성(3가지 Mark2 개선 아이디어 기록). 계약 위반 없음. **"Booking Completion Caller Implementation Completed"**. 전체 **373건 테스트 통과**(기존 369 + 신규 4건), `flutter analyze` 클린.
 - **커밋**: `a12190b`
 
+### A-25.5: Project Architecture Summary & Roadmap Documentation
+- **요청**: A-20~A-25에서 확정된 모든 설계 결정을 하나의 프로젝트 자산으로 정리(코드 수정 없음, 문서화만).
+- **결과**: `docs/ARCHITECTURE_SUMMARY.md`(12개 설계 결정·근거·참조 문서 정리), `docs/PROJECT_ROADMAP.md`(Completed/Next/Future 3단계), `docs/MARK2_IDEAS.md`에 분류 컬럼 추가(Repository/Performance/Technical Debt, 내용 변경 없음). 기존 설계와 충돌 없음. **"Project Architecture Documentation Completed"**. 373건 테스트 통과(코드 변경 없음).
+- **커밋**: `defa2d4`
+
 ---
 
 ## 누적 산출물 요약(2026-06-25 ~ 06-30)
