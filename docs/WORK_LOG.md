@@ -220,6 +220,11 @@
 - **결과**: `docs/AI_DEVELOPMENT_NOTEBOOK.md`(처음 가정 흐름 vs 실제 흐름/Repair Loop 발생 사례 5건/수행 조건 9가지/DB 변경 원칙/설계·계약·문서·MARK2 관점의 교훈), `docs/README.md`에 Notebook 항목 추가. 기존 문서와 충돌 없음. **"Engineering Knowledge & AI Repair Loop Captured"**. 373건 테스트 통과(코드 변경 없음).
 - **커밋**: `3572338`
 
+### A-25.11: Documentation Inventory & Asset Analysis
+- **요청**: 현재 프로젝트의 모든 문서(56개)를 조사해 문서 자산을 정리(문서 수정/삭제 없음, 분석만).
+- **결과**: 56개 문서 전체 Inventory/역할/중복/유지필요성/의존관계/누락/Health 7개 분석 수행. **Active 30개, Passive 23개, Merge Candidate 4개**. 고아 문서 22개(README 미링크 분석이력, WORK_LOG 경유 접근 가능 — 완전 고아 아님). 순환 참조 없음. Missing Documentation 3건(Booking UI Flow, Repository Method Reference, Schema-Domain Map). **"Documentation Inventory Completed"**. 373건 테스트 통과(코드 변경 없음).
+- **커밋**: `66bf5bb`
+
 ---
 
 ## 누적 산출물 요약(2026-06-25 ~ 06-30)
