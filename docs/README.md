@@ -75,6 +75,7 @@
 |---|---|---|
 | [AI_DEVELOPMENT_PROCESS.md](AI_DEVELOPMENT_PROCESS.md) | AI 협업 개발 프로세스 표준(분석→설계→구현→검증 사이클) | 새 기능 개발을 시작할 때 |
 | [DEVELOPMENT_CHECKLIST.md](DEVELOPMENT_CHECKLIST.md) | 기능 구현 완료 전 확인 체크리스트 | 구현 완료 후 커밋 전 |
+| [AI_DEVELOPMENT_NOTEBOOK.md](AI_DEVELOPMENT_NOTEBOOK.md) | Engineering Notebook — Repair Loop 발생 이유, DB 변경 원칙, 개발 교훈 기록 | MARK2 계획 시, 또는 AI 협업 방식 개선 논의 시 |
 
 ---
 
