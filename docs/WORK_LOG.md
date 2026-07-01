@@ -195,6 +195,11 @@
 - **결과**: 6개 계약 항목 전부 저장 구조와 일치(Conflict 0건) — `itemType='service'`(허용값 포함), `itemName`/`unitPrice`(타입 일치), `refType='booking'`(허용값 포함), `refId`(`TEXT` nullable, 기존 변환 관례 존재). `Product.id`는 A-8 스냅샷 원칙으로 별도 저장 불필요 확정. **A-25 즉시 구현 가능.** **"Session Item Persistence Contract Verified"**. 369건 테스트 통과(코드 변경 없음).
 - **커밋**: `d0bf64c`
 
+### A-25(3차): Booking Completion Caller Implementation (Locked Contract)
+- **요청**: A-24~A-24.8에서 확정된 계약을 그대로 구현. `BookingCompletionCaller` 클래스와 테스트 작성.
+- **결과**: `lib/features/booking/data/booking_completion_caller.dart` 구현(DI: BookingRepository/SessionRepository/ProductRepository, `complete({required BookingRow booking, required String businessType})` 메서드, 5단계 순서 정확히 구현). 테스트 4건 작성(단일/복수 상품, 빈 CSV, 미매칭 ID). `docs/MARK2_IDEAS.md` 신규 작성(3가지 Mark2 개선 아이디어 기록). 계약 위반 없음. **"Booking Completion Caller Implementation Completed"**. 전체 **373건 테스트 통과**(기존 369 + 신규 4건), `flutter analyze` 클린.
+- **커밋**: `a12190b`
+
 ---
 
 ## 누적 산출물 요약(2026-06-25 ~ 06-30)
