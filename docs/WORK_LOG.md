@@ -210,6 +210,11 @@
 - **결과**: `docs/MILESTONE_1_BOOKING_SESSION_FOUNDATION.md`(목표/완료범위/포함오더/구현결과/테스트결과/남은범위/다음Milestone), `docs/DECISION_HISTORY.md`(9개 핵심 결정을 시간순 표로 정리), `docs/PROJECT_ROADMAP.md`에 Milestone 1 Completed 표시 추가. 기존 문서 충돌 없음. MARK2 내용 변경 없음. **"Milestone 1 — Booking Session Integration Foundation Completed"**. 373건 테스트 통과(코드 변경 없음).
 - **커밋**: `9d8c661`
 
+### A-25.8: Project Documentation Index & Development Governance
+- **요청**: 현재까지 작성된 모든 프로젝트 문서를 운영 체계로 정리, 향후 개발 표준 문서 완성(코드 수정 없음).
+- **결과**: `docs/README.md`(전체 문서 분류 인덱스, 8개 카테고리), `docs/ADR_INDEX.md`(9개 핵심 설계 결정 색인), `docs/AI_DEVELOPMENT_PROCESS.md`(Analysis→Design→Implementation→Verification→Documentation 사이클 명문화, A-25.8 추가 설명: Analysis = Domain Analysis + Integration Analysis), `docs/DEVELOPMENT_CHECKLIST.md`(기능 완료 전 체크리스트). 고아 문서 없음, 모든 문서 상호 참조됨. **"Project Documentation & Development Governance Established"**. 373건 테스트 통과(코드 변경 없음).
+- **커밋**: `c7c5121`
+
 ---
 
 ## 누적 산출물 요약(2026-06-25 ~ 06-30)
