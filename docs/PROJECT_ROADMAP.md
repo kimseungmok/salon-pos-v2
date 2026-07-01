@@ -7,6 +7,10 @@
 
 ## ✅ Completed
 
+### 🏁 Milestone 1: Booking → Session Integration Foundation — **COMPLETED** (2026-07-01)
+
+> 상세: `docs/MILESTONE_1_BOOKING_SESSION_FOUNDATION.md`
+
 ### Booking → Session Integration Series (A-20 ~ A-25)
 
 | 단계 | 내용 | 결과 |
