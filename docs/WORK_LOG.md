@@ -225,6 +225,11 @@
 - **결과**: 56개 문서 전체 Inventory/역할/중복/유지필요성/의존관계/누락/Health 7개 분석 수행. **Active 30개, Passive 23개, Merge Candidate 4개**. 고아 문서 22개(README 미링크 분석이력, WORK_LOG 경유 접근 가능 — 완전 고아 아님). 순환 참조 없음. Missing Documentation 3건(Booking UI Flow, Repository Method Reference, Schema-Domain Map). **"Documentation Inventory Completed"**. 373건 테스트 통과(코드 변경 없음).
 - **커밋**: `66bf5bb`
 
+### A-25.12: Documentation Information Architecture Design
+- **요청**: 현재 60개 문서 전체를 조사하여 프로젝트 성장에도 유지 가능한 Documentation Information Architecture(IA)를 설계(코드 수정 금지, 문서 이동 금지, 분석·설계만).
+- **결과**: 총 60개 문서(A-25.11 대비 +4개: proposal 3개 + A25_11 자신) 전체 Inventory. **12개 Category / 5개 Status** 정의 후 60개 전수 분류. 미래 디렉터리 구조 설계안(contracts/verification/milestones/process/knowledge/archive 신규 권장). 단방향 Navigation 흐름 설계, 순환 참조 없음 확인. Archive Candidate **11개** 식별. Milestone 종료 → History → Archive → README 갱신 Evolution 흐름 설계. **"Documentation Information Architecture Established"**. 373건 테스트 통과(코드 변경 없음).
+- **커밋**: `5df5d77`
+
 ---
 
 ## 누적 산출물 요약(2026-06-25 ~ 06-30)
