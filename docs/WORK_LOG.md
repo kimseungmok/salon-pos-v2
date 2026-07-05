@@ -259,3 +259,23 @@
 - **DB 스키마**: `schemaVersion` 3 → 6(`pricing_rule`, `promotion_rule` 테이블 추가, 모두 순수 추가형 마이그레이션)
 - **테스트**: 278건(A-9.5 시점) → 369건(A-18.4 시점)
 - **핵심 아키텍처 결정**: Engine은 항상 순수 계산(Drift 비의존), Repository만 Drift를 안다(ADR-001) / 금전 변화는 이벤트로 기록, 헤더는 파생값(ADR-003) / 할인은 품목 이벤트(ADR-002) / 직원 수당은 할인 전 기준+마감 시점 확정(ADR-006) / Settlement~상태변경은 단일 Transaction(ADR-007)
+
+### A-25.14: Repair Loop Observation & Traceability Evidence Collection
+- **요청**: 실제 발생한 Repair Event를 관찰·문서화(코드 수정 금지, 인과관계 추론 금지, 확인 불가 항목은 "미확인" 기록).
+- **결과**: 실제 Repair Event **3건** 확인(Repair-1: A-25 1차 중단 → businessType 부재 → A-24.5 설계, Repair-2: A-25 2차 중단 → itemType Product.id 충돌 → A-24.7+A-24.8, Repair-3: A-13 Race Condition → A-18.2+A-18.3). 반복 패턴 3가지 관찰(구현 코드 미작성 후 중단, 별도 설계 문서 생성, WORK_LOG 중단 기록). 발견 단계: Repair-1/2 구현 단계, Repair-3 분석 단계. `docs/REPAIR_LOOP_OBSERVATION.md` 신규 작성. `docs/README.md` Development Process 섹션 링크 추가. **"Repair Loop Observation Established"**. 테스트 통과(코드 변경 없음).
+- **커밋**: `a6f565b`
+
+### A-25.15: Engineering Knowledge Relationship Architecture
+- **요청**: Engineering Asset 간 관계(Node·Edge·Direction·Traceability·Coverage·Navigation·Graph)를 관찰·문서화(코드 수정 금지, 추론 금지).
+- **결과**: 11개 Asset 타입, 23개 관계(R-01~R-23) 확인. 방향: 22개 단방향, 1개 순환(Contract→Repair→NewContract). Knowledge Graph: Node 11 타입, Edge 9 타입. Gap 관찰: 관계 미확인 3건, Navigation 격차 3건, Traceability 격차 2건, Evidence 격차 3건. `docs/ENGINEERING_KNOWLEDGE_RELATIONSHIP_ARCHITECTURE.md` 신규 작성. `docs/README.md` Architecture 섹션 링크 추가. **"Engineering Knowledge Relationship Architecture Established"**. 테스트 통과(코드 변경 없음).
+- **커밋**: `d7150d0`
+
+### A-25.16: Milestone 2 Readiness Assessment & Development Preparation
+- **요청**: M1 완료 상태·M2 착수 준비 상태를 관찰·문서화(코드 수정 금지, 최종 승인 판단 금지, 추론 금지).
+- **결과**: M1 검증 항목 16건(14건 완료, 2건 미완료). 잔여 항목 8건(A-26~A-28, Provider 미등록, 예약완료 화면 없음, MARK2 1~3, ADR-005, TOCTOU). M2 Candidate 6건(A-26~A-28 단기, MARK2 1~3 중장기). 코드 확인: `providers.dart` BookingCompletionCaller Provider 없음, `screens/` waiting_list_screen.dart만 존재, `completeBooking()` UI 호출 0건, `payment_repository.dart:184` "예약경로 1차 범위 포함 안 함" 주석, TOCTOU ADR-007 연기 확인. `docs/MILESTONE_2_READINESS_ASSESSMENT.md` 신규 작성. `docs/README.md` Milestones 섹션 링크 추가. **"Milestone 2 Readiness Assessment Established"**. 372건 테스트 통과(코드 변경 없음).
+- **커밋**: `405a082`
+
+### A-26: Milestone 2 Requirement Definition (Candidate Verification)
+- **요청**: M2에서 실제 구현 대상으로 계획된 Requirement를 기존 문서·코드에서 확인하여 문서화(코드 수정 금지, 새로운 Requirement 생성 금지, 설계 생성 금지, 기능 분해 금지, 추론 금지).
+- **결과**: M2 Candidate 6건 확인(REQ-A26~A28 단기, REQ-M2-1~3 중장기). 전원 `PROJECT_ROADMAP.md` §Next/§Future 및 `MARK2_IDEAS.md`에서 확인. REQ-A26 Gap: Provider 미등록, UI 화면 없음, `completeBooking()` UI 호출 0건. REQ-A28/M2-1~3 선행 조건 미확인 사항 명시. PART 1~7(Candidate Inventory/Requirement Inventory/Traceability/Dependency/Gap/Analysis Preparation/Summary), PART 9(Baseline 확인: flutter analyze Pass, flutter test 372건 Pass). `docs/A26_REQUIREMENT_DEFINITION.md` 신규 작성. `docs/README.md` Milestones 섹션 링크 추가. **"Milestone 2 Requirement Definition Established"**. 코드 변경 없음.
+- **커밋**: `65e4232`
