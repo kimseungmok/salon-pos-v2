@@ -62,6 +62,7 @@
 | [MILESTONE_2_READINESS_ASSESSMENT.md](MILESTONE_2_READINESS_ASSESSMENT.md) | Milestone 2 착수 준비 상태 관찰(Completion Verification / Candidate / Dependency / Risk / Knowledge Carry-over) | Milestone 2 개발 시작 전 현황 파악 시 |
 | [A26_REQUIREMENT_DEFINITION.md](A26_REQUIREMENT_DEFINITION.md) | Milestone 2 Requirement Definition — 6개 Candidate(REQ-A26~28, REQ-M2-1~3) 확인·추적·Gap 관찰 | Milestone 2 개발 착수 시 Requirement 기준 문서로 참조 |
 | [A27_REQUIREMENT_ANALYSIS.md](A27_REQUIREMENT_ANALYSIS.md) | Milestone 2 Requirement Analysis — 6개 Requirement Evidence Inventory/Analysis/Traceability/Gap/Status 관찰 | Milestone 2 Requirement 분석 기준 문서로 참조 |
+| [A28_DESIGN_DEFINITION.md](A28_DESIGN_DEFINITION.md) | Milestone 2 Design Definition — 9개 Design Decision(D-1~D-9), Design Boundary, Flow Connection Observation | Milestone 2 구현 착수 전 설계 기준 문서로 참조 |
 
 ---
 
