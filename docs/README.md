@@ -11,6 +11,7 @@
 | [ARCHITECTURE_SUMMARY.md](ARCHITECTURE_SUMMARY.md) | Booking→Session Integration의 12개 핵심 설계 결정 요약 | 기존 결정의 이유를 확인하거나 유사한 새 기능 설계 시 |
 | [ADR_INDEX.md](ADR_INDEX.md) | Architecture Decision Record 색인(Caller/Data/Product/Session Item 계약 등) | 특정 설계 결정의 근거와 참조 문서를 찾을 때 |
 | [DEVELOPMENT_TRACEABILITY_ARCHITECTURE.md](DEVELOPMENT_TRACEABILITY_ARCHITECTURE.md) | Requirement→Analysis→Design→Contract Verification→Implementation→Verification→Milestone→MARK2 전체 추적 구조 | 특정 코드/결정의 설계 근거를 역추적하거나 새 Milestone 개발 방법론 참조 시 |
+| [ENGINEERING_KNOWLEDGE_RELATIONSHIP_ARCHITECTURE.md](ENGINEERING_KNOWLEDGE_RELATIONSHIP_ARCHITECTURE.md) | Engineering Asset 간 관계(Node·Edge·Direction·Traceability) 관찰 기록 | Asset 간 연결 구조를 파악하거나 Navigation 경로를 확인할 때 |
 | [adr/ADR-001~ADR-007](adr/) | 개별 ADR(Pricing Engine 격리, 할인 표현, Financial Events, Promotion Lifecycle, Staff Earning, Transaction Scope) | 해당 ADR이 적용되는 코드를 수정하거나 리뷰할 때 |
 | [architecture/PRICING_ENGINE_ARCHITECTURE.md](architecture/PRICING_ENGINE_ARCHITECTURE.md) | Pricing Engine 구조·책임·확장 방향 | Pricing/Promotion Engine 수정 시 |
 | [architecture/PROMOTION_ENGINE_ARCHITECTURE.md](architecture/PROMOTION_ENGINE_ARCHITECTURE.md) | Promotion Engine 구조·책임 | Promotion Engine 수정 시 |
