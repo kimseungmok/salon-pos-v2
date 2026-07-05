@@ -225,6 +225,11 @@
 - **결과**: 56개 문서 전체 Inventory/역할/중복/유지필요성/의존관계/누락/Health 7개 분석 수행. **Active 30개, Passive 23개, Merge Candidate 4개**. 고아 문서 22개(README 미링크 분석이력, WORK_LOG 경유 접근 가능 — 완전 고아 아님). 순환 참조 없음. Missing Documentation 3건(Booking UI Flow, Repository Method Reference, Schema-Domain Map). **"Documentation Inventory Completed"**. 373건 테스트 통과(코드 변경 없음).
 - **커밋**: `66bf5bb`
 
+### A-25.15: Engineering Knowledge Relationship Architecture
+- **요청**: 지금까지 생성된 Engineering Asset 사이의 관계를 실제 프로젝트를 기준으로 조사하고 Engineering Knowledge Relationship 문서화(관찰·문서화만, 코드 수정 금지, 추론 금지).
+- **결과**: Engineering Asset **11종** Inventory 완료(Requirement~Milestone). Relationship **23건** 관찰(R-01~R-23, Source→Target·근거 문서·근거 Commit). Direction 관찰: **단방향 22건, 순환 1건**(Contract→Repair→NewContract, 단 동일 문서로 복귀 없음). Traceability Coverage: Traceable 12건, Non-Traceable 3건, Evidence 부족 3건. Documentation Navigation: README 중앙 진입점·WORK_LOG 이력·DECISION_HISTORY Why 기록 역할 확인. Knowledge Graph Node 11종·Edge 9종 관찰. Gap Analysis: Relationship 확인 불가 3건, Navigation 부족 3건, Traceability 부족 2건, Evidence 부족 3건. `docs/ENGINEERING_KNOWLEDGE_RELATIONSHIP_ARCHITECTURE.md` 신규 작성. README Architecture 섹션 링크 추가. **"Engineering Knowledge Relationship Architecture Established"**. flutter analyze Pass / flutter test 372건 All tests passed.
+- **커밋**: `d7150d0`
+
 ### A-25.14: Repair Loop Observation & Traceability Evidence Collection
 - **요청**: 실제 발생한 Repair 사례를 관찰(Observation) 관점에서 기록(코드 수정 금지, 인과관계 추론 금지, 개선안 제안 금지, 순수 관찰만).
 - **결과**: 실제 Repair Event **3건** Inventory 완료(Repair-1: businessType 출처 부재→A-24.5, Repair-2: itemType 계약 충돌→A-24.7+A-24.8, Repair-3: Race Condition 발견→A-18.2+A-18.3). 각 Repair의 Flow/Evidence/Pattern/Discovery/Trigger 7개 관찰 항목 기록. 반복 패턴 3개 확인(코드 미작성 중단, 별도 문서 오더 생성, WORK_LOG 중단 기록). Gap Analysis: 추적 불가 2건, Evidence 부족 2건, 추가 증거 필요 2건. `docs/REPAIR_LOOP_OBSERVATION.md` 신규 작성. README Development Process 섹션 링크 추가. **"Repair Loop Observation Established"**. flutter analyze Pass / flutter test All tests passed(372건).
