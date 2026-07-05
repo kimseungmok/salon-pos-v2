@@ -225,6 +225,11 @@
 - **결과**: 56개 문서 전체 Inventory/역할/중복/유지필요성/의존관계/누락/Health 7개 분석 수행. **Active 30개, Passive 23개, Merge Candidate 4개**. 고아 문서 22개(README 미링크 분석이력, WORK_LOG 경유 접근 가능 — 완전 고아 아님). 순환 참조 없음. Missing Documentation 3건(Booking UI Flow, Repository Method Reference, Schema-Domain Map). **"Documentation Inventory Completed"**. 373건 테스트 통과(코드 변경 없음).
 - **커밋**: `66bf5bb`
 
+### A-25.14: Repair Loop Observation & Traceability Evidence Collection
+- **요청**: 실제 발생한 Repair 사례를 관찰(Observation) 관점에서 기록(코드 수정 금지, 인과관계 추론 금지, 개선안 제안 금지, 순수 관찰만).
+- **결과**: 실제 Repair Event **3건** Inventory 완료(Repair-1: businessType 출처 부재→A-24.5, Repair-2: itemType 계약 충돌→A-24.7+A-24.8, Repair-3: Race Condition 발견→A-18.2+A-18.3). 각 Repair의 Flow/Evidence/Pattern/Discovery/Trigger 7개 관찰 항목 기록. 반복 패턴 3개 확인(코드 미작성 중단, 별도 문서 오더 생성, WORK_LOG 중단 기록). Gap Analysis: 추적 불가 2건, Evidence 부족 2건, 추가 증거 필요 2건. `docs/REPAIR_LOOP_OBSERVATION.md` 신규 작성. README Development Process 섹션 링크 추가. **"Repair Loop Observation Established"**. flutter analyze Pass / flutter test All tests passed(372건).
+- **커밋**: `a6f565b`
+
 ### A-25.13: Development Traceability & AI Development Architecture
 - **요청**: Requirement~MARK2까지 모든 Development Asset의 관계를 하나의 Traceability Architecture로 정리(코드 수정 금지, 문서 설계·분석만).
 - **결과**: 12개 Development Asset 전수 확인. AI Development Flow 실제 흐름 정리(Design Repair 분기 포함). Logical Group Traceability Matrix 4개(Group A~D: A-8 SESSION ENGINE / Engine Layer / Transaction Boundary / Booking Session Integration). Decision Traceability 10개 결정 × 영향 문서·코드·Verification. Code Traceability 5개 파일(BookingCompletionCaller, SessionClosingWorkflow, PricingEngine, PromotionEngine, StaffEarningEngine). Commit Traceability git log 실측 35+건. Gap Analysis: 추적 불가 5건 + 개선 후보 3건(Requirement 세분화 매핑, session_repository 헬퍼 문서, mockup 커밋 UX 결정). Traceability Coverage **10/11 Complete**, 1/11 Partial(Requirement→Analysis 세분화). `docs/DEVELOPMENT_TRACEABILITY_ARCHITECTURE.md` 신규 작성. `docs/README.md` Architecture 섹션 링크 추가. **"Development Traceability & AI Development Architecture Established"**. 373건 테스트 통과(코드 변경 없음).
