@@ -279,3 +279,8 @@
 - **요청**: M2에서 실제 구현 대상으로 계획된 Requirement를 기존 문서·코드에서 확인하여 문서화(코드 수정 금지, 새로운 Requirement 생성 금지, 설계 생성 금지, 기능 분해 금지, 추론 금지).
 - **결과**: M2 Candidate 6건 확인(REQ-A26~A28 단기, REQ-M2-1~3 중장기). 전원 `PROJECT_ROADMAP.md` §Next/§Future 및 `MARK2_IDEAS.md`에서 확인. REQ-A26 Gap: Provider 미등록, UI 화면 없음, `completeBooking()` UI 호출 0건. REQ-A28/M2-1~3 선행 조건 미확인 사항 명시. PART 1~7(Candidate Inventory/Requirement Inventory/Traceability/Dependency/Gap/Analysis Preparation/Summary), PART 9(Baseline 확인: flutter analyze Pass, flutter test 372건 Pass). `docs/A26_REQUIREMENT_DEFINITION.md` 신규 작성. `docs/README.md` Milestones 섹션 링크 추가. **"Milestone 2 Requirement Definition Established"**. 코드 변경 없음.
 - **커밋**: `65e4232`
+
+### A-27: Milestone 2 Requirement Analysis (Evidence-based)
+- **요청**: Milestone 2 Requirement를 기존 프로젝트 자료(문서·코드·Commit·Verification)를 기반으로 분석·문서화(코드 수정 금지, 설계 생성 금지, 새로운 Requirement 생성 금지, 추론 금지).
+- **결과**: REQ-A26~A28, REQ-M2-1~3 6개 Requirement Evidence Inventory 완료. REQ-A26: `booking_completion_caller.dart` 존재/테스트 4건 Pass 확인, Provider 미등록/UI 화면 없음/라우트 없음/`completeBooking()` UI 호출 0건 확인. REQ-A27: 372건 All tests passed 확인, 공식 기준선 재확정 문서 없음 확인. REQ-A28: 운영자 문서 없음/UI 이벤트 미정 확인. REQ-M2-1: `getBookingById()` 없음/보류 사유(A-25 계약) 확인. REQ-M2-2: 순차 for loop 존재/보류 사유 확인. REQ-M2-3: silent skip 패턴 존재/보류 사유 확인. Traceability/Gap/Status/Analysis Observation 전 PART 완료. `docs/A27_REQUIREMENT_ANALYSIS.md` 신규 작성. `docs/README.md` Milestones 섹션 링크 추가. flutter analyze Pass, flutter test 372건 Pass. **"Requirement Analysis Established"**. 코드 변경 없음.
+- **커밋**: `61bcf6b`
