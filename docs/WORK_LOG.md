@@ -225,6 +225,11 @@
 - **결과**: 56개 문서 전체 Inventory/역할/중복/유지필요성/의존관계/누락/Health 7개 분석 수행. **Active 30개, Passive 23개, Merge Candidate 4개**. 고아 문서 22개(README 미링크 분석이력, WORK_LOG 경유 접근 가능 — 완전 고아 아님). 순환 참조 없음. Missing Documentation 3건(Booking UI Flow, Repository Method Reference, Schema-Domain Map). **"Documentation Inventory Completed"**. 373건 테스트 통과(코드 변경 없음).
 - **커밋**: `66bf5bb`
 
+### A-25.16: Milestone 2 Readiness Assessment & Development Preparation
+- **요청**: Milestone 1 결과를 기준으로 현재 개발 상태를 관찰하고 Milestone 2 준비 상태를 객관적으로 정리(코드 수정 금지, 새로운 기능 제안 금지, 관찰·문서화만).
+- **결과**: Milestone 1 완료 항목 **16건 Verification** (완료 14건, 미완료 2건 — UI 연동·화면 라우트). Remaining Development **8개 항목** 확인(A-26~A-28, Provider 미등록, Booking 화면 없음, MARK2 3건, ADR-005 보류, TOCTOU 보류). Milestone 2 Candidate **6개**(단기 A-26~A-28, 중장기 MARK2 1~3). Dependency **9건** 실측(코드 기반 확인). Development Risk **5개** 확인(Provider 미등록, UI 호출 0건, 결제 경로 보류 주석, TOCTOU 재평가 미정 등). Knowledge Carry-over **14개** 항목 확인. Milestone Transition Status: 준비 완료 10건, 미확인 2건, 일부 준비 1건. `docs/MILESTONE_2_READINESS_ASSESSMENT.md` 신규 작성. README Milestones 섹션 링크 추가. **"Milestone 2 Readiness Assessment Established"**. flutter analyze Pass / flutter test 372건 All tests passed.
+- **커밋**: `405a082`
+
 ### A-25.15: Engineering Knowledge Relationship Architecture
 - **요청**: 지금까지 생성된 Engineering Asset 사이의 관계를 실제 프로젝트를 기준으로 조사하고 Engineering Knowledge Relationship 문서화(관찰·문서화만, 코드 수정 금지, 추론 금지).
 - **결과**: Engineering Asset **11종** Inventory 완료(Requirement~Milestone). Relationship **23건** 관찰(R-01~R-23, Source→Target·근거 문서·근거 Commit). Direction 관찰: **단방향 22건, 순환 1건**(Contract→Repair→NewContract, 단 동일 문서로 복귀 없음). Traceability Coverage: Traceable 12건, Non-Traceable 3건, Evidence 부족 3건. Documentation Navigation: README 중앙 진입점·WORK_LOG 이력·DECISION_HISTORY Why 기록 역할 확인. Knowledge Graph Node 11종·Edge 9종 관찰. Gap Analysis: Relationship 확인 불가 3건, Navigation 부족 3건, Traceability 부족 2건, Evidence 부족 3건. `docs/ENGINEERING_KNOWLEDGE_RELATIONSHIP_ARCHITECTURE.md` 신규 작성. README Architecture 섹션 링크 추가. **"Engineering Knowledge Relationship Architecture Established"**. flutter analyze Pass / flutter test 372건 All tests passed.
