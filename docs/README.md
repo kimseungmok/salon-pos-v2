@@ -59,6 +59,7 @@
 | 문서 | 목적 | 언제 참고하는가 |
 |---|---|---|
 | [MILESTONE_1_BOOKING_SESSION_FOUNDATION.md](MILESTONE_1_BOOKING_SESSION_FOUNDATION.md) | Milestone 1 공식 완료 기록(A-20~A-25.6 종합) | 다음 Milestone 계획 또는 전체 진행 현황 파악 시 |
+| [MILESTONE_2_READINESS_ASSESSMENT.md](MILESTONE_2_READINESS_ASSESSMENT.md) | Milestone 2 착수 준비 상태 관찰(Completion Verification / Candidate / Dependency / Risk / Knowledge Carry-over) | Milestone 2 개발 시작 전 현황 파악 시 |
 
 ---
 
