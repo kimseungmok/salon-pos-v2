@@ -38,6 +38,7 @@
 | 문서 | 목적 | 언제 참고하는가 |
 |---|---|---|
 | [A24_BOOKING_COMPLETION_CALLER_DESIGN.md](A24_BOOKING_COMPLETION_CALLER_DESIGN.md) | `BookingCompletionCaller` 설계 결정(Caller 패턴 선택 이유) | Caller 구조 수정 또는 유사 패턴 도입 시 |
+| [BOOKING_COMPLETION_OPERATOR_GUIDE.md](BOOKING_COMPLETION_OPERATOR_GUIDE.md) | 予約完了(来店完了) 처리 흐름 운영자 가이드 — UI 진입 경로·5단계 실행 순서·조건·미확인 항목 | `complete()` 실행 흐름 확인 또는 운영 대응 시 |
 | [A9_ID_UNIFICATION.md](A9_ID_UNIFICATION.md) | A-9 ID 통일 이력 | ID 관련 버그 조사 또는 마이그레이션 참조 시 |
 | [MARK2_IDEAS.md](MARK2_IDEAS.md) | 이번 범위에서 구현하지 않은 개선 아이디어 목록 | 다음 Milestone 계획 시 |
 
@@ -65,6 +66,8 @@
 | [A28_DESIGN_DEFINITION.md](A28_DESIGN_DEFINITION.md) | Milestone 2 Design Definition — 9개 Design Decision(D-1~D-9), Design Boundary, Flow Connection Observation | Milestone 2 구현 착수 전 설계 기준 문서로 참조 |
 | [A28_5_INTERFACE_CONTRACT_DEFINITION.md](A28_5_INTERFACE_CONTRACT_DEFINITION.md) | Milestone 2 Interface Contract Definition — 5개 Interface Contract(IC-1~IC-5), Responsibility, Traceability | Milestone 2 구현 시 Interface 계약 기준 문서로 참조 |
 | [A30_IMPLEMENTATION_VERIFICATION.md](A30_IMPLEMENTATION_VERIFICATION.md) | Milestone 2 Implementation Verification — A-29 구현 결과의 Requirement/Design/Contract 만족 여부 검증 | Milestone 2 구현 완료 후 검증 결과 확인 시 참조 |
+| [A31_FOLLOWUP_IMPLEMENTATION.md](A31_FOLLOWUP_IMPLEMENTATION.md) | Milestone 2 Verification Follow-up — A-30 미확인 항목 중 D-5/D-6 문서 구현 결과 | A-30 Follow-up 결과 확인 시 참조 |
+| [baseline/A29_REGRESSION_BASELINE.md](baseline/A29_REGRESSION_BASELINE.md) | A-29 구현 기준 Regression Baseline — 5개 변경 파일, 372건 Pass | A-29 이후 회귀 판단 기준선 확인 시 참조 |
 
 ---
 
