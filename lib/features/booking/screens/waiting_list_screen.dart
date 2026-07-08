@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/errors.dart';
 import '../../../db/app_database.dart';
@@ -40,6 +41,13 @@ class WaitingListScreen extends ConsumerWidget {
             onPressed: () => _openAddDialog(context, ref),
             icon: const Icon(Icons.add),
             label: const Text('ウェイティング追加'),
+          ),
+          const SizedBox(width: 8),
+          // A-29 D-4: 予約完了処理画面へのナビゲーション(/waiting/bookings).
+          OutlinedButton.icon(
+            onPressed: () => context.push('/waiting/bookings'),
+            icon: const Icon(Icons.check_circle_outline),
+            label: const Text('予約完了'),
           ),
           const SizedBox(width: 16),
         ],

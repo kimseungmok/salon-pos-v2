@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../features/booking/screens/booking_list_screen.dart';
 import '../features/booking/screens/waiting_list_screen.dart';
 import '../features/cash_management/screens/store_open_screen.dart';
 import '../features/customer/screens/customer_list_screen.dart';
@@ -48,7 +49,19 @@ final GoRouter appRouter = GoRouter(
           routes: [GoRoute(path: '/customers', builder: (_, _) => const CustomerListScreen())],
         ),
         StatefulShellBranch(
-          routes: [GoRoute(path: '/waiting', builder: (_, _) => const WaitingListScreen())],
+          routes: [
+            GoRoute(
+              path: '/waiting',
+              builder: (_, _) => const WaitingListScreen(),
+              routes: [
+                // A-29 D-3: 예약 완료 처리 서브라우트(/waiting/bookings).
+                GoRoute(
+                  path: 'bookings',
+                  builder: (_, _) => const BookingListScreen(),
+                ),
+              ],
+            ),
+          ],
         ),
         StatefulShellBranch(
           routes: [

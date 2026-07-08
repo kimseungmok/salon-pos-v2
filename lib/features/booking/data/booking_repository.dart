@@ -325,6 +325,14 @@ class BookingRepository {
     }
   }
 
+  // ── Single lookup (MARK2-1, docs/MARK2_IDEAS.md Repository 분류) ─────
+
+  /// ID 기준 예약 단건 조회. 존재하지 않으면 null 반환.
+  Future<BookingRow?> getBookingById(int id) {
+    return (_db.select(_db.bookings)..where((b) => b.id.equals(id)))
+        .getSingleOrNull();
+  }
+
   // ── Waiting (F-BOOK-03, 토스 근거 없는 독자기능) ──────────────────────
 
   Stream<List<WaitingEntryRow>> watchWaiting() {
