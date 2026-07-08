@@ -308,3 +308,8 @@
 - **요청**: A-30 Implementation Verification Follow-up 대상(D-5/D-6)을 A-28 Design 범위 안에서 구현(새 Requirement/Design/Contract 변경 금지, Design에 없는 파일 추가 금지).
 - **결과**: D-5(`docs/baseline/A29_REGRESSION_BASELINE.md` 신규 — A-29 변경 범위 5개 파일, 372건 Pass Baseline, 테스트 구성 현황, D-8/D-9 미구현 이유), D-6(`docs/BOOKING_COMPLETION_OPERATOR_GUIDE.md` 신규 — UI 진입 경로: 待機 탭→予約完了 버튼→/waiting/bookings→来店完了, 5단계 complete() 흐름, 처리 대상 조건, A-30 Verification Gap 미확인 항목 유지). D-8/D-9 비대상 확인(규칙 적용). CC-1/CC-2/IC-5 Change Control 유지. `docs/README.md` 링크 3건 추가. `docs/A31_FOLLOWUP_IMPLEMENTATION.md` 신규. flutter analyze Pass, flutter test 372건 Pass. **"A-31 Verification Follow-up Implementation Established"**.
 - **커밋**: `0cebb97`
+
+### A-32: Milestone 2 Remaining Implementation
+- **요청**: A-30 Verification 및 A-31 Follow-up 결과를 기준으로 현재 구현 가능한 Remaining Implementation만 수행(Requirement/Design/Contract 변경 금지, Change Control 해제 금지, 새로운 구현 전략 제안 금지).
+- **결과**: PART 0.5 분류 결과 — 구현 대상 없음. D-1~D-7 전원 A-29/A-31에서 이미 구현 완료 확인. D-8(`Future.wait()` 병렬화): "Future.wait 전략 변경 금지" 규칙으로 구현 불가. D-9(silent skip 명시적 정책): "Logging 정책 추가 금지" 규칙으로 구현 불가. CC-1/CC-2/IC-5 Change Control 및 미확인 상태 유지. `BookingListScreen` 테스트 없음 상태 유지(Design 미명시). 코드 변경 없음. flutter analyze Pass, flutter test 372건 Pass. **"Milestone 2 Remaining Implementation Completed"**.
+- **커밋**: `84393fc`
