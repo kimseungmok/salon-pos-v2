@@ -303,3 +303,8 @@
 - **요청**: A-29 구현 결과가 Requirement, Design, Interface Contract를 실제로 만족하는지 검증(코드 수정 금지, Requirement/Design/Contract 변경 금지, Change Control 해제 금지).
 - **결과**: Requirement Verification — REQ-A26 일부 확인됨(UI 호출 경로 확인, 단 E2E 테스트 없음), REQ-M2-1 확인됨, REQ-A27 일부 확인됨(372건 Pass, 공식 기준선 문서 없음), REQ-A28/M2-2/M2-3 미확인(미구현). Design Verification — D-1/2/3/7 확인됨, D-4 일부 확인됨(CC-1), D-5/6/8/9 미확인(미구현). IC Verification — IC-1/3/4 확인됨, IC-2 일부 확인됨(businessType 'salon' CC-2), IC-5 미확인(D-9 미구현). Change Control CC-1/CC-2 동일 상태 확인. Verification Gap — `BookingListScreen` 테스트 없음, Baseline 문서 없음, businessType 결정 미문서화, IC-5 silent skip 유지. flutter analyze Pass, flutter test 372건 Pass. **"Milestone 2 Implementation Verification Established"**. 코드 변경 없음.
 - **커밋**: `5c81626`
+
+### A-31: Verification Follow-up Implementation
+- **요청**: A-30 Implementation Verification Follow-up 대상(D-5/D-6)을 A-28 Design 범위 안에서 구현(새 Requirement/Design/Contract 변경 금지, Design에 없는 파일 추가 금지).
+- **결과**: D-5(`docs/baseline/A29_REGRESSION_BASELINE.md` 신규 — A-29 변경 범위 5개 파일, 372건 Pass Baseline, 테스트 구성 현황, D-8/D-9 미구현 이유), D-6(`docs/BOOKING_COMPLETION_OPERATOR_GUIDE.md` 신규 — UI 진입 경로: 待機 탭→予約完了 버튼→/waiting/bookings→来店完了, 5단계 complete() 흐름, 처리 대상 조건, A-30 Verification Gap 미확인 항목 유지). D-8/D-9 비대상 확인(규칙 적용). CC-1/CC-2/IC-5 Change Control 유지. `docs/README.md` 링크 3건 추가. `docs/A31_FOLLOWUP_IMPLEMENTATION.md` 신규. flutter analyze Pass, flutter test 372건 Pass. **"A-31 Verification Follow-up Implementation Established"**.
+- **커밋**: `0cebb97`
