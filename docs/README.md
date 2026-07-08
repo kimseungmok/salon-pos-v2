@@ -64,6 +64,7 @@
 | [A27_REQUIREMENT_ANALYSIS.md](A27_REQUIREMENT_ANALYSIS.md) | Milestone 2 Requirement Analysis — 6개 Requirement Evidence Inventory/Analysis/Traceability/Gap/Status 관찰 | Milestone 2 Requirement 분석 기준 문서로 참조 |
 | [A28_DESIGN_DEFINITION.md](A28_DESIGN_DEFINITION.md) | Milestone 2 Design Definition — 9개 Design Decision(D-1~D-9), Design Boundary, Flow Connection Observation | Milestone 2 구현 착수 전 설계 기준 문서로 참조 |
 | [A28_5_INTERFACE_CONTRACT_DEFINITION.md](A28_5_INTERFACE_CONTRACT_DEFINITION.md) | Milestone 2 Interface Contract Definition — 5개 Interface Contract(IC-1~IC-5), Responsibility, Traceability | Milestone 2 구현 시 Interface 계약 기준 문서로 참조 |
+| [A30_IMPLEMENTATION_VERIFICATION.md](A30_IMPLEMENTATION_VERIFICATION.md) | Milestone 2 Implementation Verification — A-29 구현 결과의 Requirement/Design/Contract 만족 여부 검증 | Milestone 2 구현 완료 후 검증 결과 확인 시 참조 |
 
 ---
 
