@@ -68,6 +68,7 @@
 | [A30_IMPLEMENTATION_VERIFICATION.md](A30_IMPLEMENTATION_VERIFICATION.md) | Milestone 2 Implementation Verification — A-29 구현 결과의 Requirement/Design/Contract 만족 여부 검증 | Milestone 2 구현 완료 후 검증 결과 확인 시 참조 |
 | [A31_FOLLOWUP_IMPLEMENTATION.md](A31_FOLLOWUP_IMPLEMENTATION.md) | Milestone 2 Verification Follow-up — A-30 미확인 항목 중 D-5/D-6 문서 구현 결과 | A-30 Follow-up 결과 확인 시 참조 |
 | [A32_REMAINING_IMPLEMENTATION.md](A32_REMAINING_IMPLEMENTATION.md) | Milestone 2 Remaining Implementation — 구현 가능 항목 전수 분류, D-8/D-9 구현 불가 확인 | Milestone 2 최종 구현 범위 확인 시 참조 |
+| [A33_MILESTONE2_CLOSURE.md](A33_MILESTONE2_CLOSURE.md) | Milestone 2 공식 종료 기록 — Requirement/Design/Contract/CC/Known Limitation/Boundary 종료 상태 | Milestone 2 종료 결과 확인 또는 다음 Milestone 착수 전 참조 |
 | [baseline/A29_REGRESSION_BASELINE.md](baseline/A29_REGRESSION_BASELINE.md) | A-29 구현 기준 Regression Baseline — 5개 변경 파일, 372건 Pass | A-29 이후 회귀 판단 기준선 확인 시 참조 |
 
 ---
