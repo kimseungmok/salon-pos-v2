@@ -71,6 +71,7 @@
 | [A33_MILESTONE2_CLOSURE.md](A33_MILESTONE2_CLOSURE.md) | Milestone 2 공식 종료 기록 — Requirement/Design/Contract/CC/Known Limitation/Boundary 종료 상태 | Milestone 2 종료 결과 확인 또는 다음 Milestone 착수 전 참조 |
 | [A34_MILESTONE3_REQUIREMENT.md](A34_MILESTONE3_REQUIREMENT.md) | Milestone 3 Requirement Definition — REQ-M3-1~4(병렬화/정책/Promotion/TOCTOU) Inventory/Scope/Traceability/Status | Milestone 3 개발 착수 시 Requirement 기준 문서로 참조 |
 | [A35_REQUIREMENT_ANALYSIS.md](A35_REQUIREMENT_ANALYSIS.md) | Milestone 3 Requirement Analysis — REQ-M3-1~4 코드/문서 기반 분석, Structure Observation, Missing Evidence | Milestone 3 Design 착수 전 Requirement 분석 기준으로 참조 |
+| [A36_DESIGN_DEFINITION.md](A36_DESIGN_DEFINITION.md) | Milestone 3 Design Definition — DD-1~4(addItem 병렬화/미매칭 정책/Promotion/TOCTOU), TOCTOU A-18.3 기구현 관찰 | Milestone 3 구현 착수 전 Design 기준 문서로 참조 |
 | [baseline/A29_REGRESSION_BASELINE.md](baseline/A29_REGRESSION_BASELINE.md) | A-29 구현 기준 Regression Baseline — 5개 변경 파일, 372건 Pass | A-29 이후 회귀 판단 기준선 확인 시 참조 |
 
 ---
