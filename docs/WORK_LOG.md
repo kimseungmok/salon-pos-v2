@@ -333,3 +333,8 @@
 - **요청**: Milestone 3 Requirement·Analysis 기반으로 Design Decision 정의(코드 수정 금지, Implementation 금지, Interface Contract 생성 금지, 새로운 Requirement 생성 금지, 추론 금지).
 - **결과**: Design Decision 4건 정의. DD-1(`booking_completion_caller.dart:63~72` for loop → `Future.wait()` 병렬화, 정의됨). DD-2(`booking_completion_caller.dart:65~66` silent skip → 명시적 정책, 일부 정의됨 — 정책 형태 미결정). DD-3(`promotion_engine.dart:52` `candidates.first` 단일 Rule 구조 변경 위치, 일부 정의됨 — ADR-005 미결정). DD-4(TOCTOU: `session_closing_workflow.dart:86~103`에 A-18.3에서 이미 Conditional UPDATE 구현 완료 확인 — 미확인. PROJECT_ROADMAP §Future와 코드 간 불일치 관찰). Missing Evidence: DD-1 오류 처리 방식 미결정, DD-2 정책 형태 미결정, DD-3 ADR-005 미작성, DD-4 Roadmap/코드 불일치 해소 문서 없음. flutter analyze Pass, flutter test 372건 Pass. **"Milestone 3 Design Established"**. 코드 변경 없음.
 - **커밋**: `8980a15`
+
+### A-36.5: Milestone 3 Project Consistency Verification
+- **요청**: Milestone 3 Requirement, PROJECT_ROADMAP, 현재 프로젝트 구현 상태 사이의 정합성 확인(예외적 프로젝트 관리 작업. Roadmap 수정/코드 수정/Requirement 변경 금지).
+- **결과**: Consistency 확인 4건. REQ-M3-1(일치 — Roadmap Future, 코드 미구현), REQ-M3-2(일치 — Roadmap Future, 코드 미구현), REQ-M3-3(일치 — Roadmap ADR-005 보류, 코드 단일 Rule 유지). REQ-M3-4(불일치 — Roadmap: Future 이관, 코드: A-18.3 Conditional UPDATE 기구현). 정합성 차이 3건: (1) Roadmap §Future "TOCTOU 대응" ↔ `session_closing_workflow.dart:86~103` A-18.3 기구현; (2) Roadmap §Future "Architecture Refactoring Candidate" ↔ `booking_repository.dart:331` getBookingById() A-29(D-7) 기구현; (3) Roadmap §Future "MARK2 Review 단건 조회" ↔ 동일 기구현. Out-of-Scope: CC-2/BookingListScreen 테스트가 REQ-M3-1~4와 연결 없고 Roadmap §Future에도 없음. flutter analyze Pass, flutter test 372건 Pass. **"Milestone 3 Project Consistency Verified"**. 코드 변경 없음.
+- **커밋**: `43442e2`
