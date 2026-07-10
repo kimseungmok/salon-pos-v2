@@ -75,6 +75,7 @@
 | [A36_5_PROJECT_CONSISTENCY_VERIFICATION.md](A36_5_PROJECT_CONSISTENCY_VERIFICATION.md) | Milestone 3 Project Consistency Verification — Roadmap↔코드↔Requirement 정합성 확인, 불일치 3건 관찰(TOCTOU/단건조회/Architecture Refactoring) | Roadmap과 코드 현실 정합성 확인 시 참조(예외적 프로젝트 관리 문서) |
 | [A37_INTERFACE_CONTRACT_DEFINITION.md](A37_INTERFACE_CONTRACT_DEFINITION.md) | Milestone 3 Interface Contract Definition — IC-M3-1(complete() 병렬화 후 외부 계약), IC-M3-2(미매칭 처리 일부 정의됨), IC-M3-3(calcDiscount() 중첩 후 일부 정의됨) | Milestone 3 구현 착수 전 Interface 계약 기준 문서로 참조 |
 | [A38_IMPLEMENTATION.md](A38_IMPLEMENTATION.md) | Milestone 3 Implementation — IC-M3-1(`complete()` Future.wait() 병렬화) 구현 완료. IC-M3-2/IC-M3-3 미결정으로 구현 불가 기록 | Milestone 3 구현 결과 확인 및 미구현 항목 확인 시 참조 |
+| [A39_IMPLEMENTATION_VERIFICATION.md](A39_IMPLEMENTATION_VERIFICATION.md) | Milestone 3 Implementation Verification — REQ-M3-1/DD-1/IC-M3-1 확인됨. REQ-M3-2/3/4 미구현. IC-M3-1 예외 전파 Verification Gap 기록 | Milestone 3 구현 검증 결과 확인 시 참조 |
 | [baseline/A29_REGRESSION_BASELINE.md](baseline/A29_REGRESSION_BASELINE.md) | A-29 구현 기준 Regression Baseline — 5개 변경 파일, 372건 Pass | A-29 이후 회귀 판단 기준선 확인 시 참조 |
 
 ---
