@@ -14,7 +14,7 @@ import 'booking_repository.dart';
 /// 2. createSession()
 /// 3. watchProducts().first
 /// 4. productIdsCsv 파싱 + 메모리 매칭(A-24.6)
-/// 5. addItem() × N (순차, 상품당 1회)
+/// 5. addItem() × N (병렬, 상품당 1회 — DD-1 Future.wait())
 class BookingCompletionCaller {
   BookingCompletionCaller({
     required BookingRepository bookingRepository,
@@ -59,18 +59,20 @@ class BookingCompletionCaller {
     //    refType='booking', refId=Booking.id.toString()
     //    매칭 실패한 ID는 조용히 건너뜀(A-24.6의 memory filter only 패턴,
     //    booking_logic.dart의 computeEndAt()과 동일한 firstOrNull 패턴).
+    //    DD-1: Future.wait()로 병렬화 — 외부 계약(시그니처·반환형) 변경 없음.
+    final futures = <Future<void>>[];
     for (final id in productIds) {
       final product = products.where((p) => p.id == id).firstOrNull;
       if (product == null) continue;
-
-      await _sessionRepository.addItem(
+      futures.add(_sessionRepository.addItem(
         sessionId: session.id,
         itemType: 'service',
         refType: 'booking',
         refId: booking.id.toString(),
         itemName: product.name,
         unitPrice: product.price,
-      );
+      ));
     }
+    await Future.wait(futures);
   }
 }
