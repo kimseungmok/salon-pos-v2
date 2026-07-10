@@ -343,3 +343,8 @@
 - **요청**: Milestone 3 Requirement, Analysis, Design을 기반으로 Interface Contract 정의(코드 수정 금지, Requirement/Design 변경 금지, 새로운 Requirement 생성 금지, 추론 금지).
 - **결과**: Design Baseline Verification(DD-1 정의됨, DD-2/DD-3 일부 정의됨, DD-4 미확인 → 제외). Interface Contract 3건 정의: IC-M3-1(`BookingCompletionCaller.complete()` 병렬화 후 외부 계약 — `Future<void> complete({required BookingRow booking, required String businessType})` 시그니처 유지, 정의됨), IC-M3-2(`complete()` 미매칭 상품 처리 외부 계약 — silent skip → 명시적 처리 변경, 정책 형태 미결정, 일부 정의됨), IC-M3-3(`PromotionEngine.calcDiscount()` 중첩 후 외부 계약 — 입력·출력·Nullable 현재 상태 확인, ADR-005 미결정, 일부 정의됨). Existing Component Responsibility Observation 3건(BookingCompletionCaller/PromotionEngine/SessionClosingWorkflow). Contract Traceability Observation. Missing Evidence: IC-M3-1 Future.wait() 예외 전파 방식 미확인, IC-M3-2 정책 형태 미결정, IC-M3-3 ADR-005 미작성. Contract Status: IC-M3-1 정의됨, IC-M3-2/IC-M3-3 일부 정의됨. flutter analyze Pass, flutter test 372건 Pass. **"Milestone 3 Interface Contract Established"**. 코드 변경 없음.
 - **커밋**: `9bf5cb5`
+
+### A-38: Milestone 3 Implementation
+- **요청**: A-37 Interface Contract에서 정의된 Contract를 만족하도록 Milestone 3 기능 구현(Requirement/Analysis/Design/Contract 변경 금지, 새 파일 생성 금지, 추론 금지).
+- **결과**: IC-M3-1(정의됨) — `booking_completion_caller.dart:62~74` 순차 for loop `await` → `futures` 리스트 수집 후 `Future.wait()` 병렬 실행. 외부 계약(시그니처·반환형) 변경 없음. IC-M3-2(일부 정의됨, 정책 형태 미결정) → 구현 불가. IC-M3-3(일부 정의됨, ADR-005 미결정) → 구현 불가. Change Control 없음. `docs/A38_IMPLEMENTATION.md` 신규. `docs/README.md` 링크 추가. flutter analyze Pass, flutter test 372건 Pass. **"Milestone 3 Implementation Completed"**.
+- **커밋**: `531518f`
