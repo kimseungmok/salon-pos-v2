@@ -353,3 +353,8 @@
 - **요청**: A-38 구현 결과가 Milestone 3 Requirement, Design, Interface Contract를 만족하는지 확인(코드 수정 금지, Requirement/Design/Contract 변경 금지, 새로운 구현 금지).
 - **결과**: Verification 대상 — IC-M3-1/REQ-M3-1/DD-1(구현 완료), IC-M3-2/3/REQ-M3-2/3/4(미구현). REQ-M3-1 확인됨(`booking_completion_caller.dart:63~76` `futures`+`Future.wait()` 구현 확인). DD-1 확인됨(설계 방향 일치). IC-M3-1 확인됨(시그니처·반환형·Nullable·책임 전항 변경 없음). Change Control 충돌 없음, CC-1/CC-2 유지. Verification Gap: IC-M3-1 `Future.wait()` 예외 전파 테스트 없음, IC-M3-2/3/4 미구현 유지, BookingListScreen 테스트 없음. Baseline 대비 새로운 실패 없음. `docs/A39_IMPLEMENTATION_VERIFICATION.md` 신규. `docs/README.md` 링크 추가. **"Milestone 3 Implementation Verified"**. 코드 변경 없음.
 - **커밋**: `f0d3aa8`
+
+### 프로젝트 대시보드 사이트 구축 (Dashboard Site)
+- **요청**: 월드맵·문서·작업로그·메모를 통합한 로컬 사이트 구축. 로컬 file://과 git 다운로드 양쪽에서 동작해야 하며, 사이트 내에서 문서를 바로 읽을 수 있어야 함.
+- **결과**: `scripts/build_worldmap.py` 신설(빌드 스크립트). docs/ 전체 .md 82개 파일을 JSON으로 임베드하여 `docs/WORLD_MAP.html` 단일 파일로 생성. 4-탭 구성 — 🗺️ 월드맵(진행 현황 시각화), 📄 문서(82개 그룹 분류 + 마크다운 렌더링 + 검색), 📋 작업로그(WORK_LOG.md 렌더링), ✏️ 메모(localStorage, Cmd+S 저장). 외부 CDN 없음, file:// + HTTP 양쪽 동작. git push 후 다운로드 즉시 사용 가능.
+- **커밋**: `e96b109`
